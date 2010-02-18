@@ -1,0 +1,6 @@
+{% macro some_macro (name, occupation='the default') %}
+    name: {{ name }}
+    occupation: {{ occupation }}
+{% endmacro %}
+
+{{ some_macro ('jackson') }}
