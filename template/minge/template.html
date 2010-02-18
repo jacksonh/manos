@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title></title>
+</head>
+{# this is a comment #}
+<body>
+<h1></h1>
+{% print foo|default("default value is printed if foo is null or empty")|upper %}
+
+{{ "FOOBAR"|lower }}
+
+{% for the_var in test_enumerable %}
+    {{ the_var|upper }}
+{% endfor %}
+
+{% set some_field = "foobar" %}
+
+{{ some_field|upper }}
+
+{{ "foobar".Length }}
+{{ "barfazz"['Length']}}
+
+{% if '' %}
+  THIS IS A STRING
+  {{ " THIS IS A STRING " }}
+{% else %}
+  THIS IS THE ELSE STATEMENT
+{% endif %}
+
+{% block some_block %}
+Hi from the base block!
+{% endblock %}
+
+
+</body> </html>
