@@ -19,7 +19,7 @@ namespace Mango.Templates.Minge {
 			MingeParser p = new MingeParser (environment, app);
 
 			for (int i = 1; i < args.Length; i++) {
-				using (TextReader tr = new StreamReader (File.OpenRead ("template2.html"))) {
+				using (TextReader tr = new StreamReader (File.OpenRead (args [1]))) {
 					p.ParsePage (args [i], tr);
 				}
 			}
