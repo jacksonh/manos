@@ -1,21 +1,16 @@
 
 SOURCES=codegen.cs 		\
 	parser.cs  		\
-	token.cs      		\
-	token-operators.cs  	\
-	token-type.cs		\
 	environment.cs  	\
 	compile.cs		\
 	library.cs		\
-	tokenizer.cs  		\
-	token-rules.cs
-
+	tokenizer.cs  		
 
 all: compile.exe render.exe
 
 run-test: all
-	mono --debug compile.exe mingetest.dll template2.html
-	mono --debug render.exe mingetest.dll templates.page_template2 foo '' bar 'param two'
+	mono --debug compile.exe mingetest.dll tests/template2.html
+	mono --debug render.exe mingetest.dll templates.tests.page_template2 foo '' bar 'param two'
 
 compile.exe: $(SOURCES)
 	gmcs -debug -out:compile.exe -r:Mono.Cecil.dll $(SOURCES)
