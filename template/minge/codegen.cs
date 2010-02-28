@@ -700,8 +700,6 @@ namespace Mango.Templates.Minge {
 
 		public void EmitToString (Application app, Page page, CilWorker worker, TypeReference resolved)
 		{
-			Console.WriteLine ("emitting tostring on:  {0}", resolved);
-
 			if (resolved.FullName == "System.String")
 				return;
 
@@ -952,15 +950,11 @@ namespace Mango.Templates.Minge {
 
 		public bool IsForLoopVariable (string name)
 		{
-			Console.WriteLine ("checking if: {0} is a forloop variable", name);
-			if (forloop_stack.Count == 0) {
-				Console.WriteLine (" -- nope");
+			if (forloop_stack.Count == 0)
 				return false;
-			}
 
 			ForLoopContext forloop = forloop_stack.Peek ();
 
-			Console.WriteLine ("  forloop var name:  {0}", forloop.VariableName);
 			return name == forloop.VariableName;
 		}
 
