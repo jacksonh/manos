@@ -44,6 +44,12 @@ public class KayakDemo {
 		{
 			Minge.RenderToStream ("properties.html", Response.Output);
 		}
+
+		[Path("/macros")]
+		public void Macros (string word)
+		{
+			Minge.RenderToStream ("macros.html", Response.Output);
+		}
 	}
 }
 
