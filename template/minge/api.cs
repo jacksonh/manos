@@ -30,6 +30,24 @@ namespace Mango.Templates.Minge {
 			}
 		}
 
+		public static string RenderToSting (string path)
+		{
+			return RenderToString (path, new Dictionary<string,object> ());
+		}
+
+		public static string RenderToString (string path, Dictionary<string,object> the_args)
+		{
+			MemoryStream stream = new MemoryStream ();
+			StreamWriter writer = new StreamWriter (stream);
+
+			RenderToStream (path, writer, the_args);
+			writer.Flush ();
+
+			stream.Seek (0, SeekOrigin.Begin);
+			StreamReader reader = new StreamReader (stream);
+			return reader.ReadToEnd ();
+		}
+
 		public static void RenderToStream (string path, TextWriter writer)
 		{
 			context.RenderToStream (path, writer);
@@ -117,7 +135,6 @@ namespace Mango.Templates.Minge {
 
 		internal Page ParsePage (string path)
 		{
-			Console.WriteLine ("parsing path:  {0}", path);
 			MingeParser p = new MingeParser (Environment, Application);
 			string full_path = FindFullPath (path);
 
@@ -161,7 +178,6 @@ namespace Mango.Templates.Minge {
 				if (!Environment.AllowedExtensions.Contains (Path.GetExtension (file)))
 					continue;
 				using (TextReader tr = new StreamReader (File.OpenRead (file))) {
-					Console.WriteLine ("root: {0}   file:  {1}   name:  {2}", root_dir, file, file.Substring (root_dir.Length + 1));
 					parser.ParsePage (file.Substring (root_dir.Length + 1), tr);
 				}
 			}
@@ -181,15 +197,11 @@ namespace Mango.Templates.Minge {
 
 		private bool CheckFiles (DateTime ct, string [] files)
 		{
-			foreach (string file in files) {
-				Console.WriteLine ("CT: {0} -- {1}", ct, File.GetLastWriteTime (file));
-			}
 			return files.Count (f => File.GetLastWriteTime (f) > ct) > 0;
 		}
 
 		private void CompileDirectories ()
 		{
-
 		}
 	}
 
@@ -200,18 +212,8 @@ namespace Mango.Templates.Minge {
 
 		public void RenderToStream (string type_name, string assembly_path, TextWriter writer, Dictionary<string,object> the_args)
 		{
-			Console.WriteLine ("USING ASSEMBLY PATH:  {0}", assembly_path);
-			
-
-			try {
-				Console.WriteLine ("CREATING THE PAGE");
-				IMingePage page = (IMingePage) Activator.CreateInstanceFrom (assembly_path, type_name, false, BINDING_FLAGS, null, null, null, null, null).Unwrap ();
-				Console.WriteLine ("RENDERING THE PAGE");
-				page.RenderToStream (writer, the_args);
-				Console.WriteLine ("DONE");
-			} catch (Exception e) {
-				Console.WriteLine ("EXCEPTION WHILE RENDERING:  {0}", e);
-			}
+			IMingePage page = (IMingePage) Activator.CreateInstanceFrom (assembly_path, type_name, false, BINDING_FLAGS, null, null, null, null, null).Unwrap ();
+			page.RenderToStream (writer, the_args);
 		}
 	}
 }
