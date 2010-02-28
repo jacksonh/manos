@@ -14,8 +14,7 @@ public class T {
 
 		Dictionary<string,object> targs = new Dictionary<string,object> ();
 
-		Assembly asm = Assembly.LoadFrom (args [0]);
-		Type template_type = asm.GetType (args [1]);
+		
 
 		for (int i = 2; i + 1 < args.Length; i += 2) {
 			targs.Add (args [i], args [i + 1]);
@@ -23,7 +22,6 @@ public class T {
 
 		targs ["test_enumerable"] = new List<string> () { "one", "two", "three", "four" };
 
-		Console.WriteLine ("TEMPLATE TYPE:  {0}", template_type);
 		MethodInfo meth = template_type.GetMethod ("RenderToStream");
 		object template = Activator.CreateInstance (template_type);
 

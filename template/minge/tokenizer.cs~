@@ -68,7 +68,6 @@ namespace Mango.Templates.Minge {
 		private TextReader reader;
 		private StringBuilder builder;
 
-		bool in_code_block = false;
 
 		public MingeTokenizer (MingeEnvironment env, TextReader reader)
 		{
@@ -107,17 +106,16 @@ namespace Mango.Templates.Minge {
 
 			while ((c = ReadChar ()) != -1) {
 
-				if (in_code_block && (c == '\'' || c == '\"')) {
+				if (c == '\'' || c == '\"') {
 					string str = ReadQuotedString (c);
-					Console.WriteLine ("READ QUOTED STRING:  {0}", str);
 					if (str == null)
 						return new Token (line, col, TokenType.TOKEN_EOF, String.Empty);
 					tok = new Token (line, col, TokenType.TOKEN_QUOTED_STRING, str);
 					return tok;
 				}
-				
+
 				int d = reader.Peek ();
-				if (in_code_block && IsNumberStartChar (c) && IsNumberChar (d)) {
+				if (IsNumberStartChar (c) && IsNumberChar (d)) {
 					object number = ReadNumber (c, d, out tok_type);
 					tok = new Token (line, col, tok_type, number.ToString (), number);
 					return tok;
@@ -127,7 +125,6 @@ namespace Mango.Templates.Minge {
 				if (token_ops.DoubleCharOps.TryGetValue (two_chars, out tok_type)) {
 					tok = new Token (line, col, tok_type, two_chars);
 					reader.Read ();
-					UpdateInCodeBlock (tok_type);
 					return tok;
 				}
 
@@ -136,21 +133,19 @@ namespace Mango.Templates.Minge {
 					return tok;
 				}
 
-				if (in_code_block) {
-					if (Char.IsWhiteSpace ((char) c)) {
-						tok = new Token (line, col, TokenType.TOKEN_WHITESPACE, "" + (char) c);
-						return tok;
-					}
+				if (Char.IsWhiteSpace ((char) c)) {
+					tok = new Token (line, col, TokenType.TOKEN_WHITESPACE, "" + (char) c);
+					return tok;
+				}
 
-					if (IsNameStartChar (c)) {
-						do {
-							builder.Append ((char) c);
-							c = ReadChar ();
-						} while (IsNameChar (c));
-						PutbackChar (c);
-						tok = new Token (line, col, TokenType.TOKEN_NAME, builder.ToString ());
-						return tok;
-					}
+				if (IsNameStartChar (c)) {
+					do {
+						builder.Append ((char) c);
+						c = ReadChar ();
+					} while (IsNameChar (c));
+					PutbackChar (c);
+					tok = new Token (line, col, TokenType.TOKEN_NAME, builder.ToString ());
+					return tok;
 				}
 
 				tok = new Token (line, col, TokenType.TOKEN_DATA, "" + (char) c);
@@ -192,22 +187,6 @@ namespace Mango.Templates.Minge {
 			}
 
 			return c;
-		}
-
-		private void UpdateInCodeBlock (TokenType tok_type)
-		{
-			switch (tok_type) {
-			case TokenType.TOKEN_BLOCK_END:
-			case TokenType.TOKEN_VARIABLE_END:
-				in_code_block = false;
-				break;
-			case TokenType.TOKEN_BLOCK_BEGIN:
-			case TokenType.TOKEN_VARIABLE_BEGIN:
-				in_code_block = true;
-				break;
-			default:
-				break;
-			}
 		}
 
 		private string ReadQuotedString (int c)
@@ -269,9 +248,11 @@ namespace Mango.Templates.Minge {
 
 			if (is_double) {
 				tok_type = TokenType.TOKEN_DOUBLE;
+				Console.WriteLine ("DOUBLE NUMBER:  {0}", builder.ToString ());
 				number = Double.Parse (builder.ToString ());
 			} else {
 				tok_type = TokenType.TOKEN_INTEGER;
+				Console.WriteLine ("NUMBER:  {0}", builder.ToString ());
 				number = Int32.Parse (builder.ToString ());
 			}
 

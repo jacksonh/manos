@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block the_title %}The Root Page{% endblock %}
+
+{% block the_header %}Welcome to the Kayak-Minge demo{% endblock %}
+
+{% block the_content %}
+  Here are the views available:
+  <ul>
+  {% for view in views %}
+       <li><a href="{{ view }}">{{ view }}</a></li>
+  {% endfor %}
+  </ul>
+{% endblock %}

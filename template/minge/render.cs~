@@ -23,7 +23,6 @@ public class T {
 
 		targs ["test_enumerable"] = new List<string> () { "one", "two", "three", "four" };
 
-		Console.WriteLine ("TEMPLATE TYPE:  {0}", template_type);
 		MethodInfo meth = template_type.GetMethod ("RenderToStream");
 		object template = Activator.CreateInstance (template_type);
 

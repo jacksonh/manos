@@ -35,14 +35,6 @@ namespace Mango.Templates.Minge {
 
 		private bool is_running = false;
 
-		public MingeEnvironment () : this (new string [] { Directory.GetCurrentDirectory () } )
-		{
-		}
-
-		public MingeEnvironment (string [] templatedirs) : this (Directory.GetCurrentDirectory (), templatedirs)
-		{
-		}
-
 		public MingeEnvironment (string bindir, string [] templatedirs)
 		{
 			BinDirectory = bindir;

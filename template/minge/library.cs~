@@ -43,14 +43,7 @@ namespace Mango.Templates.Minge {
 		}
 	}
 
-	public interface IMingePage {
-
-		void RenderToStream (TextWriter stream, Dictionary<string,object> args);
-	}
-
-	
-	[Serializable]
-	public class MingePage : IMingePage {
+	public class MingePage {
 
 		public virtual void RenderToStream (TextWriter stream, Dictionary<string,object> args)
 		{

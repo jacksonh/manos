@@ -1,0 +1,82 @@
+
+using System;
+using System.IO;
+
+
+
+public class A {
+
+	public virtual void RenderToStream ()
+	{
+		Foo ();
+	}
+
+	public virtual void Foo ()
+	{
+	}
+}
+
+
+public class B : A {
+
+	public override void RenderToStream ()
+	{
+		base.RenderToStream ();
+	}
+
+	public override void Foo ()
+	{
+		TextWriter writer = System.Console.Out;
+		writer.Write (ValueTypeToString ("foobar".Length));
+	}
+
+	private string ValueTypeToString (System.ValueType val)
+	{
+		return val.ToString ();
+	}
+}
+
+/*
+        IL_0008:  ldstr "foobar"
+	IL_000d:  callvirt instance int32 string::get_Length()
+	IL_0012:  box [mscorlib]System.Int32
+	IL_0017:  call instance string class B::ValueTypeToString(class [mscorlib]System.ValueType)
+	IL_001c:  callvirt instance void class [mscorlib]System.IO.TextWriter::Write(string)
+*/
+
+/*
+        IL_012b:  ldarg.1 
+	IL_012c:  ldstr "foobar"
+	IL_0131:  call instance int32 string::get_Length()
+	IL_0137:  box [mscorlib]System.Int32
+	IL_013c:  call instance string class templates.page_base::ValueToString(class [mscorlib]System.ValueType)
+	IL_0141:  callvirt instance void class [mscorlib]System.IO.TextWriter::Write(string)
+
+ */
+
+
+/*
+  .method private hidebysig 
+           instance default string ValueTypeToString (class [mscorlib]System.ValueType val)  cil managed 
+    {
+        // Method begins at RVA 0x2140
+	// Code size 7 (0x7)
+	.maxstack 8
+	IL_0000:  ldarg.1 
+	IL_0001:  callvirt instance string class [mscorlib]System.ValueType::ToString()
+	IL_0006:  ret 
+    } // end of method B::ValueTypeToString
+*/
+
+/*
+  .method public virtual 
+           instance default string ValueToString (class [mscorlib]System.ValueType the_value)  cil managed 
+    {
+        // Method begins at RVA 0x2054
+	// Code size 7 (0x7)
+	.maxstack 8
+	IL_0000:  ldarg.1 
+	IL_0001:  callvirt instance string class [mscorlib]System.ValueType::ToString()
+	IL_0006:  ret 
+    } // end of method page_numbers::ValueToString
+*/

@@ -11,11 +11,11 @@ namespace Mango.Templates.Minge {
 	public class MingeParser {
 
 		private Application application;
-		private MingeEnvironment environment;
+		private Environment environment;
 
 		private Page current_page;
 
-		public MingeParser (MingeEnvironment environment, Application application)
+		public MingeParser (Environment environment, Application application)
 		{
 			this.application = application;
 			this.environment = environment;
@@ -106,6 +106,7 @@ namespace Mango.Templates.Minge {
 
 			do {
 				if (tok.Type == TokenType.TOKEN_BLOCK_END) {
+					Console.WriteLine ("BLOCK: {0}", builder.ToString ());
 					return;
 				}
 					
@@ -191,6 +192,7 @@ namespace Mango.Templates.Minge {
 				if (!first && tok.Type != TokenType.TOKEN_COMMA)
 					RaiseFailure (tk, "Invalid token found in print statement '{0}'");
 
+				Console.WriteLine (tok.Value);
 			} while (tok.Type != TokenType.TOKEN_EOF);
 
 			if (tok.Type == TokenType.TOKEN_EOF)
@@ -609,6 +611,7 @@ namespace Mango.Templates.Minge {
 
 		private static string ValueOfQuotedString (string str)
 		{
+			Console.WriteLine ("QUOTED STRING:  '{0}'", str);
 			string res = str.Substring (1, str.Length - 2);
 			return res;
 		}

@@ -66,7 +66,6 @@ namespace Mango.Templates.Minge {
 		public override void Emit (Application app, Page page, CilWorker worker)
 		{
 			if (page.IsForLoopVariable (Name.Name)) {
-				ResolvedType = app.Assembly.MainModule.Import (typeof (object)); 
 				page.EmitForLoopVariableAccess ();
 				return;
 			}
@@ -151,6 +150,7 @@ namespace Mango.Templates.Minge {
 
 		public ConstantIntValue (int value)
 		{
+			Console.WriteLine ("NEW INT:  {0}", value);
 			Value = value;
 		}
 
@@ -175,6 +175,7 @@ namespace Mango.Templates.Minge {
 
 		public ConstantDoubleValue (double value)
 		{
+			Console.WriteLine ("NEW DOUBLE:  {0}", value);
 			Value = value;
 		}
 
@@ -192,6 +193,7 @@ namespace Mango.Templates.Minge {
 		{
 			worker.Emit (OpCodes.Ldc_R8, Value);
 			ResolvedType = app.Assembly.MainModule.Import (typeof (double));
+			Console.WriteLine ("CREATING A CONSTANT DOUBLE VALUE:  {0}  {1}", Value, ResolvedType);
 		}
 	}
 
@@ -700,8 +702,6 @@ namespace Mango.Templates.Minge {
 
 		public void EmitToString (Application app, Page page, CilWorker worker, TypeReference resolved)
 		{
-			Console.WriteLine ("emitting tostring on:  {0}", resolved);
-
 			if (resolved.FullName == "System.String")
 				return;
 
@@ -721,7 +721,7 @@ namespace Mango.Templates.Minge {
 
 			// Import it so we get a method reference
 			method = application.Assembly.MainModule.Import (method);
-			Instruction inst = worker.Emit (OpCodes.Callvirt, (MethodReference) method);
+			Instruction inst = worker.Emit (OpCodes.Call, (MethodReference) method);
 		}
 
 		public void EmitSinglePrint (Expression expression)
@@ -733,6 +733,8 @@ namespace Mango.Templates.Minge {
 
 			worker.Emit (OpCodes.Ldarg_1);
 			expression.Emit (application, this, worker);
+//			worker.Emit (OpCodes.Nop);
+			Console.WriteLine ("TO STRING OF {0}  is resolved type:  {1}", expression, expression.ResolvedType);
 			EmitToString (application, this, worker, expression.ResolvedType);
 			worker.Emit (OpCodes.Callvirt, application.CommonMethods.WriteStringMethod);
 		}
@@ -756,6 +758,8 @@ namespace Mango.Templates.Minge {
 
 		public void BeginMacro (string name, List<ArgumentDefinition> args)
 		{
+			Console.WriteLine ("beginning macro: {0} ({1})", name, args.Count);
+
 			MethodDefinition meth = AddRenderMethod (name, args);
 
 			method_stack.Push (meth);
@@ -914,6 +918,7 @@ namespace Mango.Templates.Minge {
 				vars.Add (enumeratorvar);
 			}
 
+			
 			CilWorker worker = CurrentMethod.Body.CilWorker;
 			expression.Emit (application, this, worker);
 			worker.Emit (OpCodes.Castclass, assembly.MainModule.Import (typeof (System.Collections.IEnumerable)));
@@ -952,15 +957,11 @@ namespace Mango.Templates.Minge {
 
 		public bool IsForLoopVariable (string name)
 		{
-			Console.WriteLine ("checking if: {0} is a forloop variable", name);
-			if (forloop_stack.Count == 0) {
-				Console.WriteLine (" -- nope");
+			if (forloop_stack.Count == 0)
 				return false;
-			}
 
 			ForLoopContext forloop = forloop_stack.Peek ();
 
-			Console.WriteLine ("  forloop var name:  {0}", forloop.VariableName);
 			return name == forloop.VariableName;
 		}
 
@@ -971,6 +972,7 @@ namespace Mango.Templates.Minge {
 			ForLoopContext forloop = forloop_stack.Peek ();
 			worker.Emit (OpCodes.Ldloc, forloop.EnumeratorVariable);
 			worker.Emit (OpCodes.Callvirt, application.CommonMethods.EnumeratorGetCurrentMethod);
+			
 		}
 
 		public ParameterDefinition FindParameter (string name)
@@ -1042,6 +1044,7 @@ namespace Mango.Templates.Minge {
 				foreach (ArgumentDefinition arg in extra_args) {
 					ParameterDefinition pdef = new ParameterDefinition (arg.Name, -1, (ParameterAttributes) 0, object_type);
 					if (arg.DefaultValue != null) {
+						Console.WriteLine ("ADDING CONSTANT DEFINITION:  {0}", arg.DefaultValue.GetValue ());
 						pdef.Constant = arg.DefaultValue.GetValue ();
 						pdef.HasDefault = true;
 					}
@@ -1056,7 +1059,7 @@ namespace Mango.Templates.Minge {
 
 		public MethodDefinition AddValueToStringMethod ()
 		{
-			MethodAttributes atts = MethodAttributes.Public | MethodAttributes.Static;
+			MethodAttributes atts = MethodAttributes.Public | MethodAttributes.Virtual;
 
 			MethodDefinition to_string = new MethodDefinition ("ValueToString", atts, assembly.MainModule.Import (typeof (string)));
 			to_string.Parameters.Add (new ParameterDefinition ("the_value", -1, (ParameterAttributes) 0, assembly.MainModule.Import (typeof (System.ValueType))));
@@ -1064,7 +1067,7 @@ namespace Mango.Templates.Minge {
 			Definition.Methods.Add (to_string);
 
 			CilWorker worker = to_string.Body.CilWorker;
-			worker.Emit (OpCodes.Ldarg_0);
+			worker.Emit (OpCodes.Ldarg_1);
 			worker.Emit (OpCodes.Callvirt, assembly.MainModule.Import (typeof (System.ValueType).GetMethod ("ToString")));
 			worker.Emit (OpCodes.Ret);
 					
