@@ -19,6 +19,9 @@ namespace Mango.Server {
 
 		public static readonly int MAX_EVENTS = 24;
 
+		public static readonly EpollEvents EPOLL_READ_EVENTS = EpollEvents.EPOLLIN;
+		public static readonly EpollEvents EPOLL_ERROR_EVENTS = EpollEvents.EPOLLERR | EpollEvents.EPOLLHUP | EpollEvents.EPOLLRDHUP;
+
 		private int epfd;
 		private bool running;
 
@@ -26,8 +29,6 @@ namespace Mango.Server {
 
 		private List<IOCallback> callbacks = new List<IOCallback> ();
 		private Dictionary<IntPtr,IOHandler> handlers = new Dictionary<IntPtr,IOHandler> ();
-
-		private EpollEvents EPOLL_ERROR = EpollEvents.EPOLLERR | EpollEvents.EPOLLHUP | EpollEvents.EPOLLRDHUP;
 
 
 		public IOLoop ()
@@ -41,7 +42,7 @@ namespace Mango.Server {
 
 			running = true;
 			while (true) {
-				int timeout = 2;
+				int timeout = 5000;
 
 				RunCallbacks ();
 
@@ -91,12 +92,13 @@ namespace Mango.Server {
 		public void AddHandler (IntPtr fd, IOHandler handler, EpollEvents events)
 		{
 			handlers [fd] = handler;
-			Register (fd, events | EPOLL_ERROR);
+			Register (fd, events | EPOLL_ERROR_EVENTS);
 		}
 
 		public void UpdateHandler (IntPtr fd, EpollEvents events)
 		{
-			Modify (fd, events | EPOLL_ERROR);
+			
+			Modify (fd, events | EPOLL_ERROR_EVENTS);
 		}
 
 		public void RemoveHandler (IntPtr fd)
