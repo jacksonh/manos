@@ -32,8 +32,12 @@ public class T {
 				path = path.Substring (0, query);
 
 			Console.WriteLine ("PATH:  {0}", path);
-			if (File.Exists (path))
+			if (File.Exists (path)) {
+				con.Response.StatusCode = 200;
 				con.Response.SendFile (path);
+			} else
+				con.Response.StatusCode = 404;
+			
 		}
 
 		// con.Response.Write (String.Format ("HTTP/1.1 200 OK\r\nContent-Length: {0}\r\n\r\n{1}", Encoding.ASCII.GetBytes (message).Length, message));
