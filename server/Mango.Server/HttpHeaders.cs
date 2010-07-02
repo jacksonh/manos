@@ -50,30 +50,22 @@ namespace Mango.Server {
 			}
 		}
 
-		public void Write (Stream stream, Encoding encoding)
+		public byte [] Write (Encoding encoding)
 		{
-			// fuck me, so this is going to encode to a buffer,
-			// then write to a buffer, which will byte convert
-			// the string to a buffer, write to the stream buffer,
-			// which then will write to the IO buffer, and
-			// get sent across the socket.  I would like to
-			// eliminate the first 36 buffers from this process
-			
 			StringBuilder builder = new StringBuilder ();
 			foreach (var header in items) {
-				builder.AppendFormat ("{0}: {1}", header.Key, header.Value);
+				builder.Append (header.Key);
+				builder.Append (": ");
+				builder.Append (header.Value);
+				buillder.Append ("\r\n");
 			}
+			builder.Append ("\r\n");
 
-			Console.WriteLine ("sent headers:  {0}", builder.ToString ());
-
-			byte [] data = encoding.GetBytes (builder.ToString ());
-			stream.Write (data, 0, data.Length);
+			return encoding.GetBytes (builder.ToString ());
 		}
 
 		public void SetHeader (string name, string value)
 		{
-			Console.WriteLine ("setting header: {0} '{1}'", name, value);
-
 			if (name == null)
 				throw new ArgumentNullException ("name");
 			if (value == null)

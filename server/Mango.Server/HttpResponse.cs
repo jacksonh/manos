@@ -17,7 +17,7 @@ namespace Mango.Server {
 
 	public class HttpResponse {
 
-		private MemoryStream buffer = new MemoryStream ();
+		private List<ArraySegment<byte>> buffer = new List<ArraySegment<byte>> ();
 
 		public HttpResponse (HttpConnection connection, Encoding encoding)
 		{
@@ -25,6 +25,7 @@ namespace Mango.Server {
 			Encoding = encoding;
 
 			Headers = new HttpHeaders ();
+			Headers.ContentLength = 0;
 		}
 
 		public HttpConnection Connection {
@@ -50,42 +51,40 @@ namespace Mango.Server {
 		public void Write (string str)
 		{
 			byte [] data = Encoding.GetBytes (str);
-			buffer.Write (data, 0, data.Length);
-			// Connection.Write (data);
+			buffer.Add (new ArraySegment<byte> (data));
+
+			Headers.ContentLength += data.Length;
 		}
 
 		public void SendFile (string file)
 		{
 			byte [] data = File.ReadAllBytes (file);
-			buffer.Write (data, 0, data.Length);
-			// Connection.SendFile (file);
+			buffer.Add (new ArraySegment<byte> (data));
+
+			Headers.ContentLength += data.Length;
 		}
 
 		public void Finish ()
 		{
-			WriteStatusCode ();
-			WriteHeaders ();
-
-			Connection.Write (buffer.GetBuffer ());
+			InsertHeaders ();
+			InsertStatusCode ();
+			
+			Connection.Write (buffer);
 			Connection.Finish ();
 		}
-
-		private void WriteStatusCode ()
+		
+		private void InsertHeaders ()
 		{
-			string line = String.Format ("HTTP/1.0 {0} {1}", StatusCode, GetStatusDescription (StatusCode));
-			byte [] data = Encoding.GetBytes (line);
-
-			Connection.Write (data);
+			byte [] data = Headers.Write (Encoding);
+			buffer.Insert (0, new ArraySegment<byte> (data));
 		}
 
-		private void WriteHeaders ()
+		private void InsertStatusCode ()
 		{
-			Headers.ContentLength = buffer.Length;
+			string line = String.Format ("HTTP/1.0 {0} {1}\r\n", StatusCode, GetStatusDescription (StatusCode));
+			byte [] data = Encoding.GetBytes (line);
 
-			MemoryStream stream = new MemoryStream ();
-			Headers.Write (stream, Encoding);
-
-			Connection.Write (stream.GetBuffer ());
+			buffer.Insert (0, new ArraySegment<byte> (data));
 		}
 
 		private static string GetStatusDescription (int code)

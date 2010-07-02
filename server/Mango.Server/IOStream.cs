@@ -22,14 +22,13 @@ namespace Mango.Server {
 		private EpollEvents state;
 
 		private MemoryStream read_buffer;
-		private MemoryStream write_buffer;
+		private IList<ArraySegment<byte>> write_data;
 
 		private int read_bytes = -1;
 		private byte [] read_delimiter;
 		private ReadCallback read_callback;
 
-		private int write_index;
-		private List<WriteOperation> write_operations;
+		private WriteCallback write_callback;
 
 		private static readonly int DefaultReadChunkSize  = 4096;
 
@@ -79,7 +78,7 @@ namespace Mango.Server {
 		}
 
 		public bool IsWriting {
-			get { return write_operations != null; }
+			get { return write_callback != null; }
 		}
 
 		public bool IsClosed {
@@ -106,17 +105,12 @@ namespace Mango.Server {
 			AddIOState (IOLoop.EPOLL_READ_EVENTS);
 		}
 
-		public void Write (byte [] data, WriteCallback callback)
+		public void Write (IList<ArraySegment<byte>> data, WriteCallback callback)
 		{
 			CheckCanWrite ();
 
-			if (write_buffer == null)
-				write_buffer = new MemoryStream (data.Length);
-			write_buffer.Write (data, 0, data.Length);
-
-			if (write_operations == null)
-				write_operations = new List<WriteOperation> ();
-			write_operations.Add (new WriteOperation (write_index + data.Length, callback));
+			write_data = data;
+			write_callback = callback;
 
 			AddIOState (IOLoop.EPOLL_WRITE_EVENTS);
 		}
@@ -153,6 +147,8 @@ namespace Mango.Server {
 
 		private void CheckCanWrite ()
 		{
+			if (IsWriting)
+				throw new Exception ("Attempt to write while already performing a write operation.");
 			if (IsClosed)
 				throw new Exception ("Attempt to write on a closed socket.");
 		}
@@ -218,31 +214,45 @@ namespace Mango.Server {
 
 		private void HandleWrite ()
 		{
-			//
-			// TODO:  This really sucks, eventually I think I'll move to a list of byte [] chunks
-			// to reduce the number of copies/buffer resizes needed. However, for now just to get
-			// things working we use a MemoryStream for the write buffer.
-			//
-			// The reason I am procrastinating on the chunk list is because I want to get a better
-			// idea of the amount of data that is sent typically and the number/size of writes 
-			// being made. 
-			//
+			int len = socket.Send (write_data);
 
-			byte [] write_data = write_buffer.GetBuffer ();
-			int ind = socket.Send (write_data, write_index, write_data.Length - write_index, SocketFlags.None);
+			AdjustSegments (len, write_data);
 
-			write_index += ind;
+			if (write_data.Count == 0)
+				FinishWrite ();
+		}
 
-			var ops = new List<WriteOperation> (write_operations);
-			foreach (WriteOperation op in ops) {
-				if (op.index <= write_index) {
-					FinishWriteOperation (op);
-					write_operations.Remove (op);
+		/// This could use some tuning, but the basic idea is that we need to remove
+		/// all of the data that has been sent already.
+		public static void AdjustSegments (int len, IList<ArraySegment<byte>> write_data)
+		{
+			var remove = new List<ArraySegment<byte>>  ();
+			int total = 0;
+			for (int i = 0; i < write_data.Count; i++) {
+				int seg_len = write_data [i].Count;
+				if (total + seg_len <= len) {
+					// The entire segment was written so we can pop it 
+					remove.Add (write_data [i]);
+
+					// If we finished exactly at the end of this segment we are done adjusting
+					if (total + seg_len == len)
+						break;
+				} else if (total + seg_len > len) {
+					// Move to the point in the segment where we stopped writing
+
+					int offset = write_data [i].Offset + (len - total);
+					write_data [i] = new ArraySegment<byte> (write_data [i].Array,
+							offset,
+							write_data [i].Array.Length - offset);
+					break;
 				}
+					
+				total += seg_len;
 			}
 
-			if (write_operations.Count == 0)
-				FinishWrite ();
+			foreach (var segment in remove) {
+				write_data.Remove (segment);
+			}
 		}
 
 		private int FindDelimiter ()
@@ -286,17 +296,15 @@ namespace Mango.Server {
 			
 			callback (this, read);
 		}
-	
-		private void FinishWriteOperation (WriteOperation op)
-		{
-			op.callback ();
-		}
 
 		private void FinishWrite ()
 		{
-			write_index = 0;
-			write_buffer.Close ();
-			write_operations = null;
+			WriteCallback callback = write_callback;
+
+			write_data = null;
+			write_callback = null;
+
+			callback ();
 		}
 	}
 

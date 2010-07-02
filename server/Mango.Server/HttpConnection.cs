@@ -57,7 +57,7 @@ namespace Mango.Server {
 			private set;
 		}
 
-		internal void Write (byte [] data)
+		internal void Write (List<ArraySegment<byte>> data)
 		{
 			IOStream.Write (data, OnWriteFinished);
 		}

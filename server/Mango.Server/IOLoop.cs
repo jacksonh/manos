@@ -52,6 +52,7 @@ namespace Mango.Server {
 					break;
 				
 				var new_events = Syscall.epoll_wait (epfd, timeout);
+				Console.WriteLine ("new events:  {0}  {1}", new_events, new_events.Length);
 				RunHandlers (new_events);
 			}
 			running = false;
