@@ -12,15 +12,15 @@ using Mono.Unix.Native;
 
 namespace Mango.Server {
 
-	public delegate void HttpRequestCallback (HttpRequest request);
+	public delegate void HttpConnectionCallback (HttpConnection request);
 
 	public class HttpServer {
 
-		private HttpRequestCallback request_callback;
+		private HttpConnectionCallback callback;
 
-		public HttpServer (HttpRequestCallback callback)
+		public HttpServer (HttpConnectionCallback callback)
 		{
-			this.request_callback = callback;
+			this.callback = callback;
 		}
 
 		public IOLoop IOLoop {
@@ -38,7 +38,7 @@ namespace Mango.Server {
 			Socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 			Socket.SetSocketOption (SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 			Socket.Blocking = false;
-			Socket.Bind (new IPEndPoint (IPAddress.Parse ("127.0.0.1"), port));
+			Socket.Bind (new IPEndPoint (IPAddress.Parse ("0.0.0.0"), port));
 			Socket.Listen (128);
 		}
 
@@ -71,7 +71,7 @@ namespace Mango.Server {
 				}
 
 				IOStream iostream = new IOStream (s, IOLoop);
-				HttpConnection.HandleConnection (iostream, s, request_callback);
+				HttpConnection.HandleConnection (iostream, s, callback);
 			}
 		}
 	}

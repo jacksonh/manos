@@ -13,6 +13,7 @@ using Mono.Unix.Native;
 namespace Mango.Server {
 
 	public delegate void ReadCallback (IOStream stream, byte [] data);
+	public delegate void WriteCallback ();
 
 	public class IOStream {
 
@@ -21,13 +22,27 @@ namespace Mango.Server {
 		private EpollEvents state;
 
 		private MemoryStream read_buffer;
-		private StringBuilder write_buffer;
+		private MemoryStream write_buffer;
 
 		private int read_bytes = -1;
 		private byte [] read_delimiter;
 		private ReadCallback read_callback;
 
+		private int write_index;
+		private List<WriteOperation> write_operations;
+
 		private static readonly int DefaultReadChunkSize  = 4096;
+
+		private class WriteOperation {
+			public int index;
+			public WriteCallback callback;
+
+			public WriteOperation (int index, WriteCallback callback)
+			{
+				this.index = index;
+				this.callback = callback;
+			}
+		}
 
 		public IOStream (Socket socket, IOLoop ioloop)
 		{
@@ -63,6 +78,10 @@ namespace Mango.Server {
 			get { return read_callback != null; }
 		}
 
+		public bool IsWriting {
+			get { return write_operations != null; }
+		}
+
 		public bool IsClosed {
 			get { return socket == null || !socket.Connected; }
 		}
@@ -87,10 +106,28 @@ namespace Mango.Server {
 			AddIOState (IOLoop.EPOLL_READ_EVENTS);
 		}
 
+		public void Write (byte [] data, WriteCallback callback)
+		{
+			CheckCanWrite ();
+
+			if (write_buffer == null)
+				write_buffer = new MemoryStream (data.Length);
+			write_buffer.Write (data, 0, data.Length);
+
+			if (write_operations == null)
+				write_operations = new List<WriteOperation> ();
+			write_operations.Add (new WriteOperation (write_index + data.Length, callback));
+
+			AddIOState (IOLoop.EPOLL_WRITE_EVENTS);
+		}
+
+		public void SendFile (string file)
+		{
+			socket.SendFile (file);
+		}
+
 		public void Close ()
 		{
-			if (true)
-				throw new Exception ();
 			if (socket == null)
 				return;
 			ioloop.RemoveHandler (socket.Handle);
@@ -114,6 +151,12 @@ namespace Mango.Server {
 				throw new Exception ("Attempt to read on a closed socket.");
 		}
 
+		private void CheckCanWrite ()
+		{
+			if (IsClosed)
+				throw new Exception ("Attempt to write on a closed socket.");
+		}
+
 		private void HandleEvents (IntPtr fd, EpollEvents events)
 		{
 			if (IsClosed) {
@@ -126,6 +169,9 @@ namespace Mango.Server {
 
 			if ((events & IOLoop.EPOLL_READ_EVENTS) != 0)
 				HandleRead ();
+
+			if ((events & IOLoop.EPOLL_WRITE_EVENTS) != 0)
+				HandleWrite ();
 		}
 
 		private void HandleRead ()
@@ -170,6 +216,35 @@ namespace Mango.Server {
 			}
 		}
 
+		private void HandleWrite ()
+		{
+			//
+			// TODO:  This really sucks, eventually I think I'll move to a list of byte [] chunks
+			// to reduce the number of copies/buffer resizes needed. However, for now just to get
+			// things working we use a MemoryStream for the write buffer.
+			//
+			// The reason I am procrastinating on the chunk list is because I want to get a better
+			// idea of the amount of data that is sent typically and the number/size of writes 
+			// being made. 
+			//
+
+			byte [] write_data = write_buffer.GetBuffer ();
+			int ind = socket.Send (write_data, write_index, write_data.Length - write_index, SocketFlags.None);
+
+			write_index += ind;
+
+			var ops = new List<WriteOperation> (write_operations);
+			foreach (WriteOperation op in ops) {
+				if (op.index <= write_index) {
+					FinishWriteOperation (op);
+					write_operations.Remove (op);
+				}
+			}
+
+			if (write_operations.Count == 0)
+				FinishWrite ();
+		}
+
 		private int FindDelimiter ()
 		{
 			byte [] data = read_buffer.GetBuffer ();
@@ -210,6 +285,18 @@ namespace Mango.Server {
 			read_buffer.Write (data, end, data.Length - end);
 			
 			callback (this, read);
+		}
+	
+		private void FinishWriteOperation (WriteOperation op)
+		{
+			op.callback ();
+		}
+
+		private void FinishWrite ()
+		{
+			write_index = 0;
+			write_buffer.Close ();
+			write_operations = null;
 		}
 	}
 

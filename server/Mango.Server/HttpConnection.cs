@@ -16,16 +16,18 @@ namespace Mango.Server {
 
 	public class HttpConnection {
 
-		public static void HandleConnection (IOStream stream, Socket socket, HttpRequestCallback callback)
+		public static void HandleConnection (IOStream stream, Socket socket, HttpConnectionCallback callback)
 		{
 			HttpConnection connection = new HttpConnection (stream, socket, callback);
 		}
 
-		public HttpConnection (IOStream stream, Socket socket, HttpRequestCallback callback)
+		private bool connection_finished;
+
+		public HttpConnection (IOStream stream, Socket socket, HttpConnectionCallback callback)
 		{
 			IOStream = stream;
 			Socket = socket;
-			HttpRequestCallback = callback;
+			ConnectionCallback = callback;
 
 			stream.ReadUntil ("\r\n\r\n", OnHeaders);
 		}
@@ -40,9 +42,45 @@ namespace Mango.Server {
 			private set;
 		}
 
-		public  HttpRequestCallback HttpRequestCallback {
+		public  HttpConnectionCallback ConnectionCallback {
 			get;
 			private set;
+		}
+
+		public HttpRequest Request {
+			get;
+			private set;
+		}
+
+		public HttpResponse Response {
+			get;
+			private set;
+		}
+
+		internal void Write (byte [] data)
+		{
+			IOStream.Write (data, OnWriteFinished);
+		}
+
+		internal void SendFile (string file)
+		{
+			IOStream.SendFile (file);
+		}
+
+		internal void Finish ()
+		{
+			connection_finished = true;
+		}
+
+		private void OnWriteFinished ()
+		{
+			if (connection_finished)
+				FinishResponse ();
+		}
+
+		private void FinishResponse ()
+		{
+			IOStream.Close ();
 		}
 
 		private void OnHeaders (IOStream stream, byte [] data)
@@ -68,6 +106,11 @@ namespace Mango.Server {
 			if (headers.ContentLength != null) {
 				stream.ReadBytes ((int) headers.ContentLength, OnBody);
 			}
+
+			Request = new HttpRequest (this, headers, verb, path);
+			Response = new HttpResponse (this, Encoding.ASCII);
+
+			ConnectionCallback (this);
 		}
 
 		private void ParseStartLine (string line, out string verb, out string path, out string version)

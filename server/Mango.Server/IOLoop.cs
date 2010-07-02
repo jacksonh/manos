@@ -20,6 +20,7 @@ namespace Mango.Server {
 		public static readonly int MAX_EVENTS = 24;
 
 		public static readonly EpollEvents EPOLL_READ_EVENTS = EpollEvents.EPOLLIN;
+		public static readonly EpollEvents EPOLL_WRITE_EVENTS = EpollEvents.EPOLLOUT;
 		public static readonly EpollEvents EPOLL_ERROR_EVENTS = EpollEvents.EPOLLERR | EpollEvents.EPOLLHUP | EpollEvents.EPOLLRDHUP;
 
 		private int epfd;
@@ -38,8 +39,6 @@ namespace Mango.Server {
 
 		public void Start ()
 		{
-			// int res = Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_ADD, (int) socket.Handle, EpollEvents.EPOLLIN);
-
 			running = true;
 			while (true) {
 				int timeout = 5000;
@@ -55,6 +54,7 @@ namespace Mango.Server {
 				var new_events = Syscall.epoll_wait (epfd, timeout);
 				RunHandlers (new_events);
 			}
+			running = false;
 		}
 
 		private void RunCallbacks ()
