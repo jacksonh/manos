@@ -85,11 +85,6 @@ namespace Mango.Server {
 
 		private void OnHeaders (IOStream stream, byte [] data)
 		{
-			Console.WriteLine ("HEADERS:");
-			Console.WriteLine ("=========");
-			Console.WriteLine (Encoding.ASCII.GetString (data));
-			Console.WriteLine ("=========");
-
 			string h = Encoding.ASCII.GetString (data);
 			StringReader reader = new StringReader (h);
 
@@ -127,7 +122,6 @@ namespace Mango.Server {
 			s = e + 1;
 			version = line.Substring (s);
 
-			Console.WriteLine ("VERB: '{0}'  PATH:  '{1}'   VERSION:  '{2}'", verb, path, version);
 			if (!version.StartsWith ("HTTP/"))
 				throw new Exception ("Malformed HTTP request, no version specified.");
 		}
