@@ -43,7 +43,6 @@ namespace Mango.Server {
 			while ((line = reader.ReadLine ()) != null) {
 				int colon = line.IndexOf (':');
 				if (colon <= 0) {
-					Console.Error.WriteLine ("Invalid HTTP header: {0}", line);
 					continue;
 				}
 				SetHeader (line.Substring (0, colon), line.Substring (colon + 1, line.Length - colon - 1).Trim ());

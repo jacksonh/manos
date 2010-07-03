@@ -33,6 +33,10 @@ namespace Mango.Server {
 			private set;
 		}
 
+		public static string ServerVersion {
+			get { return typeof (HttpServer).Assembly.GetName ().Version.ToString (); }
+		}
+
 		public void Bind (int port)
 		{
 			Socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -56,12 +60,10 @@ namespace Mango.Server {
 
 		private void HandleEvents (IntPtr fd, EpollEvents events)
 		{
-			Console.WriteLine ("GOT A SERVER EVENT");
 			while (true) {
 				Socket s = null;
 				try {
 					s = Socket.Accept ();
-					Console.WriteLine ("accepted the connection");
 				} catch (SocketException se) {
 					if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
 						return;
