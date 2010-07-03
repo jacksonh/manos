@@ -16,20 +16,21 @@ namespace Mango.Server {
 
 	public class HttpRequest {
 
-		public HttpRequest (HttpConnection connection, HttpHeaders headers, string verb, string path)
+		public HttpRequest (HttpConnection connection, HttpHeaders headers, string verb, string path, bool support_1_1)
 		{
-			HttpConnection = connection;
-			HttpHeaders = headers;
+			Connection = connection;
+			Headers = headers;
 			Verb = verb;
 			Path = path;
+			Http_1_1_Supported = support_1_1;
 		}
 
-		public HttpConnection HttpConnection {
+		public HttpConnection Connection {
 			get;
 			private set;
 		}
 
-		public HttpHeaders HttpHeaders {
+		public HttpHeaders Headers {
 			get;
 			private set;
 		}
@@ -40,6 +41,11 @@ namespace Mango.Server {
 		}
 
 		public string Path {
+			get;
+			private set;
+		}
+
+		public bool Http_1_1_Supported {
 			get;
 			private set;
 		}

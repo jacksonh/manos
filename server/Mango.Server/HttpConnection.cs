@@ -57,6 +57,12 @@ namespace Mango.Server {
 			private set;
 		}
 
+		// Force the server to disconnect
+		public bool NoKeepAlive {
+			get;
+			set;
+		}
+
 		internal void Write (List<ArraySegment<byte>> data)
 		{
 			IOStream.Write (data, OnWriteFinished);
@@ -70,6 +76,9 @@ namespace Mango.Server {
 		internal void Finish ()
 		{
 			connection_finished = true;
+
+			if (!IOStream.IsWriting)
+				FinishResponse ();
 		}
 
 		private void OnWriteFinished ()
@@ -80,7 +89,22 @@ namespace Mango.Server {
 
 		private void FinishResponse ()
 		{
-			IOStream.Close ();
+			bool disconnect = true;
+
+			if (!NoKeepAlive) {
+				if (Request.Http_1_1_Supported)
+					disconnect = Request.Headers ["Connection"] == "close";
+			}
+
+			Request = null;
+			Response = null;
+
+			if (disconnect) {
+				IOStream.Close ();
+				return;
+			}
+
+			IOStream.ReadUntil ("\r\n\r\n", OnHeaders);
 		}
 
 		private void OnHeaders (IOStream stream, byte [] data)
@@ -102,7 +126,7 @@ namespace Mango.Server {
 				stream.ReadBytes ((int) headers.ContentLength, OnBody);
 			}
 
-			Request = new HttpRequest (this, headers, verb, path);
+			Request = new HttpRequest (this, headers, verb, path, Version_1_1_Supported (version));
 			Response = new HttpResponse (this, Encoding.ASCII);
 
 			ConnectionCallback (this);
@@ -128,6 +152,11 @@ namespace Mango.Server {
 
 		private void OnBody (IOStream stream, byte [] data)
 		{
+		}
+
+		private bool Version_1_1_Supported (string version)
+		{
+			return version == "HTTP/1.1";
 		}
 	}
 }
