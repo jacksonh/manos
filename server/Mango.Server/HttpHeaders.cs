@@ -57,7 +57,7 @@ namespace Mango.Server {
 				builder.Append (header.Key);
 				builder.Append (": ");
 				builder.Append (header.Value);
-				buillder.Append ("\r\n");
+				builder.Append ("\r\n");
 			}
 			builder.Append ("\r\n");
 
