@@ -187,7 +187,6 @@ namespace Mango.Server {
 			}
 
 			if (size == 0) {
-				Console.Error.WriteLine ("No data found. Closing socket.");
 				Close ();
 				return;
 			}
