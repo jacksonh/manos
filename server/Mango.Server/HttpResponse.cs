@@ -24,8 +24,12 @@ namespace Mango.Server {
 			Connection = connection;
 			Encoding = encoding;
 
+			StatusCode = 200;
+			WriteHeaders = true;
+			WriteStatusLine = true;
+
 			Headers = new HttpHeaders ();
-			Headers.ContentLength = 0;
+			SetStandardHeaders ();
 		}
 
 		public HttpConnection Connection {
@@ -48,43 +52,76 @@ namespace Mango.Server {
 			set;
 		}
 
+		public bool WriteStatusLine {
+			get;
+			set;
+		}
+
+		public bool WriteHeaders {
+			get;
+			set;
+		}
+
 		public void Write (string str)
 		{
 			byte [] data = Encoding.GetBytes (str);
-			buffer.Add (new ArraySegment<byte> (data));
 
-			Headers.ContentLength += data.Length;
+			WriteToBody (data);
 		}
 
 		public void SendFile (string file)
 		{
-			byte [] data = File.ReadAllBytes (file);
-			buffer.Add (new ArraySegment<byte> (data));
+			// TODO: I'd really like to use SendFile here and just
+			// do an immediate push, unfortunately the IOStream
+			// doesn't handle that yet.
 
-			Headers.ContentLength += data.Length;
+			byte [] data = File.ReadAllBytes (file);
+			WriteToBody (data);
 		}
 
 		public void Finish ()
 		{
-			InsertHeaders ();
-			InsertStatusCode ();
+			if (WriteHeaders)
+				InsertHeaders ();
+			if (WriteStatusLine)
+				InsertStatusLine ();
 			
 			Connection.Write (buffer);
 			Connection.Finish ();
 		}
-		
+
+		public void SetHeader (string name, string value)
+		{
+			Headers.SetHeader (name, value);
+		}
+
 		private void InsertHeaders ()
 		{
 			byte [] data = Headers.Write (Encoding);
 			buffer.Insert (0, new ArraySegment<byte> (data));
 		}
 
-		private void InsertStatusCode ()
+		private void InsertStatusLine ()
 		{
 			string line = String.Format ("HTTP/1.0 {0} {1}\r\n", StatusCode, GetStatusDescription (StatusCode));
 			byte [] data = Encoding.GetBytes (line);
 
 			buffer.Insert (0, new ArraySegment<byte> (data));
+		}
+
+		private void WriteToBody (byte [] data)
+		{
+			buffer.Add (new ArraySegment<byte> (data));
+
+			if (Headers.ContentLength == null)
+				Headers.ContentLength = 0;
+
+			Headers.ContentLength += data.Length;
+		}
+
+		private void SetStandardHeaders ()
+		{
+			SetHeader ("Server", String.Concat ("Mango/", HttpServer.ServerVersion));
 		}
 
 		private static string GetStatusDescription (int code)
