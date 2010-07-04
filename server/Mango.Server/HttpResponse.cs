@@ -25,6 +25,7 @@ namespace Mango.Server {
 			Encoding = encoding;
 
 			StatusCode = 200;
+
 			WriteHeaders = true;
 			WriteStatusLine = true;
 
@@ -113,14 +114,13 @@ namespace Mango.Server {
 		{
 			buffer.Add (new ArraySegment<byte> (data));
 
-			if (Headers.ContentLength == null)
-				Headers.ContentLength = 0;
-
 			Headers.ContentLength += data.Length;
 		}
 
 		private void SetStandardHeaders ()
 		{
+			Headers.ContentLength = 0;
+
 			SetHeader ("Server", String.Concat ("Mango/", HttpServer.ServerVersion));
 		}
 
