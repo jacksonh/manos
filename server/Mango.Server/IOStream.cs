@@ -56,6 +56,10 @@ namespace Mango.Server {
 			ioloop.AddHandler (socket.Handle, HandleEvents, state);
 		}
 
+		public IOLoop IOLoop {
+			get { return ioloop; }
+		}
+
 		public int ReadChunkSize {
 			get { return ReadChunk.Length; }
 			set {
@@ -92,6 +96,12 @@ namespace Mango.Server {
 			read_delimiter = Encoding.ASCII.GetBytes (delimiter);
 			read_callback = callback;
 
+			int di = FindDelimiter ();
+			if (di != -1) {
+				FinishRead (di);
+				return;
+			}
+
 			AddIOState (IOLoop.EPOLL_READ_EVENTS);
 		}
 
@@ -102,6 +112,11 @@ namespace Mango.Server {
 			read_bytes = num_bytes;
 			read_callback = callback;
 
+			if (read_buffer != null && read_buffer.Length <= num_bytes) {
+				FinishRead (num_bytes);
+				return;
+			}
+			
 			AddIOState (IOLoop.EPOLL_READ_EVENTS);
 		}
 
@@ -166,8 +181,23 @@ namespace Mango.Server {
 			if ((events & IOLoop.EPOLL_READ_EVENTS) != 0)
 				HandleRead ();
 
+			if (IsClosed)
+				return;
+
 			if ((events & IOLoop.EPOLL_WRITE_EVENTS) != 0)
 				HandleWrite ();
+
+			if (IsClosed)
+				return;
+
+			EpollEvents state = IOLoop.EPOLL_ERROR_EVENTS;
+			if (read_delimiter != null || read_bytes != -1)
+				state |= IOLoop.EPOLL_READ_EVENTS;
+			if (write_data != null)
+				state |= IOLoop.EPOLL_WRITE_EVENTS;
+
+			if (state != this.state)
+				ioloop.UpdateHandler (socket.Handle, state);
 		}
 
 		private void HandleRead ()
@@ -256,12 +286,14 @@ namespace Mango.Server {
 
 		private int FindDelimiter ()
 		{
+			if (read_buffer == null)
+				return -1;
+
 			byte [] data = read_buffer.GetBuffer ();
 
 			int start = 0;
-
 			start = Array.IndexOf (data, read_delimiter [0], start);
-			
+
 			while (start > 0) {
 				bool match = true;
 				for (int i = 1; i < read_delimiter.Length; i++) {
