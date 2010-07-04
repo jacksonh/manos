@@ -16,6 +16,9 @@ namespace Mango.Server {
 
 	public class HttpServer {
 
+		// This gets called on every request so lets just use a hard coded string instead of reflection
+		public static readonly string ServerVersion = "0.0.0.1";
+
 		private HttpConnectionCallback callback;
 
 		public HttpServer (HttpConnectionCallback callback)
@@ -31,10 +34,6 @@ namespace Mango.Server {
 		public Socket Socket {
 			get;
 			private set;
-		}
-
-		public static string ServerVersion {
-			get { return typeof (HttpServer).Assembly.GetName ().Version.ToString (); }
 		}
 
 		public void Bind (int port)
