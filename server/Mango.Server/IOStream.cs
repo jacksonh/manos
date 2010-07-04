@@ -112,7 +112,7 @@ namespace Mango.Server {
 			read_bytes = num_bytes;
 			read_callback = callback;
 
-			if (read_buffer != null && read_buffer.Length <= num_bytes) {
+			if (read_buffer != null && read_buffer.Length >= num_bytes) {
 				FinishRead (num_bytes);
 				return;
 			}
