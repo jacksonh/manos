@@ -128,12 +128,13 @@ namespace Mango.Server {
 			HttpHeaders headers = new HttpHeaders ();
 			headers.Parse (reader);
 
-			if (headers.ContentLength != null) {
-				stream.ReadBytes ((int) headers.ContentLength, OnBody);
-			}
-
 			Request = new HttpRequest (this, headers, verb, path, Version_1_1_Supported (version));
 			Response = new HttpResponse (this, Encoding.ASCII);
+			
+			if (headers.ContentLength != null && headers.ContentLength > 0) {
+				stream.ReadBytes ((int) headers.ContentLength, OnBody);
+				return;
+			}
 
 			ConnectionCallback (this);
 		}
@@ -158,6 +159,15 @@ namespace Mango.Server {
 
 		private void OnBody (IOStream stream, byte [] data)
 		{
+			if (Request.Method == "POST") {
+				string ct = Request.Headers ["Content-Type"];
+				if (ct == "application/x-www-form-urlencoded")
+					Request.SetWwwFormData (data);
+				else if (ct == "multipart/form-data")
+					Request.SetMultiPartFormData (data);
+			}
+
+			ConnectionCallback (this);
 		}
 
 		private bool Version_1_1_Supported (string version)
