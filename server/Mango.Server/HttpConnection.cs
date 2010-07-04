@@ -21,6 +21,7 @@ namespace Mango.Server {
 			HttpConnection connection = new HttpConnection (stream, socket, callback);
 		}
 
+		private bool aborted;
 		private bool connection_finished;
 
 		public HttpConnection (IOStream stream, Socket socket, HttpConnectionCallback callback)
@@ -61,6 +62,11 @@ namespace Mango.Server {
 		public bool NoKeepAlive {
 			get;
 			set;
+		}
+
+		public void Abort (int status, string message, params object [] p)
+		{
+			aborted = true;
 		}
 
 		internal void Write (List<ArraySegment<byte>> data)
