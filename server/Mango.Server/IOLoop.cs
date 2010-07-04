@@ -57,6 +57,11 @@ namespace Mango.Server {
 			running = false;
 		}
 
+		public void Stop ()
+		{
+			running = false;
+		}
+
 		private void RunCallbacks ()
 		{
 			List<IOCallback> callbacks = new List<IOCallback> (this.callbacks);
