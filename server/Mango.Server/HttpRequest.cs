@@ -26,6 +26,7 @@ namespace Mango.Server {
 			ResourceUri = resource;
 			Http_1_1_Supported = support_1_1;
 
+			SetEncoding ();
 			SetPathAndQuery ();
 		}
 
@@ -69,6 +70,21 @@ namespace Mango.Server {
 			private set;
 		}
 
+		public Encoding ContentEncoding {
+			get;
+			private set;
+		}
+
+		private void SetEncoding ()
+		{
+			string content;
+
+			if (!Headers.TryGetValue ("Content-Type", out content)) {
+				ContentEncoding = Encoding.ASCII;
+				return;
+			}
+		}
+
 		private void SetPathAndQuery ()
 		{
 			// This is used with the OPTIONS verb
@@ -76,17 +92,17 @@ namespace Mango.Server {
 				return;
 
 			string uri = ResourceUri;
-			if (!uri.StartsWith ("http://"))
-				uri = "http://host.com" + uri;
+			string scheme;
+			string path;
+			string query;
 
-			Uri u;
-			if (!Uri.TryCreate (uri, UriKind.Absolute, out u)) {
-				Connection.Abort (400, "Invalid resource path. '{0}'", ResourceUri);
+			if (!UriParser.TryParse (uri, out scheme, out path, out query)) {
+				Connection.Abort (400, "Invalid resource path. '{0}'", uri);
 				return;
 			}
 
-			LocalPath = u.LocalPath;
-			QueryData = HttpUtility.ParseQueryString (u.Query);
+			LocalPath = path;
+			QueryData = HttpUtility.ParseQueryString (query);
 		}
 
 		internal void SetWwwFormData (byte [] data)
