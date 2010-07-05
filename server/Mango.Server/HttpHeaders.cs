@@ -37,6 +37,17 @@ namespace Mango.Server {
 			}
 		}
 
+		public Dictionary<string,string>.KeyCollection Keys {
+			get {
+				return items.Keys;
+			}
+		}
+
+		public bool TryGetValue (string key, out string value)
+		{
+			return items.TryGetValue (key, out value);
+		}
+
 		public void Parse (TextReader reader)
 		{
 			string line;
