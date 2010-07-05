@@ -166,33 +166,33 @@ namespace Mango.Server {
 			return val;
 		}
 		
-		public static NameValueCollection ParseQueryString (string query)
+		public static NameValueCollection ParseUrlEncodedData (string data)
 		{
-			return ParseQueryString (query, Encoding.UTF8);
+			return ParseUrlEncodedData (data, Encoding.UTF8);
 		}
 
-		public static NameValueCollection ParseQueryString (string query, Encoding encoding)
+		public static NameValueCollection ParseUrlEncodedData (string data, Encoding encoding)
 		{
-			if (query == null)
-				throw new ArgumentNullException ("query");
+			if (data == null)
+				throw new ArgumentNullException ("data");
 			if (encoding == null)
 				throw new ArgumentNullException ("encoding");
-			if (query.Length == 0 || (query.Length == 1 && query[0] == '?'))
+			if (data.Length == 0 || (data.Length == 1 && data[0] == '?'))
 				return new NameValueCollection ();
-			if (query[0] == '?')
-				query = query.Substring (1);
+			if (data[0] == '?')
+				data = data.Substring (1);
 				
 			NameValueCollection result = new HttpQSCollection ();
-			ParseQueryString (query, encoding, result);
+			ParseUrlEncodedData (data, encoding, result);
 			return result;
 		}
 
-		internal static void ParseQueryString (string query, Encoding encoding, NameValueCollection result)
+		internal static void ParseUrlEncodedData (string data, Encoding encoding, NameValueCollection result)
 		{
-			if (query.Length == 0)
+			if (data.Length == 0)
 				return;
 
-			string decoded = HtmlDecode (query);
+			string decoded = HtmlDecode (data);
 			int decodedLength = decoded.Length;
 			int namePos = 0;
 			bool first = true;

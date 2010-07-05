@@ -102,21 +102,28 @@ namespace Mango.Server {
 			}
 
 			LocalPath = path;
-			QueryData = HttpUtility.ParseQueryString (query);
+			QueryData = HttpUtility.ParseUrlEncodedData (query);
 		}
 
 		internal void SetWwwFormData (byte [] data)
 		{
+			//
+			// The best I can tell, you can't actually set the content-type of
+			// the url-encoded form data.  Looking at the source of apache
+			// seems to confirm this.  So for now I wont worry about the
+			// encoding type and I'll just use ASCII.
+			//
+
 			string post = Encoding.ASCII.GetString (data);
 
-			Console.WriteLine ("POST:  {0}", post);
+			PostData = HttpUtility.ParseUrlEncodedData (post);
 		}
 
 		internal void SetMultiPartFormData (byte [] data)
 		{
 			string post = Encoding.ASCII.GetString (data);
 
-			Console.WriteLine ("POST:  {0}", post);
+			Console.WriteLine ("MULTIPART:  {0}", post);
 		}
 	}
 }
