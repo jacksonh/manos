@@ -16,21 +16,27 @@ namespace Mango.Server {
 
 	public class HttpConnection {
 
-		public static void HandleConnection (IOStream stream, Socket socket, HttpConnectionCallback callback)
+		public static void HandleConnection (HttpServer server, IOStream stream, Socket socket, HttpConnectionCallback cb)
 		{
-			HttpConnection connection = new HttpConnection (stream, socket, callback);
+			HttpConnection connection = new HttpConnection (server, stream, socket, cb);
 		}
 
 		private bool aborted;
 		private bool connection_finished;
 
-		public HttpConnection (IOStream stream, Socket socket, HttpConnectionCallback callback)
+		public HttpConnection (HttpServer server, IOStream stream, Socket socket, HttpConnectionCallback callback)
 		{
+			Server = server;
 			IOStream = stream;
 			Socket = socket;
 			ConnectionCallback = callback;
 
 			stream.ReadUntil ("\r\n\r\n", OnHeaders);
+		}
+
+		public HttpServer Server {
+			get;
+			private set;
 		}
 
 		public IOStream IOStream {

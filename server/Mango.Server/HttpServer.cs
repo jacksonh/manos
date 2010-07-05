@@ -72,7 +72,7 @@ namespace Mango.Server {
 				}
 
 				IOStream iostream = new IOStream (s, IOLoop);
-				HttpConnection.HandleConnection (iostream, s, callback);
+				HttpConnection.HandleConnection (this, iostream, s, callback);
 			}
 		}
 	}
