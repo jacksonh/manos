@@ -161,9 +161,9 @@ namespace Mango.Server {
 		{
 			if (Request.Method == "POST") {
 				string ct = Request.Headers ["Content-Type"];
-				if (ct.StartsWith ("application/x-www-form-urlencoded"))
+				if (ct == "application/x-www-form-urlencoded")
 					Request.SetWwwFormData (data);
-				else if (ct.StartsWith ("multipart/form-data"))
+				else if (ct == "multipart/form-data")
 					Request.SetMultiPartFormData (data);
 			}
 
