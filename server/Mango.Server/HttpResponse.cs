@@ -70,6 +70,11 @@ namespace Mango.Server {
 			WriteToBody (data);
 		}
 
+		public void Write (byte [] data)
+		{
+			WriteToBody (data);
+		}
+
 		public void SendFile (string file)
 		{
 			// TODO: I'd really like to use SendFile here and just

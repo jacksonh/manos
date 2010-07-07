@@ -1,0 +1,289 @@
+.assembly extern mscorlib
+{
+  .ver 2:0:0:0
+  .publickeytoken = (B7 7A 5C 56 19 34 E0 89 ) // .z\V.4..
+}
+.assembly extern Minge
+{
+  .ver 0:0:0:0
+}
+.assembly 'minge-compiled-templates'
+{
+  .hash algorithm 0x00000000
+  .ver  0:0:0:0
+}
+.module 'minge-compiled-templates' // GUID = {196CCB0B-52D0-419F-A5A8-8A18A03C339A}
+
+
+.namespace templates
+{
+  .class public auto ansi serializable beforefieldinit page_about
+  	extends templates.page_base
+  {
+
+    // method line 1
+    .method public 
+           instance default void '.ctor' ()  cil managed 
+    {
+        // Method begins at RVA 0x2050
+	// Code size 1 (0x1)
+	.maxstack 8
+	IL_0000:  ret 
+    } // end of method page_about::.ctor
+
+    // method line 2
+    .method public static 
+           default string ValueToString (class [mscorlib]System.ValueType the_value)  cil managed 
+    {
+        // Method begins at RVA 0x2054
+	// Code size 7 (0x7)
+	.maxstack 8
+	IL_0000:  ldarg.0 
+	IL_0001:  callvirt instance string class [mscorlib]System.ValueType::ToString()
+	IL_0006:  ret 
+    } // end of method page_about::ValueToString
+
+    // method line 3
+    .method public virtual 
+           instance default void RenderToStream (class [mscorlib]System.IO.TextWriter 'stream', class [mscorlib]System.Collections.Generic.Dictionary`2<string, object> args)  cil managed 
+    {
+        // Method begins at RVA 0x205c
+	// Code size 38 (0x26)
+	.maxstack 8
+	IL_0000:  nop 
+	IL_0001:  ldarg.0 
+	IL_0002:  ldarg.1 
+	IL_0003:  ldarg.2 
+	IL_0004:  call instance void class templates.page_base::RenderToStream(class [mscorlib]System.IO.TextWriter, class [mscorlib]System.Collections.Generic.Dictionary`2<string,object>)
+	IL_0009:  ret 
+	IL_000a:  ldarg.1 
+	IL_000b:  ldstr ""
+	IL_0010:  callvirt instance void class [mscorlib]System.IO.TextWriter::Write(string)
+	IL_0015:  ldarg.0 
+	IL_0016:  ldarg.1 
+	IL_0017:  ldarg.2 
+	IL_0018:  callvirt instance void class templates.page_about::title(class [mscorlib]System.IO.TextWriter, class [mscorlib]System.Collections.Generic.Dictionary`2<string,object>)
+	IL_001d:  ldarg.0 
+	IL_001e:  ldarg.1 
+	IL_001f:  ldarg.2 
+	IL_0020:  callvirt instance void class templates.page_about::content(class [mscorlib]System.IO.TextWriter, class [mscorlib]System.Collections.Generic.Dictionary`2<string,object>)
+	IL_0025:  ret 
+    } // end of method page_about::RenderToStream
+
+    // method line 4
+    .method public virtual 
+           instance default void title (class [mscorlib]System.IO.TextWriter 'stream', class [mscorlib]System.Collections.Generic.Dictionary`2<string, object> args)  cil managed 
+    {
+        // Method begins at RVA 0x2084
+	// Code size 12 (0xc)
+	.maxstack 8
+	IL_0000:  ldarg.1 
+	IL_0001:  ldstr "About Mango"
+	IL_0006:  callvirt instance void class [mscorlib]System.IO.TextWriter::Write(string)
+	IL_000b:  ret 
+    } // end of method page_about::title
+
+    // method line 5
+    .method public virtual 
+           instance default void content (class [mscorlib]System.IO.TextWriter 'stream', class [mscorlib]System.Collections.Generic.Dictionary`2<string, object> args)  cil managed 
+    {
+        // Method begins at RVA 0x2094
+	// Code size 72 (0x48)
+	.maxstack 4
+	IL_0000:  ldarg.1 
+	IL_0001:  ldstr "\n"
+	IL_0006:  callvirt instance void class [mscorlib]System.IO.TextWriter::Write(string)
+	IL_000b:  ldarg.1 
+	IL_000c:  ldarg.2 
+	IL_000d:  ldstr "message"
+	IL_0012:  callvirt instance bool class [mscorlib]System.Collections.Generic.Dictionary`2<string, object>::ContainsKey(!0)
+	IL_0017:  brfalse IL_002c
+
+	IL_001c:  ldarg.2 
+	IL_001d:  ldstr "message"
+	IL_0022:  callvirt instance !1 class [mscorlib]System.Collections.Generic.Dictionary`2<string, object>::get_Item(!0)
+	IL_0027:  br IL_0031
+
+	IL_002c:  ldsfld string [mscorlib]System.String::Empty
+	IL_0031:  nop 
+	IL_0032:  callvirt instance string object::ToString()
+	IL_0037:  callvirt instance void class [mscorlib]System.IO.TextWriter::Write(string)
+	IL_003c:  ldarg.1 
+	IL_003d:  ldstr "\n"
+	IL_0042:  callvirt instance void class [mscorlib]System.IO.TextWriter::Write(string)
+	IL_0047:  ret 
+    } // end of method page_about::content
+
+  } // end of class templates.page_about
+}
+
+.namespace templates
+{
+  .class public auto ansi serializable beforefieldinit page_base
+  	extends [Minge]Mango.Templates.Minge.MingePage
+  {
+
+    // method line 6
+    .method public 
+           instance default void '.ctor' ()  cil managed 
+    {
+        // Method begins at RVA 0x20e8
+	// Code size 1 (0x1)
+	.maxstack 8
+	IL_0000:  ret 
+    } // end of method page_base::.ctor
+
+    // method line 7
+    .method public static 
+           default string ValueToString (class [mscorlib]System.ValueType the_value)  cil managed 
+    {
+        // Method begins at RVA 0x20ec
+	// Code size 7 (0x7)
+	.maxstack 8
+	IL_0000:  ldarg.0 
+	IL_0001:  callvirt instance string class [mscorlib]System.ValueType::ToString()
+	IL_0006:  ret 
+    } // end of method page_base::ValueToString
+
+    // method line 8
+    .method public virtual 
+           instance default void RenderToStream (class [mscorlib]System.IO.TextWriter 'stream', class [mscorlib]System.Collections.Generic.Dictionary`2<string, object> args)  cil managed 
+    {
+        // Method begins at RVA 0x20f4
+	// Code size 51 (0x33)
+	.maxstack 8
+	IL_0000:  nop 
+	IL_0001:  ldarg.1 
+	IL_0002:  ldstr "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML//EN\">\n<html> <head>\n<title></title>\n</head>\n\n<body>\n<h1>"
+	IL_0007:  callvirt instance void class [mscorlib]System.IO.TextWriter::Write(string)
+	IL_000c:  ldarg.0 
+	IL_000d:  ldarg.1 
+	IL_000e:  ldarg.2 
+	IL_000f:  callvirt instance void class templates.page_base::title(class [mscorlib]System.IO.TextWriter, class [mscorlib]System.Collections.Generic.Dictionary`2<string,object>)
+	IL_0014:  ldarg.1 
+	IL_0015:  ldstr "</h1>\n\n"
+	IL_001a:  callvirt instance void class [mscorlib]System.IO.TextWriter::Write(string)
+	IL_001f:  ldarg.0 
+	IL_0020:  ldarg.1 
+	IL_0021:  ldarg.2 
+	IL_0022:  callvirt instance void class templates.page_base::content(class [mscorlib]System.IO.TextWriter, class [mscorlib]System.Collections.Generic.Dictionary`2<string,object>)
+	IL_0027:  ldarg.1 
+	IL_0028:  ldstr "\n\n<hr>\n<address></address>\n</body> </html>\n"
+	IL_002d:  callvirt instance void class [mscorlib]System.IO.TextWriter::Write(string)
+	IL_0032:  ret 
+    } // end of method page_base::RenderToStream
+
+    // method line 9
+    .method public virtual 
+           instance default void title (class [mscorlib]System.IO.TextWriter 'stream', class [mscorlib]System.Collections.Generic.Dictionary`2<string, object> args)  cil managed 
+    {
+        // Method begins at RVA 0x2128
+	// Code size 12 (0xc)
+	.maxstack 8
+	IL_0000:  ldarg.1 
+	IL_0001:  ldstr ""
+	IL_0006:  callvirt instance void class [mscorlib]System.IO.TextWriter::Write(string)
+	IL_000b:  ret 
+    } // end of method page_base::title
+
+    // method line 10
+    .method public virtual 
+           instance default void content (class [mscorlib]System.IO.TextWriter 'stream', class [mscorlib]System.Collections.Generic.Dictionary`2<string, object> args)  cil managed 
+    {
+        // Method begins at RVA 0x2138
+	// Code size 12 (0xc)
+	.maxstack 8
+	IL_0000:  ldarg.1 
+	IL_0001:  ldstr "\n"
+	IL_0006:  callvirt instance void class [mscorlib]System.IO.TextWriter::Write(string)
+	IL_000b:  ret 
+    } // end of method page_base::content
+
+  } // end of class templates.page_base
+}
+
+.namespace templates
+{
+  .class public auto ansi serializable beforefieldinit page_base
+  	extends [Minge]Mango.Templates.Minge.MingePage
+  {
+
+    // method line 11
+    .method public 
+           instance default void '.ctor' ()  cil managed 
+    {
+        // Method begins at RVA 0x2148
+	// Code size 1 (0x1)
+	.maxstack 8
+	IL_0000:  ret 
+    } // end of method page_base::.ctor
+
+    // method line 12
+    .method public static 
+           default string ValueToString (class [mscorlib]System.ValueType the_value)  cil managed 
+    {
+        // Method begins at RVA 0x214c
+	// Code size 7 (0x7)
+	.maxstack 8
+	IL_0000:  ldarg.0 
+	IL_0001:  callvirt instance string class [mscorlib]System.ValueType::ToString()
+	IL_0006:  ret 
+    } // end of method page_base::ValueToString
+
+    // method line 13
+    .method public virtual 
+           instance default void RenderToStream (class [mscorlib]System.IO.TextWriter 'stream', class [mscorlib]System.Collections.Generic.Dictionary`2<string, object> args)  cil managed 
+    {
+        // Method begins at RVA 0x2154
+	// Code size 51 (0x33)
+	.maxstack 8
+	IL_0000:  nop 
+	IL_0001:  ldarg.1 
+	IL_0002:  ldstr "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML//EN\">\n<html> <head>\n<title></title>\n</head>\n\n<body>\n<h1>"
+	IL_0007:  callvirt instance void class [mscorlib]System.IO.TextWriter::Write(string)
+	IL_000c:  ldarg.0 
+	IL_000d:  ldarg.1 
+	IL_000e:  ldarg.2 
+	IL_000f:  callvirt instance void class templates.page_base::title(class [mscorlib]System.IO.TextWriter, class [mscorlib]System.Collections.Generic.Dictionary`2<string,object>)
+	IL_0014:  ldarg.1 
+	IL_0015:  ldstr "</h1>\n\n"
+	IL_001a:  callvirt instance void class [mscorlib]System.IO.TextWriter::Write(string)
+	IL_001f:  ldarg.0 
+	IL_0020:  ldarg.1 
+	IL_0021:  ldarg.2 
+	IL_0022:  callvirt instance void class templates.page_base::content(class [mscorlib]System.IO.TextWriter, class [mscorlib]System.Collections.Generic.Dictionary`2<string,object>)
+	IL_0027:  ldarg.1 
+	IL_0028:  ldstr "\n\n<hr>\n<address></address>\n</body> </html>\n"
+	IL_002d:  callvirt instance void class [mscorlib]System.IO.TextWriter::Write(string)
+	IL_0032:  ret 
+    } // end of method page_base::RenderToStream
+
+    // method line 14
+    .method public virtual 
+           instance default void title (class [mscorlib]System.IO.TextWriter 'stream', class [mscorlib]System.Collections.Generic.Dictionary`2<string, object> args)  cil managed 
+    {
+        // Method begins at RVA 0x2188
+	// Code size 12 (0xc)
+	.maxstack 8
+	IL_0000:  ldarg.1 
+	IL_0001:  ldstr ""
+	IL_0006:  callvirt instance void class [mscorlib]System.IO.TextWriter::Write(string)
+	IL_000b:  ret 
+    } // end of method page_base::title
+
+    // method line 15
+    .method public virtual 
+           instance default void content (class [mscorlib]System.IO.TextWriter 'stream', class [mscorlib]System.Collections.Generic.Dictionary`2<string, object> args)  cil managed 
+    {
+        // Method begins at RVA 0x2198
+	// Code size 12 (0xc)
+	.maxstack 8
+	IL_0000:  ldarg.1 
+	IL_0001:  ldstr "\n"
+	IL_0006:  callvirt instance void class [mscorlib]System.IO.TextWriter::Write(string)
+	IL_000b:  ret 
+    } // end of method page_base::content
+
+  } // end of class templates.page_base
+}
+

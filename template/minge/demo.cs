@@ -7,11 +7,11 @@ using Mango.Templates.Minge;
 
 
 
-public static class MingeDemo {
+public class MingeDemo {
 
 	public static void Main ()
 	{
-		MingeEnvironment env = new MingeEnvironment ("", new string [] { "demos" });
+		MingeEnvironment env = new MingeEnvironment ("", new string [] { "demos/kayak/templates/" });
 		MingeContext manager = new MingeContext (env);
 
 		Console.WriteLine ("template directory needs update:  {0}", manager.CheckForUpdates ());
@@ -19,7 +19,12 @@ public static class MingeDemo {
 		manager.CompileTemplates ();
 		manager.LoadTemplates ();
 
-		manager.RenderToStream ("template.html", Console.Out, new Dictionary<string,object> ());
+		manager.RenderToStream ("numbers.html", Console.Out, new Dictionary<string,object> ());
+	}
+
+	public int Foobar {
+		private get;
+		set;
 	}
 }
 

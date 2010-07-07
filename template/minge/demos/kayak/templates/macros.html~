@@ -1,0 +1,4 @@
+{% implements "base.html" %}
+
+{% block the_title %}Macros{% endblock %}
+{% block the_header %}Minge Macro Examples{% endblock %}
