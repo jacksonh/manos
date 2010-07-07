@@ -1,0 +1,14 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>{% block the_title %}A Demo Page{% endblock %}</title>
+</head>
+
+<body>
+<h1>{% block the_header %}{% endblock %}</h1>
+
+{% block the_content %}
+
+{% endblock %}
+
+<hr>
+</body> </html>

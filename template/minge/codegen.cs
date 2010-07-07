@@ -94,9 +94,21 @@ namespace Mango.Templates.Minge {
 			}
 
 			//
-			// Attempt to load it from the dictionary
+			// Attempt to load it from the supplied type, look for a property
+			// on the type with the correct name.
 			//
 
+			ResolvedType = app.Assembly.MainModule.Import (typeof (object));
+
+			worker.Emit (OpCodes.Ldarg_2);
+			worker.Emit (OpCodes.Callvirt, app.CommonMethods.GetTypeMethod);
+			worker.Emit (OpCodes.Ldstr, Name.Name);
+			worker.Emit (OpCodes.Callvirt, app.CommonMethods.GetPropertyMethod);
+			worker.Emit (OpCodes.Ldarg_2);
+			worker.Emit (OpCodes.Ldnull);
+			worker.Emit (OpCodes.Callvirt, app.CommonMethods.GetPropertyValueMethod);
+
+			/*
 			ResolvedType = app.Assembly.MainModule.Import (typeof (object));
 			
 			worker.Emit (OpCodes.Ldarg_2);
@@ -114,6 +126,7 @@ namespace Mango.Templates.Minge {
 
 			Instruction completed_target = worker.Emit (OpCodes.Nop);
 			gotarg_branch.Operand = completed_target;
+			*/
 		}
 	}
 
@@ -431,6 +444,7 @@ namespace Mango.Templates.Minge {
 		public Page LoadPage (string path)
 		{
 			string ns;
+			Console.WriteLine ("loading page:   {0}", path);
 			string name = Page.NameForPath (path, out ns);
 
 			TypeDefinition def = Assembly.MainModule.Types [String.Concat (ns, ".", name)];
@@ -1028,8 +1042,10 @@ namespace Mango.Templates.Minge {
 
 			MethodDefinition render = new MethodDefinition (name, atts, assembly.MainModule.Import (typeof (void)));
 
-			render.Parameters.Add (new ParameterDefinition ("stream", -1, (ParameterAttributes) 0, assembly.MainModule.Import (typeof (TextWriter))));
-			render.Parameters.Add (new ParameterDefinition ("args", -1, (ParameterAttributes) 0, assembly.MainModule.Import (typeof (Dictionary<string,object>))));
+			render.Parameters.Add (new ParameterDefinition ("stream", -1, (ParameterAttributes) 0,
+					assembly.MainModule.Import (typeof (TextWriter))));
+			render.Parameters.Add (new ParameterDefinition ("args", -1, (ParameterAttributes) 0,
+					assembly.MainModule.Import (typeof (object))));
 
 			if (extra_args != null) {
 				TypeReference object_type = assembly.MainModule.Import (typeof (object));
@@ -1070,6 +1086,7 @@ namespace Mango.Templates.Minge {
 			string [] pieces = path.Split (System.IO.Path.DirectorySeparatorChar);
 			StringBuilder ns = new StringBuilder ("templates");
 
+			Console.WriteLine ("full path:  {2} last piece:  {0}   number of pieces: {1}", pieces [pieces.Length - 1], pieces.Length, path);
 			string name = String.Concat ("page_", System.IO.Path.GetFileNameWithoutExtension (pieces [pieces.Length - 1]));
 			for (int i = 0; i < pieces.Length - 1; i++) {
 				ns.Append (".");
@@ -1077,6 +1094,7 @@ namespace Mango.Templates.Minge {
 			}
 
 			name_space = ns.ToString ();
+			Console.WriteLine ("namespace:  '{0}'   name: '{1}'", ns, name);
 			return name;
 		}
 

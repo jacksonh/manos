@@ -1,0 +1,12 @@
+
+
+using System;
+
+
+namespace Mango.Server {
+
+	public static sealed class UriParser {
+
+	}
+}
+

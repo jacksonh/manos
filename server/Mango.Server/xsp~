@@ -1,0 +1,43 @@
+linux-7axw:/home/jackson/Download # ab2 -n 100000 -c 200 http://127.0.0.1:8080/index.html
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient)
+
+Server Software:        Mono.WebServer.XSP/2.7.0.0
+Server Hostname:        127.0.0.1
+Server Port:            8080
+
+Document Path:          /index.html
+Document Length:        73 bytes
+
+Concurrency Level:      200
+Time taken for tests:   54.865 seconds
+Complete requests:      100000
+Failed requests:        0
+Write errors:           0
+Total transferred:      34802784 bytes
+HTML transferred:       7300584 bytes
+Requests per second:    1822.66 [#/sec] (mean)
+Time per request:       109.730 [ms] (mean)
+Time per request:       0.549 [ms] (mean, across all concurrent requests)
+Transfer rate:          619.47 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0   10  85.5      7    3013
+Processing:    46   99  21.2     98     542
+Waiting:       46   93  21.2     93     542
+Total:         52  109  87.5    106    3113
+
+Percentage of the requests served within a certain time (ms)
+  50%    106
+  66%    110
+  75%    113
+  80%    115
+  90%    122
+  95%    130
+  98%    138
+  99%    155
+ 100%   3113 (longest request)
