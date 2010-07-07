@@ -23,7 +23,6 @@ namespace Mango.Templates.Minge {
 
 		public Page ParsePage (string name, TextReader reader)
 		{
-			Console.WriteLine ("parsing page:  {0}", name);
 			MingeTokenizer tk = new MingeTokenizer (environment, reader);
 
 			current_page = application.CreatePage (name);
@@ -282,7 +281,6 @@ namespace Mango.Templates.Minge {
 			if (tok.Type != TokenType.TOKEN_QUOTED_STRING)
 				RaiseFailure (tk, String.Format ("Invalid '{0}' token found in extends statement.", tok.Value));
 
-			Console.WriteLine ("extending:  {0}", tok.Value);
 			current_page.EmitExtends (ValueOfQuotedString (tok.Value));
 
 			tok = NextNonWhiteSpaceToken (tk);

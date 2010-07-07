@@ -14,19 +14,19 @@ namespace Mango.Templates.Minge {
 			if (args.Length < 2)
 				return Usage ();
 
-//			Environment environment = new Environment ();
-//			Application app = new Application (environment, "minge.test", args [0]);
-//			MingeParser p = new MingeParser (environment, app);
+			Environment environment = new Environment ();
+			Application app = new Application (environment, "minge.test", args [0]);
+			MingeParser p = new MingeParser (environment, app);
 
-			Templates.Initialize ("test/");
+			for (int i = 1; i < args.Length; i++) {
+				using (TextReader tr = new StreamReader (File.OpenRead (args [1]))) {
+					p.ParsePage (args [i], tr);
+				}
+			}
 
-			Templates.RenderToStream ("about.html", Console.Out, new Tester ());
+			app.Save ();
 
 			return 0;
-		}
-
-		public string Message {
-			get { return "THIS IS THE MESSSAGE MON"; }
 		}
 
 		public static int Usage ()

@@ -3,13 +3,12 @@ using System;
 using System.IO;
 using System.Text;
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 
 
 namespace Mango.Templates.Minge {
 
-	public static class Templates {
+	public static class Minge {
 
 		private static object lock_object = new object ();
 
@@ -30,34 +29,18 @@ namespace Mango.Templates.Minge {
 				}
 			}
 		}
-/*
-		public static void RenderStringToStream (string str, TextWriter writer)
-		{
-		}
 
-		public static void RenderStringToStream (string str, TextWriter writer, Dictionary<string,object> the_args)
-		{
-		}
-
-		public static string RenderStringToString (string str)
-		{
-		}
-
-		public static string RenderStringToString (string str, Dictionary<string,object> the_args)
-		{
-		}
-*/
 		public static string RenderToSting (string path)
 		{
-			return RenderToString (path, new object ());
+			return RenderToString (path, new Dictionary<string,object> ());
 		}
 
-		public static string RenderToString (string path, object the_arg)
+		public static string RenderToString (string path, Dictionary<string,object> the_args)
 		{
 			MemoryStream stream = new MemoryStream ();
 			StreamWriter writer = new StreamWriter (stream);
 
-			RenderToStream (path, writer, the_arg);
+			RenderToStream (path, writer, the_args);
 			writer.Flush ();
 
 			stream.Seek (0, SeekOrigin.Begin);
@@ -70,9 +53,9 @@ namespace Mango.Templates.Minge {
 			context.RenderToStream (path, writer);
 		}
 
-		public static void RenderToStream (string path, TextWriter writer, object the_arg)
+		public static void RenderToStream (string path, TextWriter writer, Dictionary<string,object> the_args)
 		{
-			context.RenderToStream (path, writer, the_arg);
+			context.RenderToStream (path, writer, the_args);
 		}
 	}
 
@@ -80,7 +63,6 @@ namespace Mango.Templates.Minge {
 
 		private AppDomain run_domain;
 		private MingeAssemblyWrapper assembly_wrapper;
-		private Dictionary<string,Page> pages = new Dictionary<string,Page> ();
 
 		public MingeContext (MingeEnvironment environment)
 		{
@@ -139,19 +121,16 @@ namespace Mango.Templates.Minge {
 
 		public void RenderToStream (string path, TextWriter writer)
 		{
-			RenderToStream (path, writer, new object ());
+			RenderToStream (path, writer, new Dictionary<string,object> ());
 		}
 
-		public void RenderToStream (string path, TextWriter writer, object the_arg)
+		public void RenderToStream (string path, TextWriter writer, Dictionary<string,object> the_args)
 		{
 			if (assembly_wrapper == null) {
 				CompileTemplates ();
 				LoadTemplates ();
 			}
-			Console.WriteLine ("rendering: '{0}', '{1}', '{2}', '{3}'", path, Environment.AssemblyPath, writer, the_arg);
-			Console.WriteLine ("using assembly wrapper:   {0}", assembly_wrapper);
-
-			assembly_wrapper.RenderToStream (Page.FullNameForPath (path), Environment.AssemblyPath, writer, the_arg);
+			assembly_wrapper.RenderToStream (Page.FullNameForPath (path), Environment.AssemblyPath, writer, the_args);
 		}
 
 		internal Page ParsePage (string path)
@@ -162,18 +141,9 @@ namespace Mango.Templates.Minge {
 			if (full_path == null)
 				throw new Exception (String.Format ("Template not found: {0}", path));
 
-			Page page = null;
-			if (pages.TryGetValue (full_path, out page)) {
-				Console.WriteLine ("returning cached page!");
-				return page;
-			}
-
 			using (TextReader tr = new StreamReader (File.OpenRead (full_path))) {
-				page = p.ParsePage (path, tr);
+				return p.ParsePage (path, tr);
 			}
-
-			pages.Add (full_path, page);
-			return page;
 		}
 
 		private string FindFullPath (string path)
@@ -208,7 +178,7 @@ namespace Mango.Templates.Minge {
 				if (!Environment.AllowedExtensions.Contains (Path.GetExtension (file)))
 					continue;
 				using (TextReader tr = new StreamReader (File.OpenRead (file))) {
-					parser.ParsePage (file.Substring (root_dir.Length), tr);
+					parser.ParsePage (file.Substring (root_dir.Length + 1), tr);
 				}
 			}
 		}
@@ -240,16 +210,10 @@ namespace Mango.Templates.Minge {
 		private static readonly System.Reflection.BindingFlags BINDING_FLAGS = System.Reflection.BindingFlags.Instance |
 			System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.CreateInstance;
 
-		public MingeAssemblyWrapper ()
+		public void RenderToStream (string type_name, string assembly_path, TextWriter writer, Dictionary<string,object> the_args)
 		{
-		}
-
-		public void RenderToStream (string type_name, string assembly_path, TextWriter writer, object the_arg)
-		{
-			IMingePage page = (IMingePage) Activator.CreateInstanceFrom (assembly_path,
-					type_name, false, BINDING_FLAGS, null, null, null, null, null).Unwrap ();
-
-			page.RenderToStream (writer, the_arg);
+			IMingePage page = (IMingePage) Activator.CreateInstanceFrom (assembly_path, type_name, false, BINDING_FLAGS, null, null, null, null, null).Unwrap ();
+			page.RenderToStream (writer, the_args);
 		}
 	}
 }

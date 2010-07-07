@@ -30,8 +30,6 @@ public class KayakDemo {
 			Dictionary<string,object> the_args = new Dictionary<string,object> ();
 			the_args.Add ("views", new string [] { "numbers", "properties" });
 
-			string str = Minge.RenderToString ("root.html", the_args);
-			Console.WriteLine ("rendered string:  {0}", str);
 			Minge.RenderToStream ("root.html", Response.Output, the_args);
 		}
 

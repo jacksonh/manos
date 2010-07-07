@@ -1,4 +1,4 @@
 
 
 mango.exe: *.cs
-	gmcs -r:Mono.Posix.dll -r:MangoAction.dll -out:mango.exe *.cs
+	gmcs -r:Mono.Posix.dll -out:mango.exe *.cs
