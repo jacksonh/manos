@@ -19,8 +19,6 @@ namespace MangoProject {
 		//
 		public override void OnStartup ()
 		{
-			Templates.Initialize ("templates/");
-
 			//
 			// Routing can be done by using the Get/Head/Post/Put/Delete/Trace
 			// methods. They take a regular expression and either a method
