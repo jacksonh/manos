@@ -103,7 +103,12 @@ namespace Mango.Templates.Minge {
 			worker.Emit (OpCodes.Ldarg_2);
 			worker.Emit (OpCodes.Callvirt, app.CommonMethods.GetTypeMethod);
 			worker.Emit (OpCodes.Ldstr, Name.Name);
+
+			worker.Emit (OpCodes.Ldc_I4, (int) (System.Reflection.BindingFlags.IgnoreCase |
+					System.Reflection.BindingFlags.Instance |
+				        System.Reflection.BindingFlags.Public));
 			worker.Emit (OpCodes.Callvirt, app.CommonMethods.GetPropertyMethod);
+
 			worker.Emit (OpCodes.Ldarg_2);
 			worker.Emit (OpCodes.Ldnull);
 			worker.Emit (OpCodes.Callvirt, app.CommonMethods.GetPropertyValueMethod);
@@ -243,6 +248,7 @@ namespace Mango.Templates.Minge {
 
 			worker.Emit (OpCodes.Callvirt, app.CommonMethods.GetTypeMethod);
 			worker.Emit (OpCodes.Ldstr, Property);
+			worker.Emit (OpCodes.Ldc_I4, (int) System.Reflection.BindingFlags.IgnoreCase);
 			worker.Emit (OpCodes.Callvirt, app.CommonMethods.GetPropertyMethod);
 			Target.Emit (app, page, worker);
 			worker.Emit (OpCodes.Ldnull);
@@ -388,9 +394,9 @@ namespace Mango.Templates.Minge {
 
 	public class Application {
 
-		public Application (MingeContext context, string name, string path)
+		public Application (MingeCompiler compiler, string name, string path)
 		{
-			Context = context;
+			Compiler = compiler;
 			Name = name;
 			Path = path;
 
@@ -408,7 +414,7 @@ namespace Mango.Templates.Minge {
 			private set;
 		}
 
-		public MingeContext Context {
+		public MingeCompiler Compiler {
 			get;
 			private set;
 		}
@@ -444,18 +450,11 @@ namespace Mango.Templates.Minge {
 		public Page LoadPage (string path)
 		{
 			string ns;
-			Console.WriteLine ("loading page:   {0}", path);
 			string name = Page.NameForPath (path, out ns);
 
 			TypeDefinition def = Assembly.MainModule.Types [String.Concat (ns, ".", name)];
 
-			// if (def != null)
-			//	return def;
-
-			Page page = Context.ParsePage (path);
-			// MingeParser parser = new MingeParser (Environment, this);
-			// Page page = parser.ParsePage (path, new StreamReader (File.OpenRead (path)));
-
+			Page page = Compiler.ParsePage (path);
 			return page;
 		}
 
@@ -475,13 +474,20 @@ namespace Mango.Templates.Minge {
 			EnumeratorGetCurrentMethod = assembly.MainModule.Import (typeof (System.Collections.IEnumerator).GetMethod ("get_Current"));
 
 			GetTypeMethod = assembly.MainModule.Import (typeof (object).GetMethod ("GetType"));
-			GetPropertyMethod = assembly.MainModule.Import (typeof (Type).GetMethod ("GetProperty", new Type [] { typeof (string) }));
+			GetPropertyMethod = assembly.MainModule.Import (typeof (Type).GetMethod ("GetProperty", new Type [] { typeof (string), typeof (System.Reflection.BindingFlags) }));
 			GetPropertyValueMethod = assembly.MainModule.Import (typeof (System.Reflection.PropertyInfo).GetMethod ("GetValue", new Type [] { typeof (object), typeof (object []) }));
 
 			IsNullOrEmptyMethod = assembly.MainModule.Import (typeof (string).GetMethod ("IsNullOrEmpty"));
 			StringEmptyField = assembly.MainModule.Import (typeof (string).GetField ("Empty"));
+
+			ConsoleWriteLineMethod = assembly.MainModule.Import (typeof (Console).GetMethod ("WriteLine", new Type [] { typeof (object) }));
 		}
 
+		public MethodReference ConsoleWriteLineMethod {
+			get;
+			private set;
+		}
+			
 		public MethodReference GetArgMethod {
 			get;
 			private set;
@@ -1086,7 +1092,6 @@ namespace Mango.Templates.Minge {
 			string [] pieces = path.Split (System.IO.Path.DirectorySeparatorChar);
 			StringBuilder ns = new StringBuilder ("templates");
 
-			Console.WriteLine ("full path:  {2} last piece:  {0}   number of pieces: {1}", pieces [pieces.Length - 1], pieces.Length, path);
 			string name = String.Concat ("page_", System.IO.Path.GetFileNameWithoutExtension (pieces [pieces.Length - 1]));
 			for (int i = 0; i < pieces.Length - 1; i++) {
 				ns.Append (".");
@@ -1094,7 +1099,6 @@ namespace Mango.Templates.Minge {
 			}
 
 			name_space = ns.ToString ();
-			Console.WriteLine ("namespace:  '{0}'   name: '{1}'", ns, name);
 			return name;
 		}
 
@@ -1108,5 +1112,3 @@ namespace Mango.Templates.Minge {
 	}
 }
 
-
-		
