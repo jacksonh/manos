@@ -23,60 +23,60 @@ namespace Mango {
 		{
 		}
 
-		public void Route (string route, MangoModule module)
+		public void Route (MangoModule module, params string [] route)
 		{
 		}
 
-		public void Route (string route, MangoAction action)
+		public void Route (MangoAction action, params string [] route)
 		{
 		}
 
-		public void Get (string route, MangoAction action)
+		public void Get (MangoAction action, params string [] route)
 		{
-			paths.Add (route, action);
+			paths.Add (route [0], action);
 		}
 
-		public void Get (string route, MangoModule module)
-		{
-		}
-
-		public void Head (string route, MangoAction action)
+		public void Get (MangoModule module, params string [] route)
 		{
 		}
 
-		public void Head (string route, MangoModule module)
+		public void Head (MangoAction action, params string [] route)
 		{
 		}
 
-		public void Post (string route, MangoAction action)
+		public void Head (MangoModule module, params string [] route)
 		{
 		}
 
-		public void Post (string route, MangoModule module)
+		public void Post (MangoAction action, params string [] route)
 		{
 		}
 
-		public void Put (string route, MangoAction action)
+		public void Post (MangoModule module, params string [] route)
 		{
 		}
 
-		public void Put (string route, MangoModule module)
+		public void Put (MangoAction action, params string [] route)
 		{
 		}
 
-		public void Delete (string route, MangoAction action)
+		public void Put (MangoModule module, params string [] route)
 		{
 		}
 
-		public void Delete (string route, MangoModule module)
+		public void Delete (MangoAction action, params string [] route)
 		{
 		}
 
-		public void Trace (string route, MangoAction action)
+		public void Delete (MangoModule module, params string [] route)
 		{
 		}
 
-		public void Trace (string route, MangoModule module)
+		public void Trace (MangoAction action, params string [] route)
+		{
+		}
+
+		public void Trace (MangoModule module, params string [] route)
 		{
 		}
 
