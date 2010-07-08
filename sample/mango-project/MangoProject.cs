@@ -28,7 +28,7 @@ namespace MangoProject {
 			// Mango uses params to allow you to easily register multiple
 			// regexs to the same handler
 			//
-			Get ("Home", Home);
+			Get (Home, "Home");
 
 			//
 			// The Route method will hand off all HTTP methods to the supplied
