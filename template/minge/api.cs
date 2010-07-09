@@ -38,8 +38,6 @@ namespace Mango.Templates.Minge {
 			string name = Page.FullNameForPath (path);
 			Type t = GetType (name);
 
-			Console.WriteLine ("got type:  {0}", t);
-
 			IMingePage page = (IMingePage) Activator.CreateInstance (t);
 			page.RenderToStream (writer, the_arg);
 		}
@@ -124,7 +122,6 @@ namespace Mango.Templates.Minge {
 
 			Page page = null;
 			if (pages.TryGetValue (full_path, out page)) {
-				Console.WriteLine ("returning cached page!");
 				return page;
 			}
 
@@ -160,9 +157,7 @@ namespace Mango.Templates.Minge {
 			foreach (string file in files) {
 				if (!Environment.AllowedExtensions.Contains (Path.GetExtension (file)))
 					continue;
-				using (TextReader tr = new StreamReader (File.OpenRead (file))) {
-					parser.ParsePage (file.Substring (root_dir.Length), tr);
-				}
+				ParsePage (file.Substring (root_dir.Length));
 			}
 		}
 
