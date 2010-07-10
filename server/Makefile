@@ -1,10 +1,14 @@
 
-MANGO_API_SRC=MangoApp.cs	\
-	      MangoModule.cs	\
-	      MangoAction.cs	\
-	      MangoContext.cs	\
-	      TemplateData.cs	\
-	      GetAttribute.cs
+MANGO_API_SRC=MangoApp.cs		\
+	      MangoModule.cs		\
+	      MangoAction.cs		\
+	      MangoContext.cs		\
+	      TemplateData.cs		\
+	      GetAttribute.cs		\
+	      PutAttribute.cs		\
+	      DeleteAttribute.cs	\
+	      IgnoreAttribute.cs	\
+	      HttpMethodAttribute.cs	\
 
 MANGO_SERVER_SRC=Mango.Server/AssemblyInfo.cs		\
 		 Mango.Server/HttpException.cs		\
@@ -19,7 +23,8 @@ MANGO_SERVER_SRC=Mango.Server/AssemblyInfo.cs		\
 		 Mango.Server/HttpUtility.cs		\
 		 Mango.Server/IOStream.cs
 
-MANGO_ROUTING_SRC=Mango.Routing/RouteHandler.cs
+MANGO_ROUTING_SRC=Mango.Routing/RouteHandler.cs		\
+		  Mango.Routing/HttpMethods.cs
 
 
 Mango.dll: *.cs $(MANGO_SERVER_SRC) $(MANGO_API_SRC) $(MANGO_ROUTING_SRC)

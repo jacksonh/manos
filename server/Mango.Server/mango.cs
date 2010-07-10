@@ -35,12 +35,9 @@ public class T {
 		Assembly a = Assembly.LoadFrom (library);
 
 		foreach (Type t in a.GetTypes ()) {
-
-			Console.WriteLine ("checking type:  {0} ({1})", t, t.BaseType);
 			if (t.BaseType == typeof (MangoApp)) {
 				if (app != null)
 					throw new Exception ("Library contains multiple apps.");
-				Console.WriteLine ("creating one!");
 				app = (MangoApp) Activator.CreateInstance (t);
 			}
 		}

@@ -7,14 +7,15 @@ using System.Reflection;
 namespace Mango {
 
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-	public class GetAttribute : Attribute {
+	public class GetAttribute : HttpMethodAttribute {
 
-		public GetAttribute (string routes)
+		public GetAttribute ()
 		{
 		}
 
-		public GetAttribute (params string [] routes)
+		public GetAttribute (params string [] patterns) : base (patterns)
 		{
+			Methods = new string [] { "GET" };
 		}
 	}
 }
