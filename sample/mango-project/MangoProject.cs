@@ -14,10 +14,7 @@ namespace MangoProject {
 	// 
 	public class MangoProject : MangoApp {
 
-		//
-		// This method is called when the server first starts,
-		//
-		public override void OnStartup ()
+		public MangoProject ()
 		{
 			//
 			// Routing can be done by using the Get/Head/Post/Put/Delete/Trace
@@ -70,10 +67,6 @@ namespace MangoProject {
 	//
 
 	public class AdminModule : MangoModule {
-
-		public override void OnStartup ()
-		{
-		}
 
 		/// blah, blah, blah
 	}
