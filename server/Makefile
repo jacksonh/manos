@@ -5,9 +5,13 @@ MANGO_API_SRC=MangoApp.cs		\
 	      MangoContext.cs		\
 	      TemplateData.cs		\
 	      GetAttribute.cs		\
+	      HeadAttribute.cs		\
 	      PutAttribute.cs		\
 	      DeleteAttribute.cs	\
 	      IgnoreAttribute.cs	\
+	      TraceAttribute.cs		\
+	      OptionsAttribute.cs	\
+	      PostAttribute.cs		\
 	      HttpMethodAttribute.cs	\
 
 MANGO_SERVER_SRC=Mango.Server/AssemblyInfo.cs		\
