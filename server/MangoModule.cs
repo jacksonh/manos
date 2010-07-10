@@ -199,6 +199,31 @@ namespace Mango {
 			return AddRouteHandler (module, null, patterns, HttpMethods.TraceMethods);
 		}
 
+		public RouteHandler Trace (string name, MangoModule module, params string [] patterns)
+		{
+			return AddRouteHandler (module, name, patterns, HttpMethods.TraceMethods);
+		}
+
+		public RouteHandler Options (MangoAction action, params string [] patterns)
+		{
+			return AddRouteHandler (action, null, patterns, HttpMethods.OptionsMethods);
+		}
+
+		public RouteHandler Options (string name, MangoAction action, params string [] patterns)
+		{
+			return AddRouteHandler (action, name, patterns, HttpMethods.OptionsMethods);
+		}
+
+		public RouteHandler Options (MangoModule module, params string [] patterns)
+		{
+			return AddRouteHandler (module, null, patterns, HttpMethods.OptionsMethods);
+		}
+
+		public RouteHandler Options (string name, MangoModule module, params string [] patterns)
+		{
+			return AddRouteHandler (module, name, patterns, HttpMethods.OptionsMethods);
+		}
+
 		public void HandleConnection (HttpConnection con)
 		{
 			var handler = Routes.Find (con);
