@@ -1,10 +1,19 @@
 
+using System;
+
+
 using Mango;
-using Mango.Templates.Minge;
+
 
 namespace MangoProject {
 
-	public class Docs : MangoModule {
+	public class DocsModule : MangoModule {
+
+		public override void OnStartup ()
+		{
+			Get (GettingStarted, "GettingStarted");
+			Get (Api, "Api");
+		}
 
 		public static void GettingStarted (MangoContext context)
 		{

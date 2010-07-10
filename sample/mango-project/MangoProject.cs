@@ -1,7 +1,7 @@
 
 
 using Mango;
-using Mango.Templates.Minge;
+
 
 namespace MangoProject {
 
@@ -34,7 +34,7 @@ namespace MangoProject {
 			// The Route method will hand off all HTTP methods to the supplied
 			// method or module
 			//
-			// Route (new AdminModule (), "Admin/");
+			Route (new DocsModule (), "Docs/");
 		}
 
 		//
