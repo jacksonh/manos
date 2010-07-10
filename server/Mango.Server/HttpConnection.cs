@@ -14,7 +14,7 @@ using Mono.Unix.Native;
 
 namespace Mango.Server {
 
-	public class HttpConnection {
+	public class HttpConnection : IHttpConnection {
 
 		public static void HandleConnection (HttpServer server, IOStream stream, Socket socket, HttpConnectionCallback cb)
 		{
