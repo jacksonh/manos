@@ -3,6 +3,11 @@
 using Mango;
 
 
+//
+//  This is a sample file, demonstrating what its like to develop
+//  web applications with Mango.
+//
+
 namespace MangoProject {
 
 	//
