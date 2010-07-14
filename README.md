@@ -10,3 +10,4 @@ The Main Features of Mango:
 
  - **An easy to use, high performance template engine** Mango comes bundled with a designer friendly templating language. Just beause the template engine is easy to use, doesn't mean its slow though.  Mango's template engine precompiles your templates to IL so there are no startup costs and templates are rendered lightning fast.
 
+ - **Testing built in** from the beginning making things testable was a primary concern on Mango.  This means you can easily Mock just about any object in the Mango stack, making testing your application dead simple.
