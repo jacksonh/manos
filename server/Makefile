@@ -18,10 +18,12 @@ MANGO_SERVER_SRC=Mango.Server/AssemblyInfo.cs		\
 		 Mango.Server/HttpException.cs		\
 		 Mango.Server/HttpRequest.cs		\
 		 Mango.Server/HttpServer.cs		\
-		 Mango.Server/IHttpConnection.cs	\
 		 Mango.Server/IOLoop.cs			\
 		 Mango.Server/UriParser.cs		\
-		 Mango.Server/HttpConnection.cs  	\
+		 Mango.Server/HttpTransaction.cs  	\
+		 Mango.Server/IHttpTransaction.cs	\
+		 Mango.Server/IHttpRequest.cs		\
+		 Mango.Server/IHttpResponse.cs		\
 		 Mango.Server/HttpHeaders.cs		\
 		 Mango.Server/HttpResponse.cs		\
 		 Mango.Server/HttpUtility.cs		\

@@ -15,11 +15,11 @@ using Mono.Unix.Native;
 
 namespace Mango.Server {
 
-	public class HttpResponse {
+	public class HttpResponse : IHttpResponse {
 
 		private List<ArraySegment<byte>> buffer = new List<ArraySegment<byte>> ();
 
-		public HttpResponse (HttpTransaction transaction, Encoding encoding)
+		public HttpResponse (IHttpTransaction transaction, Encoding encoding)
 		{
 			Transaction = transaction;
 			Encoding = encoding;
@@ -33,7 +33,7 @@ namespace Mango.Server {
 			SetStandardHeaders ();
 		}
 
-		public HttpTransaction Transaction {
+		public IHttpTransaction Transaction {
 			get;
 			private set;
 		}

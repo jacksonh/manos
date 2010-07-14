@@ -16,7 +16,7 @@ using Mono.Unix.Native;
 
 namespace Mango.Server {
 
-	public class HttpRequest {
+	public class HttpRequest : IHttpRequest {
 
 		public HttpRequest (HttpTransaction transaction, HttpHeaders headers, string method, string resource, bool support_1_1)
 		{

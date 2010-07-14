@@ -1,6 +1,8 @@
 
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 
 namespace Mango.Server {
@@ -14,6 +16,13 @@ namespace Mango.Server {
 		HttpResponse Response {
 			get;
 		}
+
+		void Write (List<ArraySegment<byte>> data);
+
+		void SendFile (string file);
+
+		void Finish ();
+
 	}
 }
 

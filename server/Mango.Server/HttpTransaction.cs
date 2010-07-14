@@ -75,17 +75,17 @@ namespace Mango.Server {
 			aborted = true;
 		}
 
-		internal void Write (List<ArraySegment<byte>> data)
+		public void Write (List<ArraySegment<byte>> data)
 		{
 			IOStream.Write (data, OnWriteFinished);
 		}
 
-		internal void SendFile (string file)
+		public void SendFile (string file)
 		{
 			IOStream.SendFile (file);
 		}
 
-		internal void Finish ()
+		public void Finish ()
 		{
 			connection_finished = true;
 
