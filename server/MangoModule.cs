@@ -224,7 +224,7 @@ namespace Mango {
 			return AddRouteHandler (module, name, patterns, HttpMethods.OptionsMethods);
 		}
 
-		public void HandleConnection (HttpConnection con)
+		public void HandleTransaction (HttpTransaction con)
 		{
 			var handler = Routes.Find (con);
 

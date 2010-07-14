@@ -5,7 +5,7 @@ using System;
 
 namespace Mango.Server {
 
-	public interface IHttpConnection {
+	public interface IHttpTransaction {
 
 		HttpRequest Request {
 			get;

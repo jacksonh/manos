@@ -18,9 +18,9 @@ namespace Mango.Server {
 
 	public class HttpRequest {
 
-		public HttpRequest (HttpConnection connection, HttpHeaders headers, string method, string resource, bool support_1_1)
+		public HttpRequest (HttpTransaction transaction, HttpHeaders headers, string method, string resource, bool support_1_1)
 		{
-			Connection = connection;
+			Transaction = transaction;
 			Headers = headers;
 			Method = method;
 			ResourceUri = resource;
@@ -30,7 +30,7 @@ namespace Mango.Server {
 			SetPathAndQuery ();
 		}
 
-		public HttpConnection Connection {
+		public HttpTransaction Transaction {
 			get;
 			private set;
 		}
@@ -97,7 +97,7 @@ namespace Mango.Server {
 			string query;
 
 			if (!UriParser.TryParse (uri, out scheme, out path, out query)) {
-				Connection.Abort (400, "Invalid resource path. '{0}'", uri);
+				Transaction.Abort (400, "Invalid resource path. '{0}'", uri);
 				return;
 			}
 

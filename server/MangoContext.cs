@@ -8,22 +8,22 @@ namespace Mango {
 
 	public class MangoContext {
 
-		public MangoContext (HttpConnection connection)
+		public MangoContext (IHttpTransaction transaction)
 		{
-			Connection = connection;
+			Transaction = transaction;
 		}
 
-		public HttpConnection Connection {
+		public IHttpTransaction Transaction {
 			get;
 			private set;
 		}
 
-		public HttpRequest Request {
-			get { return Connection.Request; }
+		public IHttpRequest Request {
+			get { return Transaction.Request; }
 		}
 
-		public HttpResponse Response {
-			get { return Connection.Response; }
+		public IHttpResponse Response {
+			get { return Transaction.Response; }
 		}
 	}
 }

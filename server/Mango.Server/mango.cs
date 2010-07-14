@@ -46,7 +46,7 @@ public class T {
 		return app;
 	}
 
-	public static void HandleRequest (HttpConnection con)
+	public static void HandleRequest (HttpTransaction con)
 	{
 		string message = String.Format ("You requested {0}\n", con.Request.ResourceUri);
 

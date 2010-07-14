@@ -19,9 +19,9 @@ namespace Mango.Server {
 
 		private List<ArraySegment<byte>> buffer = new List<ArraySegment<byte>> ();
 
-		public HttpResponse (HttpConnection connection, Encoding encoding)
+		public HttpResponse (HttpTransaction transaction, Encoding encoding)
 		{
-			Connection = connection;
+			Transaction = transaction;
 			Encoding = encoding;
 
 			StatusCode = 200;
@@ -33,7 +33,7 @@ namespace Mango.Server {
 			SetStandardHeaders ();
 		}
 
-		public HttpConnection Connection {
+		public HttpTransaction Transaction {
 			get;
 			private set;
 		}
@@ -92,8 +92,8 @@ namespace Mango.Server {
 			if (WriteStatusLine)
 				InsertStatusLine ();
 			
-			Connection.Write (buffer);
-			Connection.Finish ();
+			Transaction.Write (buffer);
+			Transaction.Finish ();
 		}
 
 		public void SetHeader (string name, string value)

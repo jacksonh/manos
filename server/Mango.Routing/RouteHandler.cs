@@ -83,16 +83,16 @@ namespace Mango.Routing {
 			}
 		}
 
-		public MangoAction Find (HttpConnection con)
+		public MangoAction Find (IHttpTransaction trans)
 		{
-			if (!IsMatch (con.Request))
+			if (!IsMatch (trans.Request))
 				return null;
 
 			if (Action != null)
 				return Action;
 
 			foreach (RouteHandler handler in Children) {
-				MangoAction res = handler.Find (con);
+				MangoAction res = handler.Find (trans);
 				if (res != null)
 					return res;
 			}
@@ -102,8 +102,6 @@ namespace Mango.Routing {
 
 		public bool IsMatch (HttpRequest request)
 		{
-			Console.WriteLine ("REQUEST:  {0}  method: {1}  methods: {2}", request, request.Method, Methods);
-
 			if (methods != null) {
 				var meth = methods.Where (m => m == request.Method).FirstOrDefault ();
 				if (meth == null)

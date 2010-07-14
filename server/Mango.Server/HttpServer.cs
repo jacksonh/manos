@@ -12,7 +12,7 @@ using Mono.Unix.Native;
 
 namespace Mango.Server {
 
-	public delegate void HttpConnectionCallback (HttpConnection request);
+	public delegate void HttpConnectionCallback (IHttpTransaction transaction);
 
 	public class HttpServer {
 
@@ -72,7 +72,7 @@ namespace Mango.Server {
 				}
 
 				IOStream iostream = new IOStream (s, IOLoop);
-				HttpConnection.HandleConnection (this, iostream, s, callback);
+				HttpTransaction.BeginTransaction (this, iostream, s, callback);
 			}
 		}
 	}

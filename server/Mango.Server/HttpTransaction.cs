@@ -14,17 +14,17 @@ using Mono.Unix.Native;
 
 namespace Mango.Server {
 
-	public class HttpConnection : IHttpConnection {
+	public class HttpTransaction : IHttpTransaction {
 
-		public static void HandleConnection (HttpServer server, IOStream stream, Socket socket, HttpConnectionCallback cb)
+		public static void BeginTransaction (HttpServer server, IOStream stream, Socket socket, HttpConnectionCallback cb)
 		{
-			HttpConnection connection = new HttpConnection (server, stream, socket, cb);
+			HttpTransaction transaction = new HttpTransaction (server, stream, socket, cb);
 		}
 
 		private bool aborted;
 		private bool connection_finished;
 
-		public HttpConnection (HttpServer server, IOStream stream, Socket socket, HttpConnectionCallback callback)
+		public HttpTransaction (HttpServer server, IOStream stream, Socket socket, HttpConnectionCallback callback)
 		{
 			Server = server;
 			IOStream = stream;
