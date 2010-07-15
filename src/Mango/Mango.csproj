@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2548B25A-2E1F-4E21-BC43-7E39B1F6F23F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Mango</RootNamespace>
+    <AssemblyName>Mango</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Mono.Cecil, Version=0.6.9.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Mono.Posix.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Mango\DeleteAttribute.cs" />
+    <Compile Include="Mango\GetAttribute.cs" />
+    <Compile Include="Mango\HeadAttribute.cs" />
+    <Compile Include="Mango\HttpMethodAttribute.cs" />
+    <Compile Include="Mango\IgnoreAttribute.cs" />
+    <Compile Include="Mango\MangoAction.cs" />
+    <Compile Include="Mango\MangoApp.cs" />
+    <Compile Include="Mango\MangoContext.cs" />
+    <Compile Include="Mango\MangoModule.cs" />
+    <Compile Include="Mango\OptionsAttribute.cs" />
+    <Compile Include="Mango\PostAttribute.cs" />
+    <Compile Include="Mango\PutAttribute.cs" />
+    <Compile Include="Mango\TemplateData.cs" />
+    <Compile Include="Mango\TraceAttribute.cs" />
+    <Compile Include="Mango.Routing\HttpMethods.cs" />
+    <Compile Include="Mango.Routing\RouteHandler.cs" />
+    <Compile Include="Mango.Server\AssemblyInfo.cs" />
+    <Compile Include="Mango.Server\HttpException.cs" />
+    <Compile Include="Mango.Server\HttpHeaders.cs" />
+    <Compile Include="Mango.Server\HttpRequest.cs" />
+    <Compile Include="Mango.Server\HttpResponse.cs" />
+    <Compile Include="Mango.Server\HttpServer.cs" />
+    <Compile Include="Mango.Server\HttpTransaction.cs" />
+    <Compile Include="Mango.Server\HttpUtility.cs" />
+    <Compile Include="Mango.Server\IHttpRequest.cs" />
+    <Compile Include="Mango.Server\IHttpResponse.cs" />
+    <Compile Include="Mango.Server\IHttpTransaction.cs" />
+    <Compile Include="Mango.Server\IOLoop.cs" />
+    <Compile Include="Mango.Server\IOStream.cs" />
+    <Compile Include="Mango.Server\UriParser.cs" />
+    <Compile Include="Mango.Template\api.cs" />
+    <Compile Include="Mango.Template\codegen.cs" />
+    <Compile Include="Mango.Template\environment.cs" />
+    <Compile Include="Mango.Template\library.cs" />
+    <Compile Include="Mango.Template\parser.cs" />
+    <Compile Include="Mango.Template\tokenizer.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

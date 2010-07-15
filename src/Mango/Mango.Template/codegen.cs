@@ -71,6 +71,11 @@ namespace Mango.Templates.Minge {
 				return;
 			}
 
+			if (page.IsBuiltInVariable (Name.Name)) {
+				page.EmitBuiltInVariable (Name.Name);
+				return;
+			}
+
 			ParameterDefinition pvar = page.FindParameter (Name.Name);
 			if (pvar != null) {
 				ResolvedType = pvar.ParameterType;
@@ -444,7 +449,7 @@ namespace Mango.Templates.Minge {
 
 			Assembly.MainModule.Types.Add (page);
 
-			return new Page (this, Assembly, page);
+			return new Page (this, Assembly, page, path);
 		}
 
 		public Page LoadPage (string path)
@@ -556,6 +561,7 @@ namespace Mango.Templates.Minge {
 
 	public class Page {
 
+		private string path;
 		private Application application;
 		private AssemblyDefinition assembly;
 		private MethodDefinition render;
@@ -566,10 +572,11 @@ namespace Mango.Templates.Minge {
 		private Stack<MethodDefinition> method_stack;
 		private Stack<ForLoopContext> forloop_stack;
 		
-		public Page (Application application, AssemblyDefinition assembly, TypeDefinition definition)
+		public Page (Application application, AssemblyDefinition assembly, TypeDefinition definition, string path)
 		{
 			this.application = application;
 			this.assembly = assembly;
+			this.path = path;
 
 			Definition = definition;
 
@@ -985,6 +992,30 @@ namespace Mango.Templates.Minge {
 			ForLoopContext forloop = forloop_stack.Peek ();
 			worker.Emit (OpCodes.Ldloc, forloop.EnumeratorVariable);
 			worker.Emit (OpCodes.Callvirt, application.CommonMethods.EnumeratorGetCurrentMethod);
+		}
+
+		public bool IsBuiltInVariable (string name)
+		{
+			bool res = false;
+
+			switch (name) {
+			case "template_path":
+				res = true;
+				break;
+			}
+
+			return res;
+		}
+				
+		public void EmitBuiltInVariable (string name)
+		{
+			CilWorker worker = CurrentMethod.Body.CilWorker;
+
+			switch (name) {
+			case "template_path":
+				worker.Emit (OpCodes.Ldstr, path);
+				break;
+			}
 		}
 
 		public ParameterDefinition FindParameter (string name)

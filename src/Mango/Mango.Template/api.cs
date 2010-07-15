@@ -59,6 +59,7 @@ namespace Mango.Templates.Minge {
 				}
 			}
 
+			loaded_templates.Add (name, res);
 			return res;
 		}
 	}

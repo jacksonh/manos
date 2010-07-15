@@ -29,6 +29,21 @@ namespace Mango.Templates.Minge {
 
 			return input;
 		}
+
+		public static string __filename (string input)
+		{
+			return Path.GetFileName (input);
+		}
+
+		public static string __filename_noextension (string input)
+		{
+			return Path.GetFileName (input);
+		}
+
+		public static string __remove_extension (string input)
+		{
+			return Path.GetFileNameWithoutExtension (input);
+		}
 	}
 
 	public static class MingeFilterManager {
