@@ -40,6 +40,8 @@ namespace Mango.Server {
 		public void Start ()
 		{
 			running = true;
+			
+			EpollEvent [] new_events = new EpollEvent [MAX_EVENTS];
 			while (true) {
 				int timeout = 5000;
 
@@ -51,8 +53,12 @@ namespace Mango.Server {
 				if (!running)
 					break;
 				
-				var new_events = Syscall.epoll_wait (epfd, timeout);
-				RunHandlers (new_events);
+				int num_events = Syscall.epoll_wait (epfd, new_events, MAX_EVENTS, timeout);
+				
+				if (num_events == -1)
+					throw new Exception ("Something catastrophic happened.");
+				
+				RunHandlers (new_events, num_events);
 			}
 			running = false;
 		}
@@ -76,10 +82,10 @@ namespace Mango.Server {
 			}
 		}
 
-		private void RunHandlers (EpollEvent [] new_events)
+		private void RunHandlers (EpollEvent [] new_events, int num_events)
 		{
-			foreach (EpollEvent e in new_events) {
-				events.Enqueue (e);
+			for (int i = 0; i < num_events; i++) {
+				events.Enqueue (new_events [i]);
 			}
 
 			while (events.Count > 0) {
@@ -142,18 +148,18 @@ namespace Mango.Server {
 
 		private void Register (IntPtr fd, EpollEvents events)
 		{
-			Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_ADD, (int) fd, events);
+			Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_ADD, fd, events);
 		}
 
 		
 		private void Modify (IntPtr fd, EpollEvents events)
 		{
-			Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_MOD, (int) fd, events);
+			Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_MOD, fd, events);
 		}
 
 		private void Unregister (IntPtr fd)
 		{
-			Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_DEL, (int) fd, 0);
+			Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_DEL, fd, 0);
 		}
 		
 	}
