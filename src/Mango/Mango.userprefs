@@ -1,11 +1,30 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" ctype="Workspace" />
-  <MonoDevelop.Ide.Workbench ctype="Workbench">
+  <MonoDevelop.Ide.Workbench ActiveDocument="mango-tool/Driver.cs" ctype="Workbench">
+    <Files>
+      <File FileName="Mango.Template/render.cs" Line="1" Column="1" />
+      <File FileName="Mango.Server/HttpHeaders.cs" Line="1" Column="1" />
+      <File FileName="Mango.Routing/RouteHandler.cs" Line="1" Column="1" />
+      <File FileName="Mango.Server/mango.cs" Line="1" Column="1" />
+      <File FileName="Mango.Template/demo.cs" Line="1" Column="1" />
+      <File FileName="Mango.Template/parser.cs" Line="60" Column="16" />
+      <File FileName="Mango.Server/IOLoop.cs" Line="162" Column="52" />
+      <File FileName="mango-tool/Options.cs" Line="5" Column="38" />
+      <File FileName="mango-tool/Driver.cs" Line="170" Column="66" />
+      <File FileName="Mango.Template/api.cs" Line="89" Column="78" />
+      <File FileName="Mango.Template/environment.cs" Line="52" Column="39" />
+      <File FileName="Assembly Browser" />
+    </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="Mango" expanded="True" selected="True" />
+          <Node name="mango-tool" expanded="True">
+            <Node name="Driver.cs" selected="True" />
+          </Node>
         </State>
+      </Pad>
+      <Pad Id="ClassPad">
+        <State expanded="True" selected="True" />
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
