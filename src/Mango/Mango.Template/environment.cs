@@ -20,6 +20,9 @@ namespace Mango.Templates.Minge {
 		private static readonly string DefaultVariableStartString = "{{";
 		private static readonly string DefaultVariableEndString = "}}";
 
+		private string assembly_name = DefaultAssemblyName;
+		private string assembly_file = DefaultAssemblyFile;
+		
 		private string app_domain_name = DefaultAppDomainName;
 		private string [] allowed_extensions = DefaultAllowedExtensions;
 
@@ -47,8 +50,6 @@ namespace Mango.Templates.Minge {
 		{
 			BinDirectory = bindir;
 			TemplateDirectories = templatedirs;
-
-			 AssemblyPath = Path.Combine (bindir, DefaultAssemblyFile);
 		}
 		
 		public string BinDirectory {
@@ -72,13 +73,31 @@ namespace Mango.Templates.Minge {
 
 		public string AssemblyName {
 			get {
-				return DefaultAssemblyName;
+				return assembly_name;
+			}
+			set {
+				if (is_running)
+					throw new Exception ();
+				assembly_name = value;
+				
+			}
+		}
+
+		public string AssemblyFile {
+			get {
+				return assembly_file;
+			}
+			set {
+				if (is_running)
+					throw new Exception ();
+				assembly_file = value;
 			}
 		}
 
 		public string AssemblyPath {
-			get;
-			private set;
+			get {
+				return Path.Combine (BinDirectory, AssemblyFile);
+			}
 		}
 
 		public string AppDomainName {
