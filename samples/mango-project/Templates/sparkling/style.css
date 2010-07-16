@@ -1,0 +1,391 @@
+
+/*
+Design by Free CSS Templates
+http://www.freecsstemplates.org
+Released for free under a Creative Commons Attribution 2.5 License
+*/
+
+body {
+	margin: 0;
+	padding: 0;
+	background: #FFFFFF;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #A19D9A;
+}
+
+h1, h2, h3 {
+	margin: 0;
+	padding: 0;
+	font-weight: normal;
+	color: #FF3000;
+}
+
+h1 {
+	font-size: 2em;
+}
+
+h2 {
+	font-size: 2.8em;
+}
+
+h3 {
+	font-size: 1.6em;
+}
+
+p, ul, ol {
+	margin-top: 0;
+	line-height: 180%;
+}
+
+ul, ol {
+}
+
+a {
+	text-decoration: none;
+	color: #FF3000;
+}
+
+a:hover {
+}
+
+#wrapper {
+	margin: 0 auto;
+	padding: 0;
+}
+
+/* Header */
+
+#header-wrapper {
+	height: 100px;
+	background: #F2F3F0;
+}
+
+#header {
+	width: 950px;
+	margin: 0 auto;
+	padding: 0px 0px 0px 30px;
+}
+
+/* Logo */
+
+#logo {
+	float: left;
+	width: 350px;
+	margin: 0;
+	padding: 0;
+	color: #000000;
+	background: url(images/img02.jpg) no-repeat left 15px;
+}
+
+#logo h1, #logo p {
+}
+
+#logo h1 {
+	margin-left: 70px;
+	padding: 40p 0px 0px 80px;
+	letter-spacing: -1px;
+	text-transform: lowercase;
+	font-size: 3.8em;
+	color: #FF3000;
+}
+
+#logo h1 a {
+	color: #FA4100;
+}
+
+#logo h1 span {
+	color: #333333;
+}
+
+#logo p {
+	margin: 0;
+	padding: 0px 0 0 62px;
+	font: normal 14px Georgia, "Times New Roman", Times, serif;
+	font-style: italic;
+	color: #666666;
+} 
+
+#logo a {
+	border: none;
+	background: none;
+	text-decoration: none;
+	color: #666666;
+}
+
+/* Search */
+
+#search {
+	float: right;
+	width: 280px;
+	height: 60px;
+	padding: 20px 0px 0px 0px;
+	background: #F3F3EE;
+}
+
+#search form {
+	height: 41px;
+	margin: 0;
+	padding: 10px 0 0 20px;
+}
+
+#search fieldset {
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+#search-text {
+	width: 170px;
+	padding: 6px 5px 2px 5px;
+	border: 1px solid #DEDEDE;
+	background: #FFFFFF;
+	text-transform: lowercase;
+	font: normal 11px Arial, Helvetica, sans-serif;
+	color: #5D781D;
+}
+
+#search-submit {
+	width: 50px;
+	height: 22px;
+	border: none;
+	background: #FA4100;
+	color: #FFFFFF;
+}
+
+/* Menu */
+
+#menu {
+	float: right;
+	width: 450px;
+	height: 100px;
+	margin: 0 auto;
+	padding: 0;
+}
+
+#menu ul {
+	margin: 0;
+	padding: 60px 0px 0px 0px;
+	list-style: none;
+	line-height: normal;
+}
+
+#menu li {
+	float: left;
+}
+
+#menu a {
+	display: block;
+	margin-right: 1px;
+	padding: 10px 15px 14px 15px;
+	background: #D8DBCD;
+	text-decoration: none;
+	text-align: center;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	font-weight: bold;
+	color: #FFFFFF;
+	border: none;
+}
+
+#home #nav-home a,
+#about #nav-about a,
+#downloads #nav-downloads a,
+#docs #nav-docs a,
+#community #nav-community a,
+#menu a:hover
+{
+    background: #F34600;
+    text-decoration: none;
+}
+
+
+#home #nav-home a {
+    background: #F34600;
+    text-decoration: none;
+}
+
+
+/* Page */
+
+#page {
+	width: 980px;
+	margin: 0 auto;
+	padding: 0px 0px 0px 0px;
+}
+
+#page-bgtop {
+	padding: 20px 0px;
+}
+/* Content */
+
+#content {
+	float: right;
+	width: 650px;
+	padding: 0px 0px 0px 0px;
+}
+
+.post {
+	margin-bottom: 40px;
+	border-bottom: 1px dotted #E7E2DC;
+}
+
+.post .title {
+	height: 41px;
+	padding: 7px 0px 0px 30px;
+	letter-spacing: -.5px;
+}
+
+.post .title a {
+	color: #FF3000;
+	border: none;
+}
+
+.post .meta {
+	margin-bottom: 30px;
+	padding: 0px 30px 0px 30px;
+	text-align: left;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	font-weight: bold;
+	font-style: italic;
+}
+
+.post .meta .date {
+	float: left;
+}
+
+.post .meta .posted {
+	float: right;
+}
+
+.post .meta a {
+}
+
+.post .entry {
+	padding: 0px 30px 20px 30px;
+	padding-bottom: 20px;
+	text-align: justify;
+}
+
+.links {
+	padding-top: 20px;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+/* Sidebar */
+
+#sidebar {
+	float: left;
+	width: 280px;
+	margin: 0px;
+	padding: 0px 20px 0px 0px;
+	color: #787878;
+}
+
+#sidebar ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#sidebar li {
+	margin: 0;
+	padding: 0;
+}
+
+#sidebar li ul {
+	margin: 0px 0px;
+	padding-bottom: 30px;
+}
+
+#sidebar li li {
+	line-height: 35px;
+	border-bottom: 1px dotted #E7E2DC;
+	margin: 0px 0px 0px 30px;
+	border-left: none;
+	text-align: right;
+}
+
+#sidebar li li span {
+	display: block;
+	margin-top: -20px;
+	padding: 0;
+	font-size: 11px;
+	font-style: italic;
+}
+
+#sidebar li li a {
+	padding: 0px 15px 0px 0px;
+	background: url(images/img01.jpg) no-repeat right 5px;
+}
+
+#sidebar h2 {
+	height: 38px;
+	padding-left: 30px;
+	text-align: right;
+	letter-spacing: -.5px;
+	font-size: 1.8em;
+}
+
+#sidebar p {
+	margin: 0 0px;
+	padding: 0px 0px 20px 30px;
+	text-align: justify;
+}
+
+#sidebar a {
+	border: none;
+	color: #A19D9A;
+}
+
+#sidebar a:hover {
+	text-decoration: underline;
+	color: #FF3000;
+}
+
+/* Calendar */
+
+#calendar {
+}
+
+#calendar_wrap {
+	padding: 20px;
+}
+
+#calendar table {
+	width: 100%;
+}
+
+#calendar tbody td {
+	text-align: center;
+}
+
+#calendar #next {
+	text-align: right;
+}
+
+/* Footer */
+
+#footer {
+	height: 50px;
+	margin: 0 auto;
+	padding: 0px 0 15px 0;
+	background: #F2F3F0;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+#footer p {
+	margin: 0;
+	padding-top: 20px;
+	line-height: normal;
+	font-size: 9px;
+	text-transform: uppercase;
+	text-align: center;
+	color: #767676;
+}
+
+#footer a {
+	color: #767676;
+}

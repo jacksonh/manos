@@ -1,0 +1,86 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+<title>Mango Project</title> 
+<meta name="title" content="Avoidr" /> 
+<meta name="author" content="@jandersen" /> 
+<meta name="language" content="en" /> 
+<meta name="keywords" content="avoid your friends on foursquare"/> 
+</head> 
+<style> 
+#background_image {
+  position: fixed;
+  z-index: 0;
+  -moz-opacity: 0.0;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+}
+ 
+* html #background_image {
+  position: absolute;
+}
+img { border: none; }
+a { text-decoration: none; text-color:grey;}
+ 
+ #copybar{
+      -webkit-border-radius: 15px;
+      -moz-border-radius: 15px;
+      background: black;
+	opacity:0.6;filter:alpha(opacity=60)
+      border: 1px solid #aaa;
+      padding: 10px;
+      font-family: Arial; 
+      font-size: 1.2em;
+	color: white;
+	z-index: 2000;
+	position:absolute;
+	bottom: 5%;
+	left: 35px;
+    }
+ 
+ #footer{
+      -webkit-border-radius: 5px;
+      -moz-border-radius: 5px;
+      background: white;
+      opacity:0.6;filter:alpha(opacity=60)
+      border: 1px solid #aaa;
+      padding: 10px;
+      font-family: Arial; 
+      font-size: 1.0em;
+      color: grey;
+	z-index: 2000;
+	position:absolute;
+	text-align:right;
+	top: 5%;
+	right: -5px;
+    }
+ #footer.a {
+      color: black;
+}
+.shoutout {
+	opacity:1.0;filter:alpha(opacity=100)	
+}
+ 
+</style> 
+<body> 
+<div id="background_image_wrapper"> 
+ <img id="background_image" src="Content/images/mango-background.jpg"/> 
+</div> 
+<div id="copybar"> 
+	<h1>Mango: Easy Web Development</h1> 
+        <div id="content">
+        Mango is an easy to use, easy to test, high
+        performance web application framework
+        that stays out of your way and makes your life simple.
+        </div>
+</div> 
+<div id="footer">
+        <ul>
+	   <li><h1><a href="/Home">Home</a></h1></li>
+	   <li><h1><a href="/About">About</a></h1></li>
+        </ul>
+</div> 
+
+</body> 
+</html>
