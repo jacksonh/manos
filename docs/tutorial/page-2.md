@@ -12,6 +12,6 @@ Normally we want to spit out something other than just plain strings from our ac
 application we want to create HTML or maybe JSON.  Instead of forcing you to create these formats from hand,
 Mango includes a powerful templating engine that can convert a .NET object into a document.
 
-    ![Diagram showing an object being converted to a document][http://github.com/jacksonh/mango/raw/master/docs/tutorial/mango-template-engine-flow.png]
+![Diagram showing an object being converted to a document][http://github.com/jacksonh/mango/raw/master/docs/tutorial/mango-template-engine-flow.png]
 
 
