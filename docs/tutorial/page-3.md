@@ -91,6 +91,34 @@ We can also write tests for our template output using MangoTestContext.
 	    Name = "Mango"
 	});
 
-        Assert.AreEqual (ctx.Output, ".....");
+        Assert.AreEqual (ctx.OutputString, @"<html>
+      <head>
+        <title>Hello World!</title>
+      </head>
+      <body>
+         Hello World!
+      </body>
+    </html>");
+
     }
+
+To simplify testing output strings we can also use the HtmlCompare utility:
+
+    [Test]
+    public void TestHelloTemplate ()
+    {
+        var ctx = new MangoTestContext ();
+
+        IndexHtml.Render (ctx, new {
+	    Name = "Mango"
+	});
+
+        Assert.Assert (Utilities.HtmlCompare (ctx.OutputString, @"
+           <html>
+             <head><title>Hello World!</title></head>
+             <body>Hello World!</body>
+           </html>");
+    }
+
+This will compare html output ignoring white space between tags.
 
