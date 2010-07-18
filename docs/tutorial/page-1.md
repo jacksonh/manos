@@ -49,7 +49,7 @@ The first file we are going to deal with is HelloWorldApp.cs.  This file is the 
 handle our top level routing. Routes can be added to our app in the constructor or by using method attributes.  If you look at HelloWorldApp.cs
 you'll see there has already been a route to the StaticContentModule added for you:
 
-    Route ("Content/").Add (new StaticContentModule ());
+    Route ("Content/", new StaticContentModule ());
 
 The Route method will route all HTTP calls that match the supplied pattern, in this case "Content/" to the supplied module or action. Here we
 have routed every url request that starts with "Content/" to the StaticContentModule.
@@ -57,7 +57,7 @@ have routed every url request that starts with "Content/" to the StaticContentMo
 If we just want to handle certain types of HTTP method requests we can use the corresponding Mango routing method. So if we just want to route
 HTTP GET requests to the StaticContentModule, we could change the above code to look like this:
 
-    Get ("Content/").Add (new StaticContentModule ());
+    Get ("Content/", new StaticContentModule ());
 
 We'll talk more about routes later.
 
@@ -68,7 +68,7 @@ Hello, Mango World
 Routes don't necessarily have to go to modules, we can also route them to actions.  An action is any function that accepts a single IMangoContext
 parameter.  So lets create our first action, add this line right above the static content route.
 
-    Get ("$").Add (ctx => ctx.Response.Write ("Hello, Mango World!"));
+    Get ("$", ctx => ctx.Response.Write ("Hello, Mango World!"));
 
 What we've done here is created a route using the "$" regular expression, the "$" regex is used to denote the end of a line, so what we are doing here
 is mapping to a blank URL, basically the home page of your site.
