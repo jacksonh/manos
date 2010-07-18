@@ -22,11 +22,14 @@ your application was named HelloWorld, you'll now have a structure something lik
 
 
     HelloWorld/
-    HelloWorld/Templates/
-    HelloWorld/HelloWorldApp.cs
     HelloWorld/Deployment/
     HelloWorld/Deployment/Deploy.cs
+    HelloWorld/HelloWorldApp.cs
     HelloWorld/StaticContentModule.cs
+    HelloWorld/Templates/
+    HelloWorld/Tests/
+    HelloWorld/Tests/HelloWorldAppTest.cs
+
 
 We'll worry more about these files later in the tutorial, but for now here's a
 quick overview of what we've got:
