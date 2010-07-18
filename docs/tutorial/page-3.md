@@ -26,8 +26,8 @@ create a separate method for our action:
     public static void Hello (IMangoContext ctx)
     {
         IndexHtml.Render (ctx, new {
-	    Name = "Mango"
-	});
+            Name = "Mango"
+        });
     }
 
 Mango will automatically route your Hello method to the "Hello" URI, so if you rebuild your
@@ -40,8 +40,8 @@ HTTP methods to our method:
     public static void Hello (IMangoContext ctx)
     {
         IndexHtml.Render (ctx, new {
-	    Name = "Mango"
-	});
+            Name = "Mango"
+        });
     }
 
 
@@ -88,8 +88,8 @@ We can also write tests for our template output using MangoTestContext.
         var ctx = new MangoTestContext ();
 
         IndexHtml.Render (ctx, new {
-	    Name = "Mango"
-	});
+            Name = "Mango"
+        });
 
         Assert.AreEqual (ctx.OutputString, @"<html>
       <head>
@@ -110,8 +110,8 @@ To simplify testing output strings we can also use the HtmlCompare utility:
         var ctx = new MangoTestContext ();
 
         IndexHtml.Render (ctx, new {
-	    Name = "Mango"
-	});
+            Name = "Mango"
+        });
 
         Assert.Assert (Utilities.HtmlCompare (ctx.OutputString, @"
            <html>
