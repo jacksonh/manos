@@ -55,3 +55,14 @@ applications can be run as a daemon on Linux or as a service on Windows.
 ### Cache-Control
 A method of specifying cache options on actions.
 
+
+Revision Five:
+-------------
+
+### Math in the template engine
+Support for performing math operations will be added to the template engine, so you can do things like
+
+    {% if count > 10 * 2 %}
+      .....
+    {% endif %}
+
