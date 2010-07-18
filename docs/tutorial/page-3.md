@@ -21,7 +21,7 @@ Using Attributes for Routing
 
 Using the Get method in a our application constructor is an easy way to hook up to an HTTP method
 but it makes it difficult to test our code. To make our code easily testable we will want to
-create a seperate method for our action:
+create a separate method for our action:
 
     public static void Hello (IMangoContext ctx)
     {
@@ -120,5 +120,5 @@ To simplify testing output strings we can also use the HtmlCompare utility:
            </html>");
     }
 
-This will compare html output ignoring white space between tags.
+This will compare HTML output ignoring white space between tags.
 
