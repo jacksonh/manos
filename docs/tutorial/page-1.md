@@ -94,11 +94,7 @@ Once the application is running you can check it out by navigating your browser 
 Moving On
 ---------
 
-In part two of this tutorial we'll discuss routing a little more in-depth.
-
-
-
-
+In part two of this tutorial we'll add a template to our application.
 
 
 
