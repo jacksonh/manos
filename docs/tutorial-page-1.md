@@ -17,7 +17,7 @@ To create your first Mango application all you need to do is run the following c
 
 Make sure you don't have any spaces in your application name.
 
-This will create a folder named <YourApplicationName> and a few files and subfolders. Assumming
+This will create a folder named <YourApplicationName> and a few files and subfolders. Assuming
 your application was named HelloWorld, you'll now have a structure something like this:
 
 
@@ -29,7 +29,7 @@ your application was named HelloWorld, you'll now have a structure something lik
     HelloWorld/StaticContentModule.cs
 
 We'll worry more about these files later in the tutorial, but for now here's a
-qiuck overview of what we've got:
+quick overview of what we've got:
 
 
  *    **Templates/**: This directory will contain all your templates for defining what your pages look like.
@@ -62,7 +62,7 @@ We'll talk more about routes later.
 Hello, Mango World
 ------------------
 
-Routes don't necasarily have to go to modules, we can also route them to actions.  An action is any function that accepts a single IMangoContext
+Routes don't necessarily have to go to modules, we can also route them to actions.  An action is any function that accepts a single IMangoContext
 parameter.  So lets create our first action, add this line right above the static content route.
 
     Get ("$").Add (ctx => ctx.Response.Write ("Hello, Mango World!"));
