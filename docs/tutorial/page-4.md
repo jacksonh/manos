@@ -53,7 +53,10 @@ mango-tool will be able to create standalone applications with a bundled web ser
 applications can be run as a daemon on Linux or as a service on Windows.
 
 ### Cache-Control
-A method of specifying cache options on actions.
+A method of specifying cache options on actions, must likely attribute based.
+
+### Validation
+Attribute style validation, possibly using Fluent (http://fluentvalidation.codeplex.com/)
 
 
 Revision Five:
