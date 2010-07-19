@@ -4,7 +4,7 @@ using System;
 
 namespace Mango {
 
-	public delegate void MangoAction (MangoContext context);
+	public delegate void MangoAction (IMangoContext context);
 	
 }
 

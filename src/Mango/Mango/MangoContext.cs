@@ -6,7 +6,7 @@ using Mango.Server;
 
 namespace Mango {
 
-	public class MangoContext {
+	public class MangoContext : IMangoContext {
 
 		public MangoContext (IHttpTransaction transaction)
 		{
