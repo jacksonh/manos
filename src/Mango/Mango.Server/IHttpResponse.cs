@@ -21,14 +21,17 @@ namespace Mango.Server {
 
 		int StatusCode {
 			get;
+			set;
 		}
 
 		bool WriteStatusLine {
 			get;
+			set;
 		}
 
 		bool WriteHeaders {
 			get;
+			set;
 		}
 
 		void Write (string str);
