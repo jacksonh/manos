@@ -21,7 +21,7 @@ namespace Mango.Tool
 		public static int Main (string[] args)
 		{
 			bool help = false;
-			Func<IList<string>, int> command;
+			Func<IList<string>, int> command = null;
 			
 			var p = new OptionSet () {
 				{ "h|?|help", v => help = v != null },
@@ -43,6 +43,14 @@ namespace Mango.Tool
 				ShowHelp (p);
 				return 0;
 			}
+			
+			if (command == null) {
+				ShowHelp (p);
+				return 1;
+			}
+			
+			Console.WriteLine ("executing command: {0}", command);
+			command (extra);
 			
 			return 0;
 		}
@@ -167,7 +175,7 @@ namespace Mango.Tool
 		
 		public void LinkTemplates (string app_name, string templates)
 		{
-			Mono.Merge.Driver.Run (new string [] { app_name, templates });
+			Mono.Merge.Driver.Run (app_name, new string [] { templates, app_name });
 		}
 		
 		private static void ShowHelp (OptionSet os)
