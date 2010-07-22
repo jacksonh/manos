@@ -47,8 +47,8 @@ namespace Mango.Templates.Minge {
 			protected set;
 		}
 
+		public abstract TypeReference ResolveType (Application app, Page page);
 		public abstract void Emit (Application app, Page page, CilWorker worker);
-
 	}
 
 	public class VariableValue : Value {
@@ -63,10 +63,27 @@ namespace Mango.Templates.Minge {
 			private set;
 		}
 
+		public override TypeReference ResolveType (Application app, Page page)
+		{
+			ParameterDefinition pvar = page.FindParameter (Name.Name);
+			if (pvar != null) {
+				ResolvedType = pvar.ParameterType;
+				return ResolvedType;
+			}
+
+			VariableDefinition localvar = page.FindLocalVariable (Name.Name);
+			if (localvar != null) {
+				ResolvedType = localvar.VariableType;
+				return ResolvedType;
+			}
+			
+			ResolvedType = app.Assembly.MainModule.Import (typeof (object));
+			return ResolvedType;
+		}
+		
 		public override void Emit (Application app, Page page, CilWorker worker)
 		{
 			if (page.IsForLoopVariable (Name.Name)) {
-				ResolvedType = app.Assembly.MainModule.Import (typeof (object)); 
 				page.EmitForLoopVariableAccess ();
 				return;
 			}
@@ -90,20 +107,20 @@ namespace Mango.Templates.Minge {
 				return;
 			}
 
-			FieldDefinition pagefield = page.FindField (Name.Name);
-			if (pagefield != null) {
-				ResolvedType = pagefield.FieldType;
-				worker.Emit (OpCodes.Ldarg_0);
-				worker.Emit (OpCodes.Ldfld, pagefield);
+			// Attempt to resolve the property on the resolved type
+			PropertyDefinition [] props = page.Definition.Properties.GetProperties (Name.Name);
+			Console.WriteLine ("number of properties in {2} for: {0}  {1}", 
+			                   Name.Name, props.Length, page.Definition.Name);
+			if (props.Length > 0) {
+				MethodReference get_method = app.Assembly.MainModule.Import (props [0].GetMethod);
+				worker.Emit (OpCodes.Call, get_method);
 				return;
 			}
-
+			
 			//
 			// Attempt to load it from the supplied type, look for a property
 			// on the type with the correct name.
 			//
-
-			ResolvedType = app.Assembly.MainModule.Import (typeof (object));
 
 			worker.Emit (OpCodes.Ldarg_2);
 			worker.Emit (OpCodes.Callvirt, app.CommonMethods.GetTypeMethod);
@@ -150,7 +167,6 @@ namespace Mango.Templates.Minge {
 		public ConstantStringValue (string value)
 		{
 			Value = value;
-			
 		}
 
 		public string Value {
@@ -163,10 +179,15 @@ namespace Mango.Templates.Minge {
 			return Value;
 		}
 
+		public override TypeReference ResolveType (Application app, Page page)
+		{
+			ResolvedType = app.Assembly.MainModule.Import (typeof (string));
+			return ResolvedType;
+		}
+		
 		public override void Emit (Application app, Page page, CilWorker worker)
 		{
 			worker.Emit (OpCodes.Ldstr, Value);
-			ResolvedType = app.Assembly.MainModule.Import (typeof (string));
 		}
 	}
 
@@ -187,10 +208,15 @@ namespace Mango.Templates.Minge {
 			return Value;
 		}
 
+		public override TypeReference ResolveType (Application app, Page page)
+		{
+			ResolvedType = app.Assembly.MainModule.Import (typeof (int));
+			return ResolvedType;
+		}
+		
 		public override void Emit (Application app, Page page, CilWorker worker)
 		{
 			worker.Emit (OpCodes.Ldc_I4, Value);
-			ResolvedType = app.Assembly.MainModule.Import (typeof (int));
 		}
 	}
 
@@ -211,10 +237,15 @@ namespace Mango.Templates.Minge {
 			return Value;
 		}
 
+		public override TypeReference ResolveType (Application app, Page page)
+		{
+			ResolvedType = app.Assembly.MainModule.Import (typeof (double));
+			return ResolvedType;
+		}
+		
 		public override void Emit (Application app, Page page, CilWorker worker)
 		{
 			worker.Emit (OpCodes.Ldc_R8, Value);
-			ResolvedType = app.Assembly.MainModule.Import (typeof (double));
 		}
 	}
 
@@ -236,6 +267,19 @@ namespace Mango.Templates.Minge {
 			private set;
 		}
 
+		public override TypeReference ResolveType (Application app, Page page)
+		{
+			PropertyDefinition [] props = Target.ResolvedType.Resolve ().Properties.GetProperties (Property);
+			if (props.Length > 0) {
+				MethodReference get_method = app.Assembly.MainModule.Import (props [0].GetMethod);
+				ResolvedType = props [0].PropertyType;
+				return ResolvedType;
+			}
+			
+			ResolvedType = app.Assembly.MainModule.Import (typeof (object));
+			return ResolvedType;
+		}
+		
 		public override void Emit (Application app, Page page, CilWorker worker)
 		{
 			Target.Emit (app, page, worker);
@@ -245,15 +289,12 @@ namespace Mango.Templates.Minge {
 			if (props.Length > 0) {
 				MethodReference get_method = app.Assembly.MainModule.Import (props [0].GetMethod);
 				worker.Emit (OpCodes.Call, get_method);
-				ResolvedType = props [0].PropertyType;
 				return;
 			}
-			
-			ResolvedType = app.Assembly.MainModule.Import (typeof (object));
 
 			worker.Emit (OpCodes.Callvirt, app.CommonMethods.GetTypeMethod);
 			worker.Emit (OpCodes.Ldstr, Property);
-			worker.Emit (OpCodes.Ldc_I4, (int) System.Reflection.BindingFlags.IgnoreCase);
+			worker.Emit (OpCodes.Ldc_I4, (int) (System.Reflection.BindingFlags.IgnoreCase | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public));
 			worker.Emit (OpCodes.Callvirt, app.CommonMethods.GetPropertyMethod);
 			Target.Emit (app, page, worker);
 			worker.Emit (OpCodes.Ldnull);
@@ -283,11 +324,17 @@ namespace Mango.Templates.Minge {
 			Arguments = args;
 		}
 
-		public override void Emit (Application app, Page page, CilWorker worker)
+		public override TypeReference ResolveType (Application app, Page page)
 		{
 			MethodDefinition meth = page.GetMethod (Name);
 
 			ResolvedType = meth.ReturnType.ReturnType;
+			return ResolvedType;
+		}
+		
+		public override void Emit (Application app, Page page, CilWorker worker)
+		{
+			MethodDefinition meth = page.GetMethod (Name);
 
 			worker.Emit (OpCodes.Ldarg_0);
 			worker.Emit (OpCodes.Ldarg_1);
@@ -324,6 +371,12 @@ namespace Mango.Templates.Minge {
 			Arguments = args;
 		}
 
+		public override TypeReference ResolveType (Application app, Page page)
+		{
+			ResolvedType = app.Assembly.MainModule.Import (typeof (string));
+			return ResolvedType;
+		}
+		
 		public override void Emit (Application app, Page page, CilWorker worker)
 		{
 			var filter = MingeFilterManager.GetFilter (Name);
@@ -358,15 +411,21 @@ namespace Mango.Templates.Minge {
 			private set;
 		}
 
+		public virtual TypeReference ResolveType (Application app, Page page)
+		{
+			if (filters.Count < 1)
+				ResolvedType =  Value.ResolveType (app, page);
+			else
+				ResolvedType = app.Assembly.MainModule.Import (typeof (string));
+			return ResolvedType;
+		}
+		
 		public virtual void Emit (Application app, Page page, CilWorker worker)
 		{
 			Value.Emit (app, page, worker);
 
-			if (filters.Count < 1)
-				ResolvedType = Value.ResolvedType;
-			else
-				ResolvedType = app.Assembly.MainModule.Import (typeof (string));
-
+			ResolveType (app, page);
+		
 			foreach (Filter filter in filters) {
 				filter.Emit (app, page, worker);
 			}
@@ -401,6 +460,7 @@ namespace Mango.Templates.Minge {
 
 		public Application (MingeCompiler compiler, string name, string path)
 		{
+			Console.WriteLine ("created application:  {0}  {1}", name, path);
 			Compiler = compiler;
 			Name = name;
 			Path = path;
@@ -436,6 +496,7 @@ namespace Mango.Templates.Minge {
 
 		public void Save ()
 		{
+			Console.WriteLine ("saving:  {0}  PATH:  {1}", Assembly, Path);
 			AssemblyFactory.SaveAssembly (Assembly, Path);
 		}
 
@@ -456,8 +517,6 @@ namespace Mango.Templates.Minge {
 		{
 			string ns;
 			string name = Page.NameForPath (path, out ns);
-
-			TypeDefinition def = Assembly.MainModule.Types [String.Concat (ns, ".", name)];
 
 			Page page = Compiler.ParsePage (path);
 			return page;
@@ -565,6 +624,7 @@ namespace Mango.Templates.Minge {
 		private Application application;
 		private AssemblyDefinition assembly;
 		private MethodDefinition render;
+		private MethodDefinition ctor;
 
 		private Page base_type;
 		private Instruction first_instruction;
@@ -580,9 +640,8 @@ namespace Mango.Templates.Minge {
 
 			Definition = definition;
 
-			MethodDefinition ctor = new MethodDefinition (".ctor", MethodAttributes.Public, assembly.MainModule.Import (typeof (void)));
+			ctor = new MethodDefinition (".ctor", MethodAttributes.Public, assembly.MainModule.Import (typeof (void)));
 			Definition.Methods.Add (ctor);
-			ctor.Body.CilWorker.Emit (OpCodes.Ret);
 
 			ValueToStringMethod = AddValueToStringMethod ();
 
@@ -764,19 +823,22 @@ namespace Mango.Templates.Minge {
 
 		public void EmitSet (NamedTarget target, Expression expression)
 		{
-			CilWorker worker = CurrentMethod.Body.CilWorker;
+			
+
+			expression.ResolveType (application, this);
+			
+			PropertyDefinition property = FindProperty (target.Name, expression.ResolvedType);
+			if (property == null)
+				property = AddProperty (target.Name, expression.ResolvedType);
 
 			//
-			// For now lets make them all fields
+			// Property setting happens in the ctor
 			//
-
-			FieldDefinition field = FindField (target.Name);
-			if (field == null)
-				field = AddField (target.Name);
-
+			
+			CilWorker worker = ctor.Body.CilWorker;
 			worker.Emit (OpCodes.Ldarg_0);
 			expression.Emit (application, this, worker);
-			worker.Emit (OpCodes.Stfld, field);
+			worker.Emit (OpCodes.Call, property.SetMethod);
 		}
 
 		public void BeginMacro (string name, List<ArgumentDefinition> args)
@@ -968,11 +1030,17 @@ namespace Mango.Templates.Minge {
 			forloop.BeginLoopInstruction.Operand = enter_loop;
 		}
 
+		private void CloseCtor ()
+		{
+			ctor.Body.CilWorker.Emit (OpCodes.Ret);
+		}
+		
 		public void Save ()
 		{
-		       CilWorker worker = CurrentMethod.Body.CilWorker;
-
-		       worker.Emit (OpCodes.Ret);
+			CloseCtor ();
+			
+			CilWorker worker = CurrentMethod.Body.CilWorker;
+			worker.Emit (OpCodes.Ret);
 		}
 
 		public bool IsForLoopVariable (string name)
@@ -1048,19 +1116,43 @@ namespace Mango.Templates.Minge {
 			return null;
 		}
 
-		public FieldDefinition FindField (string name)
+		public PropertyDefinition FindProperty (string name, TypeReference t)
 		{
-			if (!Definition.HasFields)
+			TypeDefinition klass = base_type != null ? base_type.Definition : Definition;
+			
+			if (!klass.HasProperties)
 				return null;
-			return Definition.Fields.GetField (name);
+			PropertyDefinition [] props = klass.Properties.GetProperties (name);
+			return props.Where (p => p.PropertyType == t).FirstOrDefault ();
 		}
 
-		public FieldDefinition AddField (string name)
+		public PropertyDefinition AddProperty (string name, TypeReference t)
 		{
-			FieldDefinition field = new FieldDefinition (name, assembly.MainModule.Import (typeof (object)), FieldAttributes.Public);
-			Definition.Fields.Add (field);
+			TypeDefinition klass = base_type != null ? base_type.Definition : Definition;
+			
+			PropertyDefinition prop = new PropertyDefinition (name, t, (PropertyAttributes) 0);
+			klass.Properties.Add (prop);
 
-			return field;
+			FieldDefinition field = new FieldDefinition ("mango_" + name, t, FieldAttributes.Private | FieldAttributes.Compilercontrolled);
+			klass.Fields.Add (field);
+			
+			prop.GetMethod = new MethodDefinition ("get_" + name, MethodAttributes.Compilercontrolled | MethodAttributes.Public, t);
+			klass.Methods.Add (prop.GetMethod);
+			CilWorker worker = prop.GetMethod.Body.CilWorker;
+			worker.Emit (OpCodes.Ldarg_0);
+			worker.Emit (OpCodes.Ldfld, field);
+			worker.Emit (OpCodes.Ret);
+			
+			prop.SetMethod = new MethodDefinition ("set_" + name, MethodAttributes.Compilercontrolled | MethodAttributes.Public, t.Module.Import (typeof (void)));
+			prop.SetMethod.Parameters.Add (new ParameterDefinition (t));
+			klass.Methods.Add (prop.SetMethod);
+			worker = prop.SetMethod.Body.CilWorker;
+			worker.Emit (OpCodes.Ldarg_0);
+			worker.Emit (OpCodes.Ldarg_1);
+			worker.Emit (OpCodes.Stfld, field);
+			worker.Emit (OpCodes.Ret);
+			
+			return prop;
 		}
 
 		public MethodDefinition GetMethod (string name)
