@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 
 
@@ -16,33 +17,41 @@ namespace Mango.Routing {
 		private List<string> patterns;
 		private List<string> methods;
 
+		private Regex [] regexes;
+
 		internal RouteHandler ()
 		{
 			Children = new List<RouteHandler> ();
 		}
 
-		public RouteHandler (string [] patterns, string [] methods) : this (null, patterns, methods, null)
+		public RouteHandler (string pattern, string [] methods) : this (new string [] { pattern }, methods)
+		{
+		}
+		
+		public RouteHandler (string pattern, string [] methods, IMangoTarget target) : this (new string [] { pattern }, methods, target)
+		{
+		}
+		
+		public RouteHandler (string pattern, string method) : this (new string [] { pattern }, new string [] { method })
+		{
+		}
+		
+		public RouteHandler (string pattern, string method, IMangoTarget target) : this (new string [] { pattern }, new string [] { method }, target)
+		{
+		}
+		
+		public RouteHandler (string [] patterns, string [] methods) : this (patterns, methods, null)
 		{
 		}
 
-		public RouteHandler (string [] patterns, string [] methods, MangoAction action) : this (null, patterns, methods, action)
+		public RouteHandler (string [] patterns, string [] methods, IMangoTarget target)
 		{
-		}
+			Target = target;
 
-		public RouteHandler (string name, string [] patterns, string [] methods, MangoAction action)
-		{
-			Name = name;
-			Action = action;
-
-			this.patterns = new List<string> (patterns);
+			Patterns = new List<string> (patterns);
 			this.methods = new List<string> (methods);
 
 			Children = new List<RouteHandler> ();
-		}
-
-		public string Name {
-			get;
-			set;
 		}
 
 		public bool IsImplicit {
@@ -52,13 +61,36 @@ namespace Mango.Routing {
 
 		public IList<string> Patterns {
 			get { return patterns; }
+			set {
+				
+				//
+				// TODO: This needs to be an observablecollection so 
+				// I can raise an event when its changed and rebuild the 
+				// regex cache.
+				//
+				// Only reason it isn't now is because i don't have a 4.0
+				// profile installed in monodevelop
+				//
+				
+				if (value == null)
+					patterns = null;
+				else
+					patterns = new List<string> (value);
+				UpdateRegexes ();
+			}
 		}
 
 		public IList<string> Methods {
 			get { return methods; }
+			set {
+				if (value == null)
+					methods = null;
+				else
+					methods = new List<string> (value); 
+			}
 		}
 
-		public MangoAction Action {
+		public IMangoTarget Target {
 			get;
 			set;
 		}
@@ -68,6 +100,12 @@ namespace Mango.Routing {
 			private set;
 		}
 
+		public bool HasPatterns {
+			get { 
+				return patterns != null && patterns.Count > 0;
+			}
+		}
+		
 		IEnumerator IEnumerable.GetEnumerator ()
 		{
 			return GetEnumerator ();
@@ -83,16 +121,38 @@ namespace Mango.Routing {
 			}
 		}
 
-		public MangoAction Find (IHttpTransaction trans)
+		public void Add (RouteHandler child)
 		{
-			if (!IsMatch (trans.Request))
+			Children.Add (child);	
+		}
+		
+		public IMangoTarget Find (IHttpRequest request)
+		{
+			return Find (request, 0);
+		}
+		
+		private IMangoTarget Find (IHttpRequest request, int uri_start)
+		{
+			if (!IsMethodMatch (request))
 				return null;
+			
+			Match m = null;
+			if (HasPatterns) {
+				m = FindPatternMatch (request.LocalPath, uri_start);
 
-			if (Action != null)
-				return Action;
+				Console.WriteLine (" -- got match:  {0}", m);
+				if (m == null)
+					return null;
+				
+				if (Target != null)
+					return Target;
 
+				uri_start = m.Index + m.Length;
+			}
+			
+			Console.WriteLine (" checking children:  {0}", Children.Count);
 			foreach (RouteHandler handler in Children) {
-				MangoAction res = handler.Find (trans);
+				IMangoTarget res = handler.Find (request, uri_start);
 				if (res != null)
 					return res;
 			}
@@ -100,7 +160,22 @@ namespace Mango.Routing {
 			return null;
 		}
 
-		public bool IsMatch (HttpRequest request)
+		public Match FindPatternMatch (string input, int start)
+		{
+			if (regexes == null)
+				return null;
+			
+			foreach (Regex r in regexes) {
+				Console.WriteLine ("checking patterns: {0}  for {1}", r, input.Substring (start));
+				Match m = r.Match (input, start);
+				if (m.Success && m.Index == start)
+					return m;
+			}
+			
+			return null;
+		}
+		
+		public bool IsMethodMatch (IHttpRequest request)
 		{
 			if (methods != null) {
 				var meth = methods.Where (m => m == request.Method).FirstOrDefault ();
@@ -108,26 +183,20 @@ namespace Mango.Routing {
 					return false;
 			}
 
-			if (patterns != null) {
-				var pat = patterns.Where (p => Regex.IsMatch (request.LocalPath, p)).FirstOrDefault ();
-				if (pat == null)
-					return false;
-			}
-
 			return true;
 		}
 
-		internal void Set (string [] patterns, string [] methods)
+		private void UpdateRegexes ()
 		{
-			if (this.patterns == null)
-				this.patterns = new List<string> (patterns);
-			else
-				this.patterns.AddRange (patterns);
+			if (patterns == null) {
+				regexes = null;
+				return;
+			}
 
-			if (this.methods == null)
-				this.methods = new List<string> (methods);
-			else
-				this.methods.AddRange (methods);
+			regexes = new Regex [patterns.Count];
+			for (int i = 0; i < patterns.Count; i++) {
+				regexes [i] = new Regex (patterns [i]);
+			}
 		}
 	}
 }
