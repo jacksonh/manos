@@ -13,7 +13,6 @@ using Mango.Server;
 public class T {
 
 	public static bool show_headers;
-	public static int connections = 0;
 
 	public static MangoApp app;
 
@@ -46,7 +45,7 @@ public class T {
 		return app;
 	}
 
-	public static void HandleRequest (HttpTransaction con)
+	public static void HandleRequest (IHttpTransaction con)
 	{
 		string message = String.Format ("You requested {0}\n", con.Request.ResourceUri);
 
@@ -62,7 +61,7 @@ public class T {
 		}
 
 		if (app != null) {
-			app.HandleConnection (con);
+			app.HandleTransaction (con);
 			return;
 		}
 
@@ -86,10 +85,6 @@ public class T {
 
 		// con.Response.Write (String.Format ("HTTP/1.1 200 OK\r\nContent-Length: {0}\r\n\r\n{1}", Encoding.ASCII.GetBytes (message).Length, message));
 		con.Response.Finish ();
-
-		++connections;
-		if (connections >= 1000)
-			con.IOStream.IOLoop.Stop ();
 	}
 }
 
