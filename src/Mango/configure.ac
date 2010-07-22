@@ -52,6 +52,12 @@ dnl package checks, per config
 
 AC_CONFIG_FILES([
 mango.pc
+mango-tool/mango-tool
+mango-tool/Makefile
+mango-server/mango-server
+mango-server/Makefile
+Mango.Tests/mango.tests.pc
+Mango.Tests/Makefile
 Makefile
 
 ])

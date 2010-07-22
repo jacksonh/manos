@@ -7,16 +7,16 @@
       <File FileName="Mango/IMangoTarget.cs" Line="1" Column="1" />
       <File FileName="Mango.Testing/MockMangoTarget.cs" Line="1" Column="1" />
       <File FileName="Mango/MangoModule.cs" Line="1" Column="1" />
-      <File FileName="Mango.Tests/Mango/MangoModuleTest.cs" Line="70" Column="73" />
+      <File FileName="Mango.Tests/Mango/MangoModuleTest.cs" Line="77" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
-        <State expanded="True">
+        <State expanded="True" selected="True">
           <Node name="Mango" expanded="True">
             <Node name="Mango.Routing" expanded="True" />
             <Node name="Mango.Testing" expanded="True" />
           </Node>
-          <Node name="Mango.Tests" expanded="True" selected="True">
+          <Node name="Mango.Tests" expanded="True">
             <Node name="Mango" expanded="True" />
             <Node name="Mango.Routing" expanded="True" />
           </Node>

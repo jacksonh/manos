@@ -11,10 +11,10 @@ COMPILE_TARGET = library
 PROJECT_REFERENCES = 
 BUILD_DIR = bin/Debug
 
-MONO_CECIL_DLL_SOURCE=../../bin/Mono.Cecil.dll
-MONO_CECIL_DLL_MDB_SOURCE=../../bin/Mono.Cecil.dll.mdb
-MONO_POSIX_DLL_SOURCE=../../bin/Mono.Posix.dll
-MONO_POSIX_DLL_MDB_SOURCE=../../bin/Mono.Posix.dll.mdb
+MONO_CECIL_DLL_SOURCE=../../deps/Mono.Cecil.dll
+MONO_CECIL_DLL_MDB_SOURCE=../../deps/Mono.Cecil.dll.mdb
+MONO_POSIX_DLL_SOURCE=../../deps/Mono.Posix.dll
+MONO_POSIX_DLL_MDB_SOURCE=../../deps/Mono.Posix.dll.mdb
 MANGO_DLL_MDB_SOURCE=bin/Debug/Mango.dll.mdb
 MANGO_DLL_MDB=$(BUILD_DIR)/Mango.dll.mdb
 
@@ -29,10 +29,10 @@ COMPILE_TARGET = library
 PROJECT_REFERENCES = 
 BUILD_DIR = bin/Release
 
-MONO_CECIL_DLL_SOURCE=../../bin/Mono.Cecil.dll
-MONO_CECIL_DLL_MDB_SOURCE=../../bin/Mono.Cecil.dll.mdb
-MONO_POSIX_DLL_SOURCE=../../bin/Mono.Posix.dll
-MONO_POSIX_DLL_MDB_SOURCE=../../bin/Mono.Posix.dll.mdb
+MONO_CECIL_DLL_SOURCE=../../deps/Mono.Cecil.dll
+MONO_CECIL_DLL_MDB_SOURCE=../../deps/Mono.Cecil.dll.mdb
+MONO_POSIX_DLL_SOURCE=../../deps/Mono.Posix.dll
+MONO_POSIX_DLL_MDB_SOURCE=../../deps/Mono.Posix.dll.mdb
 MANGO_DLL_MDB=
 
 endif
@@ -91,13 +91,22 @@ FILES = \
 	Mango.Template/environment.cs \
 	Mango.Template/library.cs \
 	Mango.Template/parser.cs \
-	Mango.Template/tokenizer.cs 
+	Mango.Template/tokenizer.cs \
+	Mango/IMangoContext.cs \
+	Mango.Testing/MockMangoModule.cs \
+	Mango.Testing/Server/MockHttpTransaction.cs \
+	Mango.Testing/Server/MockHttpRequest.cs \
+	Mango/MangoTarget.cs \
+	Mango/IMangoTarget.cs \
+	Mango.Testing/MockMangoTarget.cs 
 
 DATA_FILES = 
 
 RESOURCES = 
 
 EXTRAS = \
+	Mango.Testing \
+	Mango.Testing/Server \
 	mango.pc.in 
 
 REFERENCES =  \
@@ -105,8 +114,8 @@ REFERENCES =  \
 	System.Core
 
 DLL_REFERENCES =  \
-	../../bin/Mono.Cecil.dll \
-	../../bin/Mono.Posix.dll
+	../../deps/Mono.Cecil.dll \
+	../../deps/Mono.Posix.dll
 
 CLEANFILES = $(PROGRAMFILES) $(LINUX_PKGCONFIG) 
 
