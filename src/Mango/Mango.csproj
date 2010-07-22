@@ -78,6 +78,17 @@
     <Compile Include="Mango.Template\library.cs" />
     <Compile Include="Mango.Template\parser.cs" />
     <Compile Include="Mango.Template\tokenizer.cs" />
+    <Compile Include="Mango\IMangoContext.cs" />
+    <Compile Include="Mango.Testing\MockMangoModule.cs" />
+    <Compile Include="Mango.Testing\Server\MockHttpTransaction.cs" />
+    <Compile Include="Mango.Testing\Server\MockHttpRequest.cs" />
+    <Compile Include="Mango\MangoTarget.cs" />
+    <Compile Include="Mango\IMangoTarget.cs" />
+    <Compile Include="Mango.Testing\MockMangoTarget.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Mango.Testing\" />
+    <Folder Include="Mango.Testing\Server\" />
+  </ItemGroup>
 </Project>
