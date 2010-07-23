@@ -18,6 +18,8 @@ namespace Mango.Server {
 
 	public class HttpRequest : IHttpRequest {
 
+		private NameValueCollection uri_data;
+		
 		public HttpRequest (HttpTransaction transaction, HttpHeaders headers, string method, string resource, bool support_1_1)
 		{
 			Transaction = transaction;
@@ -70,6 +72,14 @@ namespace Mango.Server {
 			private set;
 		}
 
+		public NameValueCollection UriData {
+			get {
+				if (uri_data == null)
+					uri_data = new NameValueCollection ();
+				return uri_data;
+			}
+		}
+		
 		public Encoding ContentEncoding {
 			get;
 			private set;

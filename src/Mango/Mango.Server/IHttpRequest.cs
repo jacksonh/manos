@@ -1,6 +1,7 @@
 
 
 using System;
+using System.Collections.Specialized;
 
 namespace Mango.Server {
 
@@ -14,6 +15,9 @@ namespace Mango.Server {
 			get;
 		}
 
+		NameValueCollection UriData {
+			get;	
+		}
 	}
 }
 

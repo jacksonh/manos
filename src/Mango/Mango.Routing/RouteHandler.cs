@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 
 
 using Mango.Server;
+using System.Collections.Specialized;
 
 namespace Mango.Routing {
 
@@ -95,6 +96,11 @@ namespace Mango.Routing {
 			set;
 		}
 
+		//
+		// TODO: These also need to be an observable collection
+		// so we can throw an exception if someone tries to add 
+		// a child when we already have a Target
+		//
 		public IList<RouteHandler> Children {
 			get;
 			private set;
@@ -137,39 +143,45 @@ namespace Mango.Routing {
 				return null;
 			
 			Match m = null;
+			NameValueCollection uri_data = null;
 			if (HasPatterns) {
-				m = FindPatternMatch (request.LocalPath, uri_start);
+				uri_data = new NameValueCollection ();
+				m = FindPatternMatch (request.LocalPath, uri_start, uri_data);
 
-				Console.WriteLine (" -- got match:  {0}", m);
 				if (m == null)
 					return null;
 				
-				if (Target != null)
+				if (Target != null) {
+					request.UriData.Add (uri_data);
 					return Target;
+				}
 
 				uri_start = m.Index + m.Length;
 			}
-			
-			Console.WriteLine (" checking children:  {0}", Children.Count);
+
 			foreach (RouteHandler handler in Children) {
 				IMangoTarget res = handler.Find (request, uri_start);
-				if (res != null)
+				if (res != null) {
+					if (uri_data != null)
+						request.UriData.Add (uri_data);
 					return res;
+				}
 			}
 
 			return null;
 		}
 
-		public Match FindPatternMatch (string input, int start)
+		public Match FindPatternMatch (string input, int start, NameValueCollection uri_data)
 		{
 			if (regexes == null)
 				return null;
 			
 			foreach (Regex r in regexes) {
-				Console.WriteLine ("checking patterns: {0}  for {1}", r, input.Substring (start));
 				Match m = r.Match (input, start);
-				if (m.Success && m.Index == start)
+				if (m.Success && m.Index == start) {
+					AddUriData (r, m, uri_data);
 					return m;
+				}
 			}
 			
 			return null;
@@ -197,6 +209,15 @@ namespace Mango.Routing {
 			for (int i = 0; i < patterns.Count; i++) {
 				regexes [i] = new Regex (patterns [i]);
 			}
+		}
+		
+		private void AddUriData (Regex r, Match m, NameValueCollection uri_data)
+		{
+			string [] groups = r.GetGroupNames ();
+			foreach (string gn in groups) {
+				Group g = m.Groups [gn];
+				uri_data.Add (gn, g.Value);
+			}	
 		}
 	}
 }

@@ -39,10 +39,12 @@
     <Compile Include="Mango\MangoModuleTest.cs" />
     <Compile Include="Mango.Routing\RouteHandlerTest.cs" />
     <Compile Include="Mango\MangoTargetTest.cs" />
+    <Compile Include="Mango.Server\HttpRequestTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Mango.Routing\" />
     <Folder Include="Mango\" />
+    <Folder Include="Mango.Server\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mango.csproj">

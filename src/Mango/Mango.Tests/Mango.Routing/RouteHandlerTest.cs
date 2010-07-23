@@ -102,5 +102,42 @@ namespace Mango.Tests
 			rh.Patterns = null;
 			Assert.IsFalse (rh.HasPatterns, "a4");
 		}
+		
+		[Test]
+		public void UriParamsTest ()
+		{
+			var rh = new RouteHandler ("(?<name>.+)", "GET", new MangoTarget (FakeAction));
+			var request = new MockHttpRequest ("GET", "hello");
+			
+			Assert.NotNull (rh.Find (request), "target");
+			
+			Assert.NotNull (request.UriData, "uri-data");
+			
+			Assert.AreEqual ("hello", request.UriData ["name"]);	
+		}
+		
+		[Test]
+		public void UriParamsTestDeep ()
+		{
+			var rh = new RouteHandler ("(?<animal>.+)/", "GET") {
+				new RouteHandler ("(?<name>.+)", "GET", new MangoTarget (FakeAction)),	                                                         
+			};
+			var request = new MockHttpRequest ("GET", "dog/roxy");
+			
+			Assert.NotNull (rh.Find (request), "target");
+			
+			Assert.NotNull (request.UriData, "uri-data");
+			
+			Assert.AreEqual ("dog", request.UriData ["animal"]);
+			Assert.AreEqual ("roxy", request.UriData ["name"]);
+		}
+		
+		[Test]
+		public void TestNoChildrenOfTarget ()
+		{
+			var rh = new RouteHandler ("foo", "GET", new MangoTarget (FakeAction));
+			
+			Assert.Throws<InvalidOperationException> (() => rh.Children.Add (new RouteHandler ("foo", "POST")));
+		}
 	}
 }
