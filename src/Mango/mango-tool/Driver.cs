@@ -103,7 +103,7 @@ namespace Mango.Tool
 		
 		public void Init (string name)
 		{
-			Initer initer = new Initer (Environment, name);
+			InitCommand initer = new InitCommand (Environment, name);
 			
 			initer.Run ();
 		}

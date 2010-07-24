@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Mango.Tool
 {
-	public class Initer
+	public class InitCommand
 	{
 		public static readonly string LEGAL_NAME_CHARS = "_-.";
 		
@@ -14,7 +14,7 @@ namespace Mango.Tool
 		private string layout;
 		private string dest_dir;
 		
-		public Initer (Environment env, string name)
+		public InitCommand (Environment env, string name)
 		{
 			if (env == null)
 				throw new ArgumentNullException ("environment");
