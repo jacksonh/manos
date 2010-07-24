@@ -18,13 +18,18 @@ namespace Mango.Tool
 		public static readonly string TEMPLATES_DIRECTORY = "Templates";
 		public static readonly string DEPLOYMENT_DIRECTORY = "Deployment";
 		
+		private static Environment Environment = new Environment ();
+		
 		public static int Main (string[] args)
 		{
+			args = ParseGlobalOptions (args);
+			
 			bool help = false;
 			Func<IList<string>, int> command = null;
 			
 			var p = new OptionSet () {
 				{ "h|?|help", v => help = v != null },
+				{ "data-dir=", v => Environment.DataDirectory = v },
 				{ "init|i", v => command = Init },
 				{ "build|b", v => command = Build },
 				{ "compile-templates|ct", v => command = CompileTemplates },
@@ -55,6 +60,26 @@ namespace Mango.Tool
 			return 0;
 		}
 
+		private static string [] ParseGlobalOptions (string [] args)
+		{
+			var p = new OptionSet () {
+				{ "-data-dir=", v => Environment.DataDirectory = v },
+			};
+			
+			List<string> extra = null;
+			try {
+				extra = p.Parse(args);
+			} catch (OptionException){
+				Console.WriteLine ("Try `mango-tool --help' for more information.");
+				return null;
+			}
+			
+			if (extra == null)
+				return null;
+			
+			return extra.ToArray ();
+		}
+		
 		private static int Init (IList<string> args)
 		{
 			if (args.Count < 1) {
@@ -65,6 +90,7 @@ namespace Mango.Tool
 			Driver d = new Driver ();
 			
 			try {
+				Console.WriteLine ("initing: {0}", args [0]);
 				d.Init (args [0]);
 			} catch (Exception e) {
 				Console.WriteLine ("error while initializing application:");
@@ -77,9 +103,9 @@ namespace Mango.Tool
 		
 		public void Init (string name)
 		{
-			Directory.CreateDirectory (name);
-			Directory.CreateDirectory (Path.Combine (name, TEMPLATES_DIRECTORY));
-			Directory.CreateDirectory (Path.Combine (name, DEPLOYMENT_DIRECTORY));
+			Initer initer = new Initer (Environment, name);
+			
+			initer.Run ();
 		}
 		
 		private static int Build (IList<string> args)

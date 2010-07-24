@@ -19,6 +19,7 @@
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Commandlineparameters>-data-dir=../../../../../data/</Commandlineparameters>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -38,6 +39,8 @@
   <ItemGroup>
     <Compile Include="Driver.cs" />
     <Compile Include="Options.cs" />
+    <Compile Include="Initer.cs" />
+    <Compile Include="Environment.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mango.csproj">
