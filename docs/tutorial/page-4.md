@@ -29,6 +29,9 @@ Applications need the ability to schedule events to occur at fixed intervals, so
         AddTimeout (new TimeSpan (...), ctx => Cache.Clear ());
     }
 
+### Exception/Error Handling Mechanism
+An easy system for raising/handling errors needs to be implemented...
+
 
 Revision Three:
 --------------
