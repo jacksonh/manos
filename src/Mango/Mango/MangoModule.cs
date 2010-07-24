@@ -259,7 +259,17 @@ namespace Mango {
 				return;
 			}
 
-			handler.Invoke (new MangoContext (con));
+			try {
+				handler.Invoke (new MangoContext (con));
+			} catch (Exception e) {
+				con.Response.StatusCode = 500;
+				//
+				// TODO: Maybe the cleanest thing to do is
+				// have a HandleError, HandleException thing
+				// on HttpTransaction, along with an UnhandledException
+				// method/event on MangoModule.
+				//
+			}
 
 			con.Response.Finish ();
 		}
