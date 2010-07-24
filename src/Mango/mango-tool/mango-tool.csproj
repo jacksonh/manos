@@ -39,8 +39,9 @@
   <ItemGroup>
     <Compile Include="Driver.cs" />
     <Compile Include="Options.cs" />
-    <Compile Include="Initer.cs" />
+    <Compile Include="InitCommand.cs" />
     <Compile Include="Environment.cs" />
+    <Compile Include="BuildCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mango.csproj">
