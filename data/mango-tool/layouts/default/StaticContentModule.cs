@@ -16,7 +16,7 @@ using Mango;
 //  module.
 //
 
-namespace $APPNAME {
+namespace AppNameFoo {
 
 	public class StaticContentModule : MangoModule {
 
@@ -26,7 +26,7 @@ namespace $APPNAME {
 
 		}
 
-		public static void Content (MangoContext ctx)
+		public static void Content (IMangoContext ctx)
 		{
 			string path = ctx.Request.LocalPath;
 
