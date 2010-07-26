@@ -25,6 +25,8 @@ your application was named HelloWorld, you'll now have a structure something lik
     HelloWorld/Deployment/
     HelloWorld/Deployment/Deploy.cs
     HelloWorld/HelloWorldApp.cs
+    HelloWorld/lib/Mango.dll
+    HelloWorld/lib/nunit-framework.dll
     HelloWorld/StaticContentModule.cs
     HelloWorld/Templates/
     HelloWorld/Tests/
