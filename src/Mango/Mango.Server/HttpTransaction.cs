@@ -23,6 +23,7 @@ namespace Mango.Server {
 
 		private bool aborted;
 		private bool connection_finished;
+		private string send_file;
 
 		public HttpTransaction (HttpServer server, IOStream stream, Socket socket, HttpConnectionCallback callback)
 		{
@@ -70,6 +71,11 @@ namespace Mango.Server {
 			set;
 		}
 
+		public bool ConnectionFinished {
+			get {
+				return (connection_finished && send_file == null);
+			}
+		}
 		public void Abort (int status, string message, params object [] p)
 		{
 			aborted = true;
@@ -82,23 +88,41 @@ namespace Mango.Server {
 
 		public void SendFile (string file)
 		{
-			IOStream.SendFile (file);
+			if (IOStream.IsWriting) {
+				send_file = file;
+				return;
+			}
+			
+			IOStream.SendFile (file, OnSendFileFinished);
 		}
 
 		public void Finish ()
 		{
 			connection_finished = true;
 
-			if (!IOStream.IsWriting)
+			if (!IOStream.IsWriting && send_file == null)
 				FinishResponse ();
 		}
 
 		private void OnWriteFinished ()
 		{
-			if (connection_finished)
+			if (send_file != null) {
+				IOStream.SendFile (send_file, OnSendFileFinished);
+				return;
+			}
+			
+			if (ConnectionFinished)
 				FinishResponse ();
 		}
 
+		private void OnSendFileFinished ()
+		{
+			send_file = null;
+			
+			if (ConnectionFinished)
+				FinishResponse ();
+		}
+		
 		private void FinishResponse ()
 		{
 			bool disconnect = true;
