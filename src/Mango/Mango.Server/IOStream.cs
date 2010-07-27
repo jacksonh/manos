@@ -257,6 +257,10 @@ namespace Mango.Server {
 
 		private void HandleSendFile ()
 		{
+			//
+			// TODO: Need to handle WOULDBLOCK here.
+			// 
+			
 			long len = Syscall.sendfile (socket.Handle.ToInt32 (), 
 			                            send_file.SafeFileHandle.DangerousGetHandle ().ToInt32 (), 
 			                            ref send_file_offset,
