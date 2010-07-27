@@ -77,20 +77,25 @@ namespace Mango.Server {
 
 		public void SendFile (string file)
 		{
-			// TODO: I'd really like to use SendFile here and just
-			// do an immediate push, unfortunately the IOStream
-			// doesn't handle that yet.
-
-			byte [] data = File.ReadAllBytes (file);
-			WriteToBody (data);
+			FileInfo fi = new FileInfo (file);
+			SetHeader ("Content-Length", fi.Length.ToString ());
+			
+			WriteMetaData ();
+			
+			Transaction.SendFile (file);
 		}
 
-		public void Finish ()
+		public void WriteMetaData ()
 		{
 			if (WriteHeaders)
 				InsertHeaders ();
 			if (WriteStatusLine)
 				InsertStatusLine ();
+		}
+		
+		public void Finish ()
+		{
+			WriteMetaData ();
 			
 			Transaction.Write (buffer);
 			Transaction.Finish ();
