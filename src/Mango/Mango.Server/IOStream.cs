@@ -22,14 +22,18 @@ namespace Mango.Server {
 		private EpollEvents state;
 
 		private MemoryStream read_buffer;
-		private IList<ArraySegment<byte>> write_data;
-
 		private int read_bytes = -1;
 		private byte [] read_delimiter;
 		private ReadCallback read_callback;
 
+		private IList<ArraySegment<byte>> write_data;
 		private WriteCallback write_callback;
 
+		private FileStream send_file;
+		private long send_file_count;
+		private long send_file_offset;
+		private WriteCallback send_file_callback;
+		
 		private static readonly int DefaultReadChunkSize  = 4096;
 
 		private class WriteOperation {
@@ -130,9 +134,15 @@ namespace Mango.Server {
 			AddIOState (IOLoop.EPOLL_WRITE_EVENTS);
 		}
 
-		public void SendFile (string file)
+		public void SendFile (string file, WriteCallback callback)
 		{
-			socket.SendFile (file);
+			CheckCanRead ();
+			
+			send_file_callback = callback;
+			
+			send_file = new FileStream (file, FileMode.Open, FileAccess.Read);
+			send_file_offset = 0;
+			send_file_count = send_file.Length;
 		}
 
 		public void Close ()
@@ -184,8 +194,12 @@ namespace Mango.Server {
 			if (IsClosed)
 				return;
 
-			if ((events & IOLoop.EPOLL_WRITE_EVENTS) != 0)
-				HandleWrite ();
+			if ((events & IOLoop.EPOLL_WRITE_EVENTS) != 0) {
+				if (send_file == null)
+					HandleWrite ();
+				else
+					HandleSendFile ();
+			}
 
 			if (IsClosed)
 				return;
@@ -241,6 +255,19 @@ namespace Mango.Server {
 			}
 		}
 
+		private void HandleSendFile ()
+		{
+			long len = Syscall.sendfile (socket.Handle.ToInt32 (), 
+			                            send_file.SafeFileHandle.DangerousGetHandle ().ToInt32 (), 
+			                            ref send_file_offset,
+			                            (ulong) (send_file_count - send_file_offset));
+			
+			send_file_offset += len;
+			
+			if (len >= send_file_count)
+				FinishSendFile ();
+		}
+		
 		private void HandleWrite ()
 		{
 			int len = socket.Send (write_data);
@@ -335,6 +362,18 @@ namespace Mango.Server {
 			write_data = null;
 			write_callback = null;
 
+			callback ();
+		}
+		
+		private void FinishSendFile ()
+		{
+			WriteCallback callback = send_file_callback;
+			
+			// send_file.Close ();
+			send_file = null;
+			send_file_count = 0;
+			send_file_offset = 0;
+			
 			callback ();
 		}
 	}
