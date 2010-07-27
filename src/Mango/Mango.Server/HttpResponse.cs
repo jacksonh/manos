@@ -81,8 +81,10 @@ namespace Mango.Server {
 			SetHeader ("Content-Length", fi.Length.ToString ());
 			
 			WriteMetaData ();
+			Transaction.Write (buffer);
 			
 			Transaction.SendFile (file);
+			Transaction.Finish ();
 		}
 
 		public void WriteMetaData ()
