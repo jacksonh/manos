@@ -85,6 +85,9 @@
     <Compile Include="Mango\MangoTarget.cs" />
     <Compile Include="Mango\IMangoTarget.cs" />
     <Compile Include="Mango.Testing\MockMangoTarget.cs" />
+    <Compile Include="Mango.Server\WriteBytesOperation.cs" />
+    <Compile Include="Mango.Server\WriteFileOperation.cs" />
+    <Compile Include="Mango.Server\IWriteOperation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

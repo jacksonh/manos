@@ -32,7 +32,6 @@ namespace Mango.Server {
 		private FileStream send_file;
 		private long send_file_count;
 		private long send_file_offset;
-		private WriteCallback send_file_callback;
 		
 		private static readonly int DefaultReadChunkSize  = 4096;
 
@@ -138,7 +137,7 @@ namespace Mango.Server {
 		{
 			CheckCanRead ();
 			
-			send_file_callback = callback;
+			write_callback = callback;
 			
 			send_file = new FileStream (file, FileMode.Open, FileAccess.Read);
 			send_file_offset = 0;
@@ -261,14 +260,12 @@ namespace Mango.Server {
 			// TODO: Need to handle WOULDBLOCK here.
 			// 
 			
-			long len = Syscall.sendfile (socket.Handle.ToInt32 (), 
-			                            send_file.SafeFileHandle.DangerousGetHandle ().ToInt32 (), 
-			                            ref send_file_offset,
-			                            (ulong) (send_file_count - send_file_offset));
-			
-			send_file_offset += len;
-			
-			if (len >= send_file_count)
+			Syscall.sendfile (socket.Handle.ToInt32 (), 
+			                  send_file.Handle.ToInt32 (), 
+			                  ref send_file_offset,
+			                  (ulong) (send_file_count - send_file_offset));
+
+			if (send_file_offset >= send_file_count)
 				FinishSendFile ();
 		}
 		
@@ -371,10 +368,12 @@ namespace Mango.Server {
 		
 		private void FinishSendFile ()
 		{
-			WriteCallback callback = send_file_callback;
+			WriteCallback callback = write_callback;
+			write_callback = null;
 			
-			// send_file.Close ();
+			send_file.Close ();
 			send_file = null;
+			
 			send_file_count = 0;
 			send_file_offset = 0;
 			

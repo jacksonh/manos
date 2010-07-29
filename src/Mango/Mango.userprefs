@@ -1,27 +1,26 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" ctype="Workspace" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="mango-tool/Environment.cs" ctype="Workbench">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Mango.Server/IOStream.cs" ctype="Workbench">
     <Files>
-      <File FileName="Mango/MangoModule.cs" Line="271" Column="7" />
-      <File FileName="Mango.Testing/MockMangoTarget.cs" Line="1" Column="1" />
-      <File FileName="Mango.Tests/Mango/MangoModuleTest.cs" Line="284" Column="11" />
-      <File FileName="Mango.Tests/Mango.Server/HttpRequestTest.cs" Line="16" Column="11" />
-      <File FileName="Mango.Tests/Mango/MangoTargetTest.cs" Line="1" Column="1" />
-      <File FileName="Mango.Routing/HttpMethods.cs" Line="1" Column="1" />
-      <File FileName="mango-tool/Driver.cs" Line="55" Column="18" />
-      <File FileName="mango-tool/Initer.cs" Line="42" Column="53" />
-      <File FileName="mango-tool/Environment.cs" Line="17" Column="32" />
-      <File FileName="mango-tool/IToolCommand.cs" Line="1" Column="1" />
+      <File FileName="mango-tool/Driver.cs" Line="1" Column="1" />
+      <File FileName="mango-tool/BuildCommand.cs" Line="1" Column="1" />
+      <File FileName="Mango.Server/HttpServer.cs" Line="1" Column="1" />
+      <File FileName="Mango.Server/IOLoop.cs" Line="1" Column="1" />
+      <File FileName="Mango.Server/IOStream.cs" Line="263" Column="4" />
+      <File FileName="Mango.Server/HttpResponse.cs" Line="1" Column="1" />
+      <File FileName="Mango.Server/HttpTransaction.cs" Line="1" Column="1" />
+      <File FileName="mango-server/mango.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="Mango.Tests" expanded="True">
-            <Node name="Mango" expanded="True" />
-            <Node name="Mango.Routing" expanded="True" />
-            <Node name="Mango.Server" expanded="True" />
+          <Node name="Mango" expanded="True">
+            <Node name="Mango.Server" expanded="True">
+              <Node name="IOStream.cs" selected="True" />
+            </Node>
           </Node>
-          <Node name="mango-tool" expanded="True" selected="True" />
+          <Node name="mango-server" expanded="True" />
+          <Node name="mango-tool" expanded="True" />
         </State>
       </Pad>
       <Pad Id="ClassPad">
@@ -31,7 +30,7 @@
         <State />
       </Pad>
       <Pad Id="MonoDevelop.NUnit.TestPad">
-        <State expanded="True" />
+        <State expanded="True" selected="True" />
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>

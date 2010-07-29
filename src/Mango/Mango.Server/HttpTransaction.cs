@@ -25,6 +25,8 @@ namespace Mango.Server {
 		private bool connection_finished;
 		private string send_file;
 
+		private Queue<IWriteOperation> write_ops;
+		
 		public HttpTransaction (HttpServer server, IOStream stream, Socket socket, HttpConnectionCallback callback)
 		{
 			Server = server;
@@ -32,6 +34,8 @@ namespace Mango.Server {
 			Socket = socket;
 			ConnectionCallback = callback;
 
+			write_ops = new Queue<IWriteOperation> ();
+			
 			stream.ReadUntil ("\r\n\r\n", OnHeaders);
 		}
 
@@ -73,7 +77,7 @@ namespace Mango.Server {
 
 		public bool ConnectionFinished {
 			get {
-				return (connection_finished && send_file == null);
+				return connection_finished;
 			}
 		}
 		public void Abort (int status, string message, params object [] p)
@@ -83,44 +87,47 @@ namespace Mango.Server {
 
 		public void Write (List<ArraySegment<byte>> data)
 		{
-			IOStream.Write (data, OnWriteFinished);
+			write_ops.Enqueue (new WriteBytesOperation (data, OnWriteFinished));
+			PerformNextWrite ();
 		}
 
 		public void SendFile (string file)
 		{
-			if (IOStream.IsWriting) {
-				send_file = file;
-				return;
-			}
-			
-			IOStream.SendFile (file, OnSendFileFinished);
+			write_ops.Enqueue (new WriteFileOperation (file, OnWriteFinished)); 
+			PerformNextWrite ();
 		}
 
 		public void Finish ()
 		{
 			connection_finished = true;
-
-			if (!IOStream.IsWriting && send_file == null)
-				FinishResponse ();
+			// FinishResponse ();
 		}
 
 		private void OnWriteFinished ()
 		{
-			if (send_file != null) {
-				IOStream.SendFile (send_file, OnSendFileFinished);
+			if (PerformNextWrite ())
 				return;
-			}
 			
 			if (ConnectionFinished)
 				FinishResponse ();
 		}
 
-		private void OnSendFileFinished ()
+		private bool NoWritesQueued {
+			get { return write_ops.Count < 1; }	
+		}
+		
+		private bool PerformNextWrite ()
 		{
-			send_file = null;
+			if (NoWritesQueued)
+				return false;
 			
-			if (ConnectionFinished)
-				FinishResponse ();
+			if (IOStream.IsWriting)
+				return true;
+			
+			IWriteOperation op = write_ops.Dequeue ();
+			op.Write (IOStream);
+			
+			return true;
 		}
 		
 		private void FinishResponse ()
