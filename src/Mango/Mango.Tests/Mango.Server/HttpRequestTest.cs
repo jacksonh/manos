@@ -5,7 +5,7 @@ using NUnit.Framework;
 using Mango;
 using Mango.Server;
 
-namespace Mango.Tests
+namespace Mango.Server.Tests
 {
 
 
