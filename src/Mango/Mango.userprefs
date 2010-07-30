@@ -1,22 +1,24 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" ctype="Workspace" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Mango.Server/IOStream.cs" ctype="Workbench">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Mango.Tests/Mango.Routing/NopMatchOperationTest.cs" ctype="Workbench">
     <Files>
-      <File FileName="mango-tool/Driver.cs" Line="1" Column="1" />
-      <File FileName="mango-tool/BuildCommand.cs" Line="1" Column="1" />
-      <File FileName="Mango.Server/HttpServer.cs" Line="1" Column="1" />
-      <File FileName="Mango.Server/IOLoop.cs" Line="1" Column="1" />
-      <File FileName="Mango.Server/IOStream.cs" Line="263" Column="4" />
-      <File FileName="Mango.Server/HttpResponse.cs" Line="1" Column="1" />
-      <File FileName="Mango.Server/HttpTransaction.cs" Line="1" Column="1" />
-      <File FileName="mango-server/mango.cs" Line="1" Column="1" />
+      <File FileName="Mango.Routing/RegexMatchOperation.cs" Line="37" Column="31" />
+      <File FileName="Mango.Routing/MatchOperationFactory.cs" Line="20" Column="4" />
+      <File FileName="Mango.Tests/Mango.Routing/MatchOperationFactoryTest.cs" Line="28" Column="54" />
+      <File FileName="Mango.Routing/StringMatchOperation.cs" Line="3" Column="38" />
+      <File FileName="Mango.Tests/Mango.Routing/StringMatchOperationTest.cs" Line="82" Column="53" />
+      <File FileName="Mango.Routing/NopMatchOperation.cs" Line="3" Column="38" />
+      <File FileName="Mango.Tests/Mango.Routing/NopMatchOperationTest.cs" Line="20" Column="28" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Mango" expanded="True">
-            <Node name="Mango.Server" expanded="True">
-              <Node name="IOStream.cs" selected="True" />
+            <Node name="Mango.Routing" expanded="True" />
+          </Node>
+          <Node name="Mango.Tests" expanded="True">
+            <Node name="Mango.Routing" expanded="True">
+              <Node name="NopMatchOperationTest.cs" selected="True" />
             </Node>
           </Node>
           <Node name="mango-server" expanded="True" />
@@ -30,7 +32,15 @@
         <State />
       </Pad>
       <Pad Id="MonoDevelop.NUnit.TestPad">
-        <State expanded="True" selected="True" />
+        <State expanded="True">
+          <Node name="Mango.Tests" expanded="True">
+            <Node name="Mango" expanded="True">
+              <Node name="Tests" expanded="True" selected="True">
+                <Node name="NopMatchOperationTest" expanded="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>

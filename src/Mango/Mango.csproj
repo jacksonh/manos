@@ -88,6 +88,11 @@
     <Compile Include="Mango.Server\WriteBytesOperation.cs" />
     <Compile Include="Mango.Server\WriteFileOperation.cs" />
     <Compile Include="Mango.Server\IWriteOperation.cs" />
+    <Compile Include="Mango.Routing\IMatchOperation.cs" />
+    <Compile Include="Mango.Routing\RegexMatchOperation.cs" />
+    <Compile Include="Mango.Routing\MatchOperationFactory.cs" />
+    <Compile Include="Mango.Routing\StringMatchOperation.cs" />
+    <Compile Include="Mango.Routing\NopMatchOperation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

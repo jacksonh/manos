@@ -40,6 +40,10 @@
     <Compile Include="Mango.Routing\RouteHandlerTest.cs" />
     <Compile Include="Mango\MangoTargetTest.cs" />
     <Compile Include="Mango.Server\HttpRequestTest.cs" />
+    <Compile Include="Mango.Routing\RegexMatchOperationTest.cs" />
+    <Compile Include="Mango.Routing\MatchOperationFactoryTest.cs" />
+    <Compile Include="Mango.Routing\StringMatchOperationTest.cs" />
+    <Compile Include="Mango.Routing\NopMatchOperation.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Mango.Routing\" />
