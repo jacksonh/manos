@@ -27,6 +27,16 @@ namespace Mango.Server.Tests
 			headers.Parse (new StringReader (header));
 			
 			Assert.AreEqual ("some multiline value", headers ["HeaderName"], "a1");
+			
+			header = @"HeaderName: Some multiline
+  								value
+	that spans
+	a bunch of lines";
+			
+			headers = new HttpHeaders ();
+			headers.Parse (new StringReader (header));
+			
+			Assert.AreEqual ("Some multiline value that spans a bunch of lines", headers ["HeaderName"], "a2");
 		}
 	}
 }
