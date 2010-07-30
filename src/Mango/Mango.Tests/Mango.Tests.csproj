@@ -43,7 +43,7 @@
     <Compile Include="Mango.Routing\RegexMatchOperationTest.cs" />
     <Compile Include="Mango.Routing\MatchOperationFactoryTest.cs" />
     <Compile Include="Mango.Routing\StringMatchOperationTest.cs" />
-    <Compile Include="Mango.Routing\NopMatchOperation.cs" />
+    <Compile Include="Mango.Routing\NopMatchOperationTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Mango.Routing\" />
