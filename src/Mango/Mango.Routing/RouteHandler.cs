@@ -18,7 +18,7 @@ namespace Mango.Routing {
 		private List<string> patterns;
 		private List<string> methods;
 
-		private Regex [] regexes;
+		private IMatchOperation [] match_ops;
 
 		internal RouteHandler ()
 		{
@@ -77,7 +77,7 @@ namespace Mango.Routing {
 					patterns = null;
 				else
 					patterns = new List<string> (value);
-				UpdateRegexes ();
+				UpdateMatchOps ();
 			}
 		}
 
@@ -145,18 +145,18 @@ namespace Mango.Routing {
 			Match m = null;
 			NameValueCollection uri_data = null;
 			if (HasPatterns) {
+				int end;
 				uri_data = new NameValueCollection ();
-				m = FindPatternMatch (request.LocalPath, uri_start, uri_data);
-
-				if (m == null)
-					return null;
 				
+				if (!FindPatternMatch (request.LocalPath, uri_start, uri_data, out end))
+					return null;
+
 				if (Target != null) {
 					request.UriData.Add (uri_data);
 					return Target;
 				}
 
-				uri_start = m.Index + m.Length;
+				uri_start = end;
 			}
 
 			foreach (RouteHandler handler in Children) {
@@ -171,20 +171,21 @@ namespace Mango.Routing {
 			return null;
 		}
 
-		public Match FindPatternMatch (string input, int start, NameValueCollection uri_data)
+		public bool FindPatternMatch (string input, int start, NameValueCollection uri_data, out int end)
 		{
-			if (regexes == null)
-				return null;
+			if (match_ops == null) {
+				end = start;
+				return false;
+			}
 			
-			foreach (Regex r in regexes) {
-				Match m = r.Match (input, start);
-				if (m.Success && m.Index == start) {
-					AddUriData (r, m, uri_data);
-					return m;
+			foreach (IMatchOperation op in match_ops) {
+				if (op.IsMatch (input, start, uri_data, out end)) {
+					return true;
 				}
 			}
 			
-			return null;
+			end = start;
+			return false;
 		}
 		
 		public bool IsMethodMatch (IHttpRequest request)
@@ -197,27 +198,19 @@ namespace Mango.Routing {
 
 			return true;
 		}
-
-		private void UpdateRegexes ()
+		
+		private void UpdateMatchOps ()
 		{
 			if (patterns == null) {
-				regexes = null;
+				match_ops = null;
 				return;
 			}
-
-			regexes = new Regex [patterns.Count];
+			
+			match_ops = new IMatchOperation [patterns.Count];
+			
 			for (int i = 0; i < patterns.Count; i++) {
-				regexes [i] = new Regex (patterns [i]);
+				match_ops [i] = MatchOperationFactory.Create (patterns [i]);	
 			}
-		}
-		
-		private void AddUriData (Regex r, Match m, NameValueCollection uri_data)
-		{
-			string [] groups = r.GetGroupNames ();
-			foreach (string gn in groups) {
-				Group g = m.Groups [gn];
-				uri_data.Add (gn, g.Value);
-			}	
 		}
 	}
 }
