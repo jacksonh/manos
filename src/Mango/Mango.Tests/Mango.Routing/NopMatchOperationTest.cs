@@ -5,7 +5,7 @@ using NUnit.Framework;
 using Mango.Routing;
 using System.Collections.Specialized;
 
-namespace Mango.Tests
+namespace Mango.Routing.Tests
 {
 
 

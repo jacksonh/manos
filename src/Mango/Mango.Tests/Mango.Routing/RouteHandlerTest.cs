@@ -6,7 +6,7 @@ using Mango.Routing;
 using Mango.Testing;
 using Mango.Testing.Server;
 
-namespace Mango.Tests
+namespace Mango.Routing.Tests
 {
 
 

@@ -5,9 +5,8 @@ using NUnit.Framework;
 using Mango.Routing;
 
 
-namespace Mango.Tests
+namespace Mango.Routing.Tests
 {
-
 
 	[TestFixture()]
 	public class MatchOperationFactoryTest
