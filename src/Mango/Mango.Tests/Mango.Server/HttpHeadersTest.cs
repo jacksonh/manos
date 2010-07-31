@@ -190,5 +190,42 @@ namespace Mango.Server.Tests
 			Assert.AreEqual ("Foo-Bar-", HttpHeaders.NormalizeName ("foo-BAR-"));
 			Assert.AreEqual ("Foo-Bar-", HttpHeaders.NormalizeName ("Foo-BaR-"));
 		}
+		
+		[Test]
+		public void TestSetValue ()
+		{
+			HttpHeaders headers = new HttpHeaders ();
+			
+			headers.SetHeader ("Foo", "Bar");
+			Assert.AreEqual ("Bar", headers ["Foo"], "a1");
+			
+			// Keys should get normalized
+			headers.SetHeader ("foo", "bar");
+			Assert.AreEqual ("bar", headers ["foo"], "a2");
+			Assert.AreEqual ("bar", headers ["Foo"], "a3");
+		}
+		
+		[Test]
+		public void TestSetValueNullRemovesKey ()
+		{
+			string dummy = null;
+			HttpHeaders headers = new HttpHeaders ();
+			
+			headers.SetHeader ("Foo", "Bar");
+			Assert.AreEqual ("Bar", headers ["Foo"], "a1");
+			
+			headers.SetHeader ("Foo", null);
+			Assert.IsFalse (headers.TryGetValue ("Foo", out dummy), "a2");
+			Assert.AreEqual (0, headers.Count, "a3");
+		}
+		
+		[Test]
+		public void TestSetContentLength ()
+		{
+			HttpHeaders headers = new HttpHeaders ();
+			
+			headers.SetContentLength ("100");
+			Assert.AreEqual (100, headers.ContentLength, "a1");
+		}
 	}
 }
