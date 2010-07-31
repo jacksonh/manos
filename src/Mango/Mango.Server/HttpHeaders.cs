@@ -14,6 +14,8 @@ namespace Mango.Server {
 
 	public class HttpHeaders {
 
+		public static readonly string CONTENT_LENGTH_KEY = "Content-Length";
+		
 		private long? content_length;
 		private Dictionary<string,string> items = new Dictionary<string,string> ();
 
@@ -24,8 +26,15 @@ namespace Mango.Server {
 		public long? ContentLength {
 			get { return content_length; }
 			set {
+				if (value < 0)
+					throw new ArgumentException ("value");
+				
 				content_length = value;
-				items ["Content-Length"] = value.ToString ();
+				if (value == null) {
+					items.Remove (CONTENT_LENGTH_KEY);
+					return;
+				}
+				items [CONTENT_LENGTH_KEY] = value.ToString ();
 			}
 		}
 
@@ -118,10 +127,8 @@ namespace Mango.Server {
 			if (!IsValidHeaderName (name))
 				throw new ArgumentException (String.Format ("Invalid header '{0}'.", name));
 			
-			switch (name) {
-			case "Content-Length":
-				SetContentLength (value);				
-				break;
+			if (name == CONTENT_LENGTH_KEY) {
+				SetContentLength (value);
 			}
 
 			if (value == null) {
@@ -164,8 +171,11 @@ namespace Mango.Server {
 		
 		public void SetContentLength (string value)
 		{
-			if (value == null)
-				throw new ArgumentNullException ("value");
+			if (value == null) {
+				items.Remove (CONTENT_LENGTH_KEY);
+				content_length = null;
+				return;
+			}
 			
 			int cl;
 			if (!Int32.TryParse (value, out cl))
