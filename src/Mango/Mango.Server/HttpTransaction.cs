@@ -80,6 +80,7 @@ namespace Mango.Server {
 				return connection_finished;
 			}
 		}
+		
 		public void Abort (int status, string message, params object [] p)
 		{
 			aborted = true;

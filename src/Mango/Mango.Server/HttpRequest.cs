@@ -20,7 +20,7 @@ namespace Mango.Server {
 
 		private NameValueCollection uri_data;
 		
-		public HttpRequest (HttpTransaction transaction, HttpHeaders headers, string method, string resource, bool support_1_1)
+		public HttpRequest (IHttpTransaction transaction, HttpHeaders headers, string method, string resource, bool support_1_1)
 		{
 			Transaction = transaction;
 			Headers = headers;
@@ -32,7 +32,7 @@ namespace Mango.Server {
 			SetPathAndQuery ();
 		}
 
-		public HttpTransaction Transaction {
+		public IHttpTransaction Transaction {
 			get;
 			private set;
 		}
