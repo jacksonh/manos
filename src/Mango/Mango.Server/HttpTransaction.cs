@@ -135,8 +135,9 @@ namespace Mango.Server {
 			bool disconnect = true;
 
 			if (!NoKeepAlive) {
-				if (Request.Http_1_1_Supported)
-					disconnect = Request.Headers ["Connection"] == "close";
+				string dis;
+				if (Request.Http_1_1_Supported && Request.Headers.TryGetValue ("Connection", out dis))
+					disconnect = (dis == "close");
 			}
 
 			Request = null;
