@@ -2,7 +2,7 @@
 using System;
 
 
-namespace Mango.Routing {
+namespace Mango {
 
 	public static class HttpMethods {
 

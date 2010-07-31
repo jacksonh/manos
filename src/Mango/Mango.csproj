@@ -55,7 +55,6 @@
     <Compile Include="Mango\PostAttribute.cs" />
     <Compile Include="Mango\PutAttribute.cs" />
     <Compile Include="Mango\TraceAttribute.cs" />
-    <Compile Include="Mango.Routing\HttpMethods.cs" />
     <Compile Include="Mango.Routing\RouteHandler.cs" />
     <Compile Include="Mango.Server\AssemblyInfo.cs" />
     <Compile Include="Mango.Server\HttpException.cs" />
@@ -92,6 +91,7 @@
     <Compile Include="Mango.Routing\MatchOperationFactory.cs" />
     <Compile Include="Mango.Routing\StringMatchOperation.cs" />
     <Compile Include="Mango.Routing\NopMatchOperation.cs" />
+    <Compile Include="Mango\HttpMethods.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
