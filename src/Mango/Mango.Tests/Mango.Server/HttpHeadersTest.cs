@@ -34,6 +34,49 @@ namespace Mango.Server.Tests
 		}
 		
 		[Test()]
+		public void TestSingleValueParseTrailingWhiteSpace ()
+		{
+			HttpHeaders headers = new HttpHeaders ();
+			
+			string str = "Key: Value      ";
+			headers.Parse (new StringReader (str));
+			Assert.AreEqual ("Value", headers ["Key"], "a1");
+			Assert.AreEqual (1, headers.Count, "a2");
+			
+			str = "Key: Value\t";
+			headers.Parse (new StringReader (str));
+			Assert.AreEqual ("Value", headers ["Key"], "a1");
+			Assert.AreEqual (1, headers.Count, "a2");
+			
+			str = "Key: Value ";
+			headers.Parse (new StringReader (str));
+			Assert.AreEqual ("Value", headers ["Key"], "a1");
+			Assert.AreEqual (1, headers.Count, "a2");
+		}
+		
+		[Test()]
+		public void TestValueIsJustWhiteSpace ()
+		{
+			HttpHeaders headers = new HttpHeaders ();
+			
+			string str = "Key: ";
+			
+			Assert.Throws<HttpException> (() => headers.Parse (new StringReader (str)));
+			Assert.AreEqual (0, headers.Count, "a2");
+		}
+		
+		[Test()]
+		public void TestWhiteSpaceStartsFirstLine ()
+		{
+			HttpHeaders headers = new HttpHeaders ();
+			
+			string str = " Key: Value";
+			
+			Assert.Throws<HttpException> (() => headers.Parse (new StringReader (str)));
+			Assert.AreEqual (0, headers.Count, "a2");
+		}
+		
+		[Test()]
 		public void TestMultipleValueParse ()
 		{
 			HttpHeaders headers = new HttpHeaders ();
@@ -62,7 +105,7 @@ namespace Mango.Server.Tests
 			
 			headers.Parse (new StringReader (header));
 			
-			Assert.AreEqual ("some multiline value", headers ["HeaderName"], "a1");
+			Assert.AreEqual ("Some multiline value", headers ["HeaderName"], "a1");
 			
 			header = @"HeaderName: Some multiline
   								value
