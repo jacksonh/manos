@@ -5,7 +5,7 @@ using Mango;
 using Mango.Server;
 using System.Collections.Specialized;
 
-namespace Mango.Testing.Server
+namespace Mango.Server.Testing
 {
 
 

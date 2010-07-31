@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 using Mango.Routing;
 using Mango.Testing;
-using Mango.Testing.Server;
+using Mango.Server.Testing;
 
 namespace Mango.Routing.Tests
 {

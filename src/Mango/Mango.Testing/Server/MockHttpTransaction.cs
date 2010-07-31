@@ -1,11 +1,11 @@
 
 using System;
 
-namespace Mango
+namespace Mango.Server.Testing
 {
 
 
-	public class MockHttpTransaction
+	public class MockHttpTransaction 
 	{
 		public MockHttpTransaction ()
 		{
