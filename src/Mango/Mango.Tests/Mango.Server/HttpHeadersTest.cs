@@ -112,6 +112,40 @@ namespace Mango.Server.Tests
 		public void TestNormalizeDashedName ()
 		{
 			Assert.AreEqual ("Foo-Bar", HttpHeaders.NormalizeName ("foo-bar"));
+			Assert.AreEqual ("Foo-Bar", HttpHeaders.NormalizeName ("FOO-BAR"));
+			Assert.AreEqual ("Foo-Bar", HttpHeaders.NormalizeName ("Foo-bar"));
+			Assert.AreEqual ("Foo-Bar", HttpHeaders.NormalizeName ("foo-BAR"));
+			Assert.AreEqual ("Foo-Bar", HttpHeaders.NormalizeName ("Foo-BaR"));
+		}
+		
+		[Test()]
+		public void TestNormalizeDoubleDash ()
+		{
+			Assert.AreEqual ("Foo--Bar", HttpHeaders.NormalizeName ("foo--bar"));
+			Assert.AreEqual ("Foo--Bar", HttpHeaders.NormalizeName ("FOO--BAR"));
+			Assert.AreEqual ("Foo--Bar", HttpHeaders.NormalizeName ("Foo--bar"));
+			Assert.AreEqual ("Foo--Bar", HttpHeaders.NormalizeName ("foo--BAR"));
+			Assert.AreEqual ("Foo--Bar", HttpHeaders.NormalizeName ("Foo--BaR"));
+		}
+		
+		[Test()]
+		public void TestNormalizeStartDash ()
+		{
+			Assert.AreEqual ("-Foo-Bar", HttpHeaders.NormalizeName ("-foo-bar"));
+			Assert.AreEqual ("-Foo-Bar", HttpHeaders.NormalizeName ("-FOO-BAR"));
+			Assert.AreEqual ("-Foo-Bar", HttpHeaders.NormalizeName ("-Foo-bar"));
+			Assert.AreEqual ("-Foo-Bar", HttpHeaders.NormalizeName ("-foo-BAR"));
+			Assert.AreEqual ("-Foo-Bar", HttpHeaders.NormalizeName ("-Foo-BaR"));
+		}
+		
+		[Test()]
+		public void TestNormalizeEndDash ()
+		{
+			Assert.AreEqual ("Foo-Bar-", HttpHeaders.NormalizeName ("foo-bar-"));
+			Assert.AreEqual ("Foo-Bar-", HttpHeaders.NormalizeName ("FOO-BAR-"));
+			Assert.AreEqual ("Foo-Bar-", HttpHeaders.NormalizeName ("Foo-bar-"));
+			Assert.AreEqual ("Foo-Bar-", HttpHeaders.NormalizeName ("foo-BAR-"));
+			Assert.AreEqual ("Foo-Bar-", HttpHeaders.NormalizeName ("Foo-BaR-"));
 		}
 	}
 }
