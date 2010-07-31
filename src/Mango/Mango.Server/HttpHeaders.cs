@@ -33,10 +33,14 @@ namespace Mango.Server {
 			get {
 				if (name == null)
 					throw new ArgumentNullException ("name");
-				return items [name];
+				return items [NormalizeName (name)];
 			}
 		}
 
+		public int Count {
+			get { return items.Count; }	
+		}
+		
 		public Dictionary<string,string>.KeyCollection Keys {
 			get {
 				return items.Keys;
@@ -45,18 +49,49 @@ namespace Mango.Server {
 
 		public bool TryGetValue (string key, out string value)
 		{
-			return items.TryGetValue (key, out value);
+			return items.TryGetValue (NormalizeName (key), out value);
 		}
 
 		public void Parse (TextReader reader)
 		{
-			string line;
-			while ((line = reader.ReadLine ()) != null) {
-				int colon = line.IndexOf (':');
-				if (colon <= 0) {
-					continue;
+			string line = reader.ReadLine ();
+			while (line != null) {
+				int line_end = line.Length - 1;
+				
+				if (String.IsNullOrEmpty (line))
+					throw new HttpException ("Malformed HTTP header. No data on line.");
+				
+				if (Char.IsWhiteSpace (line [0]))
+					throw new HttpException ("Malformed HTTP header. Found whitespace before data.");
+				
+				while (Char.IsWhiteSpace (line [line_end])) {
+					line_end--;
+					if (line_end == 0)
+						throw new HttpException ("Malformed HTTP header. No data found.");
 				}
-				SetHeader (line.Substring (0, colon), line.Substring (colon + 1, line.Length - colon - 1).Trim ());
+
+				int colon = line.IndexOf (':');
+				if (colon <= 0) 
+					throw new HttpException ("Malformed HTTP header. No colon found.");
+				if (colon >= line_end)
+					throw new HttpException ("Malformed HTTP header. No value found.");
+				string value = line.Substring (colon + 1, line_end - colon).TrimStart ();
+				if (value.Length == 0)
+					throw new HttpException ("Malformed HTTP header. No Value found.");
+				
+				string key = line.Substring (0, colon);
+				
+				//
+				// If the next line starts with whitespace its part of the current value
+				//
+				line = reader.ReadLine ();
+				while (line != null && Char.IsWhiteSpace (line [0])) {
+					value += " " + line.Trim ();
+					line = reader.ReadLine ();
+				}
+				
+				Console.WriteLine ("setting key: {0}", key);
+				SetHeader (key, value);
 			}
 		}
 
@@ -95,10 +130,15 @@ namespace Mango.Server {
 			items [name] = value;
 		}
 
-		internal string NormalizeName (string name)
+		public static string NormalizeName (string name)
 		{
+			if (String.IsNullOrEmpty (name))
+				throw new ArgumentException ("name", "name must be a non-null non-empty string");
+			
 			StringBuilder res = new StringBuilder (name);
 
+			res [0] = Char.ToUpper (name [0]);
+			
 			char p = name [0];
 			for (int i = 1; i < res.Length; i++) {
 				char c = res [i];
@@ -112,7 +152,7 @@ namespace Mango.Server {
 			return res.ToString ();
 		}
 
-		internal bool IsValidHeaderName (string name)
+		public bool IsValidHeaderName (string name)
 		{
 			// TODO: What more can I do here?
 			if (name.Length == 0)
@@ -120,7 +160,7 @@ namespace Mango.Server {
 			return true;
 		}
 		
-		private void SetContentLength (string value)
+		public void SetContentLength (string value)
 		{
 			if (value == null)
 				throw new ArgumentNullException ("value");
