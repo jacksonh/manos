@@ -253,5 +253,17 @@ namespace Mango.Server.Tests
 			Assert.Throws<ArgumentException> (() => headers.SetContentLength ("1."));
 			Assert.Throws<ArgumentException> (() => headers.SetContentLength ("1.0"));
 		}
+		
+		[Test]
+		public void TestSetContentLengthNullClearsValue ()
+		{
+			HttpHeaders headers = new HttpHeaders ();
+			
+			headers.SetContentLength ("100");
+			Assert.AreEqual (100, headers.ContentLength, "a1");
+			
+			headers.SetContentLength (null);
+			Assert.IsNull (headers.ContentLength, "a2");
+		}
 	}
 }
