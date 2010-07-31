@@ -54,7 +54,6 @@
     <Compile Include="Mango\OptionsAttribute.cs" />
     <Compile Include="Mango\PostAttribute.cs" />
     <Compile Include="Mango\PutAttribute.cs" />
-    <Compile Include="Mango\TemplateData.cs" />
     <Compile Include="Mango\TraceAttribute.cs" />
     <Compile Include="Mango.Routing\HttpMethods.cs" />
     <Compile Include="Mango.Routing\RouteHandler.cs" />
