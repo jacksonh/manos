@@ -68,7 +68,7 @@ namespace Mango.Server {
 				int line_end = line.Length - 1;
 				
 				if (String.IsNullOrEmpty (line))
-					throw new HttpException ("Malformed HTTP header. No data on line.");
+					return;
 				
 				if (Char.IsWhiteSpace (line [0]))
 					throw new HttpException ("Malformed HTTP header. Found whitespace before data.");
@@ -94,7 +94,7 @@ namespace Mango.Server {
 				// If the next line starts with whitespace its part of the current value
 				//
 				line = reader.ReadLine ();
-				while (line != null && Char.IsWhiteSpace (line [0])) {
+				while (line != null && line.Length > 0 && Char.IsWhiteSpace (line [0])) {
 					value += " " + line.Trim ();
 					line = reader.ReadLine ();
 				}
