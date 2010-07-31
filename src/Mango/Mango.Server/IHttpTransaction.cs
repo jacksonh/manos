@@ -22,7 +22,8 @@ namespace Mango.Server {
 		void SendFile (string file);
 
 		void Finish ();
-
+		
+		void Abort (int status, string message, params object [] p);
 	}
 }
 
