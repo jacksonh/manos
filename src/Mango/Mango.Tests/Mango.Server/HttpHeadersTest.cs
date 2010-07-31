@@ -265,5 +265,55 @@ namespace Mango.Server.Tests
 			headers.SetContentLength (null);
 			Assert.IsNull (headers.ContentLength, "a2");
 		}
+		
+		[Test]
+		public void TestSetContentLengthProperty ()
+		{
+			string cl;
+			HttpHeaders headers = new HttpHeaders ();
+			
+			headers.ContentLength = 10;
+			Assert.AreEqual (10, headers.ContentLength, "a1");
+			Assert.IsTrue (headers.TryGetValue ("Content-Length", out cl), "a2");
+			Assert.AreEqual ("10", cl, "a3");
+			
+			headers.ContentLength = 100;
+			Assert.AreEqual (100, headers.ContentLength, "a4");
+			Assert.IsTrue (headers.TryGetValue ("Content-Length", out cl), "a5");
+			Assert.AreEqual ("100", cl, "a6");
+			
+			headers.ContentLength = 0;
+			Assert.AreEqual (0, headers.ContentLength, "a7");
+			Assert.IsTrue (headers.TryGetValue ("Content-Length", out cl), "a8");
+			Assert.AreEqual ("0", cl, "a9");
+		}
+		
+		[Test]
+		public void TestSetContentLengthPropertyNull ()
+		{
+			string dummy = null;
+			HttpHeaders headers = new HttpHeaders ();
+			
+			headers.ContentLength = 100;
+			Assert.AreEqual (100, headers.ContentLength, "a1");
+			
+			headers.ContentLength = null;
+			Assert.IsNull (headers.ContentLength, "a2");
+			Assert.IsFalse (headers.TryGetValue ("Content-Length", out dummy), "a3");
+			Assert.IsNull (dummy, "a4");
+			
+		}
+		
+		[Test]
+		public void TestSetContentLengthPropertyNegative ()
+		{
+			string dummy = null;
+			HttpHeaders headers = new HttpHeaders ();
+			
+			Assert.Throws<ArgumentException> (() => headers.ContentLength = -1, "a1");
+			Assert.IsNull (headers.ContentLength, "a2");
+			Assert.IsFalse (headers.TryGetValue ("Content-Length", out dummy), "a3");
+			Assert.IsNull (dummy, "a4");
+		}
 	}
 }
