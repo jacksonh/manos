@@ -226,6 +226,32 @@ namespace Mango.Server.Tests
 			
 			headers.SetContentLength ("100");
 			Assert.AreEqual (100, headers.ContentLength, "a1");
+			
+			headers.SetContentLength ("1");
+			Assert.AreEqual (1, headers.ContentLength, "a2");
+			
+			headers.SetContentLength ("0");
+			Assert.AreEqual (0, headers.ContentLength, "a3");
+		}
+		
+		[Test]
+		public void TestSetContentLengthNegative ()
+		{
+			HttpHeaders headers = new HttpHeaders ();
+			Assert.Throws<ArgumentException> (() => headers.SetContentLength ("-1"));
+		}
+		
+		[Test]
+		public void TestSetContentLengthInvalid ()
+		{
+			HttpHeaders headers = new HttpHeaders ();
+			
+			Assert.Throws<ArgumentException> (() => headers.SetContentLength ("foobar"));
+			Assert.Throws<ArgumentException> (() => headers.SetContentLength ("-1 foobar"));
+			Assert.Throws<ArgumentException> (() => headers.SetContentLength ("1foo"));
+			Assert.Throws<ArgumentException> (() => headers.SetContentLength ("1FA"));
+			Assert.Throws<ArgumentException> (() => headers.SetContentLength ("1."));
+			Assert.Throws<ArgumentException> (() => headers.SetContentLength ("1.0"));
 		}
 	}
 }
