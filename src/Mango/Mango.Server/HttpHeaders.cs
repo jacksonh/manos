@@ -90,7 +90,6 @@ namespace Mango.Server {
 					line = reader.ReadLine ();
 				}
 				
-				Console.WriteLine ("setting key: {0}", key);
 				SetHeader (key, value);
 			}
 		}
@@ -113,8 +112,6 @@ namespace Mango.Server {
 		{
 			if (name == null)
 				throw new ArgumentNullException ("name");
-			if (value == null)
-				throw new ArgumentNullException ("value");
 			
 			name = NormalizeName (name);
 
@@ -127,6 +124,11 @@ namespace Mango.Server {
 				break;
 			}
 
+			if (value == null) {
+				items.Remove (name);
+				return;
+			}
+				
 			items [name] = value;
 		}
 
