@@ -70,10 +70,10 @@ Hello, Mango World
 Routes don't necessarily have to go to modules, we can also route them to actions.  An action is any function that accepts a single IMangoContext
 parameter.  So lets create our first action, add this line right above the static content route.
 
-    Get ("$", ctx => ctx.Response.Write ("Hello, Mango World!"));
+    Get ("/", ctx => ctx.Response.Write ("Hello, Mango World!"));
 
-What we've done here is created a route using the "$" regular expression, the "$" regex is used to denote the end of a line, so what we are doing here
-is mapping to a blank URL, basically the home page of your site.
+What we've done here is created a route using the "/" path. Routes can be created with simple paths like this or we could create more complex
+routes with regular expressions. Something like Get ("/d.d", ...) would route "/dad" and "dfd".
 
 Instead of creating an action method to handle the request we've just used a simple lambda expression that takes the IMangoContext and sends
 "Hello, Mango World!" as the response.
