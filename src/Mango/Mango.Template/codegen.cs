@@ -3,10 +3,12 @@ using System;
 using System.IO;
 using System.Text;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Mono.Collections.Generic;
 
 
 namespace Mango.Templates.Minge {
@@ -48,7 +50,7 @@ namespace Mango.Templates.Minge {
 		}
 
 		public abstract TypeReference ResolveType (Application app, Page page);
-		public abstract void Emit (Application app, Page page, CilWorker worker);
+		public abstract void Emit (Application app, Page page, ILProcessor processor);
 	}
 
 	public class VariableValue : Value {
@@ -81,7 +83,7 @@ namespace Mango.Templates.Minge {
 			return ResolvedType;
 		}
 		
-		public override void Emit (Application app, Page page, CilWorker worker)
+		public override void Emit (Application app, Page page, ILProcessor processor)
 		{
 			if (page.IsForLoopVariable (Name.Name)) {
 				page.EmitForLoopVariableAccess ();
@@ -96,24 +98,22 @@ namespace Mango.Templates.Minge {
 			ParameterDefinition pvar = page.FindParameter (Name.Name);
 			if (pvar != null) {
 				ResolvedType = pvar.ParameterType;
-				worker.Emit (OpCodes.Ldarg, pvar);
+				processor.Emit (OpCodes.Ldarg, pvar);
 				return;
 			}
 
 			VariableDefinition localvar = page.FindLocalVariable (Name.Name);
 			if (localvar != null) {
 				ResolvedType = localvar.VariableType;
-				worker.Emit (OpCodes.Ldloc, localvar);
+				processor.Emit (OpCodes.Ldloc, localvar);
 				return;
 			}
 
 			// Attempt to resolve the property on the resolved type
-			PropertyDefinition [] props = page.Definition.Properties.GetProperties (Name.Name);
-			Console.WriteLine ("number of properties in {2} for: {0}  {1}", 
-			                   Name.Name, props.Length, page.Definition.Name);
-			if (props.Length > 0) {
-				MethodReference get_method = app.Assembly.MainModule.Import (props [0].GetMethod);
-				worker.Emit (OpCodes.Call, get_method);
+			PropertyDefinition prop = page.Definition.Properties.Where (p => p.Name == Name.Name).FirstOrDefault ();
+			if (prop != null) {
+				MethodReference get_method = app.Assembly.MainModule.Import (prop.GetMethod);
+				processor.Emit (OpCodes.Call, get_method);
 				return;
 			}
 			
@@ -122,36 +122,36 @@ namespace Mango.Templates.Minge {
 			// on the type with the correct name.
 			//
 
-			worker.Emit (OpCodes.Ldarg_2);
-			worker.Emit (OpCodes.Callvirt, app.CommonMethods.GetTypeMethod);
-			worker.Emit (OpCodes.Ldstr, Name.Name);
+			processor.Emit (OpCodes.Ldarg_2);
+			processor.Emit (OpCodes.Callvirt, app.CommonMethods.GetTypeMethod);
+			processor.Emit (OpCodes.Ldstr, Name.Name);
 
-			worker.Emit (OpCodes.Ldc_I4, (int) (System.Reflection.BindingFlags.IgnoreCase |
+			processor.Emit (OpCodes.Ldc_I4, (int) (System.Reflection.BindingFlags.IgnoreCase |
 					System.Reflection.BindingFlags.Instance |
 				        System.Reflection.BindingFlags.Public));
-			worker.Emit (OpCodes.Callvirt, app.CommonMethods.GetPropertyMethod);
+			processor.Emit (OpCodes.Callvirt, app.CommonMethods.GetPropertyMethod);
 
-			worker.Emit (OpCodes.Ldarg_2);
-			worker.Emit (OpCodes.Ldnull);
-			worker.Emit (OpCodes.Callvirt, app.CommonMethods.GetPropertyValueMethod);
+			processor.Emit (OpCodes.Ldarg_2);
+			processor.Emit (OpCodes.Ldnull);
+			processor.Emit (OpCodes.Callvirt, app.CommonMethods.GetPropertyValueMethod);
 
 			/*
 			ResolvedType = app.Assembly.MainModule.Import (typeof (object));
 			
-			worker.Emit (OpCodes.Ldarg_2);
-			worker.Emit (OpCodes.Ldstr, Name.Name);
-			worker.Emit (OpCodes.Callvirt, app.CommonMethods.ContainsKeyMethod);
+			processor.Emit (OpCodes.Ldarg_2);
+			processor.Emit (OpCodes.Ldstr, Name.Name);
+			processor.Emit (OpCodes.Callvirt, app.CommonMethods.ContainsKeyMethod);
 
-			Instruction contains_branch = worker.Emit (OpCodes.Brfalse, worker.Create (OpCodes.Nop));
-			worker.Emit (OpCodes.Ldarg_2);
-			worker.Emit (OpCodes.Ldstr, Name.Name);
-			worker.Emit (OpCodes.Callvirt, app.CommonMethods.GetArgMethod);
+			Instruction contains_branch = processor.Emit (OpCodes.Brfalse, processor.Create (OpCodes.Nop));
+			processor.Emit (OpCodes.Ldarg_2);
+			processor.Emit (OpCodes.Ldstr, Name.Name);
+			processor.Emit (OpCodes.Callvirt, app.CommonMethods.GetArgMethod);
 
-			Instruction gotarg_branch = worker.Emit (OpCodes.Br, worker.Create (OpCodes.Nop));
-			Instruction load_empty_target = worker.Emit (OpCodes.Ldsfld, app.CommonMethods.StringEmptyField);
+			Instruction gotarg_branch = processor.Emit (OpCodes.Br, processor.Create (OpCodes.Nop));
+			Instruction load_empty_target = processor.Emit (OpCodes.Ldsfld, app.CommonMethods.StringEmptyField);
 			contains_branch.Operand = load_empty_target;
 
-			Instruction completed_target = worker.Emit (OpCodes.Nop);
+			Instruction completed_target = processor.Emit (OpCodes.Nop);
 			gotarg_branch.Operand = completed_target;
 			*/
 		}
@@ -185,9 +185,9 @@ namespace Mango.Templates.Minge {
 			return ResolvedType;
 		}
 		
-		public override void Emit (Application app, Page page, CilWorker worker)
+		public override void Emit (Application app, Page page, ILProcessor processor)
 		{
-			worker.Emit (OpCodes.Ldstr, Value);
+			processor.Emit (OpCodes.Ldstr, Value);
 		}
 	}
 
@@ -214,9 +214,9 @@ namespace Mango.Templates.Minge {
 			return ResolvedType;
 		}
 		
-		public override void Emit (Application app, Page page, CilWorker worker)
+		public override void Emit (Application app, Page page, ILProcessor processor)
 		{
-			worker.Emit (OpCodes.Ldc_I4, Value);
+			processor.Emit (OpCodes.Ldc_I4, Value);
 		}
 	}
 
@@ -243,9 +243,9 @@ namespace Mango.Templates.Minge {
 			return ResolvedType;
 		}
 		
-		public override void Emit (Application app, Page page, CilWorker worker)
+		public override void Emit (Application app, Page page, ILProcessor processor)
 		{
-			worker.Emit (OpCodes.Ldc_R8, Value);
+			processor.Emit (OpCodes.Ldc_R8, Value);
 		}
 	}
 
@@ -269,10 +269,10 @@ namespace Mango.Templates.Minge {
 
 		public override TypeReference ResolveType (Application app, Page page)
 		{
-			PropertyDefinition [] props = Target.ResolvedType.Resolve ().Properties.GetProperties (Property);
-			if (props.Length > 0) {
-				MethodReference get_method = app.Assembly.MainModule.Import (props [0].GetMethod);
-				ResolvedType = props [0].PropertyType;
+			PropertyDefinition prop = Target.ResolvedType.Resolve ().Properties.Where (p => p.Name == Property).FirstOrDefault ();
+			if (prop != null) {
+				MethodReference get_method = app.Assembly.MainModule.Import (prop.GetMethod);
+				ResolvedType = prop.PropertyType;
 				return ResolvedType;
 			}
 			
@@ -280,25 +280,25 @@ namespace Mango.Templates.Minge {
 			return ResolvedType;
 		}
 		
-		public override void Emit (Application app, Page page, CilWorker worker)
+		public override void Emit (Application app, Page page, ILProcessor processor)
 		{
-			Target.Emit (app, page, worker);
+			Target.Emit (app, page, processor);
 
 			// Attempt to resolve the property on the resolved type
-			PropertyDefinition [] props = Target.ResolvedType.Resolve ().Properties.GetProperties (Property);
-			if (props.Length > 0) {
-				MethodReference get_method = app.Assembly.MainModule.Import (props [0].GetMethod);
-				worker.Emit (OpCodes.Call, get_method);
+			PropertyDefinition prop = Target.ResolvedType.Resolve ().Properties.Where (p => p.Name == Property).FirstOrDefault ();
+			if (prop != null) {
+				MethodReference get_method = app.Assembly.MainModule.Import (prop.GetMethod);
+				processor.Emit (OpCodes.Call, get_method);
 				return;
 			}
 
-			worker.Emit (OpCodes.Callvirt, app.CommonMethods.GetTypeMethod);
-			worker.Emit (OpCodes.Ldstr, Property);
-			worker.Emit (OpCodes.Ldc_I4, (int) (System.Reflection.BindingFlags.IgnoreCase | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public));
-			worker.Emit (OpCodes.Callvirt, app.CommonMethods.GetPropertyMethod);
-			Target.Emit (app, page, worker);
-			worker.Emit (OpCodes.Ldnull);
-			worker.Emit (OpCodes.Callvirt, app.CommonMethods.GetPropertyValueMethod);
+			processor.Emit (OpCodes.Callvirt, app.CommonMethods.GetTypeMethod);
+			processor.Emit (OpCodes.Ldstr, Property);
+			processor.Emit (OpCodes.Ldc_I4, (int) (System.Reflection.BindingFlags.IgnoreCase | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public));
+			processor.Emit (OpCodes.Callvirt, app.CommonMethods.GetPropertyMethod);
+			Target.Emit (app, page, processor);
+			processor.Emit (OpCodes.Ldnull);
+			processor.Emit (OpCodes.Callvirt, app.CommonMethods.GetPropertyValueMethod);
 		}
 
 	}
@@ -328,21 +328,21 @@ namespace Mango.Templates.Minge {
 		{
 			MethodDefinition meth = page.GetMethod (Name);
 
-			ResolvedType = meth.ReturnType.ReturnType;
+			ResolvedType = meth.ReturnType;
 			return ResolvedType;
 		}
 		
-		public override void Emit (Application app, Page page, CilWorker worker)
+		public override void Emit (Application app, Page page, ILProcessor processor)
 		{
 			MethodDefinition meth = page.GetMethod (Name);
 
-			worker.Emit (OpCodes.Ldarg_0);
-			worker.Emit (OpCodes.Ldarg_1);
-			worker.Emit (OpCodes.Ldarg_2);
+			processor.Emit (OpCodes.Ldarg_0);
+			processor.Emit (OpCodes.Ldarg_1);
+			processor.Emit (OpCodes.Ldarg_2);
 
 			for (int i = 2; i < meth.Parameters.Count; i++) {
 				if (i - 2 < Arguments.Count) {
-					Arguments [i - 2].Emit (app, page, worker);
+					Arguments [i - 2].Emit (app, page, processor);
 					continue;
 				}
 				ParameterDefinition p = meth.Parameters [i];
@@ -350,16 +350,16 @@ namespace Mango.Templates.Minge {
 					throw new Exception ("Illegal invoke statement, incorrect number of parameters.");
 				object constant = p.Constant;
 				if (constant is string)
-					worker.Emit (OpCodes.Ldstr, (string) constant);
+					processor.Emit (OpCodes.Ldstr, (string) constant);
 				else if (constant is int)
-					worker.Emit (OpCodes.Ldc_I4, (int) constant);
+					processor.Emit (OpCodes.Ldc_I4, (int) constant);
 				else if (constant is double)
-					worker.Emit (OpCodes.Ldc_R4, (double) constant);
+					processor.Emit (OpCodes.Ldc_R4, (double) constant);
 				else
 					throw new Exception (String.Format ("Illegal default argument type {0}", constant));
 			}
 
-			worker.Emit (OpCodes.Call, meth);
+			processor.Emit (OpCodes.Call, meth);
 		}
 	}
 
@@ -377,7 +377,7 @@ namespace Mango.Templates.Minge {
 			return ResolvedType;
 		}
 		
-		public override void Emit (Application app, Page page, CilWorker worker)
+		public override void Emit (Application app, Page page, ILProcessor processor)
 		{
 			var filter = MingeFilterManager.GetFilter (Name);
 
@@ -385,10 +385,10 @@ namespace Mango.Templates.Minge {
 				return;
 
 			for (int i = 0; i < Arguments.Count; i++) {
-				Arguments [i].Emit (app, page, worker);
+				Arguments [i].Emit (app, page, processor);
 			}
 
-			worker.Emit (OpCodes.Call, app.Assembly.MainModule.Import (filter));
+			processor.Emit (OpCodes.Call, app.Assembly.MainModule.Import (filter));
 		}
 	}
 
@@ -420,14 +420,14 @@ namespace Mango.Templates.Minge {
 			return ResolvedType;
 		}
 		
-		public virtual void Emit (Application app, Page page, CilWorker worker)
+		public virtual void Emit (Application app, Page page, ILProcessor processor)
 		{
-			Value.Emit (app, page, worker);
+			Value.Emit (app, page, processor);
 
 			ResolveType (app, page);
 		
 			foreach (Filter filter in filters) {
-				filter.Emit (app, page, worker);
+				filter.Emit (app, page, processor);
 			}
 		}
 
@@ -465,7 +465,8 @@ namespace Mango.Templates.Minge {
 			Name = name;
 			Path = path;
 
-			Assembly = AssemblyFactory.DefineAssembly (name, AssemblyKind.Dll);
+			Assembly = AssemblyDefinition.CreateAssembly (new AssemblyNameDefinition (name, new Version ()),
+			                                              name, ModuleKind.Dll);
 			CommonMethods = new CommonMethods (Assembly);
 		}
 
@@ -497,7 +498,7 @@ namespace Mango.Templates.Minge {
 		public void Save ()
 		{
 			Console.WriteLine ("saving:  {0}  PATH:  {1}", Assembly, Path);
-			AssemblyFactory.SaveAssembly (Assembly, Path);
+			Assembly.Write (Path);
 		}
 
 		public Page CreatePage (string path)
@@ -646,7 +647,11 @@ namespace Mango.Templates.Minge {
 			ValueToStringMethod = AddValueToStringMethod ();
 
 			render = AddRenderMethod ("RenderToStream");
-			first_instruction = render.Body.CilWorker.Emit (OpCodes.Nop);
+			ILProcessor p = render.Body.GetILProcessor ();
+			
+			first_instruction = p.Create (OpCodes.Nop);
+			
+			p.Append (first_instruction);
 
 			method_stack = new Stack<MethodDefinition> ();
 			method_stack.Push (render);
@@ -687,11 +692,11 @@ namespace Mango.Templates.Minge {
 			if (IsChildTemplate)
 				return;
 
-			CilWorker worker = CurrentMethod.Body.CilWorker;
+			ILProcessor processor = CurrentMethod.Body.GetILProcessor ();
 
-			worker.Emit (OpCodes.Ldarg_1);
-			worker.Emit (OpCodes.Ldstr, data);
-			worker.Emit (OpCodes.Callvirt, application.CommonMethods.WriteStringMethod);
+			processor.Emit (OpCodes.Ldarg_1);
+			processor.Emit (OpCodes.Ldstr, data);
+			processor.Emit (OpCodes.Callvirt, application.CommonMethods.WriteStringMethod);
 		}
 
 		public void EmitExtends (string base_template)
@@ -710,15 +715,15 @@ namespace Mango.Templates.Minge {
 
 		private void EmitBaseRenderToStreamCall ()
 		{
-			CilWorker worker = method_stack.Last ().Body.CilWorker;
+			ILProcessor processor = method_stack.Last ().Body.GetILProcessor ();
 
-			MethodReference base_render = base_type.Definition.Methods.GetMethod ("RenderToStream") [0];
+			MethodReference base_render = base_type.Definition.Methods.Where (m => m.Name == "RenderToStream").FirstOrDefault ();
 
-			worker.InsertAfter (first_instruction, worker.Create (OpCodes.Ret));
-			worker.InsertAfter (first_instruction, worker.Create (OpCodes.Call, base_render));
-			worker.InsertAfter (first_instruction, worker.Create (OpCodes.Ldarg_2));
-			worker.InsertAfter (first_instruction, worker.Create (OpCodes.Ldarg_1));
-			worker.InsertAfter (first_instruction, worker.Create (OpCodes.Ldarg_0));
+			processor.InsertAfter (first_instruction, processor.Create (OpCodes.Ret));
+			processor.InsertAfter (first_instruction, processor.Create (OpCodes.Call, base_render));
+			processor.InsertAfter (first_instruction, processor.Create (OpCodes.Ldarg_2));
+			processor.InsertAfter (first_instruction, processor.Create (OpCodes.Ldarg_1));
+			processor.InsertAfter (first_instruction, processor.Create (OpCodes.Ldarg_0));
 		}
 
 		public void BeginBlock (string name)
@@ -730,12 +735,13 @@ namespace Mango.Templates.Minge {
 
 			meth = AddRenderMethod (name);
 
-			CilWorker worker = CurrentMethod.Body.CilWorker;
-			worker.Emit (OpCodes.Ldarg_0);
-			worker.Emit (OpCodes.Ldarg_1);
-			worker.Emit (OpCodes.Ldarg_2);
-			Instruction block_call = worker.Emit (OpCodes.Callvirt, meth);
-
+			ILProcessor processor = CurrentMethod.Body.GetILProcessor ();
+			processor.Emit (OpCodes.Ldarg_0);
+			processor.Emit (OpCodes.Ldarg_1);
+			processor.Emit (OpCodes.Ldarg_2);
+			Instruction block_call = processor.Create (OpCodes.Callvirt, meth);
+			processor.Append (block_call);
+			
 			method_stack.Push (meth);
 		}
 
@@ -744,8 +750,8 @@ namespace Mango.Templates.Minge {
 			if (name != null && CurrentMethod.Name != name)
 				throw new Exception (String.Format ("Unmatched block names, expected {0} but got {1}", CurrentMethod.Name, name));
 
-			CilWorker worker = CurrentMethod.Body.CilWorker;
-			worker.Emit (OpCodes.Ret);
+			ILProcessor processor = CurrentMethod.Body.GetILProcessor ();
+			processor.Emit (OpCodes.Ret);
 
 			method_stack.Pop ();
 		}
@@ -760,52 +766,53 @@ namespace Mango.Templates.Minge {
 				return;
 			}
 
-			CilWorker worker = CurrentMethod.Body.CilWorker;
+			ILProcessor processor = CurrentMethod.Body.GetILProcessor ();
 
 			StringBuilder format_str = new StringBuilder ();
 			for (int i = 0; i < expressions.Count; i++) {
 				format_str.AppendFormat ("{{0}} ", i);
 			}
 
-			worker.Emit (OpCodes.Ldarg_1);
-			worker.Emit (OpCodes.Ldstr, format_str.ToString ());
+			processor.Emit (OpCodes.Ldarg_1);
+			processor.Emit (OpCodes.Ldstr, format_str.ToString ());
 
-			worker.Emit (OpCodes.Ldc_I4, expressions.Count);
-			worker.Emit (OpCodes.Newarr, assembly.MainModule.Import (typeof (object)));
+			processor.Emit (OpCodes.Ldc_I4, expressions.Count);
+			processor.Emit (OpCodes.Newarr, assembly.MainModule.Import (typeof (object)));
 
 			for (int i = 0; i < expressions.Count; i++) {
-				worker.Emit (OpCodes.Dup);
-				worker.Emit (OpCodes.Ldc_I4, i);
-				expressions [i].Emit (application, this, worker);
-				EmitToString (application, this, worker, expressions [i].ResolvedType);
-				worker.Emit (OpCodes.Stelem_Ref);
+				processor.Emit (OpCodes.Dup);
+				processor.Emit (OpCodes.Ldc_I4, i);
+				expressions [i].Emit (application, this, processor);
+				EmitToString (application, this, processor, expressions [i].ResolvedType);
+				processor.Emit (OpCodes.Stelem_Ref);
 			}
-			worker.Emit (OpCodes.Call, application.CommonMethods.FormatStringMethod);
-			worker.Emit (OpCodes.Callvirt, application.CommonMethods.WriteStringMethod);
+			processor.Emit (OpCodes.Call, application.CommonMethods.FormatStringMethod);
+			processor.Emit (OpCodes.Callvirt, application.CommonMethods.WriteStringMethod);
 		}
 
-		public void EmitToString (Application app, Page page, CilWorker worker, TypeReference resolved)
+		public void EmitToString (Application app, Page page, ILProcessor processor, TypeReference resolved)
 		{
 			if (resolved.FullName == "System.String")
 				return;
 
 			if (resolved.FullName == "System.Void") {
-				worker.Emit (OpCodes.Ldsfld, application.CommonMethods.StringEmptyField);
+				processor.Emit (OpCodes.Ldsfld, application.CommonMethods.StringEmptyField);
 				return;
 			}
 
 			if (resolved.IsValueType) {
-				worker.Emit (OpCodes.Box, app.Assembly.MainModule.Import (resolved));
-				worker.Emit (OpCodes.Call, app.Assembly.MainModule.Import (page.ValueToStringMethod));
+				processor.Emit (OpCodes.Box, app.Assembly.MainModule.Import (resolved));
+				processor.Emit (OpCodes.Call, app.Assembly.MainModule.Import (page.ValueToStringMethod));
 				return;
 			}
 
 			TypeDefinition rtype = resolved.Resolve ();
-			MethodReference method = rtype.Methods.GetMethod ("ToString", new TypeReference [0]);
+			MethodReference method = rtype.Methods.Where (m => m.Name == "ToString").First ();
 
 			// Import it so we get a method reference
 			method = application.Assembly.MainModule.Import (method);
-			Instruction inst = worker.Emit (OpCodes.Callvirt, (MethodReference) method);
+			Instruction inst = processor.Create (OpCodes.Callvirt, (MethodReference) method);
+			processor.Append (inst);
 		}
 
 		public void EmitSinglePrint (Expression expression)
@@ -813,12 +820,12 @@ namespace Mango.Templates.Minge {
 			if (IsChildTemplate)
 				return;
 
-			CilWorker worker = CurrentMethod.Body.CilWorker;
+			ILProcessor processor = CurrentMethod.Body.GetILProcessor ();
 
-			worker.Emit (OpCodes.Ldarg_1);
-			expression.Emit (application, this, worker);
-			EmitToString (application, this, worker, expression.ResolvedType);
-			worker.Emit (OpCodes.Callvirt, application.CommonMethods.WriteStringMethod);
+			processor.Emit (OpCodes.Ldarg_1);
+			expression.Emit (application, this, processor);
+			EmitToString (application, this, processor, expression.ResolvedType);
+			processor.Emit (OpCodes.Callvirt, application.CommonMethods.WriteStringMethod);
 		}
 
 		public void EmitSet (NamedTarget target, Expression expression)
@@ -835,10 +842,10 @@ namespace Mango.Templates.Minge {
 			// Property setting happens in the ctor
 			//
 			
-			CilWorker worker = ctor.Body.CilWorker;
-			worker.Emit (OpCodes.Ldarg_0);
-			expression.Emit (application, this, worker);
-			worker.Emit (OpCodes.Call, property.SetMethod);
+			ILProcessor processor = ctor.Body.GetILProcessor ();
+			processor.Emit (OpCodes.Ldarg_0);
+			expression.Emit (application, this, processor);
+			processor.Emit (OpCodes.Call, property.SetMethod);
 		}
 
 		public void BeginMacro (string name, List<ArgumentDefinition> args)
@@ -853,8 +860,8 @@ namespace Mango.Templates.Minge {
 			if (name != null && CurrentMethod.Name != name)
 				throw new Exception (String.Format ("Unmatched macro names, expected {0} but got {1}", CurrentMethod.Name, name));
 
-			CilWorker worker = CurrentMethod.Body.CilWorker;
-			worker.Emit (OpCodes.Ret);
+			ILProcessor processor = CurrentMethod.Body.GetILProcessor ();
+			processor.Emit (OpCodes.Ret);
 
 			method_stack.Pop ();
 		}
@@ -903,20 +910,24 @@ namespace Mango.Templates.Minge {
 
 			TypeReference string_type = application.Assembly.MainModule.Import (typeof (string));
 
-			CilWorker worker = CurrentMethod.Body.CilWorker;
-			expression.Emit (application, this, worker);
-			Instruction null_branch = worker.Emit (OpCodes.Brfalse, worker.Create (OpCodes.Nop));
+			ILProcessor processor = CurrentMethod.Body.GetILProcessor ();
+			expression.Emit (application, this, processor);
+			Instruction null_branch = processor.Create (OpCodes.Brfalse, processor.Create (OpCodes.Nop));
+			processor.Append (null_branch);
 
-			expression.Emit (application, this, worker);
-			worker.Emit (OpCodes.Isinst, string_type);
-			Instruction isstr_branch = worker.Emit (OpCodes.Brfalse, worker.Create (OpCodes.Nop));
+			expression.Emit (application, this, processor);
+			processor.Emit (OpCodes.Isinst, string_type);
+			Instruction isstr_branch = processor.Create (OpCodes.Brfalse, processor.Create (OpCodes.Nop));
+			processor.Append (isstr_branch);
 
-			expression.Emit (application, this, worker);
-			worker.Emit (OpCodes.Castclass, string_type);
-			worker.Emit (OpCodes.Call, application.CommonMethods.IsNullOrEmptyMethod);
-			Instruction empty_branch = worker.Emit (OpCodes.Brtrue, worker.Create (OpCodes.Nop));
+			expression.Emit (application, this, processor);
+			processor.Emit (OpCodes.Castclass, string_type);
+			processor.Emit (OpCodes.Call, application.CommonMethods.IsNullOrEmptyMethod);
+			Instruction empty_branch = processor.Create (OpCodes.Brtrue, processor.Create (OpCodes.Nop));
+			processor.Append (empty_branch);
 
-			isstr_branch.Operand = worker.Emit (OpCodes.Nop);
+			isstr_branch.Operand = processor.Create (OpCodes.Nop);
+			processor.Append ((Instruction) isstr_branch.Operand);
 
 			IfContext ifcontext = new IfContext ();
 			ifcontext.NextConditionalBranches.Add (null_branch);
@@ -938,11 +949,14 @@ namespace Mango.Templates.Minge {
 
 			IfContext ifcontext = ifstack.Peek ();
 
-			CilWorker worker = CurrentMethod.Body.CilWorker;
+			ILProcessor processor = CurrentMethod.Body.GetILProcessor ();
 
-			Instruction branch_to_end = worker.Emit (OpCodes.Br, worker.Create (OpCodes.Nop));
-			Instruction begin_else = worker.Emit (OpCodes.Nop);
+			Instruction branch_to_end = processor.Create (OpCodes.Br, processor.Create (OpCodes.Nop));
+			Instruction begin_else = processor.Create (OpCodes.Nop);
 
+			processor.Append (branch_to_end);
+			processor.Append (begin_else);
+			
 			ifcontext.UpdateNextConditionalBranches (begin_else);
 			ifcontext.EndIfBranches.Add (branch_to_end);
 		}
@@ -954,9 +968,11 @@ namespace Mango.Templates.Minge {
 
 			IfContext ifcontext = ifstack.Pop ();
 
-			CilWorker worker = CurrentMethod.Body.CilWorker;
+			ILProcessor processor = CurrentMethod.Body.GetILProcessor ();
 
-			Instruction end_branch = worker.Emit (OpCodes.Nop);
+			Instruction end_branch = processor.Create (OpCodes.Nop);
+			processor.Append (end_branch);
+			
 			ifcontext.UpdateNextConditionalBranches (end_branch);
 			ifcontext.UpdateEndIfBranches (end_branch);
 		}
@@ -996,22 +1012,24 @@ namespace Mango.Templates.Minge {
 			string local_enum_name = String.Format ("__enum_{0}", forloop_stack.Count);
 			VariableDefinition enumeratorvar = FindLocalVariable (local_enum_name);
 			if (enumeratorvar == null) {
-				VariableDefinitionCollection vars = CurrentMethod.Body.Variables;
-				enumeratorvar = new VariableDefinition (local_enum_name, vars.Count, CurrentMethod, enum_type);
+				Collection<VariableDefinition> vars = CurrentMethod.Body.Variables;
+				enumeratorvar = new VariableDefinition (local_enum_name, enum_type);
 				vars.Add (enumeratorvar);
 			}
 
-			CilWorker worker = CurrentMethod.Body.CilWorker;
-			expression.Emit (application, this, worker);
-			worker.Emit (OpCodes.Castclass, assembly.MainModule.Import (typeof (System.Collections.IEnumerable)));
-			worker.Emit (OpCodes.Callvirt, application.CommonMethods.GetEnumeratorMethod);
+			ILProcessor processor = CurrentMethod.Body.GetILProcessor ();
+			expression.Emit (application, this, processor);
+			processor.Emit (OpCodes.Castclass, assembly.MainModule.Import (typeof (System.Collections.IEnumerable)));
+			processor.Emit (OpCodes.Callvirt, application.CommonMethods.GetEnumeratorMethod);
 			
-			worker.Emit (OpCodes.Stloc, enumeratorvar);
+			processor.Emit (OpCodes.Stloc, enumeratorvar);
 
-			Instruction begin_loop = worker.Emit (OpCodes.Br, worker.Create (OpCodes.Nop));
+			Instruction begin_loop = processor.Create (OpCodes.Br, processor.Create (OpCodes.Nop));
+			processor.Append (begin_loop);
+			
 			forloop_stack.Push (new ForLoopContext (name, begin_loop, enumeratorvar));
 
-			worker.Emit (OpCodes.Nop);
+			processor.Emit (OpCodes.Nop);
 		}
 
 		public void EndForLoop ()
@@ -1021,26 +1039,28 @@ namespace Mango.Templates.Minge {
 
 			ForLoopContext forloop = forloop_stack.Pop ();
 
-			CilWorker worker = CurrentMethod.Body.CilWorker;
+			ILProcessor processor = CurrentMethod.Body.GetILProcessor ();
 
-			Instruction enter_loop = worker.Emit (OpCodes.Ldloc, forloop.EnumeratorVariable);
-			worker.Emit (OpCodes.Callvirt, application.CommonMethods.EnumeratorMoveNextMethod);
-			worker.Emit (OpCodes.Brtrue, forloop.BeginLoopInstruction.Next);
+			Instruction enter_loop = processor.Create (OpCodes.Ldloc, forloop.EnumeratorVariable);
+			processor.Append (enter_loop);
+			
+			processor.Emit (OpCodes.Callvirt, application.CommonMethods.EnumeratorMoveNextMethod);
+			processor.Emit (OpCodes.Brtrue, forloop.BeginLoopInstruction.Next);
 
 			forloop.BeginLoopInstruction.Operand = enter_loop;
 		}
 
 		private void CloseCtor ()
 		{
-			ctor.Body.CilWorker.Emit (OpCodes.Ret);
+			ctor.Body.GetILProcessor ().Emit (OpCodes.Ret);
 		}
 		
 		public void Save ()
 		{
 			CloseCtor ();
 			
-			CilWorker worker = CurrentMethod.Body.CilWorker;
-			worker.Emit (OpCodes.Ret);
+			ILProcessor processor = CurrentMethod.Body.GetILProcessor ();
+			processor.Emit (OpCodes.Ret);
 		}
 
 		public bool IsForLoopVariable (string name)
@@ -1055,11 +1075,11 @@ namespace Mango.Templates.Minge {
 
 		public void EmitForLoopVariableAccess ()
 		{
-			CilWorker worker = CurrentMethod.Body.CilWorker;
+			ILProcessor processor = CurrentMethod.Body.GetILProcessor ();
 
 			ForLoopContext forloop = forloop_stack.Peek ();
-			worker.Emit (OpCodes.Ldloc, forloop.EnumeratorVariable);
-			worker.Emit (OpCodes.Callvirt, application.CommonMethods.EnumeratorGetCurrentMethod);
+			processor.Emit (OpCodes.Ldloc, forloop.EnumeratorVariable);
+			processor.Emit (OpCodes.Callvirt, application.CommonMethods.EnumeratorGetCurrentMethod);
 		}
 
 		public bool IsBuiltInVariable (string name)
@@ -1077,11 +1097,11 @@ namespace Mango.Templates.Minge {
 				
 		public void EmitBuiltInVariable (string name)
 		{
-			CilWorker worker = CurrentMethod.Body.CilWorker;
+			ILProcessor processor = CurrentMethod.Body.GetILProcessor ();
 
 			switch (name) {
 			case "template_path":
-				worker.Emit (OpCodes.Ldstr, path);
+				processor.Emit (OpCodes.Ldstr, path);
 				break;
 			}
 		}
@@ -1106,7 +1126,7 @@ namespace Mango.Templates.Minge {
 			return FindVariable (name, CurrentMethod.Body.Variables);
 		}
 
-		private VariableDefinition FindVariable (string name, VariableDefinitionCollection variables)
+		private VariableDefinition FindVariable (string name, Collection<VariableDefinition> variables)
 		{
 			foreach (VariableDefinition variable in variables) {
 				if (variable.Name == name)
@@ -1122,47 +1142,43 @@ namespace Mango.Templates.Minge {
 			
 			if (!klass.HasProperties)
 				return null;
-			PropertyDefinition [] props = klass.Properties.GetProperties (name);
-			return props.Where (p => p.PropertyType == t).FirstOrDefault ();
+			return klass.Properties.Where (p => name == p.Name).FirstOrDefault ();
 		}
 
 		public PropertyDefinition AddProperty (string name, TypeReference t)
 		{
 			TypeDefinition klass = base_type != null ? base_type.Definition : Definition;
 			
-			PropertyDefinition prop = new PropertyDefinition (name, t, (PropertyAttributes) 0);
+			PropertyDefinition prop = new PropertyDefinition (name, (PropertyAttributes) 0, t);
 			klass.Properties.Add (prop);
 
-			FieldDefinition field = new FieldDefinition ("mango_" + name, t, FieldAttributes.Private | FieldAttributes.Compilercontrolled);
+			FieldDefinition field = new FieldDefinition ("mango_" + name, FieldAttributes.Private | FieldAttributes.CompilerControlled, t);
 			klass.Fields.Add (field);
 			
-			prop.GetMethod = new MethodDefinition ("get_" + name, MethodAttributes.Compilercontrolled | MethodAttributes.Public, t);
+			prop.GetMethod = new MethodDefinition ("get_" + name, MethodAttributes.CompilerControlled | MethodAttributes.Public, t);
 			klass.Methods.Add (prop.GetMethod);
-			CilWorker worker = prop.GetMethod.Body.CilWorker;
-			worker.Emit (OpCodes.Ldarg_0);
-			worker.Emit (OpCodes.Ldfld, field);
-			worker.Emit (OpCodes.Ret);
+			ILProcessor processor = prop.GetMethod.Body.GetILProcessor ();
+			processor.Emit (OpCodes.Ldarg_0);
+			processor.Emit (OpCodes.Ldfld, field);
+			processor.Emit (OpCodes.Ret);
 			
-			prop.SetMethod = new MethodDefinition ("set_" + name, MethodAttributes.Compilercontrolled | MethodAttributes.Public, t.Module.Import (typeof (void)));
+			prop.SetMethod = new MethodDefinition ("set_" + name, MethodAttributes.CompilerControlled | MethodAttributes.Public, t.Module.Import (typeof (void)));
 			prop.SetMethod.Parameters.Add (new ParameterDefinition (t));
 			klass.Methods.Add (prop.SetMethod);
-			worker = prop.SetMethod.Body.CilWorker;
-			worker.Emit (OpCodes.Ldarg_0);
-			worker.Emit (OpCodes.Ldarg_1);
-			worker.Emit (OpCodes.Stfld, field);
-			worker.Emit (OpCodes.Ret);
+			processor = prop.SetMethod.Body.GetILProcessor ();
+			processor.Emit (OpCodes.Ldarg_0);
+			processor.Emit (OpCodes.Ldarg_1);
+			processor.Emit (OpCodes.Stfld, field);
+			processor.Emit (OpCodes.Ret);
 			
 			return prop;
 		}
 
 		public MethodDefinition GetMethod (string name)
 		{
-			MethodDefinition [] methods = Definition.Methods.GetMethod (name);
+			MethodDefinition method = Definition.Methods.Where (m => m.Name == name).FirstOrDefault ();
 
-			if (methods.Length < 1)
-				return null;
-
-			return methods [0];
+			return method;
 		}
 
 		public MethodDefinition AddRenderMethod (string name, List<ArgumentDefinition> extra_args=null)
@@ -1171,15 +1187,15 @@ namespace Mango.Templates.Minge {
 
 			MethodDefinition render = new MethodDefinition (name, atts, assembly.MainModule.Import (typeof (void)));
 
-			render.Parameters.Add (new ParameterDefinition ("stream", -1, (ParameterAttributes) 0,
+			render.Parameters.Add (new ParameterDefinition ("stream", (ParameterAttributes) 0,
 					assembly.MainModule.Import (typeof (TextWriter))));
-			render.Parameters.Add (new ParameterDefinition ("args", -1, (ParameterAttributes) 0,
+			render.Parameters.Add (new ParameterDefinition ("args", (ParameterAttributes) 0,
 					assembly.MainModule.Import (typeof (object))));
 
 			if (extra_args != null) {
 				TypeReference object_type = assembly.MainModule.Import (typeof (object));
 				foreach (ArgumentDefinition arg in extra_args) {
-					ParameterDefinition pdef = new ParameterDefinition (arg.Name, -1, (ParameterAttributes) 0, object_type);
+					ParameterDefinition pdef = new ParameterDefinition (arg.Name, (ParameterAttributes) 0, object_type);
 					if (arg.DefaultValue != null) {
 						pdef.Constant = arg.DefaultValue.GetValue ();
 						pdef.HasDefault = true;
@@ -1198,14 +1214,14 @@ namespace Mango.Templates.Minge {
 			MethodAttributes atts = MethodAttributes.Public | MethodAttributes.Static;
 
 			MethodDefinition to_string = new MethodDefinition ("ValueToString", atts, assembly.MainModule.Import (typeof (string)));
-			to_string.Parameters.Add (new ParameterDefinition ("the_value", -1, (ParameterAttributes) 0, assembly.MainModule.Import (typeof (System.ValueType))));
+			to_string.Parameters.Add (new ParameterDefinition ("the_value", (ParameterAttributes) 0, assembly.MainModule.Import (typeof (System.ValueType))));
 
 			Definition.Methods.Add (to_string);
 
-			CilWorker worker = to_string.Body.CilWorker;
-			worker.Emit (OpCodes.Ldarg_0);
-			worker.Emit (OpCodes.Callvirt, assembly.MainModule.Import (typeof (System.ValueType).GetMethod ("ToString")));
-			worker.Emit (OpCodes.Ret);
+			ILProcessor processor = to_string.Body.GetILProcessor ();
+			processor.Emit (OpCodes.Ldarg_0);
+			processor.Emit (OpCodes.Callvirt, assembly.MainModule.Import (typeof (System.ValueType).GetMethod ("ToString")));
+			processor.Emit (OpCodes.Ret);
 					
 			return to_string;
 		}
