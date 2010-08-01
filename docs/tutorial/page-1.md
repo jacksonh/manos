@@ -73,7 +73,7 @@ parameter.  So lets create our first action, add this line right above the stati
     Get ("/", ctx => ctx.Response.Write ("Hello, Mango World!"));
 
 What we've done here is created a route using the "/" path. Routes can be created with simple paths like this or we could create more complex
-routes with regular expressions. Something like Get ("/d.d", ...) would route "/dad" and "dfd".
+routes with regular expressions. Something like Get ("/d.d", ...) would route "/dad" and "/dfd".
 
 Instead of creating an action method to handle the request we've just used a simple lambda expression that takes the IMangoContext and sends
 "Hello, Mango World!" as the response.
