@@ -75,16 +75,13 @@ public class T {
 			if (File.Exists (path)) {
 				con.Response.StatusCode = 200;
 
-				if (Path.GetExtension (path) == ".html")
-					con.Response.Headers.SetHeader ("Content-Type", "text/html; charset=ISO-8859-4");
+				Console.WriteLine ("sending file:  {0}", path);
 				con.Response.SendFile (path);
 			} else
 				con.Response.StatusCode = 404;
 			
 		}
 
-		// con.Response.Write (String.Format ("HTTP/1.1 200 OK\r\nContent-Length: {0}\r\n\r\n{1}", Encoding.ASCII.GetBytes (message).Length, message));
-		con.Response.Finish ();
 	}
 }
 
