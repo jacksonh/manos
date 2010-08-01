@@ -16,7 +16,7 @@ using Mango;
 //  module.
 //
 
-namespace AppNameFoo {
+namespace $APPNAME {
 
 	public class StaticContentModule : MangoModule {
 
