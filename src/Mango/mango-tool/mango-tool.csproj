@@ -35,6 +35,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\deps\Mono.Merge.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\deps\Mono.Posix.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Driver.cs" />
@@ -42,6 +46,7 @@
     <Compile Include="InitCommand.cs" />
     <Compile Include="Environment.cs" />
     <Compile Include="BuildCommand.cs" />
+    <Compile Include="ServerCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mango.csproj">

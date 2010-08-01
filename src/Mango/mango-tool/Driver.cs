@@ -29,9 +29,9 @@ namespace Mango.Tool
 			
 			var p = new OptionSet () {
 				{ "h|?|help", v => help = v != null },
-				{ "data-dir=", v => Environment.DataDirectory = v },
 				{ "init|i", v => command = Init },
 				{ "build|b", v => command = Build },
+				{ "server|s", v => command = Server },
 				{ "compile-templates|ct", v => command = CompileTemplates },
 				{ "link-templates|lt", v => command = LinkTemplates }
 			};
@@ -112,21 +112,10 @@ namespace Mango.Tool
 		{
 			string app_name = null;
 			
-			if (args.Count > 0)
-				app_name = args [0];
-			else {
-				app_name = Directory.GetCurrentDirectory () + ".dll";
-				if (!File.Exists (app_name)) {
-					Console.WriteLine ("mango-tool -build [AppName.dll]");
-					Console.WriteLine ("This will compile the templates and link them to the supplied assembly.");
-					Console.WriteLine ("If you do not supply the AppName.dll the current directory name will be used.");
-				}
-			}
-				
 			Driver d = new Driver ();
 			
 			try {
-				d.Build (app_name, TEMPLATES_DIRECTORY);
+				d.Build ();
 			} catch (Exception e) {
 				Console.WriteLine ("error while building application:");
 				Console.WriteLine (e);
@@ -136,10 +125,33 @@ namespace Mango.Tool
 			return 0;
 		}
 		
-		public void Build (string app, string templates)
+		public void Build ()
 		{
-			CompileTemplates (templates, COMPILED_TEMPLATES_ASSEMBLY);
-			LinkTemplates (app, COMPILED_TEMPLATES_ASSEMBLY);
+			BuildCommand build = new BuildCommand (Environment);
+			
+			build.Run ();
+		}
+		
+		private static int Server (IList<string> args)
+		{
+			Driver d = new Driver ();
+			
+			try {
+				d.Server ();
+			} catch (Exception e) {
+				Console.WriteLine ("error while serving application:");
+				Console.WriteLine (e);
+				return 1;
+			}
+			
+			return 0;
+		}
+		
+		public void Server ()
+		{
+			ServerCommand cmd = new ServerCommand (Environment);
+			
+			cmd.Run ();
 		}
 		
 		private static int CompileTemplates (IList<string> args)

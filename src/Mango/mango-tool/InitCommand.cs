@@ -70,7 +70,7 @@ namespace Mango.Tool
 		public string DestinationDirectory {
 			get {
 				if (dest_dir == null)
-					return Directory.GetCurrentDirectory ();
+					return Environment.WorkingDirectory;
 				return dest_dir;
 			}
 			set {
