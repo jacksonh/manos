@@ -138,6 +138,7 @@ namespace Mango.Templates.Minge {
 		{
 			foreach (string directory in Environment.TemplateDirectories) {
 				string full = Path.Combine (directory, path);
+				
 				if (File.Exists (full))
 					return full;
 			}
@@ -158,7 +159,7 @@ namespace Mango.Templates.Minge {
 			foreach (string file in files) {
 				if (!Environment.AllowedExtensions.Contains (Path.GetExtension (file)))
 					continue;
-				ParsePage (file.Substring (root_dir.Length));
+				ParsePage (file.Substring (root_dir.Length + 1));
 			}
 		}
 
