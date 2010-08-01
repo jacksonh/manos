@@ -36,7 +36,7 @@ application and navigate too http://localhost:8080/Hello we'll see our Hello Wor
 If we want to map our action to a different URL, we can use the HTTP Attributes to map any (or all)
 HTTP methods to our method:
 
-    [Get ("$")]
+    [Get ("/")]
     public static void Hello (IMangoContext ctx)
     {
         IndexHtml.Render (ctx, new {

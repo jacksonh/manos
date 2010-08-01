@@ -36,18 +36,18 @@ Rendering our Hello World Template
 Because Mango's template engine turns templates into CLR objects, we can now call our templates render method from our action.  Lets
 update the action code to look like this:
 
-    Get ("$", ctx => Templates.IndexHtml.Render (ctx));
+    Get ("/", ctx => Templates.IndexHtml.Render (ctx));
 
 If you look closely you'll notice that there is already a `using HelloWorld.Templates` statement at the top of our HelloWorldApp.cs
 file.  Since we've already imported the Templates namespace we can shorten things up a little:
 
-    Get ("$", ctx => IndexHtml.Render (ctx));
+    Get ("/", ctx => IndexHtml.Render (ctx));
 
 Depending on how you like to work, there are a couple more ways to render templates.  All of the following do the same thing:
 
-    Get ("$", ctx => RenderTemplate ("index.html", ctx));
-    Get ("$", ctx => IndexHtml.Render (ctx, null));
-    Get ("$", ctx => RenderTemplate ("index.html", ctx, null));
+    Get ("/", ctx => RenderTemplate ("index.html", ctx));
+    Get ("/", ctx => IndexHtml.Render (ctx, null));
+    Get ("/", ctx => RenderTemplate ("index.html", ctx, null));
 
 
 Sending Data to our Templates
@@ -57,7 +57,7 @@ In the last two examples you might have wondered what the null parameter is for.
 template engine.  When templates are rendered, the template engine will try to resolve properties on the supplied data.  So if we want
 to pass a name into our template, all we need to do is this:
 
-    Get ("$", ctx => IndexHtml.Render (ctx, new { Name = "Mango" }));
+    Get ("/", ctx => IndexHtml.Render (ctx, new { Name = "Mango" }));
 
 and update our template to use that name:
 
