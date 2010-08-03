@@ -8,7 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-namespace Mango.Templates.Minge {
+namespace Mango.Templates {
 
 	public static class Templates {
 
@@ -35,7 +35,7 @@ namespace Mango.Templates.Minge {
 
 		public static void RenderToStream (string path, TextWriter writer, object the_arg)
 		{
-			string name = Page.FullNameForPath (path);
+			string name = Page.FullTypeNameForPath (path);
 			Type t = GetType (name);
 
 			IMingePage page = (IMingePage) Activator.CreateInstance (t);

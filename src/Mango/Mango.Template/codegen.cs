@@ -11,7 +11,7 @@ using Mono.Cecil.Cil;
 using Mono.Collections.Generic;
 
 
-namespace Mango.Templates.Minge {
+namespace Mango.Templates {
 
 	public enum CompareOperator {
 		Invalid,
@@ -504,7 +504,7 @@ namespace Mango.Templates.Minge {
 		public Page CreatePage (string path)
 		{
 			string ns;
-			string name = Page.NameForPath (path, out ns);
+			string name = Page.TypeNameForPath (path, out ns);
 
 			TypeDefinition page = new TypeDefinition (name, ns.ToString (), TypeAttributes.Public | TypeAttributes.BeforeFieldInit | TypeAttributes.Serializable,
 					Assembly.MainModule.Import (typeof (MingePage)));
@@ -517,7 +517,7 @@ namespace Mango.Templates.Minge {
 		public Page LoadPage (string path)
 		{
 			string ns;
-			string name = Page.NameForPath (path, out ns);
+			string name = Page.TypeNameForPath (path, out ns);
 
 			Page page = Compiler.ParsePage (path);
 			return page;
@@ -1226,7 +1226,7 @@ namespace Mango.Templates.Minge {
 			return to_string;
 		}
 
-		public static string NameForPath (string path, out string name_space)
+		public static string TypeNameForPath (string path, out string name_space)
 		{
 			string [] pieces = path.Split (System.IO.Path.DirectorySeparatorChar);
 			StringBuilder ns = new StringBuilder ("templates");
@@ -1241,10 +1241,10 @@ namespace Mango.Templates.Minge {
 			return name;
 		}
 
-		public static string FullNameForPath (string path)
+		public static string FullTypeNameForPath (string path)
 		{
 			string ns;
-			string name = NameForPath (path, out ns);
+			string name = TypeNameForPath (path, out ns);
 
 			return String.Concat (ns, ".", name);
 		}

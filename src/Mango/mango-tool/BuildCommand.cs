@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Microsoft.CSharp;
 using System.CodeDom.Compiler;
 
-using Mango.Templates.Minge;
+using Mango.Templates;
 
 namespace Mango.Tool
 {

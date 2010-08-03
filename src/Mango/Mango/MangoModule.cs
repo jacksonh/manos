@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 using Mango.Server;
 using Mango.Routing;
-using Mango.Templates.Minge;
+using Mango.Templates;
 
 namespace Mango {
 
@@ -279,7 +279,7 @@ namespace Mango {
 			MemoryStream stream = new MemoryStream ();
 
 			using (StreamWriter writer = new StreamWriter (stream)) {
-				Mango.Templates.Minge.Templates.RenderToStream (template, writer, data);
+				Mango.Templates.Templates.RenderToStream (template, writer, data);
 				writer.Flush ();
 			}
 

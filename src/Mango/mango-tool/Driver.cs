@@ -5,7 +5,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
-using Mango.Templates.Minge;
+using Mango.Templates;
 
 using NDesk.Options;
 

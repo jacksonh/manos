@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Collections.Generic;
 
 
-namespace Mango.Templates.Minge {
+namespace Mango.Templates {
 
 	public delegate string MingeFilter (string input, object [] args);
 
