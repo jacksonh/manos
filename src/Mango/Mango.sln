@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mango", "Mango.csproj", "{2548B25A-2E1F-4E21-BC43-7E39B1F6F23F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mango-tool", "mango-tool\mango-tool.csproj", "{482384E3-EB97-4A8E-9ED9-EACC31350B5E}"
