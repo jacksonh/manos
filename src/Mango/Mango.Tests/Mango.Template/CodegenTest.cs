@@ -22,27 +22,27 @@ namespace Mango.Templates.Tests
 			
 			path = "Tests.html";
 			name = Page.FullTypeNameForPath (app_name, path);
-			Assert.AreEqual ("FooBar.Templates.Tests", name, "a1");
+			Assert.AreEqual ("FooBar.Templates.TestsHtml", name, "a1");
 			
 			path = "Mango.Tests.Tests.html";
 			name = Page.FullTypeNameForPath (app_name, path);
-			Assert.AreEqual ("FooBar.Templates.Mango.Tests.Tests", name, "a2");
+			Assert.AreEqual ("FooBar.Templates.Mango.Tests.TestsHtml", name, "a2");
 			
 			path = "mango.tests.html";
 			name = Page.FullTypeNameForPath (app_name, path);
-			Assert.AreEqual ("FooBar.Templates.Mango.Tests", name, "a3");
+			Assert.AreEqual ("FooBar.Templates.Mango.TestsHtml", name, "a3");
 			
 			path = "Mango/Tests.html";
 			name = Page.FullTypeNameForPath (app_name, path);
-			Assert.AreEqual ("FooBar.Templates.Mango.Tests", name, "a4");
+			Assert.AreEqual ("FooBar.Templates.Mango.TestsHtml", name, "a4");
 			
-			path = "Mango.Tests/Tests.html";
+			path = "Mango.Tests/Tests.HTML";
 			name = Page.FullTypeNameForPath (app_name, path);
-			Assert.AreEqual ("FooBar.Templates.Mango.Tests.Tests", name, "a5");
+			Assert.AreEqual ("FooBar.Templates.Mango.Tests.TestsHtml", name, "a5");
 			
-			path = "mango/tests.html";
+			path = "mango/tests.hTMl";
 			name = Page.FullTypeNameForPath (app_name, path);
-			Assert.AreEqual ("FooBar.Templates.Mango.Tests", name, "a6");
+			Assert.AreEqual ("FooBar.Templates.Mango.TestsHtml", name, "a6");
 		}
 		
 		[Test]

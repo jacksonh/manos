@@ -1253,10 +1253,11 @@ namespace Mango.Templates {
 			int last = -1;
 			int ext = path.LastIndexOf ('.');
 
-			if (ext < 0)
+			if (ext < 2)
 				throw new ArgumentException ("Path must have an extension.");
 
 			for (int i = 0; i < ext; i++) {
+				// Don't use Path.DirectorySepChar because we always want '/' to work
 				if (path [i] == '/' || path [i] == '\\') {
 					if (last == i - 1)
 						throw new ArgumentException ("Template paths can not have multiple consecutive '.'s");
@@ -1280,6 +1281,14 @@ namespace Mango.Templates {
 					continue;
 				}
 				res.Append (Char.ToLower (path [i]));
+			}
+
+			res.Append (Char.ToUpper (path [ext + 1]));
+
+			for (int i = ext + 2; i < path.Length; i++) {
+				if (path [i] == '/' || path [i] == '\\')
+					throw new ArgumentException ("Invalid Path, no extension found.");
+				res.Append (Char.ToLower (path [i]));					
 			}
 
 			name_space = res.ToString (0, last + start);
