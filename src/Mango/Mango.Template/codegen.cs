@@ -2,14 +2,13 @@
 using System;
 using System.IO;
 using System.Text;
+
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using Mono.Collections.Generic;
-
 
 namespace Mango.Templates {
 
@@ -490,6 +489,11 @@ namespace Mango.Templates {
 			private set;
 		}
 
+		public string ApplicationName {
+			get;
+			private set;
+		}
+		
 		public CommonMethods CommonMethods {
 			get;
 			private set;
@@ -504,7 +508,7 @@ namespace Mango.Templates {
 		public Page CreatePage (string path)
 		{
 			string ns;
-			string name = Page.TypeNameForPath (path, out ns);
+			string name = Page.TypeNameForPath (Name, path, out ns);
 
 			TypeDefinition page = new TypeDefinition (name, ns.ToString (), TypeAttributes.Public | TypeAttributes.BeforeFieldInit | TypeAttributes.Serializable,
 					Assembly.MainModule.Import (typeof (MingePage)));
@@ -517,7 +521,7 @@ namespace Mango.Templates {
 		public Page LoadPage (string path)
 		{
 			string ns;
-			string name = Page.TypeNameForPath (path, out ns);
+			string name = Page.TypeNameForPath (Name, path, out ns);
 
 			Page page = Compiler.ParsePage (path);
 			return page;
@@ -632,6 +636,10 @@ namespace Mango.Templates {
 
 		private Stack<MethodDefinition> method_stack;
 		private Stack<ForLoopContext> forloop_stack;
+		
+		public Page ()
+		{
+		}
 		
 		public Page (Application application, AssemblyDefinition assembly, TypeDefinition definition, string path)
 		{
@@ -1012,7 +1020,7 @@ namespace Mango.Templates {
 			string local_enum_name = String.Format ("__enum_{0}", forloop_stack.Count);
 			VariableDefinition enumeratorvar = FindLocalVariable (local_enum_name);
 			if (enumeratorvar == null) {
-				Collection<VariableDefinition> vars = CurrentMethod.Body.Variables;
+				Mono.Collections.Generic.Collection<VariableDefinition> vars = CurrentMethod.Body.Variables;
 				enumeratorvar = new VariableDefinition (local_enum_name, enum_type);
 				vars.Add (enumeratorvar);
 			}
@@ -1126,7 +1134,7 @@ namespace Mango.Templates {
 			return FindVariable (name, CurrentMethod.Body.Variables);
 		}
 
-		private VariableDefinition FindVariable (string name, Collection<VariableDefinition> variables)
+		private VariableDefinition FindVariable (string name, Mono.Collections.Generic.Collection<VariableDefinition> variables)
 		{
 			foreach (VariableDefinition variable in variables) {
 				if (variable.Name == name)
@@ -1226,25 +1234,68 @@ namespace Mango.Templates {
 			return to_string;
 		}
 
-		public static string TypeNameForPath (string path, out string name_space)
+		public static string TypeNameForPath (string app_name, string path, out string name_space)
 		{
-			string [] pieces = path.Split (System.IO.Path.DirectorySeparatorChar);
-			StringBuilder ns = new StringBuilder ("templates");
+			if (String.IsNullOrEmpty (app_name))
+				throw new ArgumentNullException ("app_name");
+			if (String.IsNullOrEmpty (path))
+				throw new ArgumentNullException ("path");
+			
+			if (Path.IsPathRooted (path))
+				throw new ArgumentException ("Attempt to create a type name from a rooted path.");
+			
+			StringBuilder res = new StringBuilder ();
+			
+			res.Append (app_name);
+			res.Append (".Templates.");
 
-			string name = String.Concat ("page_", System.IO.Path.GetFileNameWithoutExtension (pieces [pieces.Length - 1]));
-			for (int i = 0; i < pieces.Length - 1; i++) {
-				ns.Append (".");
-				ns.Append (pieces [0]);
+			int start = res.Length;
+			int last = -1;
+			int ext = path.LastIndexOf ('.');
+
+			if (ext < 0)
+				throw new ArgumentException ("Path must have an extension.");
+
+			for (int i = 0; i < ext; i++) {
+				if (path [i] == '/' || path [i] == '\\') {
+					if (last == i - 1)
+						throw new ArgumentException ("Template paths can not have multiple consecutive '.'s");
+					res.Append ('.');
+					last = i;
+					continue;
+				}
+				if (path [i] == '.') {
+					if (last == i - 1 || i == ext - 1)
+						throw new ArgumentException ("Template paths can not have multiple consecutive '.'s");
+					res.Append ('.');
+					last = i;
+					continue;
+				}
+				if (!Char.IsLetterOrDigit (path [i])) {
+					res.Append (path [i]);
+					continue;
+				}
+				if (last == i - 1) {
+					res.Append (Char.ToUpper (path [i]));
+					continue;
+				}
+				res.Append (Char.ToLower (path [i]));
 			}
 
-			name_space = ns.ToString ();
-			return name;
+			name_space = res.ToString (0, last + start);
+			string type = res.ToString (last + start + 1, res.Length - last - start -1);
+
+			Console.WriteLine ("full name:  {0}", res.ToString ());
+			Console.WriteLine ("namespace:  {0}", name_space);
+			Console.WriteLine ("type name:  {0}", type);
+
+			return type;
 		}
 
-		public static string FullTypeNameForPath (string path)
+		public static string FullTypeNameForPath (string app_name, string path)
 		{
 			string ns;
-			string name = TypeNameForPath (path, out ns);
+			string name = TypeNameForPath (app_name, path, out ns);
 
 			return String.Concat (ns, ".", name);
 		}

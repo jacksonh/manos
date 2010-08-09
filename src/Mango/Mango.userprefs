@@ -1,42 +1,60 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" ActiveRuntime="Mono 2.7" ctype="Workspace" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Mango.Template/api.cs" ctype="Workbench">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Mango.Template/codegen.cs" ctype="Workbench">
     <Files>
-      <File FileName="Mango.Routing/RegexMatchOperation.cs" Line="1" Column="1" />
-      <File FileName="Mango.Routing/MatchOperationFactory.cs" Line="1" Column="1" />
-      <File FileName="Mango.Tests/Mango.Routing/MatchOperationFactoryTest.cs" Line="1" Column="1" />
-      <File FileName="Mango.Routing/StringMatchOperation.cs" Line="1" Column="1" />
-      <File FileName="Mango.Tests/Mango.Routing/StringMatchOperationTest.cs" Line="9" Column="25" />
-      <File FileName="Mango.Routing/NopMatchOperation.cs" Line="1" Column="1" />
-      <File FileName="Mango.Tests/Mango.Routing/NopMatchOperationTest.cs" Line="1" Column="1" />
-      <File FileName="Mango.Routing/RouteHandler.cs" Line="1" Column="1" />
-      <File FileName="Mango.Tests/Mango.Server/HttpRequestTest.cs" Line="1" Column="1" />
-      <File FileName="Mango.Server/HttpException.cs" Line="1" Column="1" />
-      <File FileName="Mango.Server/HttpHeaders.cs" Line="1" Column="1" />
-      <File FileName="Mango.Tests/Mango.Server/HttpHeadersTest.cs" Line="1" Column="1" />
-      <File FileName="Mango.Tests/Mango.Routing/RegexMatchOperationTest.cs" Line="1" Column="1" />
-      <File FileName="Mango.Tests/Mango.Routing/RouteHandlerTest.cs" Line="1" Column="1" />
-      <File FileName="mango-tool/Driver.cs" Line="8" Column="13" />
-      <File FileName="mango-tool/BuildCommand.cs" Line="9" Column="13" />
-      <File FileName="mango-tool/ServerCommand.cs" Line="71" Column="24" />
-      <File FileName="Mango.Template/api.cs" Line="1" Column="1" />
+      <File FileName="Mango.Template/library.cs" Line="1" Column="1" />
+      <File FileName="Assembly/AssemblyInfo.cs" Line="1" Column="1" />
+      <File FileName="Mango.Tests/Mango.Template/CodegenTest.cs" Line="55" Column="1" />
+      <File FileName="Mango.Tests/Mango/MangoModuleTest.cs" Line="1" Column="1" />
+      <File FileName="Mango.Template/codegen.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
+          <Node name="Mango" expanded="True">
+            <Node name="Assembly" expanded="True" />
+            <Node name="Mango.Template" expanded="True" />
+            <Node name="Mango.Testing" expanded="True" />
+          </Node>
+          <Node name="Mango.Tests" expanded="True">
+            <Node name="Mango" expanded="True" />
+            <Node name="Mango.Template" expanded="True" />
+          </Node>
           <Node name="mango-server" expanded="True" />
-          <Node name="mango-tool" expanded="True" selected="True" />
         </State>
       </Pad>
       <Pad Id="ClassPad">
-        <State expanded="True" selected="True" />
+        <State expanded="True">
+          <Node name="Mango" expanded="True" selected="True">
+            <Node name="References" expanded="True" />
+            <Node name="Mango" expanded="True">
+              <Node name="Templates" expanded="True" />
+              <Node name="Testing" expanded="True" />
+            </Node>
+          </Node>
+        </State>
       </Pad>
       <Pad Id="MonoDevelop.Debugger.WatchPad">
         <State />
       </Pad>
       <Pad Id="MonoDevelop.NUnit.TestPad">
-        <State expanded="True" selected="True" />
+        <State expanded="True">
+          <Node name="Mango.Tests" expanded="True">
+            <Node name="Mango" expanded="True">
+              <Node name="Server" expanded="True" />
+              <Node name="Templates" expanded="True">
+                <Node name="Tests" expanded="True">
+                  <Node name="CodegenTest" expanded="True" selected="True" />
+                </Node>
+              </Node>
+            </Node>
+          </Node>
+        </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches ctype="PinnedWatchStore" />
 </Properties>

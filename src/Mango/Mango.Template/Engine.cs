@@ -10,7 +10,11 @@ using System.Collections.Generic;
 
 namespace Mango.Templates {
 
-	public static class Templates {
+	public class FooBarTest {
+		
+	}
+	
+	public static class Engine {
 
 		private static Dictionary<string,Type> loaded_templates = new Dictionary<string,Type> ();
 		private static Assembly template_assembly = null;
@@ -35,11 +39,13 @@ namespace Mango.Templates {
 
 		public static void RenderToStream (string path, TextWriter writer, object the_arg)
 		{
-			string name = Page.FullTypeNameForPath (path);
+			/*
+			string name = Page.FullTypeNameForPath (ApplicationName, path);
 			Type t = GetType (name);
 
 			IMingePage page = (IMingePage) Activator.CreateInstance (t);
 			page.RenderToStream (writer, the_arg);
+			*/
 		}
 
 		private static Type GetType (string name)

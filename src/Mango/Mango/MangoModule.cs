@@ -279,7 +279,7 @@ namespace Mango {
 			MemoryStream stream = new MemoryStream ();
 
 			using (StreamWriter writer = new StreamWriter (stream)) {
-				Mango.Templates.Templates.RenderToStream (template, writer, data);
+				Mango.Templates.Engine.RenderToStream (template, writer, data);
 				writer.Flush ();
 			}
 

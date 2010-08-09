@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Mango</RootNamespace>
     <AssemblyName>Mango</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -56,7 +56,6 @@
     <Compile Include="Mango\PutAttribute.cs" />
     <Compile Include="Mango\TraceAttribute.cs" />
     <Compile Include="Mango.Routing\RouteHandler.cs" />
-    <Compile Include="Mango.Server\AssemblyInfo.cs" />
     <Compile Include="Mango.Server\HttpException.cs" />
     <Compile Include="Mango.Server\HttpHeaders.cs" />
     <Compile Include="Mango.Server\HttpRequest.cs" />
@@ -70,7 +69,6 @@
     <Compile Include="Mango.Server\IOLoop.cs" />
     <Compile Include="Mango.Server\IOStream.cs" />
     <Compile Include="Mango.Server\UriParser.cs" />
-    <Compile Include="Mango.Template\api.cs" />
     <Compile Include="Mango.Template\codegen.cs" />
     <Compile Include="Mango.Template\environment.cs" />
     <Compile Include="Mango.Template\library.cs" />
@@ -92,10 +90,13 @@
     <Compile Include="Mango.Routing\StringMatchOperation.cs" />
     <Compile Include="Mango.Routing\NopMatchOperation.cs" />
     <Compile Include="Mango\HttpMethods.cs" />
+    <Compile Include="Mango.Template\Engine.cs" />
+    <Compile Include="Assembly\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Mango.Testing\" />
     <Folder Include="Mango.Testing\Server\" />
+    <Folder Include="Assembly\" />
   </ItemGroup>
 </Project>
