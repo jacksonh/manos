@@ -628,7 +628,7 @@ namespace Mango.Templates {
 		private string path;
 		private Application application;
 		private AssemblyDefinition assembly;
-		private MethodDefinition render;
+		private MethodDefinition render_to_stream;
 		private MethodDefinition ctor;
 
 		private Page base_type;
@@ -654,15 +654,15 @@ namespace Mango.Templates {
 
 			ValueToStringMethod = AddValueToStringMethod ();
 
-			render = AddRenderMethod ("RenderToStream");
-			ILProcessor p = render.Body.GetILProcessor ();
-			
+			render_to_stream = AddRenderToStreamMethod ("RenderToStream");
+			ILProcessor p = render_to_stream.Body.GetILProcessor ();
+
 			first_instruction = p.Create (OpCodes.Nop);
 			
 			p.Append (first_instruction);
 
 			method_stack = new Stack<MethodDefinition> ();
-			method_stack.Push (render);
+			method_stack.Push (render_to_stream);
 
 			forloop_stack = new Stack<ForLoopContext> ();
 		}
@@ -741,7 +741,7 @@ namespace Mango.Templates {
 			if (meth != null)
 				throw new Exception (String.Format ("Invalid block name {0} the name is already in use.", name));
 
-			meth = AddRenderMethod (name);
+			meth = AddRenderToStreamMethod (name);
 
 			ILProcessor processor = CurrentMethod.Body.GetILProcessor ();
 			processor.Emit (OpCodes.Ldarg_0);
@@ -858,7 +858,7 @@ namespace Mango.Templates {
 
 		public void BeginMacro (string name, List<ArgumentDefinition> args)
 		{
-			MethodDefinition meth = AddRenderMethod (name, args);
+			MethodDefinition meth = AddRenderToStreamMethod (name, args);
 
 			method_stack.Push (meth);
 		}
@@ -1189,7 +1189,7 @@ namespace Mango.Templates {
 			return method;
 		}
 
-		public MethodDefinition AddRenderMethod (string name, List<ArgumentDefinition> extra_args=null)
+		public MethodDefinition AddRenderToStreamMethod (string name, List<ArgumentDefinition> extra_args=null)
 		{
 			MethodAttributes atts = MethodAttributes.Public | MethodAttributes.Virtual;
 
