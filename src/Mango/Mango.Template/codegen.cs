@@ -9,6 +9,7 @@ using System.Collections.Generic;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Mango.Server;
 
 namespace Mango.Templates {
 
@@ -533,7 +534,8 @@ namespace Mango.Templates {
 
 		public CommonMethods (AssemblyDefinition assembly)
 		{
-			WriteStringMethod = assembly.MainModule.Import (typeof (System.IO.TextWriter).GetMethod ("Write", new Type [] { typeof (string) }));
+			WriteStringMethod = assembly.MainModule.Import (typeof (IHttpResponse).GetMethod ("Write", new Type [] { typeof (string) }));
+			WriteBytesMethod = assembly.MainModule.Import (typeof (IHttpResponse).GetMethod ("Write", new Type [] { typeof (byte []) }));
 			GetArgMethod = assembly.MainModule.Import (typeof (Dictionary<string,object>).GetMethod ("get_Item", new Type [] { typeof (string) }));
 			ToStringMethod = assembly.MainModule.Import (typeof (object).GetMethod ("ToString"));
 			FormatStringMethod = assembly.MainModule.Import (typeof (string).GetMethod ("Format", new Type [] { typeof (string), typeof (object []) }));
@@ -573,6 +575,11 @@ namespace Mango.Templates {
 		}
 
 		public MethodReference WriteStringMethod {
+			get;
+			private set;
+		}
+
+		public MethodReference WriteBytesMethod {
 			get;
 			private set;
 		}
@@ -654,7 +661,7 @@ namespace Mango.Templates {
 
 			ValueToStringMethod = AddValueToStringMethod ();
 
-			render_to_stream = AddRenderToStreamMethod ("RenderToStream");
+			render_to_stream = AddRenderToResponseMethod ("RenderToResponse");
 			ILProcessor p = render_to_stream.Body.GetILProcessor ();
 
 			first_instruction = p.Create (OpCodes.Nop);
@@ -718,14 +725,14 @@ namespace Mango.Templates {
 				throw new Exception ("Could not find base.");
 
 			Definition.BaseType = base_type.Definition;
-			EmitBaseRenderToStreamCall ();
+			EmitBaseRenderToResponseCall ();
 		}
 
-		private void EmitBaseRenderToStreamCall ()
+		private void EmitBaseRenderToResponseCall ()
 		{
 			ILProcessor processor = method_stack.Last ().Body.GetILProcessor ();
 
-			MethodReference base_render = base_type.Definition.Methods.Where (m => m.Name == "RenderToStream").FirstOrDefault ();
+			MethodReference base_render = base_type.Definition.Methods.Where (m => m.Name == "RenderToResponse").FirstOrDefault ();
 
 			processor.InsertAfter (first_instruction, processor.Create (OpCodes.Ret));
 			processor.InsertAfter (first_instruction, processor.Create (OpCodes.Call, base_render));
@@ -741,7 +748,7 @@ namespace Mango.Templates {
 			if (meth != null)
 				throw new Exception (String.Format ("Invalid block name {0} the name is already in use.", name));
 
-			meth = AddRenderToStreamMethod (name);
+			meth = AddRenderToResponseMethod (name);
 
 			ILProcessor processor = CurrentMethod.Body.GetILProcessor ();
 			processor.Emit (OpCodes.Ldarg_0);
@@ -858,7 +865,7 @@ namespace Mango.Templates {
 
 		public void BeginMacro (string name, List<ArgumentDefinition> args)
 		{
-			MethodDefinition meth = AddRenderToStreamMethod (name, args);
+			MethodDefinition meth = AddRenderToResponseMethod (name, args);
 
 			method_stack.Push (meth);
 		}
@@ -1189,14 +1196,14 @@ namespace Mango.Templates {
 			return method;
 		}
 
-		public MethodDefinition AddRenderToStreamMethod (string name, List<ArgumentDefinition> extra_args=null)
+		public MethodDefinition AddRenderToResponseMethod (string name, List<ArgumentDefinition> extra_args=null)
 		{
 			MethodAttributes atts = MethodAttributes.Public | MethodAttributes.Virtual;
 
 			MethodDefinition render = new MethodDefinition (name, atts, assembly.MainModule.Import (typeof (void)));
 
 			render.Parameters.Add (new ParameterDefinition ("stream", (ParameterAttributes) 0,
-					assembly.MainModule.Import (typeof (TextWriter))));
+					assembly.MainModule.Import (typeof (IHttpResponse))));
 			render.Parameters.Add (new ParameterDefinition ("args", (ParameterAttributes) 0,
 					assembly.MainModule.Import (typeof (object))));
 

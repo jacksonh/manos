@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
+using Mango.Server;
 
 
 namespace Mango.Templates {
@@ -60,14 +61,20 @@ namespace Mango.Templates {
 
 	public interface IMingePage {
 
-		void RenderToStream (TextWriter stream, object the_arg);
+		void Render (IMangoContext context, object the_arg);
+		void RenderToResponse (IHttpResponse response, object the_arg);
 	}
 
 	
 	[Serializable]
 	public class MingePage : IMingePage {
 
-		public virtual void RenderToStream (TextWriter stream, object the_arg)
+		public void Render (IMangoContext context, object the_arg)
+		{
+			RenderToResponse (context.Response, the_arg);
+		}
+
+		public virtual void RenderToResponse (IHttpResponse response, object the_arg)
 		{
 		}
 	}
