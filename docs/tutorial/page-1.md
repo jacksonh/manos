@@ -22,7 +22,18 @@ your application was named HelloWorld, you'll now have a structure something lik
 
 
     HelloWorld/
-    HelloWorld/Deployment/
+    HelloWorld/Content/css/handheld.css
+    HelloWorld/Content/css/style.css
+    HelloWorld/Content/js/plugins.js
+    HelloWorld/Content/js/dd_belatedpng.js
+    HelloWorld/Content/js/jquery-1.4.2.min.js
+    HelloWorld/Content/js/profiling
+    HelloWorld/Content/js/profiling/charts.swf
+    HelloWorld/Content/js/profiling/config.js
+    HelloWorld/Content/js/profiling/yahoo-profiling.css
+    HelloWorld/Content/js/profiling/yahoo-profiling.min.js
+    HelloWorld/Content/js/script.js
+    HelloWorld/Content/js/modernizr-1.5.min.js
     HelloWorld/Deployment/Deploy.cs
     HelloWorld/HelloWorldApp.cs
     HelloWorld/lib/Mango.dll
@@ -36,7 +47,7 @@ your application was named HelloWorld, you'll now have a structure something lik
 We'll worry more about these files later in the tutorial, but for now here's a
 quick overview of what we've got:
 
-
+ *    **Content/**: Your static content like images, js and css goes here.  The supplied files are based on the HTML5 Boilerplate project.
  *    **Templates/**: This directory will contain all your templates for defining what your pages look like.
  *    **HelloWorldApp.cs**: This is the main entry point for your app.  Its the first thing that will be loaded by Mango.
  *    **Deployment/Deploy.cs**: This file will be used to control how your application is deployed from your desktop to a server.
