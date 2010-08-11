@@ -159,16 +159,17 @@ namespace Mango.Templates {
 				break;
 			case "endmacro":
 				ParseEndMacro (tk);
+				break;			
+			case "set":
+				ParseSet (tk);
 				break;
 			case "include":
 			case "from":
 			case "import":
-			case "set":
-				ParseSet (tk);
-				break;
 			case "call":
 			case "filter":
-				Console.WriteLine ("statement: {0}", tok.Value);
+			default:
+				throw new InvalidOperationException (String.Format ("Unsupported operation {0}", tok.Value));
 				break;
 			}
 		}
