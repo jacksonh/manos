@@ -18,7 +18,7 @@ Mango includes a powerful templating engine that can convert a .NET object into 
 Creating the Hello World Template
 ---------------------------------
 
-To create our Hello World template we need to create an Index.html page in our Templates/ directory and add the following text:
+To create our Hello World template we need to create an index.html page in our Templates/ directory and add the following text:
 
     <html>
       <head>
@@ -36,18 +36,7 @@ Rendering our Hello World Template
 Because Mango's template engine turns templates into CLR objects, we can now call our templates render method from our action.  Lets
 update the action code to look like this:
 
-    Get ("/", ctx => Templates.IndexHtml.Render (ctx));
-
-If you look closely you'll notice that there is already a `using HelloWorld.Templates` statement at the top of our HelloWorldApp.cs
-file.  Since we've already imported the Templates namespace we can shorten things up a little:
-
-    Get ("/", ctx => IndexHtml.Render (ctx));
-
-Depending on how you like to work, there are a couple more ways to render templates.  All of the following do the same thing:
-
-    Get ("/", ctx => RenderTemplate ("index.html", ctx));
-    Get ("/", ctx => IndexHtml.Render (ctx, null));
-    Get ("/", ctx => RenderTemplate ("index.html", ctx, null));
+    Get ("/", ctx => ctx.Render ("index.html"));
 
 
 Sending Data to our Templates
@@ -57,7 +46,7 @@ In the last two examples you might have wondered what the null parameter is for.
 template engine.  When templates are rendered, the template engine will try to resolve properties on the supplied data.  So if we want
 to pass a name into our template, all we need to do is this:
 
-    Get ("/", ctx => IndexHtml.Render (ctx, new { Name = "Mango" }));
+    Get ("/", ctx => ctx.Render ("index.html", new { Name = "Mango" }));
 
 and update our template to use that name:
 

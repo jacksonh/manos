@@ -25,7 +25,7 @@ create a separate method for our action:
 
     public static void Hello (IMangoContext ctx)
     {
-        IndexHtml.Render (ctx, new {
+        ctx.Render ("index.html", new {
             Name = "Mango"
         });
     }
@@ -39,7 +39,7 @@ HTTP methods to our method:
     [Get ("/")]
     public static void Hello (IMangoContext ctx)
     {
-        IndexHtml.Render (ctx, new {
+        ctx.Render ("index.html", new {
             Name = "Mango"
         });
     }
@@ -87,7 +87,7 @@ We can also write tests for our template output using MangoTestContext.
     {
         var ctx = new MangoTestContext ();
 
-        IndexHtml.Render (ctx, new {
+        ctx.Render ("index.html", new {
             Name = "Mango"
         });
 
@@ -109,7 +109,7 @@ To simplify testing output strings we can also use the HtmlCompare utility:
     {
         var ctx = new MangoTestContext ();
 
-        IndexHtml.Render (ctx, new {
+        ctx.Render ("index.html", new {
             Name = "Mango"
         });
 
