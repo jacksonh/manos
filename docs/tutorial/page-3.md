@@ -80,7 +80,7 @@ outcomes.
 
 
     [Test]
-    public void TestHelloRoute ()
+    public void Hello_PutHello_CallsHello ()
     {
         Assert.AreEqual (MangoTestRoute.Put ("Hello"), HelloWorldApp.Hello);
     }
@@ -92,7 +92,7 @@ Testing Templates with MangoTestContext
 We can also write tests for our template output using MangoTestContext.
 
     [Test]
-    public void TestHelloTemplate ()
+    public void Hello_RenderIndexTemplateWithName_ExactMatchOutput ()
     {
         var ctx = new MangoTestContext ();
 
@@ -114,7 +114,7 @@ We can also write tests for our template output using MangoTestContext.
 To simplify testing output strings we can also use the HtmlCompare utility:
 
     [Test]
-    public void TestHelloTemplate ()
+    public void Hello_RenderIndexTemplateWithName_HtmlMatchOutput ()
     {
         var ctx = new MangoTestContext ();
 
