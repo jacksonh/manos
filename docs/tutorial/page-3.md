@@ -52,7 +52,7 @@ Mango includes a number of built in nunit mocking objects that we can use to bui
 is a simple test to check the output of our Hello Action.
 
     [Test]
-    public void TestHello ()
+    public void Hello_Invoked_PropertySet ()
     {
         var ctx = new MangoTestContext ();
 
@@ -62,6 +62,15 @@ is a simple test to check the output of our Hello Action.
         Assert.AreEqual ("Mango", ctx.PropertyValue ("Name"));
     }
 
+    [Test]
+    public void Hello_Invoked_HelloHtmlRendered ()
+    {
+        var ctx = new MangoTestContext ();
+
+        HelloWorldApp.Hello (ctx);
+
+        Assert.Assert (ctx.RenderedTemplate, "hello.html");
+    }
 
 Testing Routes with MangoTestRoute
 ----------------------------------
