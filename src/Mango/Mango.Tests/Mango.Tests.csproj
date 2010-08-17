@@ -47,6 +47,7 @@
     <Compile Include="Mango.Routing\NopMatchOperationTest.cs" />
     <Compile Include="Mango.Server\HttpHeadersTest.cs" />
     <Compile Include="Mango.Template\CodegenTest.cs" />
+    <Compile Include="Mango.Template\TemplateFactoryTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Mango.Routing\" />

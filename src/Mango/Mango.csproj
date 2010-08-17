@@ -92,11 +92,16 @@
     <Compile Include="Mango\HttpMethods.cs" />
     <Compile Include="Mango.Template\Engine.cs" />
     <Compile Include="Assembly\AssemblyInfo.cs" />
+    <Compile Include="Mango.Template\MangoTemplate.cs" />
+    <Compile Include="Mango.Template\IMangoTemplate.cs" />
+    <Compile Include="Mango.Template\TemplateFactory.cs" />
+    <Compile Include="Mango.Testing\Templates\MangoTemplateStub.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Mango.Testing\" />
     <Folder Include="Mango.Testing\Server\" />
     <Folder Include="Assembly\" />
+    <Folder Include="Mango.Testing\Templates\" />
   </ItemGroup>
 </Project>
