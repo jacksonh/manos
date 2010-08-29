@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{482384E3-EB97-4A8E-9ED9-EACC31350B5E}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>mangotool</RootNamespace>
-    <AssemblyName>mango-tool</AssemblyName>
+    <RootNamespace>manostool</RootNamespace>
+    <AssemblyName>manos-tool</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
