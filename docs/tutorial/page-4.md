@@ -1,8 +1,8 @@
 
-Mango Futures
+Manos Futures
 =============
 
-Everything in the tutorial so far is implemented in Mango Rev 1.  Future revisions
+Everything in the tutorial so far is implemented in Manos Rev 1.  Future revisions
 will include a number of extra features and the tutorial will be expanded as features
 are implemented.
 
@@ -13,7 +13,7 @@ Revision Two:
 ------------
 
 ### Windows Support
-In Rev 1 of Mango, Windows is not supported as it doesn't support epoll. Rev 2 will include
+In Rev 1 of Manos, Windows is not supported as it doesn't support epoll. Rev 2 will include
 a version of the IO layer that uses poll instead of epoll.
 
 ### Logging
@@ -37,7 +37,7 @@ Revision Three:
 --------------
 
 ### DataBase integration
-This is the most glaring missing piece of Mango right now. I'm putting it off until some of
+This is the most glaring missing piece of Manos right now. I'm putting it off until some of
 the lower level components are more complete, better tested and more thought out.
 
 Likely there will be a tight integration with MongoDB. Users can easily use another DB system
@@ -52,7 +52,7 @@ Revision Four:
 -------------
 
 ### Simplified Deployment
-mango-tool will be able to create standalone applications with a bundled web server.  These
+manos-tool will be able to create standalone applications with a bundled web server.  These
 applications can be run as a daemon on Linux or as a service on Windows.
 
 ### Cache-Control

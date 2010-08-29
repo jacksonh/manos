@@ -1,8 +1,8 @@
-Getting Started with Mango
+Getting Started with Manos
 ==========================
 
-This is page two of the Getting Started with Mango tutorial.  It assumes you already have
-Mango installed and have created the Hello World App from page one.
+This is page two of the Getting Started with Manos tutorial.  It assumes you already have
+Manos installed and have created the Hello World App from page one.
 
 
 Templates Overview
@@ -10,9 +10,9 @@ Templates Overview
 
 Normally we want to spit out something other than just plain strings from our actions. Usually in a web
 application we want to create HTML or maybe JSON.  Instead of forcing you to create these formats from hand,
-Mango includes a powerful templating engine that can convert a .NET object into a document.
+Manos includes a powerful templating engine that can convert a .NET object into a document.
 
-![Diagram showing an object being converted to a document](http://github.com/jacksonh/mango/raw/master/docs/tutorial/mango-template-engine-flow.png)
+![Diagram showing an object being converted to a document](http://github.com/jacksonh/manos/raw/master/docs/tutorial/manos-template-engine-flow.png)
 
 
 Creating the Hello World Template
@@ -33,7 +33,7 @@ To create our Hello World template we need to create an index.html page in our T
 Rendering our Hello World Template
 ----------------------------------
 
-Because Mango's template engine turns templates into CLR objects, we can now call our templates render method from our action.  Lets
+Because Manos's template engine turns templates into CLR objects, we can now call our templates render method from our action.  Lets
 update the action code to look like this:
 
     Get ("/", ctx => ctx.Render ("index.html"));
@@ -46,7 +46,7 @@ In the last two examples you might have wondered what the null parameter is for.
 template engine.  When templates are rendered, the template engine will try to resolve properties on the supplied data.  So if we want
 to pass a name into our template, all we need to do is this:
 
-    Get ("/", ctx => ctx.Render ("index.html", new { Name = "Mango" }));
+    Get ("/", ctx => ctx.Render ("index.html", new { Name = "Manos" }));
 
 and update our template to use that name:
 
@@ -86,10 +86,10 @@ for loop:
 Building and Running Templates
 ------------------------------
 
-To build and run our templates, we'll use the mango-tool again.
+To build and run our templates, we'll use the manos-tool again.
 
-    mango-tool -build
-    mango-tool -run
+    manos-tool -build
+    manos-tool -run
 
 if we navigate to http://localhost:8080/ we get a real web page.  Viewing the source should look something like this:
 
@@ -98,7 +98,7 @@ if we navigate to http://localhost:8080/ we get a real web page.  Viewing the so
         <title>Hello World!</title>
       </head>
       <body>
-         Hello Mango!
+         Hello Manos!
       </body>
     </html>
 
@@ -106,7 +106,7 @@ Template Inheritance
 --------------------
 
 Most sites will look almost exactly the same on every single page. Rather than update every page every time we change
-the site's layout, it would be nice to share that structure between all of our pages.  Mango makes this easy with
+the site's layout, it would be nice to share that structure between all of our pages.  Manos makes this easy with
 template inheritance. Template inheritance allows you to create a basic page that will be shared between a number of
 pages and add blocks to your base page that can be set by each individual page.  Here is our Hello World example rewritten
 to use a base page.
@@ -143,7 +143,7 @@ Templates/index.html:
 Template Operations
 ------------------
 
-Here are some of the cool things you can do with Mango's template engine. For a more in depth
+Here are some of the cool things you can do with Manos's template engine. For a more in depth
 look at the templating engine, checkout the Templates Guide.
 
 ### Filters
@@ -160,7 +160,7 @@ of the available filters are listed in the Templates Guide. If the supplied filt
 always add your own filters.
 
 ### Conditional statements
-Mango supports if, elif and else statements.
+Manos supports if, elif and else statements.
 
     {% if show_name %}
       {{ Name }}
