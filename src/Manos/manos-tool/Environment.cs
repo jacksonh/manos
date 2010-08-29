@@ -14,7 +14,7 @@ namespace Manos.Tool
 			LibDirectory = "lib";
 			TemplatesDirectory = "Templates";
 			WorkingDirectory = Directory.GetCurrentDirectory ();
-			DataDirectory = Path.Combine (System.Environment.GetFolderPath (System.Environment.SpecialFolder.CommonApplicationData), "mango-tool");
+			DataDirectory = Path.Combine (System.Environment.GetFolderPath (System.Environment.SpecialFolder.CommonApplicationData), "manos-tool");
 		}
 		
 		public string LibDirectory {
