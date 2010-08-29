@@ -6,7 +6,7 @@ EXTRA_DIST =
 if ENABLE_DEBUG
 ASSEMBLY_COMPILER_COMMAND = gmcs
 ASSEMBLY_COMPILER_FLAGS =  -noconfig -codepage:utf8 -warn:4 -optimize- -debug "-define:DEBUG"
-ASSEMBLY = bin/Debug/mango-server.exe
+ASSEMBLY = bin/Debug/manos-server.exe
 ASSEMBLY_MDB = $(ASSEMBLY).mdb
 COMPILE_TARGET = exe
 PROJECT_REFERENCES =  \
@@ -18,15 +18,15 @@ MONO_POSIX_DLL_MDB_SOURCE=../../../deps/Mono.Posix.dll.mdb
 MANOS_DLL_SOURCE=../bin/Debug/Manos.dll
 MONO_CECIL_DLL_SOURCE=../../../deps/Mono.Cecil.dll
 MONO_CECIL_DLL_MDB_SOURCE=../../../deps/Mono.Cecil.dll.mdb
-MANGO_SERVER_EXE_MDB_SOURCE=bin/Debug/mango-server.exe.mdb
-MANGO_SERVER_EXE_MDB=$(BUILD_DIR)/mango-server.exe.mdb
+MANOS_SERVER_EXE_MDB_SOURCE=bin/Debug/manos-server.exe.mdb
+MANOS_SERVER_EXE_MDB=$(BUILD_DIR)/manos-server.exe.mdb
 
 endif
 
 if ENABLE_RELEASE
 ASSEMBLY_COMPILER_COMMAND = gmcs
 ASSEMBLY_COMPILER_FLAGS =  -noconfig -codepage:utf8 -warn:4 -optimize-
-ASSEMBLY = bin/Release/mango-server.exe
+ASSEMBLY = bin/Release/manos-server.exe
 ASSEMBLY_MDB = 
 COMPILE_TARGET = exe
 PROJECT_REFERENCES =  \
@@ -38,7 +38,7 @@ MONO_POSIX_DLL_MDB_SOURCE=../../../deps/Mono.Posix.dll.mdb
 MANOS_DLL_SOURCE=../bin/Release/Manos.dll
 MONO_CECIL_DLL_SOURCE=../../../deps/Mono.Cecil.dll
 MONO_CECIL_DLL_MDB_SOURCE=../../../deps/Mono.Cecil.dll.mdb
-MANGO_SERVER_EXE_MDB=
+MANOS_SERVER_EXE_MDB=
 
 endif
 
@@ -51,7 +51,7 @@ PROGRAMFILES = \
 	$(MANOS_DLL) \
 	$(MONO_CECIL_DLL) \
 	$(MONO_CECIL_DLL_MDB) \
-	$(MANGO_SERVER_EXE_MDB)  
+	$(MANOS_SERVER_EXE_MDB)  
 
 BINARIES = \
 	$(MANOS_SERVER)  

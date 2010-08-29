@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{313A4302-2A68-47CF-987B-56853D9012F7}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>mangoserver</RootNamespace>
-    <AssemblyName>mango-server</AssemblyName>
+    <RootNamespace>manosserver</RootNamespace>
+    <AssemblyName>manos-server</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
