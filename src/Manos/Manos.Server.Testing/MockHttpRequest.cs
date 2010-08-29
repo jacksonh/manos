@@ -1,11 +1,11 @@
 
 using System;
 
-using Mango;
-using Mango.Server;
+using Manos;
+using Manos.Server;
 using System.Collections.Specialized;
 
-namespace Mango.Server.Testing
+namespace Manos.Server.Testing
 {
 
 

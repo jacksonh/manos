@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace Mango.Tool
+namespace Manos.Tool
 {
 	public class InitCommand
 	{

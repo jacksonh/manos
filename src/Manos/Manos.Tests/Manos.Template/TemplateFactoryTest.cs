@@ -3,9 +3,9 @@
 using System;
 using NUnit.Framework;
 
-using Mango.Templates.Testing;
+using Manos.Templates.Testing;
 
-namespace Mango.Templates.Tests
+namespace Manos.Templates.Tests
 {
 	[TestFixture]
 	public class TemplateFactoryTest
@@ -22,7 +22,7 @@ namespace Mango.Templates.Tests
 		[Test]
 		public void RegisterTemplate_NullName_Throws ()
 		{
-			IMangoTemplate template = new MangoTemplateStub ();
+			IManosTemplate template = new ManosTemplateStub ();
 			
 			Assert.Throws<ArgumentNullException> (() => TemplateFactory.Register (null, template));
 		}
@@ -39,7 +39,7 @@ namespace Mango.Templates.Tests
 		public void RegisterTemplate_AlreadyRegistered_Throws ()
 		{
 			var name = "foobar";
-			var template = new MangoTemplateStub ();
+			var template = new ManosTemplateStub ();
 			
 			TemplateFactory.Register (name, template);
 			
@@ -50,7 +50,7 @@ namespace Mango.Templates.Tests
 		public void RegisterTemplate_RegisterAndRetrieve_ItemIsRegistered ()
 		{
 			var name = "foobar";
-			var expected = new MangoTemplateStub ();
+			var expected = new ManosTemplateStub ();
 			
 			TemplateFactory.Register (name, expected);
 			
@@ -62,7 +62,7 @@ namespace Mango.Templates.Tests
 		[Test]
 		public void TryGet_NullName_Throws ()
 		{
-			IMangoTemplate template;
+			IManosTemplate template;
 			
 			Assert.Throws<ArgumentNullException> (() => TemplateFactory.TryGet (null, out template));
 		}
@@ -86,7 +86,7 @@ namespace Mango.Templates.Tests
 		public void Clear_RegisteredItems_UnregistersItems ()
 		{
 			var name = "blah";
-			IMangoTemplate template = new MangoTemplateStub ();
+			IManosTemplate template = new ManosTemplateStub ();
 			
 			TemplateFactory.Register (name, template);
 			
@@ -100,7 +100,7 @@ namespace Mango.Templates.Tests
 		public void TryGet_NonExistant_ReturnsFalse ()
 		{
 			var name = "wolfbear";
-			IMangoTemplate template = null;
+			IManosTemplate template = null;
 			
 			Assert.IsFalse (TemplateFactory.TryGet (name, out template));
 		}
@@ -109,7 +109,7 @@ namespace Mango.Templates.Tests
 		public void TryGet_NonExistant_SetsTemplateNull ()
 		{
 			var name = "wolfbear";
-			IMangoTemplate template = new MangoTemplateStub ();
+			IManosTemplate template = new ManosTemplateStub ();
 			
 			TemplateFactory.TryGet (name, out template);
 			
@@ -120,7 +120,7 @@ namespace Mango.Templates.Tests
 		public void TryGet_RegisteredTemplate_ReturnsTrue ()
 		{
 			var name = "barkingpossum";
-			IMangoTemplate template = new MangoTemplateStub ();
+			IManosTemplate template = new ManosTemplateStub ();
 			
 			TemplateFactory.Register (name, template);
 			
@@ -133,11 +133,11 @@ namespace Mango.Templates.Tests
 		public void TryGet_RegisteredTemplate_SetsTemplate ()
 		{
 			var name = "manbearpig";
-			IMangoTemplate expected = new MangoTemplateStub ();
+			IManosTemplate expected = new ManosTemplateStub ();
 			
 			TemplateFactory.Register (name, expected);
 			
-			IMangoTemplate actual = null;
+			IManosTemplate actual = null;
 			TemplateFactory.TryGet (name, out actual);
 			
 			Assert.AreSame (expected, actual);

@@ -1,7 +1,7 @@
 
 using System;
 
-namespace Mango
+namespace Manos
 {
 	public interface IManosTarget
 	{

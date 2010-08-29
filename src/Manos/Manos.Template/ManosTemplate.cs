@@ -1,12 +1,12 @@
 using System;
 
-using Mango;
-using Mango.Server;
+using Manos;
+using Manos.Server;
 
 
-namespace Mango.Templates
+namespace Manos.Templates
 {
-	public abstract class MangoTemplate
+	public abstract class ManosTemplate
 	{
 		public void Render (IManosContext context, object the_arg)
 		{

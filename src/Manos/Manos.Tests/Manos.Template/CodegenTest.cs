@@ -2,7 +2,7 @@
 using System;
 using NUnit.Framework;
 
-namespace Mango.Templates.Tests
+namespace Manos.Templates.Tests
 {
 	[TestFixture()]
 	public class CodegenTest
@@ -24,25 +24,25 @@ namespace Mango.Templates.Tests
 			name = Page.FullTypeNameForPath (app_name, path);
 			Assert.AreEqual ("FooBar.Templates.TestsHtml", name, "a1");
 			
-			path = "Mango.Tests.Tests.html";
+			path = "Manos.Tests.Tests.html";
 			name = Page.FullTypeNameForPath (app_name, path);
-			Assert.AreEqual ("FooBar.Templates.Mango.Tests.TestsHtml", name, "a2");
+			Assert.AreEqual ("FooBar.Templates.Manos.Tests.TestsHtml", name, "a2");
 			
 			path = "mango.tests.html";
 			name = Page.FullTypeNameForPath (app_name, path);
-			Assert.AreEqual ("FooBar.Templates.Mango.TestsHtml", name, "a3");
+			Assert.AreEqual ("FooBar.Templates.Manos.TestsHtml", name, "a3");
 			
-			path = "Mango/Tests.html";
+			path = "Manos/Tests.html";
 			name = Page.FullTypeNameForPath (app_name, path);
-			Assert.AreEqual ("FooBar.Templates.Mango.TestsHtml", name, "a4");
+			Assert.AreEqual ("FooBar.Templates.Manos.TestsHtml", name, "a4");
 			
-			path = "Mango.Tests/Tests.HTML";
+			path = "Manos.Tests/Tests.HTML";
 			name = Page.FullTypeNameForPath (app_name, path);
-			Assert.AreEqual ("FooBar.Templates.Mango.Tests.TestsHtml", name, "a5");
+			Assert.AreEqual ("FooBar.Templates.Manos.Tests.TestsHtml", name, "a5");
 			
 			path = "mango/tests.hTMl";
 			name = Page.FullTypeNameForPath (app_name, path);
-			Assert.AreEqual ("FooBar.Templates.Mango.TestsHtml", name, "a6");
+			Assert.AreEqual ("FooBar.Templates.Manos.TestsHtml", name, "a6");
 		}
 		
 		[Test]
@@ -51,7 +51,7 @@ namespace Mango.Templates.Tests
 			string app_name = "FooBar";
 			string path;
 			
-			path = "Mango/tests..html";
+			path = "Manos/tests..html";
 			Assert.Throws<ArgumentException> (() => Page.FullTypeNameForPath (app_name, path));
 		}
 	}

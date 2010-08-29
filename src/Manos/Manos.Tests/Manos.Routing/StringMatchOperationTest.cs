@@ -2,11 +2,11 @@
 using System;
 using NUnit.Framework;
 
-using Mango.Routing;
+using Manos.Routing;
 using System.Collections.Specialized;
 
 
-namespace Mango.Routing.Tests
+namespace Manos.Routing.Tests
 {
 
 

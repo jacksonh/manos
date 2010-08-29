@@ -5,11 +5,11 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
-using Mango.Templates;
+using Manos.Templates;
 
 using NDesk.Options;
 
-namespace Mango.Tool
+namespace Manos.Tool
 {
 	class Driver
 	{

@@ -2,11 +2,11 @@
 using System;
 using NUnit.Framework;
 
-using Mango.Routing;
-using Mango.Testing;
-using Mango.Server.Testing;
+using Manos.Routing;
+using Manos.Testing;
+using Manos.Server.Testing;
 
-namespace Mango.Routing.Tests
+namespace Manos.Routing.Tests
 {
 
 
@@ -21,7 +21,7 @@ namespace Mango.Routing.Tests
 		[Test()]
 		public void TestStrMatch ()
 		{
-			var target = new MockMangoTarget ();
+			var target = new MockManosTarget ();
 			var rh = new RouteHandler ("^foo", "GET", target);
 			var request = new MockHttpRequest ("GET", "foo");
 			
@@ -34,7 +34,7 @@ namespace Mango.Routing.Tests
 		[Test()]
 		public void TestStrMatchDeep ()
 		{
-			var target = new MockMangoTarget ();
+			var target = new MockManosTarget ();
 			var rh = new RouteHandler ("foo/", "GET") {
 				new RouteHandler ("bar", "GET", target),
 			};
@@ -59,7 +59,7 @@ namespace Mango.Routing.Tests
 			// regexes.
 			//
 			
-			var target = new MockMangoTarget ();
+			var target = new MockManosTarget ();
 			var rh = new RouteHandler ("^foo", "GET", target);
 			var request = new MockHttpRequest ("GET", "foo");
 
@@ -75,7 +75,7 @@ namespace Mango.Routing.Tests
 		[Test]
 		public void TestSetPatternsNull ()
 		{
-			var target = new MockMangoTarget ();
+			var target = new MockManosTarget ();
 			var rh = new RouteHandler ("^foo", "GET", target);
 			var request = new MockHttpRequest ("GET", "foo");
 

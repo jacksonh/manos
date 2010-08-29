@@ -1,23 +1,23 @@
 
 using System;
 
-namespace Mango.Testing
+namespace Manos.Testing
 {
 
 
-	public class MockMangoTarget : IMangoTarget
+	public class MockManosTarget : IManosTarget
 	{
-		public MockMangoTarget ()
+		public MockManosTarget ()
 		{
 		}
 		
-		public void Invoke (IMangoContext ctx)
+		public void Invoke (IManosContext ctx)
 		{
 			throw new System.NotImplementedException();
 		}
 		
 		
-		public MangoAction Action {
+		public ManosAction Action {
 			get {
 				throw new System.NotImplementedException();
 			}

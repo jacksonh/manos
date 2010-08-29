@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using Microsoft.CSharp;
 using System.CodeDom.Compiler;
 
-using Mango.Templates;
+using Manos.Templates;
 
-namespace Mango.Tool
+namespace Manos.Tool
 {
 	public class BuildCommand
 	{

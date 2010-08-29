@@ -36,12 +36,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="mango.cs" />
+    <Compile Include="manos.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Mango.csproj">
+    <ProjectReference Include="..\Manos.csproj">
       <Project>{2548B25A-2E1F-4E21-BC43-7E39B1F6F23F}</Project>
-      <Name>Mango</Name>
+      <Name>Manos</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

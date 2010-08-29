@@ -2,7 +2,7 @@
 using System;
 
 
-namespace Mango {
+namespace Manos {
 
 	public static class HttpMethods {
 

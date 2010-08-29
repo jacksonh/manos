@@ -6,15 +6,15 @@ using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 
-using Mango;
-using Mango.Server;
+using Manos;
+using Manos.Server;
 
 
 public class T {
 
 	public static bool show_headers;
 
-	public static MangoApp app;
+	public static ManosApp app;
 
 	public static void Main (string [] args)
 	{
@@ -29,15 +29,15 @@ public class T {
 		server.IOLoop.Start ();
 	}
 
-	public static MangoApp LoadLibrary (string library)
+	public static ManosApp LoadLibrary (string library)
 	{
 		Assembly a = Assembly.LoadFrom (library);
 
 		foreach (Type t in a.GetTypes ()) {
-			if (t.BaseType == typeof (MangoApp)) {
+			if (t.BaseType == typeof (ManosApp)) {
 				if (app != null)
 					throw new Exception ("Library contains multiple apps.");
-				app = (MangoApp) Activator.CreateInstance (t);
+				app = (ManosApp) Activator.CreateInstance (t);
 			}
 		}
 

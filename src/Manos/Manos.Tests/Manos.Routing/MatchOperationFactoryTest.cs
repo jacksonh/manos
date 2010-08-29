@@ -2,10 +2,10 @@
 using System;
 using NUnit.Framework;
 
-using Mango.Routing;
+using Manos.Routing;
 
 
-namespace Mango.Routing.Tests
+namespace Manos.Routing.Tests
 {
 
 	[TestFixture()]

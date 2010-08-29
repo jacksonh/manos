@@ -2,10 +2,10 @@
 using System;
 using NUnit.Framework;
 
-using Mango;
-using Mango.Server;
+using Manos;
+using Manos.Server;
 
-namespace Mango.Server.Tests
+namespace Manos.Server.Tests
 {
 
 

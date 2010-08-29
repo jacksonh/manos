@@ -2,13 +2,13 @@
 
 using System;
 
-using Mango;
-using Mango.Server;
+using Manos;
+using Manos.Server;
 
-namespace Mango.Templates {
+namespace Manos.Templates {
 	
 	
-	public interface IMangoTemplate
+	public interface IManosTemplate
 	{
 		void Render (IManosContext context, object the_arg);
 		void RenderToResponse (IHttpResponse response, object the_arg);

@@ -1,6 +1,6 @@
 
 
-namespace Mango.Server {
+namespace Manos.Server {
 
 	public interface IWriteOperation {
 

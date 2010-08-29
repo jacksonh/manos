@@ -2,25 +2,25 @@
 using System;
 using NUnit.Framework;
 
-using Mango;
-using Mango.Testing;
-using Mango.Server.Testing;
+using Manos;
+using Manos.Testing;
+using Manos.Server.Testing;
 
-namespace Mango.Tests
+namespace Manos.Tests
 {
 
 
 	[TestFixture()]
-	public class MangoModuleTest
+	public class ManosModuleTest
 	{
 
-		private void FakeAction (IMangoContext ctx)
+		private void FakeAction (IManosContext ctx)
 		{
 		}
 		
-		private class FakeModule : MockMangoModule {
+		private class FakeModule : MockManosModule {
 
-			public static void FakeAction (IMangoContext ctx)
+			public static void FakeAction (IManosContext ctx)
 			{
 			}
 		}
@@ -28,12 +28,12 @@ namespace Mango.Tests
 		[Test()]
 		public void TestAddRouteNull ()
 		{
-			MangoModule m = new MangoModule ();
+			ManosModule m = new ManosModule ();
 			
-			Assert.Throws<ArgumentNullException> (() => m.Route (new MangoModule (), null, null));
-			Assert.Throws<ArgumentNullException> (() => m.Route (new MangoAction (FakeAction), null, null));
-			Assert.Throws<ArgumentNullException> (() => m.Route (null, new MangoAction (FakeAction)));
-			Assert.Throws<ArgumentNullException> (() => m.Route (null, new MangoModule ()));                          
+			Assert.Throws<ArgumentNullException> (() => m.Route (new ManosModule (), null, null));
+			Assert.Throws<ArgumentNullException> (() => m.Route (new ManosAction (FakeAction), null, null));
+			Assert.Throws<ArgumentNullException> (() => m.Route (null, new ManosAction (FakeAction)));
+			Assert.Throws<ArgumentNullException> (() => m.Route (null, new ManosModule ()));                          
 		}
 		
 		[Test]
@@ -44,29 +44,29 @@ namespace Mango.Tests
 			};
 			
 			for (int i = 0; i < methods.Length; i++) {
-				var m = new MockMangoModule ();
+				var m = new MockManosModule ();
 				var req = new MockHttpRequest (methods [i], "Foobar");
 			
-				m.Route ("Foobar", new MangoAction (FakeAction));
+				m.Route ("Foobar", new ManosAction (FakeAction));
 			
-				Assert.AreEqual (new MangoAction (FakeAction), m.Routes.Find (req).Action);
+				Assert.AreEqual (new ManosAction (FakeAction), m.Routes.Find (req).Action);
 			}
 		}
 		
 		[Test]
 		public void TestRouteNull ()
 		{
-			var m = new MockMangoModule ();
+			var m = new MockManosModule ();
 			
-			MangoModule mm = null;
+			ManosModule mm = null;
 			Assert.Throws<ArgumentNullException> (() => m.Route ("foo", mm), "a1");
 			Assert.Throws<ArgumentNullException> (() => m.Route (mm, "foo", "bar", "baz"), "a2");
 			
-			MangoAction ma = null;
+			ManosAction ma = null;
 			Assert.Throws<ArgumentNullException> (() => m.Route ("foo", ma), "a3");
 			Assert.Throws<ArgumentNullException> (() => m.Route (ma, "foo", "bar", "baz"), "a4");
 			
-			mm = new MockMangoModule ();
+			mm = new MockManosModule ();
 			Assert.Throws<ArgumentNullException> (() => m.Route (null, mm), "a4");
 			Assert.Throws<ArgumentNullException> (() => m.Route (mm, "foo", "bar", "baz", null), "a5");
 			
@@ -83,7 +83,7 @@ namespace Mango.Tests
 			};
 			
 			for (int i = 0; i < methods.Length; i++) {
-				var m = new MockMangoModule ();
+				var m = new MockManosModule ();
 				var req = new MockHttpRequest (methods [i], "FakeModule/FakeAction");
 			
 				m.Route ("FakeModule/", new FakeModule ());
@@ -91,18 +91,18 @@ namespace Mango.Tests
 				//
 				// I guess technically this is testing the auto name registering too
 				//
-				Assert.AreEqual (new MangoAction (FakeModule.FakeAction), m.Routes.Find (req).Action);	
+				Assert.AreEqual (new ManosAction (FakeModule.FakeAction), m.Routes.Find (req).Action);	
 			}
 		}
 		
 		[Test]
 		public void TestGetToTarget ()
 		{
-			var m = new MockMangoModule ();
+			var m = new MockManosModule ();
 			var req = new MockHttpRequest ("GET", "Foobar");
 			
-			m.Get ("Foobar", new MangoAction (FakeAction));
-			Assert.AreEqual (new MangoAction (FakeAction), m.Routes.Find (req).Action);
+			m.Get ("Foobar", new ManosAction (FakeAction));
+			Assert.AreEqual (new ManosAction (FakeAction), m.Routes.Find (req).Action);
 			
 			req = new MockHttpRequest ("POST", "Foobar");
 			Assert.IsNull (m.Routes.Find (req));
@@ -111,7 +111,7 @@ namespace Mango.Tests
 		[Test]
 		public void TestGetToModule ()
 		{
-			var m = new MockMangoModule ();
+			var m = new MockManosModule ();
 			var req = new MockHttpRequest ("GET", "FakeModule/FakeAction");
 			
 			m.Get ("FakeModule/", new FakeModule ());
@@ -119,7 +119,7 @@ namespace Mango.Tests
 			//
 			// I guess technically this is testing the auto name registering too
 			//
-			Assert.AreEqual (new MangoAction (FakeModule.FakeAction), m.Routes.Find (req).Action);
+			Assert.AreEqual (new ManosAction (FakeModule.FakeAction), m.Routes.Find (req).Action);
 			
 			req = new MockHttpRequest ("POST", "FakeModule/FakeAction");
 			Assert.IsNull (m.Routes.Find (req));
@@ -128,11 +128,11 @@ namespace Mango.Tests
 		[Test]
 		public void TestPutToTarget ()
 		{
-			var m = new MockMangoModule ();
+			var m = new MockManosModule ();
 			var req = new MockHttpRequest ("PUT", "Foobar");
 			
-			m.Put ("Foobar", new MangoAction (FakeAction));
-			Assert.AreEqual (new MangoAction (FakeAction), m.Routes.Find (req).Action);
+			m.Put ("Foobar", new ManosAction (FakeAction));
+			Assert.AreEqual (new ManosAction (FakeAction), m.Routes.Find (req).Action);
 			
 			req = new MockHttpRequest ("POST", "Foobar");
 			Assert.IsNull (m.Routes.Find (req));
@@ -141,7 +141,7 @@ namespace Mango.Tests
 		[Test]
 		public void TestPutToModule ()
 		{
-			var m = new MockMangoModule ();
+			var m = new MockManosModule ();
 			var req = new MockHttpRequest ("PUT", "FakeModule/FakeAction");
 			
 			m.Put ("FakeModule/", new FakeModule ());
@@ -149,7 +149,7 @@ namespace Mango.Tests
 			//
 			// I guess technically this is testing the auto name registering too
 			//
-			Assert.AreEqual (new MangoAction (FakeModule.FakeAction), m.Routes.Find (req).Action);
+			Assert.AreEqual (new ManosAction (FakeModule.FakeAction), m.Routes.Find (req).Action);
 			
 			req = new MockHttpRequest ("POST", "FakeModule/FakeAction");
 			Assert.IsNull (m.Routes.Find (req));
@@ -158,11 +158,11 @@ namespace Mango.Tests
 		[Test]
 		public void TestPostToTarget ()
 		{
-			var m = new MockMangoModule ();
+			var m = new MockManosModule ();
 			var req = new MockHttpRequest ("POST", "Foobar");
 			
-			m.Post ("Foobar", new MangoAction (FakeAction));
-			Assert.AreEqual (new MangoAction (FakeAction), m.Routes.Find (req).Action);
+			m.Post ("Foobar", new ManosAction (FakeAction));
+			Assert.AreEqual (new ManosAction (FakeAction), m.Routes.Find (req).Action);
 			
 			req = new MockHttpRequest ("GET", "Foobar");
 			Assert.IsNull (m.Routes.Find (req));
@@ -171,7 +171,7 @@ namespace Mango.Tests
 		[Test]
 		public void TestPostToModule ()
 		{
-			var m = new MockMangoModule ();
+			var m = new MockManosModule ();
 			var req = new MockHttpRequest ("POST", "FakeModule/FakeAction");
 			
 			m.Post ("FakeModule/", new FakeModule ());
@@ -179,7 +179,7 @@ namespace Mango.Tests
 			//
 			// I guess technically this is testing the auto name registering too
 			//
-			Assert.AreEqual (new MangoAction (FakeModule.FakeAction), m.Routes.Find (req).Action);
+			Assert.AreEqual (new ManosAction (FakeModule.FakeAction), m.Routes.Find (req).Action);
 			
 			req = new MockHttpRequest ("GET", "FakeModule/FakeAction");
 			Assert.IsNull (m.Routes.Find (req));
@@ -188,11 +188,11 @@ namespace Mango.Tests
 		[Test]
 		public void TestDeleteToTarget ()
 		{
-			var m = new MockMangoModule ();
+			var m = new MockManosModule ();
 			var req = new MockHttpRequest ("DELETE", "Foobar");
 			
-			m.Delete ("Foobar", new MangoAction (FakeAction));
-			Assert.AreEqual (new MangoAction (FakeAction), m.Routes.Find (req).Action);
+			m.Delete ("Foobar", new ManosAction (FakeAction));
+			Assert.AreEqual (new ManosAction (FakeAction), m.Routes.Find (req).Action);
 			
 			req = new MockHttpRequest ("GET", "Foobar");
 			Assert.IsNull (m.Routes.Find (req));
@@ -201,7 +201,7 @@ namespace Mango.Tests
 		[Test]
 		public void TestDeleteToModule ()
 		{
-			var m = new MockMangoModule ();
+			var m = new MockManosModule ();
 			var req = new MockHttpRequest ("DELETE", "FakeModule/FakeAction");
 			
 			m.Delete ("FakeModule/", new FakeModule ());
@@ -209,7 +209,7 @@ namespace Mango.Tests
 			//
 			// I guess technically this is testing the auto name registering too
 			//
-			Assert.AreEqual (new MangoAction (FakeModule.FakeAction), m.Routes.Find (req).Action);
+			Assert.AreEqual (new ManosAction (FakeModule.FakeAction), m.Routes.Find (req).Action);
 			
 			req = new MockHttpRequest ("GET", "FakeModule/FakeAction");
 			Assert.IsNull (m.Routes.Find (req));
@@ -218,11 +218,11 @@ namespace Mango.Tests
 		[Test]
 		public void TestHeadToTarget ()
 		{
-			var m = new MockMangoModule ();
+			var m = new MockManosModule ();
 			var req = new MockHttpRequest ("HEAD", "Foobar");
 			
-			m.Head ("Foobar", new MangoAction (FakeAction));
-			Assert.AreEqual (new MangoAction (FakeAction), m.Routes.Find (req).Action);
+			m.Head ("Foobar", new ManosAction (FakeAction));
+			Assert.AreEqual (new ManosAction (FakeAction), m.Routes.Find (req).Action);
 			
 			req = new MockHttpRequest ("GET", "Foobar");
 			Assert.IsNull (m.Routes.Find (req));
@@ -231,7 +231,7 @@ namespace Mango.Tests
 		[Test]
 		public void TestHeadToModule ()
 		{
-			var m = new MockMangoModule ();
+			var m = new MockManosModule ();
 			var req = new MockHttpRequest ("HEAD", "FakeModule/FakeAction");
 			
 			m.Head ("FakeModule/", new FakeModule ());
@@ -239,7 +239,7 @@ namespace Mango.Tests
 			//
 			// I guess technically this is testing the auto name registering too
 			//
-			Assert.AreEqual (new MangoAction (FakeModule.FakeAction), m.Routes.Find (req).Action);
+			Assert.AreEqual (new ManosAction (FakeModule.FakeAction), m.Routes.Find (req).Action);
 			
 			req = new MockHttpRequest ("GET", "FakeModule/FakeAction");
 			Assert.IsNull (m.Routes.Find (req));
@@ -248,11 +248,11 @@ namespace Mango.Tests
 		[Test]
 		public void TestOptionsToTarget ()
 		{
-			var m = new MockMangoModule ();
+			var m = new MockManosModule ();
 			var req = new MockHttpRequest ("OPTIONS", "Foobar");
 			
-			m.Options ("Foobar", new MangoAction (FakeAction));
-			Assert.AreEqual (new MangoAction (FakeAction), m.Routes.Find (req).Action);
+			m.Options ("Foobar", new ManosAction (FakeAction));
+			Assert.AreEqual (new ManosAction (FakeAction), m.Routes.Find (req).Action);
 			
 			req = new MockHttpRequest ("GET", "Foobar");
 			Assert.IsNull (m.Routes.Find (req));
@@ -261,7 +261,7 @@ namespace Mango.Tests
 		[Test]
 		public void TestOptionsToModule ()
 		{
-			var m = new MockMangoModule ();
+			var m = new MockManosModule ();
 			var req = new MockHttpRequest ("OPTIONS", "FakeModule/FakeAction");
 			
 			m.Options ("FakeModule/", new FakeModule ());
@@ -269,7 +269,7 @@ namespace Mango.Tests
 			//
 			// I guess technically this is testing the auto name registering too
 			//
-			Assert.AreEqual (new MangoAction (FakeModule.FakeAction), m.Routes.Find (req).Action);
+			Assert.AreEqual (new ManosAction (FakeModule.FakeAction), m.Routes.Find (req).Action);
 			
 			req = new MockHttpRequest ("GET", "FakeModule/FakeAction");
 			Assert.IsNull (m.Routes.Find (req));
@@ -278,11 +278,11 @@ namespace Mango.Tests
 		[Test]
 		public void TestTraceToTarget ()
 		{
-			var m = new MockMangoModule ();
+			var m = new MockManosModule ();
 			var req = new MockHttpRequest ("TRACE", "Foobar");
 			
-			m.Trace ("Foobar", new MangoAction (FakeAction));
-			Assert.AreEqual (new MangoAction (FakeAction), m.Routes.Find (req).Action);
+			m.Trace ("Foobar", new ManosAction (FakeAction));
+			Assert.AreEqual (new ManosAction (FakeAction), m.Routes.Find (req).Action);
 			
 			req = new MockHttpRequest ("GET", "Foobar");
 			Assert.IsNull (m.Routes.Find (req));
@@ -291,7 +291,7 @@ namespace Mango.Tests
 		[Test]
 		public void TestTraceToModule ()
 		{
-			var m = new MockMangoModule ();
+			var m = new MockManosModule ();
 			var req = new MockHttpRequest ("TRACE", "FakeModule/FakeAction");
 			
 			m.Trace ("FakeModule/", new FakeModule ());
@@ -299,7 +299,7 @@ namespace Mango.Tests
 			//
 			// I guess technically this is testing the auto name registering too
 			//
-			Assert.AreEqual (new MangoAction (FakeModule.FakeAction), m.Routes.Find (req).Action);
+			Assert.AreEqual (new ManosAction (FakeModule.FakeAction), m.Routes.Find (req).Action);
 			
 			req = new MockHttpRequest ("GET", "FakeModule/FakeAction");
 			Assert.IsNull (m.Routes.Find (req));
