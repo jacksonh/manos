@@ -2,9 +2,9 @@
 
 using System;
 
-namespace Mango {
+namespace Manos {
 
-	public delegate void MangoAction (IMangoContext context);
+	public delegate void ManosAction (IManosContext context);
 	
 }
 

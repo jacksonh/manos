@@ -2,13 +2,13 @@
 
 using System;
 
-using Mango.Server;
+using Manos.Server;
 
-namespace Mango {
+namespace Manos {
 
-	public class MangoContext : IMangoContext {
+	public class ManosContext : IManosContext {
 
-		public MangoContext (IHttpTransaction transaction)
+		public ManosContext (IHttpTransaction transaction)
 		{
 			Transaction = transaction;
 		}

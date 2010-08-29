@@ -8,10 +8,10 @@ using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 
 
-using Mango.Server;
+using Manos.Server;
 using System.Collections.Specialized;
 
-namespace Mango.Routing {
+namespace Manos.Routing {
 
 	public class RouteHandler : IEnumerable<RouteHandler> {
 
@@ -29,7 +29,7 @@ namespace Mango.Routing {
 		{
 		}
 		
-		public RouteHandler (string pattern, string [] methods, IMangoTarget target) : this (new string [] { pattern }, methods, target)
+		public RouteHandler (string pattern, string [] methods, IManosTarget target) : this (new string [] { pattern }, methods, target)
 		{
 		}
 		
@@ -37,7 +37,7 @@ namespace Mango.Routing {
 		{
 		}
 		
-		public RouteHandler (string pattern, string method, IMangoTarget target) : this (new string [] { pattern }, new string [] { method }, target)
+		public RouteHandler (string pattern, string method, IManosTarget target) : this (new string [] { pattern }, new string [] { method }, target)
 		{
 		}
 		
@@ -45,7 +45,7 @@ namespace Mango.Routing {
 		{
 		}
 
-		public RouteHandler (string [] patterns, string [] methods, IMangoTarget target)
+		public RouteHandler (string [] patterns, string [] methods, IManosTarget target)
 		{
 			Target = target;
 
@@ -91,7 +91,7 @@ namespace Mango.Routing {
 			}
 		}
 
-		public IMangoTarget Target {
+		public IManosTarget Target {
 			get;
 			set;
 		}
@@ -132,12 +132,12 @@ namespace Mango.Routing {
 			Children.Add (child);	
 		}
 		
-		public IMangoTarget Find (IHttpRequest request)
+		public IManosTarget Find (IHttpRequest request)
 		{
 			return Find (request, 0);
 		}
 		
-		private IMangoTarget Find (IHttpRequest request, int uri_start)
+		private IManosTarget Find (IHttpRequest request, int uri_start)
 		{
 			if (!IsMethodMatch (request))
 				return null;
@@ -160,7 +160,7 @@ namespace Mango.Routing {
 			}
 
 			foreach (RouteHandler handler in Children) {
-				IMangoTarget res = handler.Find (request, uri_start);
+				IManosTarget res = handler.Find (request, uri_start);
 				if (res != null) {
 					if (uri_data != null)
 						request.UriData.Add (uri_data);

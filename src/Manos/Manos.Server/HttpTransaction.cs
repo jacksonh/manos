@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using Mono.Unix.Native;
 
 
-namespace Mango.Server {
+namespace Manos.Server {
 
 	public class HttpTransaction : IHttpTransaction {
 

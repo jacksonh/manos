@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Specialized;
 
-namespace Mango.Server {
+namespace Manos.Server {
 
 	public interface IHttpRequest {
 		

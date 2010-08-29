@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{259D5EAD-0DCB-44A5-8323-6AE16A16B101}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Mango.Tests</RootNamespace>
-    <AssemblyName>Mango.Tests</AssemblyName>
+    <RootNamespace>Manos.Tests</RootNamespace>
+    <AssemblyName>Manos.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -37,28 +37,28 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Mango\MangoModuleTest.cs" />
-    <Compile Include="Mango.Routing\RouteHandlerTest.cs" />
-    <Compile Include="Mango\MangoTargetTest.cs" />
-    <Compile Include="Mango.Server\HttpRequestTest.cs" />
-    <Compile Include="Mango.Routing\RegexMatchOperationTest.cs" />
-    <Compile Include="Mango.Routing\MatchOperationFactoryTest.cs" />
-    <Compile Include="Mango.Routing\StringMatchOperationTest.cs" />
-    <Compile Include="Mango.Routing\NopMatchOperationTest.cs" />
-    <Compile Include="Mango.Server\HttpHeadersTest.cs" />
-    <Compile Include="Mango.Template\CodegenTest.cs" />
-    <Compile Include="Mango.Template\TemplateFactoryTest.cs" />
+    <Compile Include="Manos\ManosModuleTest.cs" />
+    <Compile Include="Manos.Routing\RouteHandlerTest.cs" />
+    <Compile Include="Manos\ManosTargetTest.cs" />
+    <Compile Include="Manos.Server\HttpRequestTest.cs" />
+    <Compile Include="Manos.Routing\RegexMatchOperationTest.cs" />
+    <Compile Include="Manos.Routing\MatchOperationFactoryTest.cs" />
+    <Compile Include="Manos.Routing\StringMatchOperationTest.cs" />
+    <Compile Include="Manos.Routing\NopMatchOperationTest.cs" />
+    <Compile Include="Manos.Server\HttpHeadersTest.cs" />
+    <Compile Include="Manos.Template\CodegenTest.cs" />
+    <Compile Include="Manos.Template\TemplateFactoryTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Mango.Routing\" />
-    <Folder Include="Mango\" />
-    <Folder Include="Mango.Server\" />
-    <Folder Include="Mango.Template\" />
+    <Folder Include="Manos.Routing\" />
+    <Folder Include="Manos\" />
+    <Folder Include="Manos.Server\" />
+    <Folder Include="Manos.Template\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Mango.csproj">
+    <ProjectReference Include="..\Manos.csproj">
       <Project>{2548B25A-2E1F-4E21-BC43-7E39B1F6F23F}</Project>
-      <Name>Mango</Name>
+      <Name>Manos</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

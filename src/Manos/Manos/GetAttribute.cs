@@ -4,7 +4,7 @@ using System;
 using System.Reflection;
 
 
-namespace Mango {
+namespace Manos {
 
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 	public class GetAttribute : HttpMethodAttribute {

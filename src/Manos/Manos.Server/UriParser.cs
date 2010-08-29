@@ -3,7 +3,7 @@
 using System;
 
 
-namespace Mango.Server {
+namespace Manos.Server {
 
 	public static class UriParser {
 

@@ -3,13 +3,13 @@ using System;
 
 namespace Mango
 {
-	public interface IMangoTarget
+	public interface IManosTarget
 	{
-		MangoAction Action {
+		ManosAction Action {
 			get;
 			set;
 		}
 		
-		void Invoke (IMangoContext ctx);
+		void Invoke (IManosContext ctx);
 	}
 }

@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Specialized;
 
-namespace Mango.Routing
+namespace Manos.Routing
 {
 
 

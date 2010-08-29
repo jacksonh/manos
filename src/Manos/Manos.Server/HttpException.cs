@@ -1,7 +1,7 @@
 
 using System;
 
-namespace Mango.Server
+namespace Manos.Server
 {
 	public class HttpException : Exception
 	{

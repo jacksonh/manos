@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{2548B25A-2E1F-4E21-BC43-7E39B1F6F23F}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Mango</RootNamespace>
-    <AssemblyName>Mango</AssemblyName>
+    <RootNamespace>Manos</RootNamespace>
+    <AssemblyName>Manos</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -42,66 +42,66 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Mango\DeleteAttribute.cs" />
-    <Compile Include="Mango\GetAttribute.cs" />
-    <Compile Include="Mango\HeadAttribute.cs" />
-    <Compile Include="Mango\HttpMethodAttribute.cs" />
-    <Compile Include="Mango\IgnoreAttribute.cs" />
-    <Compile Include="Mango\MangoAction.cs" />
-    <Compile Include="Mango\MangoApp.cs" />
-    <Compile Include="Mango\MangoContext.cs" />
-    <Compile Include="Mango\MangoModule.cs" />
-    <Compile Include="Mango\OptionsAttribute.cs" />
-    <Compile Include="Mango\PostAttribute.cs" />
-    <Compile Include="Mango\PutAttribute.cs" />
-    <Compile Include="Mango\TraceAttribute.cs" />
-    <Compile Include="Mango.Routing\RouteHandler.cs" />
-    <Compile Include="Mango.Server\HttpException.cs" />
-    <Compile Include="Mango.Server\HttpHeaders.cs" />
-    <Compile Include="Mango.Server\HttpRequest.cs" />
-    <Compile Include="Mango.Server\HttpResponse.cs" />
-    <Compile Include="Mango.Server\HttpServer.cs" />
-    <Compile Include="Mango.Server\HttpTransaction.cs" />
-    <Compile Include="Mango.Server\HttpUtility.cs" />
-    <Compile Include="Mango.Server\IHttpRequest.cs" />
-    <Compile Include="Mango.Server\IHttpResponse.cs" />
-    <Compile Include="Mango.Server\IHttpTransaction.cs" />
-    <Compile Include="Mango.Server\IOLoop.cs" />
-    <Compile Include="Mango.Server\IOStream.cs" />
-    <Compile Include="Mango.Server\UriParser.cs" />
-    <Compile Include="Mango.Template\codegen.cs" />
-    <Compile Include="Mango.Template\environment.cs" />
-    <Compile Include="Mango.Template\library.cs" />
-    <Compile Include="Mango.Template\parser.cs" />
-    <Compile Include="Mango.Template\tokenizer.cs" />
-    <Compile Include="Mango\IMangoContext.cs" />
-    <Compile Include="Mango.Testing\MockMangoModule.cs" />
-    <Compile Include="Mango.Testing\Server\MockHttpTransaction.cs" />
-    <Compile Include="Mango.Testing\Server\MockHttpRequest.cs" />
-    <Compile Include="Mango\MangoTarget.cs" />
-    <Compile Include="Mango\IMangoTarget.cs" />
-    <Compile Include="Mango.Testing\MockMangoTarget.cs" />
-    <Compile Include="Mango.Server\WriteBytesOperation.cs" />
-    <Compile Include="Mango.Server\WriteFileOperation.cs" />
-    <Compile Include="Mango.Server\IWriteOperation.cs" />
-    <Compile Include="Mango.Routing\IMatchOperation.cs" />
-    <Compile Include="Mango.Routing\RegexMatchOperation.cs" />
-    <Compile Include="Mango.Routing\MatchOperationFactory.cs" />
-    <Compile Include="Mango.Routing\StringMatchOperation.cs" />
-    <Compile Include="Mango.Routing\NopMatchOperation.cs" />
-    <Compile Include="Mango\HttpMethods.cs" />
-    <Compile Include="Mango.Template\Engine.cs" />
+    <Compile Include="Manos\DeleteAttribute.cs" />
+    <Compile Include="Manos\GetAttribute.cs" />
+    <Compile Include="Manos\HeadAttribute.cs" />
+    <Compile Include="Manos\HttpMethodAttribute.cs" />
+    <Compile Include="Manos\IgnoreAttribute.cs" />
+    <Compile Include="Manos\ManosAction.cs" />
+    <Compile Include="Manos\ManosApp.cs" />
+    <Compile Include="Manos\ManosContext.cs" />
+    <Compile Include="Manos\ManosModule.cs" />
+    <Compile Include="Manos\OptionsAttribute.cs" />
+    <Compile Include="Manos\PostAttribute.cs" />
+    <Compile Include="Manos\PutAttribute.cs" />
+    <Compile Include="Manos\TraceAttribute.cs" />
+    <Compile Include="Manos.Routing\RouteHandler.cs" />
+    <Compile Include="Manos.Server\HttpException.cs" />
+    <Compile Include="Manos.Server\HttpHeaders.cs" />
+    <Compile Include="Manos.Server\HttpRequest.cs" />
+    <Compile Include="Manos.Server\HttpResponse.cs" />
+    <Compile Include="Manos.Server\HttpServer.cs" />
+    <Compile Include="Manos.Server\HttpTransaction.cs" />
+    <Compile Include="Manos.Server\HttpUtility.cs" />
+    <Compile Include="Manos.Server\IHttpRequest.cs" />
+    <Compile Include="Manos.Server\IHttpResponse.cs" />
+    <Compile Include="Manos.Server\IHttpTransaction.cs" />
+    <Compile Include="Manos.Server\IOLoop.cs" />
+    <Compile Include="Manos.Server\IOStream.cs" />
+    <Compile Include="Manos.Server\UriParser.cs" />
+    <Compile Include="Manos.Template\codegen.cs" />
+    <Compile Include="Manos.Template\environment.cs" />
+    <Compile Include="Manos.Template\library.cs" />
+    <Compile Include="Manos.Template\parser.cs" />
+    <Compile Include="Manos.Template\tokenizer.cs" />
+    <Compile Include="Manos\IManosContext.cs" />
+    <Compile Include="Manos.Testing\MockManosModule.cs" />
+    <Compile Include="Manos.Server.Testing\MockHttpTransaction.cs" />
+    <Compile Include="Manos.Server.Testing\MockHttpRequest.cs" />
+    <Compile Include="Manos\ManosTarget.cs" />
+    <Compile Include="Manos\IManosTarget.cs" />
+    <Compile Include="Manos.Testing\MockManosTarget.cs" />
+    <Compile Include="Manos.Server\WriteBytesOperation.cs" />
+    <Compile Include="Manos.Server\WriteFileOperation.cs" />
+    <Compile Include="Manos.Server\IWriteOperation.cs" />
+    <Compile Include="Manos.Routing\IMatchOperation.cs" />
+    <Compile Include="Manos.Routing\RegexMatchOperation.cs" />
+    <Compile Include="Manos.Routing\MatchOperationFactory.cs" />
+    <Compile Include="Manos.Routing\StringMatchOperation.cs" />
+    <Compile Include="Manos.Routing\NopMatchOperation.cs" />
+    <Compile Include="Manos\HttpMethods.cs" />
+    <Compile Include="Manos.Template\Engine.cs" />
     <Compile Include="Assembly\AssemblyInfo.cs" />
-    <Compile Include="Mango.Template\MangoTemplate.cs" />
-    <Compile Include="Mango.Template\IMangoTemplate.cs" />
-    <Compile Include="Mango.Template\TemplateFactory.cs" />
-    <Compile Include="Mango.Testing\Templates\MangoTemplateStub.cs" />
+    <Compile Include="Manos.Template\ManosTemplate.cs" />
+    <Compile Include="Manos.Template\IManosTemplate.cs" />
+    <Compile Include="Manos.Template\TemplateFactory.cs" />
+    <Compile Include="Manos.Templates.Testing\ManosTemplateStub.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="Mango.Testing\" />
-    <Folder Include="Mango.Testing\Server\" />
+    <Folder Include="Manos.Testing\" />
+    <Folder Include="Manos.Server.Testing\" />
     <Folder Include="Assembly\" />
-    <Folder Include="Mango.Testing\Templates\" />
+    <Folder Include="Manos.Templates\.Testing\" />
   </ItemGroup>
 </Project>

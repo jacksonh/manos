@@ -7,6 +7,6 @@ using System.Security.Permissions;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle ("Mango.dll")]
+[assembly: AssemblyTitle ("Manos.dll")]
 
 [assembly: AssemblyVersion ("0.0.0.2")]

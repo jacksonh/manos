@@ -14,7 +14,7 @@ using System.Collections.Specialized;
 using Mono.Unix.Native;
 
 
-namespace Mango.Server {
+namespace Manos.Server {
 
 	public class HttpRequest : IHttpRequest {
 

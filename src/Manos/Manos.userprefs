@@ -1,55 +1,34 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" ActiveRuntime="Mono 2.7" ctype="Workspace" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Mango.Template/codegen.cs" ctype="Workbench">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" ctype="Workspace" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Manos/DeleteAttribute.cs" ctype="Workbench">
     <Files>
-      <File FileName="Mango.Template/library.cs" Line="1" Column="1" />
       <File FileName="Assembly/AssemblyInfo.cs" Line="1" Column="1" />
-      <File FileName="Mango.Tests/Mango.Template/CodegenTest.cs" Line="55" Column="1" />
-      <File FileName="Mango.Tests/Mango/MangoModuleTest.cs" Line="1" Column="1" />
-      <File FileName="Mango.Template/codegen.cs" Line="1" Column="1" />
+      <File FileName="Manos/IManosContext.cs" Line="8" Column="23" />
+      <File FileName="Manos/IManosTarget.cs" Line="6" Column="25" />
+      <File FileName="Manos/ManosAction.cs" Line="7" Column="29" />
+      <File FileName="Manos/ManosApp.cs" Line="11" Column="20" />
+      <File FileName="Manos/ManosContext.cs" Line="9" Column="19" />
+      <File FileName="Manos/ManosModule.cs" Line="16" Column="18" />
+      <File FileName="Manos/ManosTarget.cs" Line="4" Column="16" />
+      <File FileName="Manos/OptionsAttribute.cs" Line="23" Column="1" />
+      <File FileName="Manos.Routing/IMatchOperation.cs" Line="8" Column="16" />
+      <File FileName="Manos.Routing/NopMatchOperation.cs" Line="5" Column="16" />
+      <File FileName="Manos.Routing/RegexMatchOperation.cs" Line="11" Column="16" />
+      <File FileName="Manos.Routing/RouteHandler.cs" Line="1" Column="1" />
+      <File FileName="Manos.Routing/StringMatchOperation.cs" Line="13" Column="41" />
+      <File FileName="Manos/DeleteAttribute.cs" Line="12" Column="4" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="Mango" expanded="True">
-            <Node name="Assembly" expanded="True" />
-            <Node name="Mango.Template" expanded="True" />
-            <Node name="Mango.Testing" expanded="True" />
-          </Node>
-          <Node name="Mango.Tests" expanded="True">
-            <Node name="Mango" expanded="True" />
-            <Node name="Mango.Template" expanded="True" />
-          </Node>
-          <Node name="mango-server" expanded="True" />
+          <Node name="Manos" expanded="True" />
         </State>
       </Pad>
       <Pad Id="ClassPad">
-        <State expanded="True">
-          <Node name="Mango" expanded="True" selected="True">
-            <Node name="References" expanded="True" />
-            <Node name="Mango" expanded="True">
-              <Node name="Templates" expanded="True" />
-              <Node name="Testing" expanded="True" />
-            </Node>
-          </Node>
-        </State>
+        <State selected="True" />
       </Pad>
       <Pad Id="MonoDevelop.Debugger.WatchPad">
         <State />
-      </Pad>
-      <Pad Id="MonoDevelop.NUnit.TestPad">
-        <State expanded="True">
-          <Node name="Mango.Tests" expanded="True">
-            <Node name="Mango" expanded="True">
-              <Node name="Server" expanded="True" />
-              <Node name="Templates" expanded="True">
-                <Node name="Tests" expanded="True">
-                  <Node name="CodegenTest" expanded="True" selected="True" />
-                </Node>
-              </Node>
-            </Node>
-          </Node>
-        </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>

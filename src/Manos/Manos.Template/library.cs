@@ -4,10 +4,10 @@ using System.IO;
 using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
-using Mango.Server;
+using Manos.Server;
 
 
-namespace Mango.Templates {
+namespace Manos.Templates {
 
 	public delegate string MingeFilter (string input, object [] args);
 
@@ -61,7 +61,7 @@ namespace Mango.Templates {
 
 	public interface IMingePage {
 
-		void Render (IMangoContext context, object the_arg);
+		void Render (IManosContext context, object the_arg);
 		void RenderToResponse (IHttpResponse response, object the_arg);
 	}
 
@@ -69,7 +69,7 @@ namespace Mango.Templates {
 	[Serializable]
 	public class MingePage : IMingePage {
 
-		public void Render (IMangoContext context, object the_arg)
+		public void Render (IManosContext context, object the_arg)
 		{
 			RenderToResponse (context.Response, the_arg);
 		}

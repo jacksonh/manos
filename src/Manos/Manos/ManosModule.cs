@@ -7,17 +7,17 @@ using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 
-using Mango.Server;
-using Mango.Routing;
-using Mango.Templates;
+using Manos.Server;
+using Manos.Routing;
+using Manos.Templates;
 
-namespace Mango {
+namespace Manos {
 
-	public class MangoModule {
+	public class ManosModule {
 
 		private RouteHandler routes = new RouteHandler ();
 
-		public MangoModule ()
+		public ManosModule ()
 		{
 			StartInternal ();
 		}
@@ -26,7 +26,7 @@ namespace Mango {
 			get { return routes; }
 		}
 
-		private RouteHandler AddRouteHandler (MangoModule module, string [] patterns, string [] methods)
+		private RouteHandler AddRouteHandler (ManosModule module, string [] patterns, string [] methods)
 		{
 			if (module == null)
 				throw new ArgumentNullException ("module");
@@ -41,7 +41,7 @@ namespace Mango {
 			return module.Routes;
 		}
 
-		private RouteHandler AddRouteHandler (MangoAction action, string [] patterns, string [] methods)
+		private RouteHandler AddRouteHandler (ManosAction action, string [] patterns, string [] methods)
 		{
 			// TODO: Need to decide if this is a good or bad idea
 			// RemoveImplicitHandlers (action);
@@ -53,12 +53,12 @@ namespace Mango {
 			if (methods == null)
 				throw new ArgumentNullException ("methods");
 			
-			RouteHandler res = new RouteHandler (patterns, methods, new MangoTarget (action));
+			RouteHandler res = new RouteHandler (patterns, methods, new ManosTarget (action));
 			Routes.Children.Add (res);
 			return res;
 		}
 
-		private RouteHandler AddImplicitRouteHandler (MangoModule module, string [] patterns, string [] methods)
+		private RouteHandler AddImplicitRouteHandler (ManosModule module, string [] patterns, string [] methods)
 		{
 			module.Routes.IsImplicit = true;
 			module.Routes.Patterns = patterns;
@@ -67,9 +67,9 @@ namespace Mango {
 			return module.Routes;
 		}
 
-		private RouteHandler AddImplicitRouteHandler (MangoAction action, string [] patterns, string [] methods)
+		private RouteHandler AddImplicitRouteHandler (ManosAction action, string [] patterns, string [] methods)
 		{
-			RouteHandler res = new RouteHandler (patterns, methods, new MangoTarget (action)) {
+			RouteHandler res = new RouteHandler (patterns, methods, new ManosTarget (action)) {
 				IsImplicit = true,
 			};
 
@@ -77,172 +77,172 @@ namespace Mango {
 			return res;
 		}
 
-		public RouteHandler Route (string pattern, MangoModule module)
+		public RouteHandler Route (string pattern, ManosModule module)
 		{
 			return AddRouteHandler (module, new string [] { pattern }, HttpMethods.RouteMethods);
 		}
 
-		public RouteHandler Route (string pattern, MangoAction action)
+		public RouteHandler Route (string pattern, ManosAction action)
 		{
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.RouteMethods);
 		}
 
-		public RouteHandler Route (MangoAction action, params string [] patterns)
+		public RouteHandler Route (ManosAction action, params string [] patterns)
 		{
 			return AddRouteHandler (action, patterns, HttpMethods.RouteMethods);
 		}
 
-		public RouteHandler Route (MangoModule module, params string [] patterns)
+		public RouteHandler Route (ManosModule module, params string [] patterns)
 		{
 			return AddRouteHandler (module, patterns, HttpMethods.RouteMethods);
 		}
 
-		public RouteHandler Get (string pattern, MangoModule module)
+		public RouteHandler Get (string pattern, ManosModule module)
 		{
 			return AddRouteHandler (module, new string [] { pattern }, HttpMethods.GetMethods);
 		}
 
-		public RouteHandler Get (string pattern, MangoAction action)
+		public RouteHandler Get (string pattern, ManosAction action)
 		{
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.GetMethods);
 		}
 
-		public RouteHandler Get (MangoAction action, params string [] patterns)
+		public RouteHandler Get (ManosAction action, params string [] patterns)
 		{
 			return AddRouteHandler (action, patterns, HttpMethods.GetMethods);
 		}
 
-		public RouteHandler Get (MangoModule module, params string [] patterns)
+		public RouteHandler Get (ManosModule module, params string [] patterns)
 		{
 			return AddRouteHandler (module, patterns, HttpMethods.GetMethods);
 		}
 		
 		//
 		
-		public RouteHandler Put (string pattern, MangoModule module)
+		public RouteHandler Put (string pattern, ManosModule module)
 		{
 			return AddRouteHandler (module, new string [] { pattern }, HttpMethods.PutMethods);
 		}
 
-		public RouteHandler Put (string pattern, MangoAction action)
+		public RouteHandler Put (string pattern, ManosAction action)
 		{
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.PutMethods);
 		}
 
-		public RouteHandler Put (MangoAction action, params string [] patterns)
+		public RouteHandler Put (ManosAction action, params string [] patterns)
 		{
 			return AddRouteHandler (action, patterns, HttpMethods.PutMethods);
 		}
 
-		public RouteHandler Put (MangoModule module, params string [] patterns)
+		public RouteHandler Put (ManosModule module, params string [] patterns)
 		{
 			return AddRouteHandler (module, patterns, HttpMethods.PutMethods);
 		}
 		
-		public RouteHandler Post (string pattern, MangoModule module)
+		public RouteHandler Post (string pattern, ManosModule module)
 		{
 			return AddRouteHandler (module, new string [] { pattern }, HttpMethods.PostMethods);
 		}
 
-		public RouteHandler Post (string pattern, MangoAction action)
+		public RouteHandler Post (string pattern, ManosAction action)
 		{
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.PostMethods);
 		}
 
-		public RouteHandler Post (MangoAction action, params string [] patterns)
+		public RouteHandler Post (ManosAction action, params string [] patterns)
 		{
 			return AddRouteHandler (action, patterns, HttpMethods.PostMethods);
 		}
 
-		public RouteHandler Post (MangoModule module, params string [] patterns)
+		public RouteHandler Post (ManosModule module, params string [] patterns)
 		{
 			return AddRouteHandler (module, patterns, HttpMethods.PostMethods);
 		}
 		
 		//
 		
-		public RouteHandler Delete (string pattern, MangoModule module)
+		public RouteHandler Delete (string pattern, ManosModule module)
 		{
 			return AddRouteHandler (module, new string [] { pattern }, HttpMethods.DeleteMethods);
 		}
 
-		public RouteHandler Delete (string pattern, MangoAction action)
+		public RouteHandler Delete (string pattern, ManosAction action)
 		{
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.DeleteMethods);
 		}
 
-		public RouteHandler Delete (MangoAction action, params string [] patterns)
+		public RouteHandler Delete (ManosAction action, params string [] patterns)
 		{
 			return AddRouteHandler (action, patterns, HttpMethods.DeleteMethods);
 		}
 
-		public RouteHandler Delete (MangoModule module, params string [] patterns)
+		public RouteHandler Delete (ManosModule module, params string [] patterns)
 		{
 			return AddRouteHandler (module, patterns, HttpMethods.DeleteMethods);
 		}
 		
 		//
 		
-		public RouteHandler Head (string pattern, MangoModule module)
+		public RouteHandler Head (string pattern, ManosModule module)
 		{
 			return AddRouteHandler (module, new string [] { pattern }, HttpMethods.HeadMethods);
 		}
 
-		public RouteHandler Head (string pattern, MangoAction action)
+		public RouteHandler Head (string pattern, ManosAction action)
 		{
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.HeadMethods);
 		}
 
-		public RouteHandler Head (MangoAction action, params string [] patterns)
+		public RouteHandler Head (ManosAction action, params string [] patterns)
 		{
 			return AddRouteHandler (action, patterns, HttpMethods.HeadMethods);
 		}
 
-		public RouteHandler Head (MangoModule module, params string [] patterns)
+		public RouteHandler Head (ManosModule module, params string [] patterns)
 		{
 			return AddRouteHandler (module, patterns, HttpMethods.HeadMethods);
 		}
 		
 		//
 		
-		public RouteHandler Options (string pattern, MangoModule module)
+		public RouteHandler Options (string pattern, ManosModule module)
 		{
 			return AddRouteHandler (module, new string [] { pattern }, HttpMethods.OptionsMethods);
 		}
 
-		public RouteHandler Options (string pattern, MangoAction action)
+		public RouteHandler Options (string pattern, ManosAction action)
 		{
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.OptionsMethods);
 		}
 
-		public RouteHandler Options (MangoAction action, params string [] patterns)
+		public RouteHandler Options (ManosAction action, params string [] patterns)
 		{
 			return AddRouteHandler (action, patterns, HttpMethods.OptionsMethods);
 		}
 
-		public RouteHandler Options (MangoModule module, params string [] patterns)
+		public RouteHandler Options (ManosModule module, params string [] patterns)
 		{
 			return AddRouteHandler (module, patterns, HttpMethods.OptionsMethods);
 		}
 		
 		//
 		
-		public RouteHandler Trace (string pattern, MangoModule module)
+		public RouteHandler Trace (string pattern, ManosModule module)
 		{
 			return AddRouteHandler (module, new string [] { pattern }, HttpMethods.TraceMethods);
 		}
 
-		public RouteHandler Trace (string pattern, MangoAction action)
+		public RouteHandler Trace (string pattern, ManosAction action)
 		{
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.TraceMethods);
 		}
 
-		public RouteHandler Trace (MangoAction action, params string [] patterns)
+		public RouteHandler Trace (ManosAction action, params string [] patterns)
 		{
 			return AddRouteHandler (action, patterns, HttpMethods.TraceMethods);
 		}
 
-		public RouteHandler Trace (MangoModule module, params string [] patterns)
+		public RouteHandler Trace (ManosModule module, params string [] patterns)
 		{
 			return AddRouteHandler (module, patterns, HttpMethods.TraceMethods);
 		}
@@ -260,7 +260,7 @@ namespace Mango {
 			}
 
 			try {
-				handler.Invoke (new MangoContext (con));
+				handler.Invoke (new ManosContext (con));
 			} catch (Exception e) {
 				con.Response.StatusCode = 500;
 				//
@@ -274,7 +274,7 @@ namespace Mango {
 			con.Response.Finish ();
 		}
 
-		public static void RenderTemplate (MangoContext context, string template, object data)
+		public static void RenderTemplate (ManosContext context, string template, object data)
 		{
 			MemoryStream stream = new MemoryStream ();
 
@@ -313,7 +313,7 @@ namespace Mango {
 			if (p.Length != 1)
 				return false;
 
-			if (p [0].ParameterType != typeof (IMangoContext))
+			if (p [0].ParameterType != typeof (IManosContext))
 				return false;
 
 			return true;
@@ -345,13 +345,13 @@ namespace Mango {
 		private void AddDefaultHandlerForAction (RouteHandler routes, MethodInfo info)
 		{
 			Console.WriteLine ("adding default handler for:  {0}", info.Name);
-			MangoAction action = (MangoAction) Delegate.CreateDelegate (typeof (MangoAction), info);
+			ManosAction action = (ManosAction) Delegate.CreateDelegate (typeof (ManosAction), info);
 			AddImplicitRouteHandler (action, new string [] { info.Name }, HttpMethods.RouteMethods);
 		}
 
 		private void AddHandlerForAction (RouteHandler routes, HttpMethodAttribute att, MethodInfo info)
 		{
-			MangoAction action = (MangoAction) Delegate.CreateDelegate (typeof (MangoAction), info);
+			ManosAction action = (ManosAction) Delegate.CreateDelegate (typeof (ManosAction), info);
 			AddImplicitRouteHandler (action, att.Patterns, att.Methods);
 		}
 		

@@ -1,18 +1,18 @@
 
 using System;
 
-namespace Mango
+namespace Manos
 {
-	public class MangoTarget : IMangoTarget
+	public class ManosTarget : IManosTarget
 	{
-		private MangoAction action;
+		private ManosAction action;
 		
-		public MangoTarget (MangoAction action)
+		public ManosTarget (ManosAction action)
 		{
 			Action = action;
 		}
 		
-		public MangoAction Action {
+		public ManosAction Action {
 			get { return action; }
 			set {
 				if (value == null)
@@ -21,7 +21,7 @@ namespace Mango
 			}
 		}
 		
-		public void Invoke (IMangoContext ctx)
+		public void Invoke (IManosContext ctx)
 		{
 			Action (ctx);
 		}

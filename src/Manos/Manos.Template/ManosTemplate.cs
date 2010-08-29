@@ -8,7 +8,7 @@ namespace Mango.Templates
 {
 	public abstract class MangoTemplate
 	{
-		public void Render (IMangoContext context, object the_arg)
+		public void Render (IManosContext context, object the_arg)
 		{
 			RenderToResponse (context.Response, the_arg);
 		}

@@ -3,14 +3,14 @@
 
 using System;
 
-using Mango.Server;
-using Mango.Routing;
+using Manos.Server;
+using Manos.Routing;
 
-namespace Mango {
+namespace Manos {
 
-	public class MangoApp : MangoModule {
+	public class ManosApp : ManosModule {
 
-		public MangoApp ()
+		public ManosApp ()
 		{
 		}
 	}

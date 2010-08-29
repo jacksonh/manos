@@ -1,11 +1,11 @@
 
 using System;
 
-using Mango.Server;
+using Manos.Server;
 
-namespace Mango
+namespace Manos
 {
-	public interface IMangoContext
+	public interface IManosContext
 	{
 		IHttpTransaction Transaction {
 			get;

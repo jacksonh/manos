@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Specialized;
 
 
-namespace Mango.Routing {
+namespace Manos.Routing {
 
 	public interface IMatchOperation {
 

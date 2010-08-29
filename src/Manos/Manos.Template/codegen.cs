@@ -9,9 +9,9 @@ using System.Collections.Generic;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using Mango.Server;
+using Manos.Server;
 
-namespace Mango.Templates {
+namespace Manos.Templates {
 
 	public enum CompareOperator {
 		Invalid,
