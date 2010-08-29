@@ -10,16 +10,16 @@ ASSEMBLY = bin/Debug/mango-server.exe
 ASSEMBLY_MDB = $(ASSEMBLY).mdb
 COMPILE_TARGET = exe
 PROJECT_REFERENCES =  \
-	../bin/Debug/Mango.dll
+	../bin/Debug/Manos.dll
 BUILD_DIR = bin/Debug
 
 MONO_POSIX_DLL_SOURCE=../../../deps/Mono.Posix.dll
 MONO_POSIX_DLL_MDB_SOURCE=../../../deps/Mono.Posix.dll.mdb
-MANGO_DLL_SOURCE=../bin/Debug/Mango.dll
+MANOS_DLL_SOURCE=../bin/Debug/Manos.dll
 MONO_CECIL_DLL_SOURCE=../../../deps/Mono.Cecil.dll
 MONO_CECIL_DLL_MDB_SOURCE=../../../deps/Mono.Cecil.dll.mdb
-MANGO_DLL_MDB_SOURCE=../bin/Debug/Mango.dll.mdb
-MANGO_DLL_MDB=$(BUILD_DIR)/Mango.dll.mdb
+MANOS_DLL_MDB_SOURCE=../bin/Debug/Manos.dll.mdb
+MANOS_DLL_MDB=$(BUILD_DIR)/Manos.dll.mdb
 MANGO_SERVER_EXE_MDB_SOURCE=bin/Debug/mango-server.exe.mdb
 MANGO_SERVER_EXE_MDB=$(BUILD_DIR)/mango-server.exe.mdb
 
@@ -32,15 +32,15 @@ ASSEMBLY = bin/Release/mango-server.exe
 ASSEMBLY_MDB = 
 COMPILE_TARGET = exe
 PROJECT_REFERENCES =  \
-	../bin/Release/Mango.dll
+	../bin/Release/Manos.dll
 BUILD_DIR = bin/Release
 
 MONO_POSIX_DLL_SOURCE=../../../deps/Mono.Posix.dll
 MONO_POSIX_DLL_MDB_SOURCE=../../../deps/Mono.Posix.dll.mdb
-MANGO_DLL_SOURCE=../bin/Release/Mango.dll
+MANOS_DLL_SOURCE=../bin/Release/Manos.dll
 MONO_CECIL_DLL_SOURCE=../../../deps/Mono.Cecil.dll
 MONO_CECIL_DLL_MDB_SOURCE=../../../deps/Mono.Cecil.dll.mdb
-MANGO_DLL_MDB=
+MANOS_DLL_MDB=
 MANGO_SERVER_EXE_MDB=
 
 endif
@@ -51,14 +51,14 @@ SATELLITE_ASSEMBLY_NAME=$(notdir $(basename $(ASSEMBLY))).resources.dll
 PROGRAMFILES = \
 	$(MONO_POSIX_DLL) \
 	$(MONO_POSIX_DLL_MDB) \
-	$(MANGO_DLL) \
+	$(MANOS_DLL) \
 	$(MONO_CECIL_DLL) \
 	$(MONO_CECIL_DLL_MDB) \
-	$(MANGO_DLL_MDB) \
+	$(MANOS_DLL_MDB) \
 	$(MANGO_SERVER_EXE_MDB)  
 
 BINARIES = \
-	$(MANGO_SERVER)  
+	$(MANOS_SERVER)  
 
 
 RESGEN=resgen2
@@ -67,14 +67,14 @@ all: $(ASSEMBLY) $(PROGRAMFILES) $(BINARIES)
 
 FILES = \
 	AssemblyInfo.cs \
-	mango.cs 
+	manos.cs 
 
 DATA_FILES = 
 
 RESOURCES = 
 
 EXTRAS = \
-	mango-server.in 
+	manos-server.in 
 
 REFERENCES =  \
 	System
@@ -88,18 +88,18 @@ include $(top_srcdir)/Makefile.include
 
 MONO_POSIX_DLL = $(BUILD_DIR)/Mono.Posix.dll
 MONO_POSIX_DLL_MDB = $(BUILD_DIR)/Mono.Posix.dll.mdb
-MANGO_DLL = $(BUILD_DIR)/Mango.dll
+MANOS_DLL = $(BUILD_DIR)/Manos.dll
 MONO_CECIL_DLL = $(BUILD_DIR)/Mono.Cecil.dll
 MONO_CECIL_DLL_MDB = $(BUILD_DIR)/Mono.Cecil.dll.mdb
-MANGO_SERVER = $(BUILD_DIR)/mango-server
+MANOS_SERVER = $(BUILD_DIR)/manos-server
 
 $(eval $(call emit-deploy-target,MONO_POSIX_DLL))
 $(eval $(call emit-deploy-target,MONO_POSIX_DLL_MDB))
-$(eval $(call emit-deploy-target,MANGO_DLL))
+$(eval $(call emit-deploy-target,MANOS_DLL))
 $(eval $(call emit-deploy-target,MONO_CECIL_DLL))
 $(eval $(call emit-deploy-target,MONO_CECIL_DLL_MDB))
-$(eval $(call emit-deploy-target,MANGO_DLL_MDB))
-$(eval $(call emit-deploy-wrapper,MANGO_SERVER,mango-server,x))
+$(eval $(call emit-deploy-target,MANOS_DLL_MDB))
+$(eval $(call emit-deploy-wrapper,MANOS_SERVER,manos-server,x))
 
 
 $(eval $(call emit_resgen_targets))

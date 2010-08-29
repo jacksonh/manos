@@ -1,6 +1,6 @@
-Name: Mango.Tests
-Description: Mango.Tests
+Name: Manos.Tests
+Description: Manos.Tests
 Version: 0.1
 
 Requires: 
-Libs: -r:@expanded_libdir@/@PACKAGE@/Mango.Tests.dll
+Libs: -r:@expanded_libdir@/@PACKAGE@/Manos.Tests.dll

@@ -1,6 +1,6 @@
 #! /bin/sh
 
-PROJECT=Mango
+PROJECT=Manos
 FILE=
 CONFIGURE=configure.ac
 

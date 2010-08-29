@@ -1,7 +1,7 @@
 dnl Warning: This is an automatically generated file, do not edit!
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ([2.54])
-AC_INIT([Mango], [0.1])
+AC_INIT([Manos], [0.1])
 AM_INIT_AUTOMAKE([foreign])
 AM_MAINTAINER_MODE
 
@@ -51,13 +51,13 @@ dnl package checks, per config
 
 
 AC_CONFIG_FILES([
-mango.pc
-mango-tool/mango-tool
-mango-tool/Makefile
-mango-server/mango-server
-mango-server/Makefile
-Mango.Tests/mango.tests.pc
-Mango.Tests/Makefile
+manos.pc
+manos-tool/manos-tool
+manos-tool/Makefile
+manos-server/manos-server
+manos-server/Makefile
+Manos.Tests/manos.tests.pc
+Manos.Tests/Makefile
 Makefile
 
 ])
