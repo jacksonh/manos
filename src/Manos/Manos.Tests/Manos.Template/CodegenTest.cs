@@ -28,7 +28,7 @@ namespace Manos.Templates.Tests
 			name = Page.FullTypeNameForPath (app_name, path);
 			Assert.AreEqual ("FooBar.Templates.Manos.Tests.TestsHtml", name, "a2");
 			
-			path = "mango.tests.html";
+			path = "manos.tests.html";
 			name = Page.FullTypeNameForPath (app_name, path);
 			Assert.AreEqual ("FooBar.Templates.Manos.TestsHtml", name, "a3");
 			
@@ -40,7 +40,7 @@ namespace Manos.Templates.Tests
 			name = Page.FullTypeNameForPath (app_name, path);
 			Assert.AreEqual ("FooBar.Templates.Manos.Tests.TestsHtml", name, "a5");
 			
-			path = "mango/tests.hTMl";
+			path = "manos/tests.hTMl";
 			name = Page.FullTypeNameForPath (app_name, path);
 			Assert.AreEqual ("FooBar.Templates.Manos.TestsHtml", name, "a6");
 		}

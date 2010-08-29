@@ -19,8 +19,6 @@ MONO_CECIL_DLL_MDB_SOURCE=../../../deps/Mono.Cecil.dll.mdb
 MONO_POSIX_DLL_SOURCE=../../../deps/Mono.Posix.dll
 MONO_POSIX_DLL_MDB_SOURCE=../../../deps/Mono.Posix.dll.mdb
 MANOS_DLL_SOURCE=../bin/Debug/Manos.dll
-MANOS_DLL_MDB_SOURCE=../bin/Debug/Manos.dll.mdb
-MANOS_DLL_MDB=$(BUILD_DIR)/Manos.dll.mdb
 MANGO_TOOL_EXE_MDB_SOURCE=bin/Debug/mango-tool.exe.mdb
 MANGO_TOOL_EXE_MDB=$(BUILD_DIR)/mango-tool.exe.mdb
 
@@ -42,7 +40,6 @@ MONO_CECIL_DLL_MDB_SOURCE=../../../deps/Mono.Cecil.dll.mdb
 MONO_POSIX_DLL_SOURCE=../../../deps/Mono.Posix.dll
 MONO_POSIX_DLL_MDB_SOURCE=../../../deps/Mono.Posix.dll.mdb
 MANOS_DLL_SOURCE=../bin/Release/Manos.dll
-MANOS_DLL_MDB=
 MANGO_TOOL_EXE_MDB=
 
 endif
@@ -57,7 +54,6 @@ PROGRAMFILES = \
 	$(MONO_POSIX_DLL) \
 	$(MONO_POSIX_DLL_MDB) \
 	$(MANOS_DLL) \
-	$(MANOS_DLL_MDB) \
 	$(MANGO_TOOL_EXE_MDB)  
 
 BINARIES = \
@@ -109,7 +105,6 @@ $(eval $(call emit-deploy-target,MONO_CECIL_DLL_MDB))
 $(eval $(call emit-deploy-target,MONO_POSIX_DLL))
 $(eval $(call emit-deploy-target,MONO_POSIX_DLL_MDB))
 $(eval $(call emit-deploy-target,MANOS_DLL))
-$(eval $(call emit-deploy-target,MANOS_DLL_MDB))
 $(eval $(call emit-deploy-wrapper,MANOS_TOOL,manos-tool,x))
 
 

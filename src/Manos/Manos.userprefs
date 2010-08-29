@@ -1,6 +1,6 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" ctype="Workspace" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Manos.Tests/Manos/ManosModuleTest.cs" ctype="Workbench">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Manos.Tests/Manos.Template/CodegenTest.cs" ctype="Workbench">
     <Files>
       <File FileName="Assembly/AssemblyInfo.cs" Line="1" Column="1" />
       <File FileName="Manos/IManosContext.cs" Line="8" Column="23" />
@@ -24,29 +24,32 @@
       <File FileName="Manos.Server/IWriteOperation.cs" Line="3" Column="16" />
       <File FileName="Manos.Server/WriteBytesOperation.cs" Line="6" Column="16" />
       <File FileName="Manos.Server/WriteFileOperation.cs" Line="6" Column="16" />
-      <File FileName="Manos.Template/codegen.cs" Line="461" Column="37" />
+      <File FileName="Manos.Template/codegen.cs" Line="1170" Column="55" />
       <File FileName="Manos.Template/Engine.cs" Line="11" Column="16" />
       <File FileName="Manos.Template/environment.cs" Line="1" Column="1" />
       <File FileName="Manos.Template/IManosTemplate.cs" Line="11" Column="25" />
       <File FileName="Manos.Template/library.cs" Line="1" Column="1" />
       <File FileName="Manos.Template/ManosTemplate.cs" Line="4" Column="12" />
       <File FileName="Manos.Template/TemplateFactory.cs" Line="17" Column="50" />
-      <File FileName="Manos.Templates.Testing/ManosTemplateStub_1.cs" Line="20" Column="29" />
       <File FileName="Manos.Routing/MatchOperationFactory.cs" Line="5" Column="16" />
       <File FileName="Manos.Server/IHttpResponse.cs" Line="1" Column="1" />
       <File FileName="Manos/HttpMethods.cs" Line="5" Column="16" />
-      <File FileName="manos-tool/Driver.cs" Line="7" Column="1" />
+      <File FileName="manos-tool/Driver.cs" Line="221" Column="50" />
       <File FileName="manos-server/manos.cs" Line="37" Column="35" />
       <File FileName="Manos.Tests/Manos/ManosModuleTest.cs" Line="302" Column="30" />
+      <File FileName="Manos.Tests/Manos.Routing/RegexMatchOperationTest.cs" Line="99" Column="26" />
+      <File FileName="Manos.Tests/Manos.Template/CodegenTest.cs" Line="43" Column="17" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
-        <State expanded="True">
-          <Node name="Manos" expanded="True" />
+        <State expanded="True" selected="True">
+          <Node name="Manos" expanded="True">
+            <Node name="Manos.Template" expanded="True" />
+          </Node>
           <Node name="Manos.Tests" expanded="True">
-            <Node name="Manos" expanded="True">
-              <Node name="ManosModuleTest.cs" selected="True" />
-            </Node>
+            <Node name="Manos" expanded="True" />
+            <Node name="Manos.Routing" expanded="True" />
+            <Node name="Manos.Template" expanded="True" />
           </Node>
           <Node name="manos-server" expanded="True">
             <Node name="References" expanded="True" />

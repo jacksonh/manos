@@ -1167,7 +1167,7 @@ namespace Manos.Templates {
 			PropertyDefinition prop = new PropertyDefinition (name, (PropertyAttributes) 0, t);
 			klass.Properties.Add (prop);
 
-			FieldDefinition field = new FieldDefinition ("mango_" + name, FieldAttributes.Private | FieldAttributes.CompilerControlled, t);
+			FieldDefinition field = new FieldDefinition ("manos_" + name, FieldAttributes.Private | FieldAttributes.CompilerControlled, t);
 			klass.Fields.Add (field);
 			
 			prop.GetMethod = new MethodDefinition ("get_" + name, MethodAttributes.CompilerControlled | MethodAttributes.Public, t);

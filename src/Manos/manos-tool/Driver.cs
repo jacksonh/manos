@@ -40,7 +40,7 @@ namespace Manos.Tool
 			try {
 				extra = p.Parse(args);
 			} catch (OptionException){
-				Console.WriteLine ("Try `mango-tool --help' for more information.");
+				Console.WriteLine ("Try `manos-tool --help' for more information.");
 				return 1;
 			}
 			
@@ -70,7 +70,7 @@ namespace Manos.Tool
 			try {
 				extra = p.Parse(args);
 			} catch (OptionException){
-				Console.WriteLine ("Try `mango-tool --help' for more information.");
+				Console.WriteLine ("Try `manos-tool --help' for more information.");
 				return null;
 			}
 			
@@ -83,7 +83,7 @@ namespace Manos.Tool
 		private static int Init (IList<string> args)
 		{
 			if (args.Count < 1) {
-				Console.WriteLine ("mango-tool init <AppName>");
+				Console.WriteLine ("manos-tool init <AppName>");
 				Console.WriteLine ("This will initialize a new application with the supplied name.");
 			}
 				
@@ -163,7 +163,7 @@ namespace Manos.Tool
 			else {
 				templates = TEMPLATES_DIRECTORY;
 				if (!Directory.Exists (templates)) {
-					Console.WriteLine ("mango-tool -compile-templates [Template Directory]");
+					Console.WriteLine ("manos-tool -compile-templates [Template Directory]");
 					Console.WriteLine ("Compile the supplied template directory.");
 					Console.WriteLine ("If the template directory is not found {0} will be used.", TEMPLATES_DIRECTORY);
 					return 1;
@@ -202,7 +202,7 @@ namespace Manos.Tool
 				templates = COMPILED_TEMPLATES_ASSEMBLY;
 			
 			if (!File.Exists (app_name) || !File.Exists (templates)) {
-				Console.WriteLine ("mango-tool -build [AppName.dll] [TemplatesAssembly.dll]");
+				Console.WriteLine ("manos-tool -build [AppName.dll] [TemplatesAssembly.dll]");
 				return 1;
 			}
 			
@@ -218,7 +218,7 @@ namespace Manos.Tool
 		
 		private static void ShowHelp (OptionSet os)
 		{
-			Console.WriteLine ("mango-tool usage is: mango-tool [command] [options]");
+			Console.WriteLine ("manos-tool usage is: manos-tool [command] [options]");
 			Console.WriteLine ();
 			os.WriteOptionDescriptions (Console.Out);
 		}

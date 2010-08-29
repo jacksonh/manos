@@ -19,8 +19,6 @@ MONO_POSIX_DLL_SOURCE=../../../deps/Mono.Posix.dll
 MONO_POSIX_DLL_MDB_SOURCE=../../../deps/Mono.Posix.dll.mdb
 MONO_CECIL_DLL_SOURCE=../../../deps/Mono.Cecil.dll
 MONO_CECIL_DLL_MDB_SOURCE=../../../deps/Mono.Cecil.dll.mdb
-MANOS_DLL_MDB_SOURCE=../bin/Debug/Manos.dll.mdb
-MANOS_DLL_MDB=$(BUILD_DIR)/Manos.dll.mdb
 MANOS_TESTS_DLL_MDB_SOURCE=bin/Debug/Manos.Tests.dll.mdb
 MANOS_TESTS_DLL_MDB=$(BUILD_DIR)/Manos.Tests.dll.mdb
 
@@ -42,7 +40,6 @@ MONO_POSIX_DLL_SOURCE=../../../deps/Mono.Posix.dll
 MONO_POSIX_DLL_MDB_SOURCE=../../../deps/Mono.Posix.dll.mdb
 MONO_CECIL_DLL_SOURCE=../../../deps/Mono.Cecil.dll
 MONO_CECIL_DLL_MDB_SOURCE=../../../deps/Mono.Cecil.dll.mdb
-MANOS_DLL_MDB=
 MANOS_TESTS_DLL_MDB=
 
 endif
@@ -57,7 +54,6 @@ PROGRAMFILES = \
 	$(MONO_POSIX_DLL_MDB) \
 	$(MONO_CECIL_DLL) \
 	$(MONO_CECIL_DLL_MDB) \
-	$(MANOS_DLL_MDB) \
 	$(MANOS_TESTS_DLL_MDB)  
 
 LINUX_PKGCONFIG = \
@@ -116,7 +112,6 @@ $(eval $(call emit-deploy-target,MONO_POSIX_DLL))
 $(eval $(call emit-deploy-target,MONO_POSIX_DLL_MDB))
 $(eval $(call emit-deploy-target,MONO_CECIL_DLL))
 $(eval $(call emit-deploy-target,MONO_CECIL_DLL_MDB))
-$(eval $(call emit-deploy-target,MANOS_DLL_MDB))
 $(eval $(call emit-deploy-wrapper,MANOS_TESTS_PC,manos.tests.pc))
 
 

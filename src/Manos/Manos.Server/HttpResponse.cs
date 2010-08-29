@@ -133,7 +133,7 @@ namespace Manos.Server {
 		{
 			Headers.ContentLength = 0;
 
-			SetHeader ("Server", String.Concat ("Mango/", HttpServer.ServerVersion));
+			SetHeader ("Server", String.Concat ("Manos/", HttpServer.ServerVersion));
 		}
 
 		private static string GetStatusDescription (int code)

@@ -267,7 +267,7 @@ namespace Manos {
 				// TODO: Maybe the cleanest thing to do is
 				// have a HandleError, HandleException thing
 				// on HttpTransaction, along with an UnhandledException
-				// method/event on MangoModule.
+				// method/event on ManosModule.
 				//
 			}
 

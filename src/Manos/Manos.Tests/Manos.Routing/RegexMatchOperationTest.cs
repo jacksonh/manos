@@ -89,14 +89,14 @@ namespace Manos.Routing.Tests
 			int end;
 			bool m;
 			
-			m = op.IsMatch ("-mango-", 0, col, out end);
+			m = op.IsMatch ("-manos-", 0, col, out end);
 			Assert.IsTrue (m, "a1");
 			Assert.AreEqual (1, col.Count, "a2");
-			Assert.AreEqual ("mango", col ["foo"], "a3");
+			Assert.AreEqual ("manos", col ["foo"], "a3");
 			Assert.AreEqual (7, end, "a4");
 			
 			col = new NameValueCollection ();
-			m = op.IsMatch ("mango-", 0, col, out end);
+			m = op.IsMatch ("manos-", 0, col, out end);
 			Assert.IsFalse (m, "a5");
 			Assert.AreEqual (0, col.Count, "a6");
 			Assert.AreEqual (0, end, "a7");
