@@ -104,6 +104,11 @@ namespace Manos.Server {
 			// FinishResponse ();
 		}
 
+		public void Run ()
+		{
+			ConnectionCallback (this);	
+		}
+		
 		private void OnWriteFinished ()
 		{
 			if (PerformNextWrite ())
@@ -206,7 +211,7 @@ namespace Manos.Server {
 					Request.SetMultiPartFormData (data);
 			}
 
-			ConnectionCallback (this);
+			Server.IOLoop.QueueTransaction (this);
 		}
 
 		private bool Version_1_1_Supported (string version)

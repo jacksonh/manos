@@ -30,13 +30,18 @@ namespace Manos.Server {
 
 		private List<IOCallback> callbacks = new List<IOCallback> ();
 		private Dictionary<IntPtr,IOHandler> handlers = new Dictionary<IntPtr,IOHandler> ();
-
+		public List<HttpTransaction> transactions = new List<HttpTransaction> ();
 
 		public IOLoop ()
 		{
 			epfd = Syscall.epoll_create (MAX_EVENTS);
 		}
 
+		public void QueueTransaction (HttpTransaction trans)
+		{
+			transactions.Add (trans);	
+		}
+		
 		public void Start ()
 		{
 			running = true;
@@ -44,6 +49,8 @@ namespace Manos.Server {
 			EpollEvent [] new_events = new EpollEvent [MAX_EVENTS];
 			while (true) {
 				int timeout = 5000;
+				
+				transactions.Clear ();
 
 				RunCallbacks ();
 
@@ -59,6 +66,8 @@ namespace Manos.Server {
 					throw new Exception ("Something catastrophic happened.");
 				
 				RunHandlers (new_events, num_events);
+				
+				RunTransactions ();
 			}
 			running = false;
 		}
@@ -95,6 +104,13 @@ namespace Manos.Server {
 			}
 		}
 
+		private void RunTransactions ()
+		{
+			foreach (HttpTransaction transaction in transactions) {
+				transaction.Run ();
+			}
+		}
+		
 		private void RunHandler (IntPtr fd, EpollEvents events)
 		{
 			handlers [fd] (fd, events);
