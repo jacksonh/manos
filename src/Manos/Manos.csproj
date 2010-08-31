@@ -95,7 +95,7 @@
     <Compile Include="Manos.Template\ManosTemplate.cs" />
     <Compile Include="Manos.Template\IManosTemplate.cs" />
     <Compile Include="Manos.Template\TemplateFactory.cs" />
-    <Compile Include="Manos.Templates.Testing\ManosTemplateStub_1.cs" />
+    <Compile Include="Manos.Templates.Testing\ManosTemplateStub.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
