@@ -31,7 +31,7 @@ The RepeatBehavior class also allows you to specify the number of times to perfo
 Custom RepeatBehaviors
 ----------------------
 
-If your application needs a RepeatBehavior more sophisticated than once, forever, or number of iterations you can create a custom RepeatBehavior.  This is done by implementing the IRepeatBehavior interface.  This interface has a single method ShouldContinueToRepeat.  Once ShouldContinueToRepeat returns false, the timeout is stopped.
+If your application needs a RepeatBehavior more sophisticated than once, forever, or number of iterations you can create a custom RepeatBehavior.  This is done by implementing the IRepeatBehavior interface.  This interface has a two methods ShouldContinueToRepeat, and RepeatPerformed.  The RepeatPerformed notifies the RepeatBehavior that a Repetion has been performed. Manos will then call ShouldContinueToRepeat. If ShouldContinueToRepeat returns false, the timeout is stopped.
 
 Here is a simple example that will clear a cache every five minutes until November 6th 2001.
 
@@ -46,6 +46,10 @@ Here is a simple example that will clear a cache every five minutes until Novemb
         {
             return DateTime.Now > Time;
         }
+
+        public void RepeatPerformed ()
+        {
+        "
     }
 
     class MyManosApp : ManosApp {
