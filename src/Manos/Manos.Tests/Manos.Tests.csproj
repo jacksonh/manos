@@ -49,6 +49,7 @@
     <Compile Include="Manos.Template\CodegenTest.cs" />
     <Compile Include="Manos.Template\TemplateFactoryTest.cs" />
     <Compile Include="Manos\IterativeRepeatBehaviorTest.cs" />
+    <Compile Include="Manos\InfiniteRepeatBehaviorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Manos.Routing\" />

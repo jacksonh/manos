@@ -98,6 +98,7 @@
     <Compile Include="Manos.Templates.Testing\ManosTemplateStub.cs" />
     <Compile Include="Manos\IRepeatBehavior.cs" />
     <Compile Include="Manos\IterativeRepeatBehavior.cs" />
+    <Compile Include="Manos\InfiniteRepeatBehavior.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
