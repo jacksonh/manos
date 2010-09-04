@@ -49,7 +49,7 @@ Here is a simple example that will clear a cache every five minutes until Novemb
 
         public void RepeatPerformed ()
         {
-        "
+        }
     }
 
     class MyManosApp : ManosApp {
