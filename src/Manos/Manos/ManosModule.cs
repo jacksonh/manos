@@ -274,6 +274,26 @@ namespace Manos {
 			con.Response.Finish ();
 		}
 
+		public static void AddTimeout (TimeSpan timespan, TimeoutCallback callback)
+		{
+			AddTimeout (timespan, RepeatBehavior.Single, null, callback);
+		}
+		
+		public static void AddTimeout (TimeSpan timespan, IRepeatBehavior repeat, TimeoutCallback callback)
+		{
+			AddTimeout (timespan, repeat, null, callback);
+		}
+		
+		public static void AddTimeout (TimeSpan timespan, object data, TimeoutCallback callback)
+		{
+			AddTimeout (timespan, RepeatBehavior.Single, data, callback);
+		}
+		
+		public static void AddTimeout (TimeSpan timespan, IRepeatBehavior repeat, object data, TimeoutCallback callback)
+		{
+			AppHost.AddTimeout (timespan, repeat, data, callback);
+		}
+		
 		public static void RenderTemplate (ManosContext context, string template, object data)
 		{
 			MemoryStream stream = new MemoryStream ();
@@ -295,9 +315,7 @@ namespace Manos {
 		{
 			MethodInfo [] methods = this.GetType ().GetMethods ();
 
-			Console.WriteLine ("adding implicit routes");
 			foreach (MethodInfo meth in methods) {
-				Console.WriteLine (" -- {0} is action: {1}  is ignored:  {2}", meth.Name, IsActionSignature (meth), IsIgnoredAction (meth));
 				if (!IsActionSignature (meth))
 					continue;
 				if (IsIgnoredAction (meth))
@@ -328,7 +346,6 @@ namespace Manos {
 
 		private void AddHandlersForAction (RouteHandler routes, MethodInfo info)
 		{
-			Console.WriteLine ("adding handlers for action:  {0}", info.Name);
 			HttpMethodAttribute [] atts = (HttpMethodAttribute []) info.GetCustomAttributes (typeof (HttpMethodAttribute), false);
 
 			if (atts.Length == 0) {
@@ -344,7 +361,6 @@ namespace Manos {
 
 		private void AddDefaultHandlerForAction (RouteHandler routes, MethodInfo info)
 		{
-			Console.WriteLine ("adding default handler for:  {0}", info.Name);
 			ManosAction action = (ManosAction) Delegate.CreateDelegate (typeof (ManosAction), info);
 			AddImplicitRouteHandler (action, new string [] { info.Name }, HttpMethods.RouteMethods);
 		}

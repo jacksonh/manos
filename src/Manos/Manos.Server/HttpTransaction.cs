@@ -180,7 +180,7 @@ namespace Manos.Server {
 				return;
 			}
 
-			ConnectionCallback (this);
+			Server.IOLoop.QueueTransaction (this);
 		}
 
 		private void ParseStartLine (string line, out string verb, out string path, out string version)

@@ -56,18 +56,9 @@ namespace Manos.Tool
 		{
 			app = LoadLibrary (ApplicationAssembly);
 
-			HttpServer server = new HttpServer (HandleRequest);
-			server.Bind (Port);
-			server.Start ();
-			server.IOLoop.Start ();	
-			Console.WriteLine ("loop started.");
+			AppHost.Start (app);
 		}
 		
-		public void HandleRequest (IHttpTransaction con)
-		{
-			app.HandleTransaction (con);
-		}
-			
 		public ManosApp LoadLibrary (string library)
 		{
 			Assembly a = Assembly.LoadFrom (library);

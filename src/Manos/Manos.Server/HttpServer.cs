@@ -20,15 +20,16 @@ namespace Manos.Server {
 		public static readonly string ServerVersion = "0.0.0.1";
 
 		private HttpConnectionCallback callback;
+		private IOLoop ioloop;
 
-		public HttpServer (HttpConnectionCallback callback)
+		public HttpServer (HttpConnectionCallback callback, IOLoop ioloop)
 		{
 			this.callback = callback;
+			this.ioloop = ioloop;
 		}
 
 		public IOLoop IOLoop {
-			get;
-			private set;
+			get { return ioloop; }
 		}
 
 		public Socket Socket {
@@ -36,25 +37,18 @@ namespace Manos.Server {
 			private set;
 		}
 
-		public void Bind (int port)
+		public void Bind (IPEndPoint endpoint)
 		{
 			Socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 			Socket.SetSocketOption (SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 			Socket.Blocking = false;
-			Socket.Bind (new IPEndPoint (IPAddress.Parse ("0.0.0.0"), port));
+			Socket.Bind (endpoint);
 			Socket.Listen (128);
 		}
 
 		public void Start ()
 		{
-			Start (1);
-		}
-
-		public void Start (int num_process)
-		{
-			// For now only start a single process
-			IOLoop = new IOLoop ();
-			IOLoop.AddHandler (Socket.Handle, HandleEvents, IOLoop.EPOLL_READ_EVENTS);
+			ioloop.AddHandler (Socket.Handle, HandleEvents, IOLoop.EPOLL_READ_EVENTS);
 		}
 
 		private void HandleEvents (IntPtr fd, EpollEvents events)

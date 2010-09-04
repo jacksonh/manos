@@ -23,10 +23,7 @@ public class T {
 		if (args.Length > 0)
 			app = LoadLibrary (args [0]);
 
-		HttpServer server = new HttpServer (HandleRequest);
-		server.Bind (8080);
-		server.Start ();
-		server.IOLoop.Start ();
+		AppHost.Start (app);
 	}
 
 	public static ManosApp LoadLibrary (string library)

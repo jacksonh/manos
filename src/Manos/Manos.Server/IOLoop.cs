@@ -7,7 +7,10 @@ using System.Net.Sockets;
 using System.Collections;
 using System.Collections.Generic;
 
+using System.Linq;
+
 using Mono.Unix.Native;
+using System.Threading;
 
 
 namespace Manos.Server {
@@ -28,15 +31,22 @@ namespace Manos.Server {
 
 		private Queue<EpollEvent> events = new Queue<EpollEvent> ();
 
+		private static IOLoop instance = new IOLoop ();
+		
 		private List<IOCallback> callbacks = new List<IOCallback> ();
 		private Dictionary<IntPtr,IOHandler> handlers = new Dictionary<IntPtr,IOHandler> ();
-		public List<HttpTransaction> transactions = new List<HttpTransaction> ();
+		private List<HttpTransaction> transactions = new List<HttpTransaction> ();
+		private List<Timeout> timeouts = new List<Timeout> ();
 
 		public IOLoop ()
 		{
 			epfd = Syscall.epoll_create (MAX_EVENTS);
 		}
 
+		public static IOLoop Instance {
+			get { return instance; }
+		}
+		
 		public void QueueTransaction (HttpTransaction trans)
 		{
 			transactions.Add (trans);	
@@ -57,6 +67,13 @@ namespace Manos.Server {
 				if (callbacks.Count > 0)
 					timeout = 0;
 
+				RunTimeouts ();
+				
+				if (timeouts.Count > 0 ) {
+					int milli = (int) ((timeouts [0].expires - DateTime.UtcNow).TotalMilliseconds + 0.5);
+					timeout = Math.Min ((int) milli, timeout);
+				}
+				
 				if (!running)
 					break;
 				
@@ -106,9 +123,32 @@ namespace Manos.Server {
 
 		private void RunTransactions ()
 		{
-			foreach (HttpTransaction transaction in transactions) {
-				transaction.Run ();
+			if (transactions.Count <= 0)
+				return;
+			
+			transactions.AsParallel ().ForAll (t => t.Run ());
+			/*
+			foreach (HttpTransaction t in transactions) {
+				t.Run ();	
 			}
+			*/
+			/*
+			foreach (HttpTransaction t in transactions) {
+				 System.Threading.ThreadPool.QueueUserWorkItem (o => t.Run ());
+			}
+			*/
+			/*
+			int n = transactions.Count;
+			ManualResetEvent done = new ManualResetEvent (false);
+			foreach (HttpTransaction item in transactions) {
+     			ThreadPool.QueueUserWorkItem (delegate {
+            	  item.Run ();
+              		if (Interlocked.Decrement (ref n) == -1)
+                    	 done.Set ();
+              	});
+			}
+			done.WaitOne ();
+			*/
 		}
 		
 		private void RunHandler (IntPtr fd, EpollEvents events)
@@ -161,7 +201,38 @@ namespace Manos.Server {
 			Console.WriteLine (e);
 		}
 
+		public void AddTimeout (Timeout timeout)
+		{
+			int i;
+			for (i = 0; i < timeouts.Count; i++) {
+				if (timeouts [i].expires > timeout.expires)
+					break;
+			}
+			
+			if (i == timeouts.Count)
+				timeouts.Add (timeout);
+			else 
+				timeouts.Insert (0, timeout);
+		}
 
+		private void RunTimeouts ()
+		{
+			List<Timeout> removed = new List<Timeout> ();
+			
+			
+			foreach (Timeout t in timeouts) {
+				if (t.expires > DateTime.UtcNow)
+					break;
+				AppHost.RunTimeout (t);
+				if (!t.ShouldContinueToRepeat ())
+					removed.Add (t);
+				else
+					t.expires = DateTime.UtcNow + t.span;
+			}
+			
+			removed.ForEach (t => timeouts.Remove (t));
+		}
+		
 		private void Register (IntPtr fd, EpollEvents events)
 		{
 			Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_ADD, fd, events);

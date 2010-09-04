@@ -1,14 +1,14 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" ctype="Workspace" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Manos.Tests/Manos.Template/CodegenTest.cs" ctype="Workbench">
+  <MonoDevelop.Ide.Workbench ActiveDocument="manos-server/manos.cs" ctype="Workbench">
     <Files>
       <File FileName="Assembly/AssemblyInfo.cs" Line="1" Column="1" />
       <File FileName="Manos/IManosContext.cs" Line="8" Column="23" />
       <File FileName="Manos/IManosTarget.cs" Line="4" Column="16" />
       <File FileName="Manos/ManosAction.cs" Line="7" Column="29" />
-      <File FileName="Manos/ManosApp.cs" Line="11" Column="20" />
+      <File FileName="Manos/ManosApp.cs" Line="13" Column="20" />
       <File FileName="Manos/ManosContext.cs" Line="9" Column="19" />
-      <File FileName="Manos/ManosModule.cs" Line="282" Column="10" />
+      <File FileName="Manos/ManosModule.cs" Line="282" Column="4" />
       <File FileName="Manos/ManosTarget.cs" Line="6" Column="36" />
       <File FileName="Manos/OptionsAttribute.cs" Line="23" Column="1" />
       <File FileName="Manos.Routing/IMatchOperation.cs" Line="8" Column="16" />
@@ -20,7 +20,6 @@
       <File FileName="Manos.Testing/MockManosModule.cs" Line="11" Column="38" />
       <File FileName="Manos.Testing/MockManosTarget.cs" Line="14" Column="29" />
       <File FileName="Manos.Server.Testing/MockHttpRequest.cs" Line="5" Column="12" />
-      <File FileName="Manos.Server/HttpTransaction.cs" Line="28" Column="31" />
       <File FileName="Manos.Server/IWriteOperation.cs" Line="3" Column="16" />
       <File FileName="Manos.Server/WriteBytesOperation.cs" Line="6" Column="16" />
       <File FileName="Manos.Server/WriteFileOperation.cs" Line="6" Column="16" />
@@ -35,27 +34,35 @@
       <File FileName="Manos.Server/IHttpResponse.cs" Line="1" Column="1" />
       <File FileName="Manos/HttpMethods.cs" Line="5" Column="16" />
       <File FileName="manos-tool/Driver.cs" Line="221" Column="50" />
-      <File FileName="manos-server/manos.cs" Line="37" Column="35" />
+      <File FileName="manos-server/manos.cs" Line="28" Column="19" />
       <File FileName="Manos.Tests/Manos/ManosModuleTest.cs" Line="302" Column="30" />
-      <File FileName="Manos.Tests/Manos.Routing/RegexMatchOperationTest.cs" Line="99" Column="26" />
       <File FileName="Manos.Tests/Manos.Template/CodegenTest.cs" Line="43" Column="17" />
+      <File FileName="Manos.Templates.Testing/ManosTemplateStub.cs" Line="4" Column="12" />
+      <File FileName="Manos.Tests/Manos.Routing/RouteHandlerTest.cs" Line="144" Column="1" />
+      <File FileName="Manos.Server/HttpServer.cs" Line="59" Column="1" />
+      <File FileName="Manos.Server/HttpTransaction.cs" Line="184" Column="3" />
+      <File FileName="Manos.Server/IOLoop.cs" Line="122" Column="54" />
+      <File FileName="NTOES.html" Line="35" Column="1" />
+      <File FileName="Manos/IRepeatBehavior.cs" Line="8" Column="27" />
+      <File FileName="Manos/IterativeRepeatBehavior.cs" Line="11" Column="130" />
+      <File FileName="Manos.Tests/Manos/IterativeRepeatBehaviorTest.cs" Line="94" Column="41" />
+      <File FileName="Manos/InfiniteRepeatBehavior.cs" Line="17" Column="4" />
+      <File FileName="Manos.Tests/Manos/InfiniteRepeatBehaviorTest.cs" Line="17" Column="36" />
+      <File FileName="Manos/RepeatBehavior.cs" Line="13" Column="51" />
+      <File FileName="Manos.Tests/Manos/RepeatBehaviorTest.cs" Line="36" Column="30" />
+      <File FileName="Manos/TimeoutCallback.cs" Line="9" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
-        <State expanded="True" selected="True">
+        <State expanded="True">
           <Node name="Manos" expanded="True">
-            <Node name="Manos.Template" expanded="True" />
+            <Node name="Manos.Server" expanded="True" />
           </Node>
           <Node name="Manos.Tests" expanded="True">
             <Node name="Manos" expanded="True" />
-            <Node name="Manos.Routing" expanded="True" />
-            <Node name="Manos.Template" expanded="True" />
           </Node>
           <Node name="manos-server" expanded="True">
-            <Node name="References" expanded="True" />
-          </Node>
-          <Node name="manos-tool" expanded="True">
-            <Node name="References" expanded="True" />
+            <Node name="manos.cs" selected="True" />
           </Node>
         </State>
       </Pad>
@@ -65,10 +72,15 @@
       <Pad Id="MonoDevelop.Debugger.WatchPad">
         <State />
       </Pad>
+      <Pad Id="MonoDevelop.NUnit.TestPad">
+        <State expanded="True" />
+      </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/home/jackson/Projects/manos/src/Manos/Manos.Tests/Manos/IterativeRepeatBehaviorTest.cs" line="17" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches ctype="PinnedWatchStore" />
 </Properties>

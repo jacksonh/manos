@@ -101,6 +101,9 @@
     <Compile Include="Manos\InfiniteRepeatBehavior.cs" />
     <Compile Include="Manos\RepeatBehavior.cs" />
     <Compile Include="Manos\TimeoutCallback.cs" />
+    <Compile Include="Manos.Server\Timeout.cs" />
+    <Compile Include="Manos\AppHost.cs" />
+    <Compile Include="Manos.Server.Testing\ManosAppStub.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -108,8 +111,6 @@
     <Folder Include="Manos.Server.Testing\" />
     <Folder Include="Assembly\" />
     <Folder Include="Manos.Templates.Testing\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="NTOES.html" />
+    <Folder Include="Manos.Server\" />
   </ItemGroup>
 </Project>
