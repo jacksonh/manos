@@ -74,6 +74,26 @@ namespace Manos.Tests
 			
 			Assert.AreEqual (0, repeat.RemainingIterations);
 		}
+		
+		[Test]
+		public void ShouldContinueToRepeat_NonZeroRemainingIterations_ReturnsTrue ()
+		{
+			var repeat = new IterativeRepeatBehavior (1);
+			
+			bool should_continue = repeat.ShouldContinueToRepeat ();
+			Assert.IsTrue (should_continue);
+		}
+		
+		[Test]
+		public void ShouldContinueToRepeat_ZeroRemainingIterations_ReturnsFalse ()
+		{
+			var repeat = new IterativeRepeatBehavior (1);
+			
+			repeat.RepeatPerformed ();
+			
+			bool should_continue = repeat.ShouldContinueToRepeat ();
+			Assert.IsFalse (should_continue);
+		}
 	}
 }
 
