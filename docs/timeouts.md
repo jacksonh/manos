@@ -27,6 +27,22 @@ The RepeatBehavior class also allows you to specify the number of times to perfo
         AddTimeout (TimeSpan.FromMinutes (5), RepeatBehavior.Iterations (10), app => app.Cache.Clear ());
     }
 
+Timeout Callbacks
+-----------------
+The timeout callback is a delegate that will pass the MangoApp and the data object it was added with to your handler. If no data object is used when the timeout was added, data will be null.
+
+    MyManosApp ()
+    {
+        MyData data = new MyData ();
+        
+        AddTimeout (TimeSpan.FromSeconds (10), FooHandler, data);
+    }
+
+    void FooHandler (ManosApp app, object data)
+    {
+        MyData mydata = data as MyData;
+    }
+
 
 Custom RepeatBehaviors
 ----------------------
