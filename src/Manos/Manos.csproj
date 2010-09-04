@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Manos</RootNamespace>
     <AssemblyName>Manos</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -96,6 +96,8 @@
     <Compile Include="Manos.Template\IManosTemplate.cs" />
     <Compile Include="Manos.Template\TemplateFactory.cs" />
     <Compile Include="Manos.Templates.Testing\ManosTemplateStub.cs" />
+    <Compile Include="Manos\IRepeatBehavior.cs" />
+    <Compile Include="Manos\IterativeRepeatBehavior.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -103,5 +105,8 @@
     <Folder Include="Manos.Server.Testing\" />
     <Folder Include="Assembly\" />
     <Folder Include="Manos.Templates.Testing\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="NTOES.html" />
   </ItemGroup>
 </Project>

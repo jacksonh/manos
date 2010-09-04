@@ -1,0 +1,79 @@
+using System;
+using NUnit.Framework;
+namespace Manos.Tests
+{
+	[TestFixture()]
+	public class IterativeRepeatBehaviorTest
+	{
+		[Test()]
+		public void Ctor_NegativeValue_Throws ()
+		{
+			Assert.Throws<ArgumentOutOfRangeException> (() => new IterativeRepeatBehavior (-1));
+		}
+		
+		[Test]
+		public void Ctor_ZeroValue_Throws ()
+		{
+			Assert.Throws<ArgumentOutOfRangeException> (() => new IterativeRepeatBehavior (0));
+		}
+		
+		[Test]
+		public void Ctor_PositiveValue_SetsRemainingIterationsProperty ()
+		{
+			var repeat = new IterativeRepeatBehavior (25);
+			
+			Assert.AreEqual (25, repeat.RemainingIterations);
+		}
+		
+		[Test]
+		public void RemainingIterations_SetNegative_Throws ()
+		{
+			var repeat = new IterativeRepeatBehavior (25);
+			
+			Assert.Throws<ArgumentOutOfRangeException> (() => repeat.RemainingIterations = -1);
+		}
+		
+		[Test]
+		public void RemainingIterations_SetZero_DoesNotthrow ()
+		{
+			var repeat = new IterativeRepeatBehavior (10);
+			
+			repeat.RemainingIterations = 0;
+		}
+		
+		[Test]
+		public void RemainingIterations_SetPositiveValue_SetsValue ()
+		{
+			var repeat = new IterativeRepeatBehavior (5);
+			
+			repeat.RemainingIterations = 10;
+			
+			Assert.AreEqual (10, repeat.RemainingIterations);
+		}
+		
+		[Test]
+		public void RepeatPerformed_DecrementsRemainingIterations ()
+		{
+			var repeat = new IterativeRepeatBehavior (5);	
+		
+			repeat.RepeatPerformed ();
+			
+			Assert.AreEqual (4, repeat.RemainingIterations);
+		}
+		
+		[Test]
+		public void RepeatPerformed_CallMoreThanRemainingIterationsTotal_RemainingIterationsIsZero ()
+		{
+			var repeat = new IterativeRepeatBehavior (3);
+			
+			repeat.RepeatPerformed ();
+			repeat.RepeatPerformed ();
+			repeat.RepeatPerformed ();
+			repeat.RepeatPerformed ();
+			repeat.RepeatPerformed ();
+			
+			Assert.AreEqual (0, repeat.RemainingIterations);
+		}
+	}
+}
+

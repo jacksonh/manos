@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Manos.Tests</RootNamespace>
     <AssemblyName>Manos.Tests</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,6 +48,7 @@
     <Compile Include="Manos.Server\HttpHeadersTest.cs" />
     <Compile Include="Manos.Template\CodegenTest.cs" />
     <Compile Include="Manos.Template\TemplateFactoryTest.cs" />
+    <Compile Include="Manos\IterativeRepeatBehaviorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Manos.Routing\" />
