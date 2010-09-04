@@ -99,6 +99,8 @@
     <Compile Include="Manos\IRepeatBehavior.cs" />
     <Compile Include="Manos\IterativeRepeatBehavior.cs" />
     <Compile Include="Manos\InfiniteRepeatBehavior.cs" />
+    <Compile Include="Manos\RepeatBehavior.cs" />
+    <Compile Include="Manos\TimeoutCallback.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -50,6 +50,7 @@
     <Compile Include="Manos.Template\TemplateFactoryTest.cs" />
     <Compile Include="Manos\IterativeRepeatBehaviorTest.cs" />
     <Compile Include="Manos\InfiniteRepeatBehaviorTest.cs" />
+    <Compile Include="Manos\RepeatBehaviorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Manos.Routing\" />
