@@ -7,7 +7,7 @@ namespace Manos.Caching
 {
 	public class ManosInProcCache : IManosCache
 	{
-		private class CacheItem {
+		public class CacheItem {
 			public bool IsRemoved;
 			public string Key;
 			public object Item;
@@ -46,20 +46,6 @@ namespace Manos.Caching
 			
 			AppHost.AddTimeout (expires, RepeatBehavior.Single, item, HandleExpires);               
 		}
-
-		private CacheItem SetInternal (string key, object value)
-		{
-			CacheItem item = null;
-			lock (lock_obj) {
-				if (items.TryGetValue (key, out item))
-					item.IsRemoved = true;
-			
-				item = new CacheItem (key, value);
-				items [key] = item;
-			}
-			
-			return item;
-		}
 		
 		public void Remove (string key)
 		{
@@ -90,7 +76,21 @@ namespace Manos.Caching
 			}
 		}
 		
-		private void HandleExpires (ManosApp app, object obj_item)
+		protected CacheItem SetInternal (string key, object value)
+		{
+			CacheItem item = null;
+			lock (lock_obj) {
+				if (items.TryGetValue (key, out item))
+					item.IsRemoved = true;
+			
+				item = new CacheItem (key, value);
+				items [key] = item;
+			}
+			
+			return item;
+		}
+		
+		protected virtual void HandleExpires (ManosApp app, object obj_item)
 		{
 			CacheItem item = (CacheItem) obj_item;
 			if (item.IsRemoved)

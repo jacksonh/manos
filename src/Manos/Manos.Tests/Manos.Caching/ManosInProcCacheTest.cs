@@ -7,6 +7,21 @@ namespace Manos.Caching.Tests
 	[TestFixture()]
 	public class ManosInProcCacheTest
 	{
+		
+		public class ManosInProcCacheStub : ManosInProcCache {
+		
+			public void ForceHandleExpires (object item)
+			{
+				base.HandleExpires (null, item);
+			}
+			
+			public ManosInProcCache.CacheItem DoSetInternal (string key, object value)
+			{
+				return base.SetInternal (key, value);	
+			}
+		}
+		
+
 		[Test]
 		public void Get_NullKey_Throws ()
 		{
@@ -91,6 +106,31 @@ namespace Manos.Caching.Tests
 			
 			var retrieved = cache.Get ("foo");
 			Assert.IsNull (retrieved);
+		}
+		
+		[Test]
+		public void HandleExpires_RegisteredItem_RemovesItem ()
+		{
+			var cache = new ManosInProcCacheStub ();
+			var existing = new object ();
+			
+			ManosInProcCache.CacheItem item = cache.DoSetInternal ("foo", existing);
+			cache.ForceHandleExpires (item);
+			
+			var retrieved = cache.Get ("foo");
+			Assert.IsNull (retrieved);
+		}
+		
+		[Test]
+		public void HandleExpires_ItemAlreadyRemoved_DoesNotThrow ()
+		{
+			var cache = new ManosInProcCacheStub ();
+			var existing = new object ();
+			
+			ManosInProcCache.CacheItem item = cache.DoSetInternal ("foo", existing);
+			cache.Remove ("foo");
+			
+			Assert.DoesNotThrow (() => cache.ForceHandleExpires (item));
 		}
 	}
 }
