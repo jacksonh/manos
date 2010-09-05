@@ -52,12 +52,14 @@
     <Compile Include="Manos\InfiniteRepeatBehaviorTest.cs" />
     <Compile Include="Manos\RepeatBehaviorTest.cs" />
     <Compile Include="Manos\AppHostTest.cs" />
+    <Compile Include="Manos.Caching\ManosInProcCacheTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Manos.Routing\" />
     <Folder Include="Manos\" />
     <Folder Include="Manos.Server\" />
     <Folder Include="Manos.Template\" />
+    <Folder Include="Manos.Caching\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Manos.csproj">

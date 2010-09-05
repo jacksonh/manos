@@ -104,6 +104,8 @@
     <Compile Include="Manos.Server\Timeout.cs" />
     <Compile Include="Manos\AppHost.cs" />
     <Compile Include="Manos.Server.Testing\ManosAppStub.cs" />
+    <Compile Include="Manos.Caching\IManosCache.cs" />
+    <Compile Include="Manos.Caching\ManosInProcCache.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -112,5 +114,6 @@
     <Folder Include="Assembly\" />
     <Folder Include="Manos.Templates.Testing\" />
     <Folder Include="Manos.Server\" />
+    <Folder Include="Manos.Caching\" />
   </ItemGroup>
 </Project>

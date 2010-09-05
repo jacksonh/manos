@@ -4,6 +4,7 @@ using System;
 using System.Net;
 
 using Manos.Server;
+using Manos.Caching;
 
 
 namespace Manos
@@ -17,6 +18,7 @@ namespace Manos
 		private static IPAddress ip_address = IPAddress.Parse ("0.0.0.0");
 		
 		private static HttpServer server;
+		private static IManosCache cache = new ManosInProcCache ();
 		private static IOLoop ioloop = IOLoop.Instance;
 		
 		public static ManosApp App {
@@ -25,6 +27,10 @@ namespace Manos
 		
 		public static HttpServer Server {
 			get { return server; }	
+		}
+		
+		public static IManosCache Cache {
+			get { return cache; }	
 		}
 		
 		public static IOLoop IOLoop {
