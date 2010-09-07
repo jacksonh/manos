@@ -1,5 +1,6 @@
 using System;
-namespace Manos
+
+namespace Manos.Testing
 {
 	public class ManosAppStub : ManosApp
 	{

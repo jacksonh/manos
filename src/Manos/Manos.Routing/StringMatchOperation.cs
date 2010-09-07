@@ -30,6 +30,7 @@ namespace Manos.Routing
 		{
 			int i = input.IndexOf (String, start);
 
+			Console.WriteLine ("INPUT '{0}'  STRING:  '{1}'", input, String);
 			if (i != start) {
 				end = start;
 				return false;

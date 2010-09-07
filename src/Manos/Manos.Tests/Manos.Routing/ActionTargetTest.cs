@@ -7,7 +7,7 @@ using Manos.Testing;
 namespace Manos.Routing.Tests
 {
 	[TestFixture]
-	public class ManosActionTargetTest
+	public class ActionTargetTest
 	{
 		private void ValidAction (IManosContext ctx)
 		{
@@ -22,13 +22,13 @@ namespace Manos.Routing.Tests
 		[Test]
 		public void Ctor_NullArgument_Throws ()
 		{
-			Assert.Throws<ArgumentNullException> (() => new ManosActionTarget (null));
+			Assert.Throws<ArgumentNullException> (() => new ActionTarget (null));
 		}
 		
 		[Test]
 		public void Ctor_ValidActon_SetsAction ()
 		{
-			var mat = new ManosActionTarget (ValidAction);
+			var mat = new ActionTarget (ValidAction);
 			
 			Assert.AreEqual (new ManosAction (ValidAction), mat.Action);
 		}
@@ -36,7 +36,7 @@ namespace Manos.Routing.Tests
 		[Test]
 		public void ActionSetter_NullAction_Throws ()
 		{
-			var mat = new ManosActionTarget (ValidAction);
+			var mat = new ActionTarget (ValidAction);
 			
 			Assert.Throws<ArgumentNullException> (() => mat.Action = null);
 		}
@@ -44,7 +44,7 @@ namespace Manos.Routing.Tests
 		[Test]
 		public void ActionSetter_InvalidDelegateType_Throws ()
 		{
-			var mat = new ManosActionTarget (new ManosAction (ValidAction));
+			var mat = new ActionTarget (new ManosAction (ValidAction));
 			
 			Assert.Throws<InvalidOperationException> (() => mat.Action = new InvalidDelegate (InvalidAction));
 		}
@@ -53,7 +53,7 @@ namespace Manos.Routing.Tests
 		public void Invoke_ActionIsInvoked ()
 		{
 			bool action_set = false;
-			var mat = new ManosActionTarget (ctx => action_set = true);
+			var mat = new ActionTarget (ctx => action_set = true);
 			
 			mat.Invoke (new ManosAppStub (), new ManosContextStub ());
 			

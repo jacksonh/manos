@@ -2,7 +2,7 @@
 
 using System;
 
-namespace Manos {
+namespace Manos.Routing {
 
 	public delegate void ManosAction (IManosContext context);
 	

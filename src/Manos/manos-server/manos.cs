@@ -41,44 +41,5 @@ public class T {
 		Console.WriteLine ("running app:  {0}", app);
 		return app;
 	}
-
-	public static void HandleRequest (IHttpTransaction con)
-	{
-		string message = String.Format ("You requested {0}\n", con.Request.ResourceUri);
-
-		string fullpath = con.Request.LocalPath;
-
-		if (show_headers) {
-			Console.WriteLine ("HEADERS:");
-			Console.WriteLine ("===========");
-			foreach (string h in con.Request.Headers.Keys) {
-				Console.WriteLine ("{0} = {1}", h, con.Request.Headers [h]);
-			}
-			Console.WriteLine ("===========");
-		}
-
-		if (app != null) {
-			app.HandleTransaction (con);
-			return;
-		}
-
-		if (fullpath.Length > 0) {
-			string path = fullpath.Substring (1);
-
-			int query = path.IndexOf ('?');
-			if (query > 0)
-				path = path.Substring (0, query);
-
-			if (File.Exists (path)) {
-				con.Response.StatusCode = 200;
-
-				Console.WriteLine ("sending file:  {0}", path);
-				con.Response.SendFile (path);
-			} else
-				con.Response.StatusCode = 404;
-			
-		}
-
-	}
 }
 

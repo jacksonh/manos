@@ -109,9 +109,7 @@ namespace Manos.Tool
 		}
 		
 		private static int Build (IList<string> args)
-		{
-			string app_name = null;
-			
+		{	
 			Driver d = new Driver ();
 			
 			try {

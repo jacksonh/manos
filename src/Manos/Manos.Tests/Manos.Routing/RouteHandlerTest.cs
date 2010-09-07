@@ -3,8 +3,10 @@ using System;
 using NUnit.Framework;
 
 using Manos.Routing;
+
 using Manos.Testing;
 using Manos.Server.Testing;
+using Manos.Routing.Testing;
 
 namespace Manos.Routing.Tests
 {
@@ -106,7 +108,7 @@ namespace Manos.Routing.Tests
 		[Test]
 		public void UriParamsTest ()
 		{
-			var rh = new RouteHandler ("(?<name>.+)", "GET", new ManosTarget (FakeAction));
+			var rh = new RouteHandler ("(?<name>.+)", "GET", new ActionTarget (FakeAction));
 			var request = new MockHttpRequest ("GET", "hello");
 			
 			Assert.NotNull (rh.Find (request), "target");
@@ -120,7 +122,7 @@ namespace Manos.Routing.Tests
 		public void UriParamsTestDeep ()
 		{
 			var rh = new RouteHandler ("(?<animal>.+)/", "GET") {
-				new RouteHandler ("(?<name>.+)", "GET", new ManosTarget (FakeAction)),	                                                         
+				new RouteHandler ("(?<name>.+)", "GET", new ActionTarget (FakeAction)),	                                                         
 			};
 			var request = new MockHttpRequest ("GET", "dog/roxy");
 			
@@ -135,7 +137,7 @@ namespace Manos.Routing.Tests
 		[Test]
 		public void TestNoChildrenOfTarget ()
 		{
-			var rh = new RouteHandler ("foo", "GET", new ManosTarget (FakeAction));
+			var rh = new RouteHandler ("foo", "GET", new ActionTarget (FakeAction));
 			
 			Assert.Throws<InvalidOperationException> (() => rh.Children.Add (new RouteHandler ("foo", "POST")));
 		}

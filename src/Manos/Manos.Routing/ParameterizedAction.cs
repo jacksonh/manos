@@ -1,8 +1,8 @@
 using System;
 
 
-namespace Manos
+namespace Manos.Routing
 {
-	public delegate object ParameterizedAction (object target, object [] paramters);
+	public delegate void ParameterizedAction (object target, object [] paramters);
 }
 

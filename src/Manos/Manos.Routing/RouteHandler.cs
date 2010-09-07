@@ -22,7 +22,13 @@ namespace Manos.Routing {
 
 		internal RouteHandler ()
 		{
-			Children = new List<RouteHandler> ();
+			SetupChildrenCollection ();
+		}
+
+		void HandleChildrenCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (Target != null)
+				throw new InvalidOperationException ("Can not add Children to a RouteHandler that has a Target set.");	
 		}
 
 		public RouteHandler (string pattern, string [] methods) : this (new string [] { pattern }, methods)
@@ -52,7 +58,15 @@ namespace Manos.Routing {
 			Patterns = new List<string> (patterns);
 			this.methods = new List<string> (methods);
 
-			Children = new List<RouteHandler> ();
+			SetupChildrenCollection ();
+		}
+			
+		private void SetupChildrenCollection ()
+		{
+			var children = new ObservableCollection<RouteHandler> ();
+			
+			children.CollectionChanged += HandleChildrenCollectionChanged;
+			Children = children;
 		}
 
 		public bool IsImplicit {
@@ -141,15 +155,15 @@ namespace Manos.Routing {
 		{
 			if (!IsMethodMatch (request))
 				return null;
-			
-			Match m = null;
+						
 			NameValueCollection uri_data = null;
 			if (HasPatterns) {
 				int end;
 				uri_data = new NameValueCollection ();
 				
-				if (!FindPatternMatch (request.LocalPath, uri_start, uri_data, out end))
+				if (!FindPatternMatch (request.LocalPath, uri_start, uri_data, out end)) {
 					return null;
+				}
 
 				if (Target != null) {
 					request.UriData.Add (uri_data);

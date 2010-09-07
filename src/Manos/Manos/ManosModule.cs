@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 using Manos.Server;
 using Manos.Routing;
@@ -43,17 +44,22 @@ namespace Manos {
 
 		private RouteHandler AddRouteHandler (ManosAction action, string [] patterns, string [] methods)
 		{
+			return AddRouteHandler (new ActionTarget (action), patterns, methods);
+		}
+		
+		private RouteHandler AddRouteHandler (IManosTarget target, string [] patterns, string [] methods)
+		{
 			// TODO: Need to decide if this is a good or bad idea
 			// RemoveImplicitHandlers (action);
 
-			if (action == null)
+			if (target == null)
 				throw new ArgumentNullException ("action");
 			if (patterns == null)
 				throw new ArgumentNullException ("patterns");
 			if (methods == null)
 				throw new ArgumentNullException ("methods");
 			
-			RouteHandler res = new RouteHandler (patterns, methods, new ManosTarget (action));
+			RouteHandler res = new RouteHandler (patterns, methods, target);
 			Routes.Children.Add (res);
 			return res;
 		}
@@ -67,9 +73,9 @@ namespace Manos {
 			return module.Routes;
 		}
 
-		private RouteHandler AddImplicitRouteHandler (ManosAction action, string [] patterns, string [] methods)
+		private RouteHandler AddImplicitRouteHandler (IManosTarget target, string [] patterns, string [] methods)
 		{
-			RouteHandler res = new RouteHandler (patterns, methods, new ManosTarget (action)) {
+			RouteHandler res = new RouteHandler (patterns, methods, target) {
 				IsImplicit = true,
 			};
 
@@ -247,7 +253,7 @@ namespace Manos {
 			return AddRouteHandler (module, patterns, HttpMethods.TraceMethods);
 		}
 		
-		public void HandleTransaction (IHttpTransaction con)
+		public void HandleTransaction (ManosApp app, IHttpTransaction con)
 		{
 			if (con == null)
 				throw new ArgumentNullException ("con");
@@ -260,8 +266,10 @@ namespace Manos {
 			}
 
 			try {
-				handler.Invoke (new ManosContext (con));
+				handler.Invoke (app, new ManosContext (con));
 			} catch (Exception e) {
+				Console.Error.WriteLine ("Exception in transaction handler:");
+				Console.Error.WriteLine (e);
 				con.Response.StatusCode = 500;
 				//
 				// TODO: Maybe the cleanest thing to do is
@@ -316,27 +324,56 @@ namespace Manos {
 			MethodInfo [] methods = this.GetType ().GetMethods ();
 
 			foreach (MethodInfo meth in methods) {
-				if (!IsActionSignature (meth))
+				if (meth.ReturnType != typeof (void))
 					continue;
+				
 				if (IsIgnoredAction (meth))
 					continue;
-				AddHandlersForAction (Routes, meth);
+				
+				ParameterInfo [] parameters = meth.GetParameters ();
+				if (IsActionSignature (parameters)) {
+					AddActionHandler (Routes, meth);
+					continue;	
+				}
+				
+				if (IsParameterizedActionSignature (parameters)) {
+					AddParameterizedActionHandler (Routes, meth);
+					continue;
+				}
 			}
 		}
 
-		private bool IsActionSignature (MethodInfo meth)
+		private bool IsActionSignature (ParameterInfo [] parameters)
 		{
-			ParameterInfo [] p = meth.GetParameters ();
-
-			if (p.Length != 1)
+			if (parameters.Length != 1)
 				return false;
-
-			if (p [0].ParameterType != typeof (IManosContext))
+			
+			// TODO: This should be a straight type == but for some reason
+			// on net 4.0 thats throwing an exception when running in nunit
+			if (typeof (IManosContext).IsSubclassOf (parameters [0].ParameterType))
 				return false;
 
 			return true;
 		}
 
+		private bool IsParameterizedActionSignature (ParameterInfo [] parameters)
+		{
+			if (parameters.Length < 2) {
+				Console.WriteLine ("bad length:  {0}", parameters.Length);
+				return false;
+			}
+			
+			if (parameters [0].ParameterType != typeof (ManosApp) && !parameters [0].ParameterType.IsSubclassOf (typeof (ManosApp))) {
+				return false;
+			}
+			
+			if (typeof (IManosContext) != parameters [1].ParameterType) {
+				return false;
+			}
+			
+			return true;
+		}
+		
 		private bool IsIgnoredAction (MethodInfo info)
 		{
 			var atts = info.GetCustomAttributes (typeof (IgnoreAttribute), false);
@@ -344,7 +381,7 @@ namespace Manos {
 			return atts.Length > 0;
 		}
 
-		private void AddHandlersForAction (RouteHandler routes, MethodInfo info)
+		private void AddActionHandler (RouteHandler routes, MethodInfo info)
 		{
 			HttpMethodAttribute [] atts = (HttpMethodAttribute []) info.GetCustomAttributes (typeof (HttpMethodAttribute), false);
 
@@ -362,13 +399,47 @@ namespace Manos {
 		private void AddDefaultHandlerForAction (RouteHandler routes, MethodInfo info)
 		{
 			ManosAction action = (ManosAction) Delegate.CreateDelegate (typeof (ManosAction), info);
-			AddImplicitRouteHandler (action, new string [] { info.Name }, HttpMethods.RouteMethods);
+			ActionTarget target = new ActionTarget (action);
+			AddImplicitRouteHandler (target, new string [] { "/" + info.Name }, HttpMethods.RouteMethods);
 		}
 
 		private void AddHandlerForAction (RouteHandler routes, HttpMethodAttribute att, MethodInfo info)
 		{
 			ManosAction action = (ManosAction) Delegate.CreateDelegate (typeof (ManosAction), info);
-			AddImplicitRouteHandler (action, att.Patterns, att.Methods);
+			ActionTarget target = new ActionTarget (action);
+         	AddImplicitRouteHandler (target, att.Patterns, att.Methods);
+		}
+		
+		
+		private void AddParameterizedActionHandler (RouteHandler routes, MethodInfo info)
+		{
+			HttpMethodAttribute [] atts = (HttpMethodAttribute []) info.GetCustomAttributes (typeof (HttpMethodAttribute), false);
+
+			if (atts.Length == 0) {
+				AddDefaultHandlerForParameterizedAction (routes, info);
+				return;
+			}
+
+			foreach (HttpMethodAttribute att in atts) {
+				AddHandlerForParameterizedAction (routes, att, info);
+			}
+
+		}
+		
+		private void AddDefaultHandlerForParameterizedAction (RouteHandler routes, MethodInfo info)
+		{
+			ParameterizedAction action = ParameterizedActionFactory.CreateAction (info);
+			ParameterizedActionTarget target = new ParameterizedActionTarget (this, info, action);
+			
+			AddImplicitRouteHandler (target, new string [] { "/" + info.Name }, HttpMethods.RouteMethods);
+		}
+		
+		private void AddHandlerForParameterizedAction (RouteHandler routes, HttpMethodAttribute att, MethodInfo info)
+		{
+			ParameterizedAction action = ParameterizedActionFactory.CreateAction (info);
+			ParameterizedActionTarget target = new ParameterizedActionTarget (this, info, action);
+			
+			AddImplicitRouteHandler (target, att.Patterns, att.Methods);
 		}
 		
 	}

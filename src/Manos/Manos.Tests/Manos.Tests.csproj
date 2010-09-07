@@ -39,7 +39,6 @@
   <ItemGroup>
     <Compile Include="Manos\ManosModuleTest.cs" />
     <Compile Include="Manos.Routing\RouteHandlerTest.cs" />
-    <Compile Include="Manos\ManosTargetTest.cs" />
     <Compile Include="Manos.Server\HttpRequestTest.cs" />
     <Compile Include="Manos.Routing\RegexMatchOperationTest.cs" />
     <Compile Include="Manos.Routing\MatchOperationFactoryTest.cs" />
@@ -53,6 +52,9 @@
     <Compile Include="Manos\RepeatBehaviorTest.cs" />
     <Compile Include="Manos\AppHostTest.cs" />
     <Compile Include="Manos.Caching\ManosInProcCacheTest.cs" />
+    <Compile Include="Manos.Routing\ParameterizedActionTargetTest.cs" />
+    <Compile Include="Manos.Routing\ActionTargetTest.cs" />
+    <Compile Include="Manos.Routing\ParameterizedActionTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Manos.Routing\" />

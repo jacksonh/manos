@@ -84,7 +84,7 @@ namespace Manos
 		
 		public static void HandleTransaction (IHttpTransaction con)
 		{
-			app.HandleTransaction (con);
+			app.HandleTransaction (app, con);
 			return;
 		}
 		

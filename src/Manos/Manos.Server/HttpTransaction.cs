@@ -23,7 +23,6 @@ namespace Manos.Server {
 
 		private bool aborted;
 		private bool connection_finished;
-		private string send_file;
 
 		private Queue<IWriteOperation> write_ops;
 		

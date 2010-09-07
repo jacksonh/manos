@@ -47,7 +47,6 @@
     <Compile Include="Manos\HeadAttribute.cs" />
     <Compile Include="Manos\HttpMethodAttribute.cs" />
     <Compile Include="Manos\IgnoreAttribute.cs" />
-    <Compile Include="Manos\ManosAction.cs" />
     <Compile Include="Manos\ManosApp.cs" />
     <Compile Include="Manos\ManosContext.cs" />
     <Compile Include="Manos\ManosModule.cs" />
@@ -78,9 +77,6 @@
     <Compile Include="Manos.Testing\MockManosModule.cs" />
     <Compile Include="Manos.Server.Testing\MockHttpTransaction.cs" />
     <Compile Include="Manos.Server.Testing\MockHttpRequest.cs" />
-    <Compile Include="Manos\ManosTarget.cs" />
-    <Compile Include="Manos\IManosTarget.cs" />
-    <Compile Include="Manos.Testing\MockManosTarget.cs" />
     <Compile Include="Manos.Server\WriteBytesOperation.cs" />
     <Compile Include="Manos.Server\WriteFileOperation.cs" />
     <Compile Include="Manos.Server\IWriteOperation.cs" />
@@ -103,9 +99,17 @@
     <Compile Include="Manos\TimeoutCallback.cs" />
     <Compile Include="Manos.Server\Timeout.cs" />
     <Compile Include="Manos\AppHost.cs" />
-    <Compile Include="Manos.Server.Testing\ManosAppStub.cs" />
     <Compile Include="Manos.Caching\IManosCache.cs" />
     <Compile Include="Manos.Caching\ManosInProcCache.cs" />
+    <Compile Include="Manos.Testing\ManosContextStub.cs" />
+    <Compile Include="Manos.Testing\ManosAppStub.cs" />
+    <Compile Include="Manos.Routing\ActionTarget.cs" />
+    <Compile Include="Manos.Routing\IManosTarget.cs" />
+    <Compile Include="Manos.Routing\ParameterizedAction.cs" />
+    <Compile Include="Manos.Routing\ParameterizedActionFactory.cs" />
+    <Compile Include="Manos.Routing.Testing\MockManosTarget.cs" />
+    <Compile Include="Manos.Routing\ParameterizedActionTarget.cs" />
+    <Compile Include="Manos.Routing\ManosAction.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
