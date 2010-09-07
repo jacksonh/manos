@@ -127,3 +127,17 @@ Manos routes can also be matched to regular expressions. In this case your regex
     {
     }
  
+
+Simple patterns are Routes
+--------------------------
+
+Manos routes also support a simple string matching system. Strings are searched for {variable} patterns to match routes. These variables will be stored in the Request
+data as strings, but the parameter type conversion can convert these strings for you:
+
+    [Get ("/articles/{slug}/")]
+    public static void Articles (ManosApp app, IManosContext ctx, string slug)
+    {
+    }
+
+
+
