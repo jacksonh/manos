@@ -55,6 +55,7 @@
     <Compile Include="Manos.Routing\ParameterizedActionTargetTest.cs" />
     <Compile Include="Manos.Routing\ActionTargetTest.cs" />
     <Compile Include="Manos.Routing\ParameterizedActionTest.cs" />
+    <Compile Include="Manos.Routing\SimpleMatchOperationTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Manos.Routing\" />

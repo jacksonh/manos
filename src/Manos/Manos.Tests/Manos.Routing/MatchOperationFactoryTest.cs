@@ -67,6 +67,54 @@ namespace Manos.Routing.Tests
 		}
 		
 		[Test]
+		public void Create_SimpleMatchInMiddle_CreatesSimpleMatch ()
+		{
+			IMatchOperation op = MatchOperationFactory.Create ("/Foo/{bar}/");
+			
+			Assert.IsInstanceOf<SimpleMatchOperation> (op);
+		}
+		
+		[Test]
+		public void Create_SimpleMatchAtBeginning_CreatesSimpleMatch ()
+		{
+			IMatchOperation op = MatchOperationFactory.Create ("{bar}/Foo");
+			
+			Assert.IsInstanceOf<SimpleMatchOperation> (op);
+		}
+		
+		[Test]
+		public void Create_SimpleMatchAtEnd_CreatesSimpleMatch ()
+		{
+			IMatchOperation op = MatchOperationFactory.Create ("/Foo/{bar}");
+			
+			Assert.IsInstanceOf<SimpleMatchOperation> (op);
+		}
+		
+		[Test]
+		public void Create_SimpleMatchIsWholePattern_CreatesSimpleMatch ()
+		{
+			IMatchOperation op = MatchOperationFactory.Create ("{bar}");
+			
+			Assert.IsInstanceOf<SimpleMatchOperation> (op);
+		}
+		
+		[Test]
+		public void Create_EscapedOpenSimpleMatch_CreatesStringMatch ()
+		{
+			IMatchOperation op = MatchOperationFactory.Create ("{{bar}");
+			
+			Assert.IsInstanceOf<StringMatchOperation> (op);
+		}
+		
+		[Test]
+		public void Create_EscapedCloseSimpleMatch_CreatesStringMatch ()
+		{
+			IMatchOperation op = MatchOperationFactory.Create ("{bar}}");
+			
+			Assert.IsInstanceOf<StringMatchOperation> (op);
+		}
+		
+		[Test]
 		public void TestIsString ()
 		{
 			IMatchOperation op;

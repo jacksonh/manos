@@ -110,6 +110,7 @@
     <Compile Include="Manos.Routing.Testing\MockManosTarget.cs" />
     <Compile Include="Manos.Routing\ParameterizedActionTarget.cs" />
     <Compile Include="Manos.Routing\ManosAction.cs" />
+    <Compile Include="Manos.Routing\SimpleMatchOperation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
