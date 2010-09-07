@@ -88,7 +88,7 @@ namespace Manos.Tests
 				var m = new MockManosModule ();
 				var req = new MockHttpRequest (methods [i], "/FakeModule/FakeAction");
 			
-				m.Route ("/FakeModule/", new FakeModule ());
+				m.Route ("/FakeModule", new FakeModule ());
 			
 				//
 				// I guess technically this is testing the auto name registering too
