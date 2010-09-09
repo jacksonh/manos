@@ -10,7 +10,10 @@ using System.Linq.Expressions;
 
 using Manos.Server;
 using Manos.Routing;
+
+#if BUILD_TEMPLATES
 using Manos.Templates;
+#endif
 
 namespace Manos {
 
@@ -302,6 +305,7 @@ namespace Manos {
 			AppHost.AddTimeout (timespan, repeat, data, callback);
 		}
 		
+#if BUILD_TEMPLATES
 		public static void RenderTemplate (ManosContext context, string template, object data)
 		{
 			MemoryStream stream = new MemoryStream ();
@@ -313,7 +317,7 @@ namespace Manos {
 
 			context.Response.Write (stream.GetBuffer ());
 		}
-
+#endif
 		protected void StartInternal ()
 		{
 			AddImplicitRoutes ();

@@ -7,6 +7,7 @@ using Manos.Routing;
 using Manos.Testing;
 using Manos.Server.Testing;
 using Manos.Routing.Testing;
+using Manos.ShouldExt;
 
 namespace Manos.Routing.Tests
 {
@@ -111,9 +112,9 @@ namespace Manos.Routing.Tests
 			var rh = new RouteHandler ("(?<name>.+)", "GET", new ActionTarget (FakeAction));
 			var request = new MockHttpRequest ("GET", "hello");
 			
-			Assert.NotNull (rh.Find (request), "target");
+			Should.NotBeNull (rh.Find (request), "target");
 			
-			Assert.NotNull (request.UriData, "uri-data");
+			Should.NotBeNull (request.UriData, "uri-data");
 			
 			Assert.AreEqual ("hello", request.UriData ["name"]);	
 		}
@@ -126,9 +127,9 @@ namespace Manos.Routing.Tests
 			};
 			var request = new MockHttpRequest ("GET", "dog/roxy");
 			
-			Assert.NotNull (rh.Find (request), "target");
+			Should.NotBeNull (rh.Find (request), "target");
 			
-			Assert.NotNull (request.UriData, "uri-data");
+			Should.NotBeNull (request.UriData, "uri-data");
 			
 			Assert.AreEqual ("dog", request.UriData ["animal"]);
 			Assert.AreEqual ("roxy", request.UriData ["name"]);
@@ -139,7 +140,7 @@ namespace Manos.Routing.Tests
 		{
 			var rh = new RouteHandler ("foo", "GET", new ActionTarget (FakeAction));
 			
-			Assert.Throws<InvalidOperationException> (() => rh.Children.Add (new RouteHandler ("foo", "POST")));
+			Should.Throw<InvalidOperationException> (() => rh.Children.Add (new RouteHandler ("foo", "POST")));
 		}
 	}
 }

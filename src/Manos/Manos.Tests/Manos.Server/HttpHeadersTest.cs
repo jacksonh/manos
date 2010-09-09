@@ -3,6 +3,7 @@ using System;
 using System.IO;
 
 using NUnit.Framework;
+using Manos.ShouldExt;
 
 
 
@@ -61,7 +62,7 @@ namespace Manos.Server.Tests
 			
 			string str = "Key: ";
 			
-			Assert.Throws<HttpException> (() => headers.Parse (new StringReader (str)));
+			Should.Throw<HttpException> (() => headers.Parse (new StringReader (str)));
 			Assert.AreEqual (0, headers.Count, "a2");
 		}
 		
@@ -72,7 +73,7 @@ namespace Manos.Server.Tests
 			
 			string str = " Key: Value";
 			
-			Assert.Throws<HttpException> (() => headers.Parse (new StringReader (str)));
+			Should.Throw<HttpException> (() => headers.Parse (new StringReader (str)));
 			Assert.AreEqual (0, headers.Count, "a2");
 		}
 		
@@ -125,7 +126,7 @@ namespace Manos.Server.Tests
 			
 			string str = "Key:\n";
 			
-			Assert.Throws<HttpException> (() => headers.Parse (new StringReader (str)));
+			Should.Throw<HttpException> (() => headers.Parse (new StringReader (str)));
 			Assert.AreEqual (0, headers.Count, "a2");
 			Assert.IsNull (headers.ContentLength, "a3");
 		}
@@ -137,7 +138,7 @@ namespace Manos.Server.Tests
 			
 			string str = "Key value";
 			
-			Assert.Throws<HttpException> (() => headers.Parse (new StringReader (str)));
+			Should.Throw<HttpException> (() => headers.Parse (new StringReader (str)));
 			Assert.AreEqual (0, headers.Count, "a2");
 			Assert.IsNull (headers.ContentLength, "a3");
 		}
@@ -238,7 +239,7 @@ namespace Manos.Server.Tests
 		public void TestSetContentLengthNegative ()
 		{
 			HttpHeaders headers = new HttpHeaders ();
-			Assert.Throws<ArgumentException> (() => headers.SetContentLength ("-1"));
+			Should.Throw<ArgumentException> (() => headers.SetContentLength ("-1"));
 		}
 		
 		[Test]
@@ -246,12 +247,12 @@ namespace Manos.Server.Tests
 		{
 			HttpHeaders headers = new HttpHeaders ();
 			
-			Assert.Throws<ArgumentException> (() => headers.SetContentLength ("foobar"));
-			Assert.Throws<ArgumentException> (() => headers.SetContentLength ("-1 foobar"));
-			Assert.Throws<ArgumentException> (() => headers.SetContentLength ("1foo"));
-			Assert.Throws<ArgumentException> (() => headers.SetContentLength ("1FA"));
-			Assert.Throws<ArgumentException> (() => headers.SetContentLength ("1."));
-			Assert.Throws<ArgumentException> (() => headers.SetContentLength ("1.0"));
+			Should.Throw<ArgumentException> (() => headers.SetContentLength ("foobar"));
+			Should.Throw<ArgumentException> (() => headers.SetContentLength ("-1 foobar"));
+			Should.Throw<ArgumentException> (() => headers.SetContentLength ("1foo"));
+			Should.Throw<ArgumentException> (() => headers.SetContentLength ("1FA"));
+			Should.Throw<ArgumentException> (() => headers.SetContentLength ("1."));
+			Should.Throw<ArgumentException> (() => headers.SetContentLength ("1.0"));
 		}
 		
 		[Test]
@@ -310,7 +311,7 @@ namespace Manos.Server.Tests
 			string dummy = null;
 			HttpHeaders headers = new HttpHeaders ();
 			
-			Assert.Throws<ArgumentException> (() => headers.ContentLength = -1, "a1");
+			Should.Throw<ArgumentException> (() => headers.ContentLength = -1, "a1");
 			Assert.IsNull (headers.ContentLength, "a2");
 			Assert.IsFalse (headers.TryGetValue ("Content-Length", out dummy), "a3");
 			Assert.IsNull (dummy, "a4");

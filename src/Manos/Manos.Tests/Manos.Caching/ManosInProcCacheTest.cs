@@ -1,5 +1,6 @@
 using System;
 using NUnit.Framework;
+using Manos.ShouldExt;
 
 
 namespace Manos.Caching.Tests
@@ -27,7 +28,7 @@ namespace Manos.Caching.Tests
 		{
 			var cache = new ManosInProcCache ();
 			
-			Assert.Throws<ArgumentNullException> (() => cache.Get (null));
+			Should.Throw<ArgumentNullException> (() => cache.Get (null));
 		}
 		
 		[Test]
@@ -45,7 +46,7 @@ namespace Manos.Caching.Tests
 			var cache = new ManosInProcCache ();
 			
 			var item = "foo";
-			Assert.Throws<ArgumentNullException> (() => cache.Set (null, item));
+			Should.Throw<ArgumentNullException> (() => cache.Set (null, item));
 		}
 		
 		[Test]
@@ -53,7 +54,7 @@ namespace Manos.Caching.Tests
 		{
 			var cache = new ManosInProcCache ();
 			
-			Assert.DoesNotThrow(() => cache.Set ("foo", null));
+			Should.NotThrow(() => cache.Set ("foo", null));
 		}
 		
 		[Test]
@@ -130,7 +131,7 @@ namespace Manos.Caching.Tests
 			ManosInProcCache.CacheItem item = cache.DoSetInternal ("foo", existing);
 			cache.Remove ("foo");
 			
-			Assert.DoesNotThrow (() => cache.ForceHandleExpires (item));
+			Should.NotThrow (() => cache.ForceHandleExpires (item));
 		}
 	}
 }

@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 
 using Manos.Testing;
+using Manos.ShouldExt;
 
 
 namespace Manos.Routing.Tests
@@ -22,7 +23,7 @@ namespace Manos.Routing.Tests
 		[Test]
 		public void Ctor_NullArgument_Throws ()
 		{
-			Assert.Throws<ArgumentNullException> (() => new ActionTarget (null));
+			Should.Throw<ArgumentNullException> (() => new ActionTarget (null));
 		}
 		
 		[Test]
@@ -38,7 +39,7 @@ namespace Manos.Routing.Tests
 		{
 			var mat = new ActionTarget (ValidAction);
 			
-			Assert.Throws<ArgumentNullException> (() => mat.Action = null);
+			Should.Throw<ArgumentNullException> (() => mat.Action = null);
 		}
 		
 		[Test]
@@ -46,7 +47,7 @@ namespace Manos.Routing.Tests
 		{
 			var mat = new ActionTarget (new ManosAction (ValidAction));
 			
-			Assert.Throws<InvalidOperationException> (() => mat.Action = new InvalidDelegate (InvalidAction));
+			Should.Throw<InvalidOperationException> (() => mat.Action = new InvalidDelegate (InvalidAction));
 		}
 		
 		[Test]

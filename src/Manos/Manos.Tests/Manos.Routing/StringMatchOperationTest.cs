@@ -4,6 +4,7 @@ using NUnit.Framework;
 
 using Manos.Routing;
 using System.Collections.Specialized;
+using Manos.ShouldExt;
 
 
 namespace Manos.Routing.Tests
@@ -17,8 +18,8 @@ namespace Manos.Routing.Tests
 		[Test()]
 		public void TestCtor ()
 		{
-			Assert.Throws<ArgumentNullException> (() => new StringMatchOperation (null), "a1");
-			Assert.Throws<ArgumentException> (() => new StringMatchOperation (String.Empty), "a2");
+			Should.Throw<ArgumentNullException> (() => new StringMatchOperation (null), "a1");
+			Should.Throw<ArgumentException> (() => new StringMatchOperation (String.Empty), "a2");
 			
 			var op = new StringMatchOperation ("foo");
 			Assert.AreEqual ("foo", op.String, "a3");
@@ -30,8 +31,8 @@ namespace Manos.Routing.Tests
 			var op = new StringMatchOperation ("foo");
 			Assert.AreEqual ("foo", op.String, "a1");
 			
-			Assert.Throws<ArgumentNullException> (() => op.String = null, "a2");
-			Assert.Throws<ArgumentException> (() => op.String = String.Empty, "a3");
+			Should.Throw<ArgumentNullException> (() => op.String = null, "a2");
+			Should.Throw<ArgumentException> (() => op.String = String.Empty, "a3");
 			
 			op.String = "baz";
 			Assert.AreEqual ("baz", op.String);

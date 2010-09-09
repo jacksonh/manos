@@ -15,7 +15,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
+    <OutputPath>..\..\build\</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -24,7 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Release</OutputPath>
+    <OutputPath>..\..\build\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -32,14 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\deps\Mono.Posix.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil, Version=0.9.3.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\deps\Mono.Cecil.dll</HintPath>
-    </Reference>
+    <Reference Include="Mono.Posix" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Manos\DeleteAttribute.cs" />
@@ -68,11 +61,6 @@
     <Compile Include="Manos.Server\IOLoop.cs" />
     <Compile Include="Manos.Server\IOStream.cs" />
     <Compile Include="Manos.Server\UriParser.cs" />
-    <Compile Include="Manos.Template\codegen.cs" />
-    <Compile Include="Manos.Template\environment.cs" />
-    <Compile Include="Manos.Template\library.cs" />
-    <Compile Include="Manos.Template\parser.cs" />
-    <Compile Include="Manos.Template\tokenizer.cs" />
     <Compile Include="Manos\IManosContext.cs" />
     <Compile Include="Manos.Testing\MockManosModule.cs" />
     <Compile Include="Manos.Server.Testing\MockHttpTransaction.cs" />
@@ -86,12 +74,7 @@
     <Compile Include="Manos.Routing\StringMatchOperation.cs" />
     <Compile Include="Manos.Routing\NopMatchOperation.cs" />
     <Compile Include="Manos\HttpMethods.cs" />
-    <Compile Include="Manos.Template\Engine.cs" />
     <Compile Include="Assembly\AssemblyInfo.cs" />
-    <Compile Include="Manos.Template\ManosTemplate.cs" />
-    <Compile Include="Manos.Template\IManosTemplate.cs" />
-    <Compile Include="Manos.Template\TemplateFactory.cs" />
-    <Compile Include="Manos.Templates.Testing\ManosTemplateStub.cs" />
     <Compile Include="Manos\IRepeatBehavior.cs" />
     <Compile Include="Manos\IterativeRepeatBehavior.cs" />
     <Compile Include="Manos\InfiniteRepeatBehavior.cs" />
@@ -120,5 +103,17 @@
     <Folder Include="Manos.Templates.Testing\" />
     <Folder Include="Manos.Server\" />
     <Folder Include="Manos.Caching\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Manos.Template\codegen.cs" />
+    <None Include="Manos.Template\environment.cs" />
+    <None Include="Manos.Template\library.cs" />
+    <None Include="Manos.Template\parser.cs" />
+    <None Include="Manos.Template\tokenizer.cs" />
+    <None Include="Manos.Template\Engine.cs" />
+    <None Include="Manos.Template\ManosTemplate.cs" />
+    <None Include="Manos.Template\IManosTemplate.cs" />
+    <None Include="Manos.Template\TemplateFactory.cs" />
+    <None Include="Manos.Templates.Testing\ManosTemplateStub.cs" />
   </ItemGroup>
 </Project>

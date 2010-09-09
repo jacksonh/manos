@@ -10,12 +10,13 @@
     <RootNamespace>Manos.Tests</RootNamespace>
     <AssemblyName>Manos.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <BaseDirectory>..\..\..\build\</BaseDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
+    <OutputPath>..\build\</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -24,17 +25,15 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Release</OutputPath>
+    <OutputPath>..\build\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System">
     </Reference>
-    <Reference Include="nunit.framework, Version=2.5.5.10112, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\deps\nunit.framework.dll</HintPath>
-    </Reference>
+    <Reference Include="nunit.framework, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77" />
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Manos\ManosModuleTest.cs" />
@@ -45,9 +44,6 @@
     <Compile Include="Manos.Routing\StringMatchOperationTest.cs" />
     <Compile Include="Manos.Routing\NopMatchOperationTest.cs" />
     <Compile Include="Manos.Server\HttpHeadersTest.cs" />
-    <Compile Include="Manos.Template\CodegenTest.cs" />
-    <Compile Include="Manos.Template\TemplateFactoryTest.cs" />
-    <Compile Include="Manos\IterativeRepeatBehaviorTest.cs" />
     <Compile Include="Manos\InfiniteRepeatBehaviorTest.cs" />
     <Compile Include="Manos\RepeatBehaviorTest.cs" />
     <Compile Include="Manos\AppHostTest.cs" />
@@ -56,6 +52,7 @@
     <Compile Include="Manos.Routing\ActionTargetTest.cs" />
     <Compile Include="Manos.Routing\ParameterizedActionTest.cs" />
     <Compile Include="Manos.Routing\SimpleMatchOperationTest.cs" />
+    <Compile Include="Nunit-Extensions\Nunit_Extension_Methods.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Manos.Routing\" />
@@ -63,6 +60,7 @@
     <Folder Include="Manos.Server\" />
     <Folder Include="Manos.Template\" />
     <Folder Include="Manos.Caching\" />
+    <Folder Include="Nunit-Extensions\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Manos.csproj">
@@ -71,4 +69,8 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="Manos.Template\CodegenTest.cs" />
+    <None Include="Manos.Template\TemplateFactoryTest.cs" />
+  </ItemGroup>
 </Project>

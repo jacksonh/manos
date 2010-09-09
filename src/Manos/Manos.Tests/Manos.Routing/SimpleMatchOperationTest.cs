@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Specialized;
 
 using NUnit.Framework;
+using Manos.ShouldExt;
 
 namespace Manos.Routing.Tests
 {
@@ -12,7 +13,7 @@ namespace Manos.Routing.Tests
 		[Test]
 		public void Ctor_NullPattern_Throws ()
 		{
-			Assert.Throws<ArgumentNullException> (() => new SimpleMatchOperation (null));
+			Should.Throw<ArgumentNullException> (() => new SimpleMatchOperation (null));
 		}
 		
 		[Test]
@@ -28,7 +29,7 @@ namespace Manos.Routing.Tests
 		{
 			var simple = new SimpleMatchOperation ("{foobar}");
 			
-			Assert.Throws<ArgumentNullException> (() => simple.Pattern = null);
+			Should.Throw<ArgumentNullException> (() => simple.Pattern = null);
 		}
 		
 		[Test]

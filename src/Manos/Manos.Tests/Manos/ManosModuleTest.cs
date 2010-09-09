@@ -7,11 +7,11 @@ using Manos.Routing;
 using Manos.Testing;
 using Manos.Server.Testing;
 
+using Manos.ShouldExt;
 
 namespace Manos.Tests
 {
-
-
+		
 	[TestFixture()]
 	public class ManosModuleTest
 	{
@@ -31,11 +31,13 @@ namespace Manos.Tests
 		public void TestAddRouteNull ()
 		{
 			ManosModule m = new ManosModule ();
+											
+			Should.Throw<Exception> (() => Console.WriteLine ());
 			
-			Assert.Throws<ArgumentNullException> (() => m.Route (new ManosModule (), null, null));
-			Assert.Throws<ArgumentNullException> (() => m.Route (new ManosAction (FakeAction), null, null));
-			Assert.Throws<ArgumentNullException> (() => m.Route (null, new ManosAction (FakeAction)));
-			Assert.Throws<ArgumentNullException> (() => m.Route (null, new ManosModule ()));                          
+			Should.Throw<ArgumentNullException> (() => m.Route (new ManosModule (), null, null));
+			Should.Throw<ArgumentNullException> (() => m.Route (new ManosAction (FakeAction), null, null));
+			Should.Throw<ArgumentNullException> (() => m.Route (null, new ManosAction (FakeAction)));
+			Should.Throw<ArgumentNullException> (() => m.Route (null, new ManosModule ()));                          
 		}
 		
 		[Test]
@@ -61,20 +63,20 @@ namespace Manos.Tests
 			var m = new MockManosModule ();
 			
 			ManosModule mm = null;
-			Assert.Throws<ArgumentNullException> (() => m.Route ("foo", mm), "a1");
-			Assert.Throws<ArgumentNullException> (() => m.Route (mm, "foo", "bar", "baz"), "a2");
+			Should.Throw<ArgumentNullException> (() => m.Route ("foo", mm), "a1");
+			Should.Throw<ArgumentNullException> (() => m.Route (mm, "foo", "bar", "baz"), "a2");
 			
 			ManosAction ma = null;
-			Assert.Throws<ArgumentNullException> (() => m.Route ("foo", ma), "a3");
-			Assert.Throws<ArgumentNullException> (() => m.Route (ma, "foo", "bar", "baz"), "a4");
+			Should.Throw<ArgumentNullException> (() => m.Route ("foo", ma), "a3");
+			Should.Throw<ArgumentNullException> (() => m.Route (ma, "foo", "bar", "baz"), "a4");
 			
 			mm = new MockManosModule ();
-			Assert.Throws<ArgumentNullException> (() => m.Route (null, mm), "a4");
-			Assert.Throws<ArgumentNullException> (() => m.Route (mm, "foo", "bar", "baz", null), "a5");
+			Should.Throw<ArgumentNullException> (() => m.Route (null, mm), "a4");
+			Should.Throw<ArgumentNullException> (() => m.Route (mm, "foo", "bar", "baz", null), "a5");
 			
 			ma = FakeAction;
-			Assert.Throws<ArgumentNullException> (() => m.Route (null, ma), "a6");
-			Assert.Throws<ArgumentNullException> (() => m.Route (ma, "foo", "bar", "baz", null), "a7");
+			Should.Throw<ArgumentNullException> (() => m.Route (null, ma), "a6");
+			Should.Throw<ArgumentNullException> (() => m.Route (ma, "foo", "bar", "baz", null), "a7");
 		}
 		
 		[Test]

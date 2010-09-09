@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using Microsoft.CSharp;
 using System.CodeDom.Compiler;
 
-using Manos.Templates;
-
 namespace Manos.Tool
 {
 	public class BuildCommand
@@ -90,22 +88,6 @@ namespace Manos.Tool
 					Console.WriteLine (e);	
 				}
 			}
-		}
-		
-		public void CompileTemplates ()
-		{
-			MingeEnvironment environment = new MingeEnvironment (new string [] { Environment.TemplatesDirectory }) {
-				AssemblyName = Path.GetFileNameWithoutExtension (COMPILED_TEMPLATES),
-				AssemblyFile = COMPILED_TEMPLATES,
-			};
-			MingeCompiler compiler = new MingeCompiler (environment);
-
-			compiler.CompileTemplates ();
-		}
-		
-		public void MergeLibraries ()
-		{
-		// 	Mono.Merge.Driver.Run (Environment.ApplicationName, new string [] { COMPILED_TEMPLATES, Environment.ApplicationName });
 		}
 		
 		private string [] CreateSourcesList ()

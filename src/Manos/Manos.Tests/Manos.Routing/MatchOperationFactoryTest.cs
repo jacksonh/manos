@@ -3,6 +3,7 @@ using System;
 using NUnit.Framework;
 
 using Manos.Routing;
+using Manos.ShouldExt;
 
 
 namespace Manos.Routing.Tests
@@ -15,7 +16,7 @@ namespace Manos.Routing.Tests
 		[Test ()]
 		public void TestCreateNull ()
 		{
-			Assert.Throws<ArgumentNullException> (() => MatchOperationFactory.Create (null));
+			Should.Throw<ArgumentNullException> (() => MatchOperationFactory.Create (null));
 		}
 		
 		[Test ()]
@@ -24,7 +25,7 @@ namespace Manos.Routing.Tests
 			IMatchOperation op;
 			
 			op = MatchOperationFactory.Create (String.Empty);
-			Assert.IsInstanceOf<NopMatchOperation> (op, "a1");
+			Should.BeInstanceOf<NopMatchOperation> (op, "a1");
 		}
 		
 		[Test()]
@@ -33,37 +34,37 @@ namespace Manos.Routing.Tests
 			IMatchOperation op;
 			
 			op = MatchOperationFactory.Create ("dog.");
-			Assert.IsInstanceOf<RegexMatchOperation> (op, "a1");
+			Should.BeInstanceOf<RegexMatchOperation> (op, "a1");
 			
 			op = MatchOperationFactory.Create (".dog");
-			Assert.IsInstanceOf<RegexMatchOperation> (op, "a2");
+			Should.BeInstanceOf<RegexMatchOperation> (op, "a2");
 			
 			op = MatchOperationFactory.Create ("d.og");
-			Assert.IsInstanceOf<RegexMatchOperation> (op, "a3");
+			Should.BeInstanceOf<RegexMatchOperation> (op, "a3");
 			
 			op = MatchOperationFactory.Create (".");
-			Assert.IsInstanceOf<RegexMatchOperation> (op, "a4");
+			Should.BeInstanceOf<RegexMatchOperation> (op, "a4");
 			
 			op = MatchOperationFactory.Create ("[dog]");
-			Assert.IsInstanceOf<RegexMatchOperation> (op, "a6");
+			Should.BeInstanceOf<RegexMatchOperation> (op, "a6");
 			
 			op = MatchOperationFactory.Create ("(dog)");
-			Assert.IsInstanceOf<RegexMatchOperation> (op, "a7");
+			Should.BeInstanceOf<RegexMatchOperation> (op, "a7");
 			
 			op = MatchOperationFactory.Create ("^dog");
-			Assert.IsInstanceOf<RegexMatchOperation> (op, "a8");
+			Should.BeInstanceOf<RegexMatchOperation> (op, "a8");
 			
 			op = MatchOperationFactory.Create ("dog*");
-			Assert.IsInstanceOf<RegexMatchOperation> (op, "a9");
+			Should.BeInstanceOf<RegexMatchOperation> (op, "a9");
 			
 			op = MatchOperationFactory.Create (".*dog");
-			Assert.IsInstanceOf<RegexMatchOperation> (op, "a10");
+			Should.BeInstanceOf<RegexMatchOperation> (op, "a10");
 			
 			op = MatchOperationFactory.Create ("$dog");
-			Assert.IsInstanceOf<RegexMatchOperation> (op, "a11");
+			Should.BeInstanceOf<RegexMatchOperation> (op, "a11");
 			
 			op = MatchOperationFactory.Create ("dog$");
-			Assert.IsInstanceOf<RegexMatchOperation> (op, "a12");
+			Should.BeInstanceOf<RegexMatchOperation> (op, "a12");
 		}
 		
 		[Test]
@@ -71,7 +72,7 @@ namespace Manos.Routing.Tests
 		{
 			IMatchOperation op = MatchOperationFactory.Create ("/Foo/{bar}/");
 			
-			Assert.IsInstanceOf<SimpleMatchOperation> (op);
+			Should.BeInstanceOf<SimpleMatchOperation> (op);
 		}
 		
 		[Test]
@@ -79,7 +80,7 @@ namespace Manos.Routing.Tests
 		{
 			IMatchOperation op = MatchOperationFactory.Create ("{bar}/Foo");
 			
-			Assert.IsInstanceOf<SimpleMatchOperation> (op);
+			Should.BeInstanceOf<SimpleMatchOperation> (op);
 		}
 		
 		[Test]
@@ -87,7 +88,7 @@ namespace Manos.Routing.Tests
 		{
 			IMatchOperation op = MatchOperationFactory.Create ("/Foo/{bar}");
 			
-			Assert.IsInstanceOf<SimpleMatchOperation> (op);
+			Should.BeInstanceOf<SimpleMatchOperation> (op);
 		}
 		
 		[Test]
@@ -95,7 +96,7 @@ namespace Manos.Routing.Tests
 		{
 			IMatchOperation op = MatchOperationFactory.Create ("{bar}");
 			
-			Assert.IsInstanceOf<SimpleMatchOperation> (op);
+			Should.BeInstanceOf<SimpleMatchOperation> (op);
 		}
 		
 		[Test]
@@ -103,7 +104,7 @@ namespace Manos.Routing.Tests
 		{
 			IMatchOperation op = MatchOperationFactory.Create ("{{bar}");
 			
-			Assert.IsInstanceOf<StringMatchOperation> (op);
+			Should.BeInstanceOf<StringMatchOperation> (op);
 		}
 		
 		[Test]
@@ -111,7 +112,7 @@ namespace Manos.Routing.Tests
 		{
 			IMatchOperation op = MatchOperationFactory.Create ("{bar}}");
 			
-			Assert.IsInstanceOf<StringMatchOperation> (op);
+			Should.BeInstanceOf<StringMatchOperation> (op);
 		}
 		
 		[Test]
@@ -120,13 +121,13 @@ namespace Manos.Routing.Tests
 			IMatchOperation op;
 			
 			op = MatchOperationFactory.Create ("foobar");
-			Assert.IsInstanceOf<StringMatchOperation> (op, "a1");
+			Should.BeInstanceOf<StringMatchOperation> (op, "a1");
 			
 			op = MatchOperationFactory.Create ("1");
-			Assert.IsInstanceOf<StringMatchOperation> (op, "a2");
+			Should.BeInstanceOf<StringMatchOperation> (op, "a2");
 			
 			op = MatchOperationFactory.Create ("i am the walrus");
-			Assert.IsInstanceOf<StringMatchOperation> (op, "a3");
+			Should.BeInstanceOf<StringMatchOperation> (op, "a3");
 		}
 	}
 }

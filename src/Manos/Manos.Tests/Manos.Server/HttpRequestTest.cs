@@ -18,7 +18,7 @@ namespace Manos.Server.Tests
 		{
 			// var r = new HttpRequest (new MockHttpTransaction (), .... );
 			
-			// Assert.NotNull (r.QueryData);
+			// Should.NotBeNull (r.QueryData);
 		}
 	}
 }

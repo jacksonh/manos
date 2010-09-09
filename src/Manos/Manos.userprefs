@@ -1,31 +1,31 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" ctype="Workspace" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Manos.Tests/Manos.Routing/MatchOperationFactoryTest.cs" ctype="Workbench">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Manos.Tests/Manos.Routing/SimpleMatchOperationTest.cs" ctype="Workbench">
     <Files>
-      <File FileName="Manos.Tests/Manos.Routing/ParameterizedActionTargetTest.cs" Line="45" Column="4" />
+      <File FileName="Manos.Tests/Manos.Routing/ParameterizedActionTargetTest.cs" Line="28" Column="4" />
       <File FileName="Manos.Routing/ParameterizedActionTarget.cs" Line="19" Column="4" />
       <File FileName="Manos.Routing/ParameterizedActionFactory.cs" Line="62" Column="13" />
       <File FileName="Manos.Routing/ParameterizedAction.cs" Line="9" Column="1" />
-      <File FileName="../../../mono/clean/mono/mcs/class/corlib/System.Reflection/MonoMethod.cs" Line="223" Column="1" />
-      <File FileName="../../../mono/clean/mono/mcs/class/corlib/System/Delegate.cs" Line="259" Column="1" />
+      <File FileName="Manos.Tests/Manos/ManosModuleTest.cs" Line="66" Column="32" />
       <File FileName="Manos.Routing/ActionTarget.cs" Line="17" Column="12" />
-      <File FileName="Manos.Tests/Manos.Routing/ManosTargetTest.cs" Line="1" Column="1" />
-      <File FileName="Manos.Tests/Manos.Routing/ActionTargetTest.cs" Line="57" Column="4" />
-      <File FileName="Manos.Tests/Manos.Routing/MatchOperationFactoryTest.cs" Line="1" Column="1" />
+      <File FileName="Manos.Tests/Manos.Routing/ActionTargetTest.cs" Line="26" Column="8" />
+      <File FileName="Manos.Templates.Testing/ManosTemplateStub.cs" Line="10" Column="3" />
+      <File FileName="Manos/ManosModule.cs" Line="320" Column="7" />
+      <File FileName="manos-tool/Driver.cs" Line="104" Column="4" />
+      <File FileName="Manos.Tests/Nunit-Extensions/Nunit_Extension_Methods.cs" Line="72" Column="15" />
+      <File FileName="Manos.Tests/Manos.Routing/MatchOperationFactoryTest.cs" Line="130" Column="23" />
+      <File FileName="Manos.Tests/Manos.Routing/StringMatchOperationTest.cs" Line="21" Column="6" />
+      <File FileName="Manos.Tests/Manos.Server/HttpHeadersTest.cs" Line="65" Column="7" />
+      <File FileName="Manos.Tests/Manos/InfiniteRepeatBehaviorTest.cs" Line="1" Column="1" />
+      <File FileName="Manos.Tests/Manos/AppHostTest.cs" Line="17" Column="7" />
+      <File FileName="Manos.Tests/Manos.Caching/ManosInProcCacheTest.cs" Line="134" Column="11" />
+      <File FileName="Manos.Tests/Manos.Routing/SimpleMatchOperationTest.cs" Line="16" Column="6" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="Manos" expanded="True" />
-          <Node name="Manos.Tests" expanded="True">
-            <Node name="Manos.Routing" expanded="True">
-              <Node name="MatchOperationFactoryTest.cs" selected="True" />
-            </Node>
-            <Node name="Manos.Server" expanded="True" />
-            <Node name="Manos.Template" expanded="True" />
-          </Node>
           <Node name="manos-server" expanded="True" />
-          <Node name="manos-tool" expanded="True" />
+          <Node name="manos-tool" expanded="True" selected="True" />
         </State>
       </Pad>
       <Pad Id="ClassPad">
@@ -35,21 +35,7 @@
         <State />
       </Pad>
       <Pad Id="MonoDevelop.NUnit.TestPad">
-        <State expanded="True">
-          <Node name="Manos.Tests" expanded="True">
-            <Node name="Manos" expanded="True">
-              <Node name="Routing" expanded="True">
-                <Node name="Tests" expanded="True">
-                  <Node name="ActionTargetTest" expanded="True">
-                    <Node name="Invoke_ActionIsInvoked" selected="True" />
-                  </Node>
-                  <Node name="ParameterizedActionTargetTest" expanded="True" />
-                </Node>
-              </Node>
-              <Node name="Tests" expanded="True" />
-            </Node>
-          </Node>
-        </State>
+        <State expanded="True" selected="True" />
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>

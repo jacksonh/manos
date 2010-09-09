@@ -8,13 +8,13 @@ namespace Manos.Tests
 		[Test()]
 		public void Ctor_NegativeValue_Throws ()
 		{
-			Assert.Throws<ArgumentOutOfRangeException> (() => new IterativeRepeatBehavior (-1));
+			Should.Throw<ArgumentOutOfRangeException> (() => new IterativeRepeatBehavior (-1));
 		}
 		
 		[Test]
 		public void Ctor_ZeroValue_Throws ()
 		{
-			Assert.Throws<ArgumentOutOfRangeException> (() => new IterativeRepeatBehavior (0));
+			Should.Throw<ArgumentOutOfRangeException> (() => new IterativeRepeatBehavior (0));
 		}
 		
 		[Test]
@@ -30,7 +30,7 @@ namespace Manos.Tests
 		{
 			var repeat = new IterativeRepeatBehavior (25);
 			
-			Assert.Throws<ArgumentOutOfRangeException> (() => repeat.RemainingIterations = -1);
+			Should.Throw<ArgumentOutOfRangeException> (() => repeat.RemainingIterations = -1);
 		}
 		
 		[Test]

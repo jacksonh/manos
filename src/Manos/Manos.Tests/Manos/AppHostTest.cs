@@ -4,6 +4,7 @@ using System.Threading;
 using NUnit.Framework;
 
 using Manos.Server;
+using Manos.ShouldExt;
 
 namespace Manos.Tests
 {
@@ -13,7 +14,7 @@ namespace Manos.Tests
 		[Test()]
 		public void Start_NullApp_Throws ()
 		{
-			Assert.Throws<ArgumentNullException> (() => AppHost.Start (null));
+			Should.Throw<ArgumentNullException> (() => AppHost.Start (null));
 		}
 		
 #if NO

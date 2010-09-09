@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 
 using NUnit.Framework;
+using Manos.ShouldExt;
 
 namespace Manos.Routing.Tests
 {
@@ -24,7 +25,7 @@ namespace Manos.Routing.Tests
 			var method = GetMethodWithNoArgs ();
 			var pa = ParameterizedActionFactory.CreateAction (method);
 			
-			Assert.DoesNotThrow (() => new ParameterizedActionTarget (null, method, pa));
+			Should.NotThrow (() => new ParameterizedActionTarget (null, method, pa));
 		}
 		
 		[Test]
@@ -33,7 +34,7 @@ namespace Manos.Routing.Tests
 			var method = GetMethodWithNoArgs ();
 			var pa = ParameterizedActionFactory.CreateAction (method);
 			
-			Assert.Throws<ArgumentNullException> (() => new ParameterizedActionTarget ("foobar", null, pa));
+			Should.Throw<ArgumentNullException> (() => new ParameterizedActionTarget ("foobar", null, pa));
 		}
 		
 		[Test]
@@ -41,7 +42,7 @@ namespace Manos.Routing.Tests
 		{
 			var method = GetMethodWithNoArgs ();
 			
-			Assert.Throws<ArgumentNullException> (() => new ParameterizedActionTarget ("foobar", method, null));
+			Should.Throw<ArgumentNullException> (() => new ParameterizedActionTarget ("foobar", method, null));
 		}
 	}
 }

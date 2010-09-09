@@ -7,6 +7,7 @@ using NUnit.Framework;
 
 using Manos.Routing;
 using System.Collections.Specialized;
+using Manos.ShouldExt;
 
 namespace Manos.Routing.Tests
 {
@@ -19,7 +20,7 @@ namespace Manos.Routing.Tests
 		[Test]
 		public void CtorTest ()
 		{
-			Assert.Throws<ArgumentNullException> (() => new RegexMatchOperation (null), "a1");
+			Should.Throw<ArgumentNullException> (() => new RegexMatchOperation (null), "a1");
 			
 			var r = new Regex (".*");
 			var op = new RegexMatchOperation (r);
@@ -33,7 +34,7 @@ namespace Manos.Routing.Tests
 			var op = new RegexMatchOperation (r);
 			Assert.AreEqual (r, op.Regex, "a1");
 			
-			Assert.Throws<ArgumentNullException> (() => op.Regex = null, "a2");
+			Should.Throw<ArgumentNullException> (() => op.Regex = null, "a2");
 			
 			r = new Regex ("foo");
 			op.Regex = r;

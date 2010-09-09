@@ -5,8 +5,6 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
-using Manos.Templates;
-
 using NDesk.Options;
 
 namespace Manos.Tool
@@ -30,10 +28,7 @@ namespace Manos.Tool
 			var p = new OptionSet () {
 				{ "h|?|help", v => help = v != null },
 				{ "init|i", v => command = Init },
-				{ "build|b", v => command = Build },
 				{ "server|s", v => command = Server },
-				{ "compile-templates|ct", v => command = CompileTemplates },
-				{ "link-templates|lt", v => command = LinkTemplates }
 			};
 			
 			List<string> extra = null;
@@ -107,29 +102,7 @@ namespace Manos.Tool
 			
 			initer.Run ();
 		}
-		
-		private static int Build (IList<string> args)
-		{	
-			Driver d = new Driver ();
-			
-			try {
-				d.Build ();
-			} catch (Exception e) {
-				Console.WriteLine ("error while building application:");
-				Console.WriteLine (e);
-				return 1;
-			}
-			
-			return 0;
-		}
-		
-		public void Build ()
-		{
-			BuildCommand build = new BuildCommand (Environment);
-			
-			build.Run ();
-		}
-		
+
 		private static int Server (IList<string> args)
 		{
 			Driver d = new Driver ();
@@ -150,68 +123,6 @@ namespace Manos.Tool
 			ServerCommand cmd = new ServerCommand (Environment);
 			
 			cmd.Run ();
-		}
-		
-		private static int CompileTemplates (IList<string> args)
-		{
-			string templates;
-			
-			if (args.Count > 1)
-				templates = args [0];
-			else {
-				templates = TEMPLATES_DIRECTORY;
-				if (!Directory.Exists (templates)) {
-					Console.WriteLine ("manos-tool -compile-templates [Template Directory]");
-					Console.WriteLine ("Compile the supplied template directory.");
-					Console.WriteLine ("If the template directory is not found {0} will be used.", TEMPLATES_DIRECTORY);
-					return 1;
-				}
-			}
-			
-			Driver d = new Driver ();
-			d.CompileTemplates (templates, COMPILED_TEMPLATES_ASSEMBLY);
-			return 0;
-		}
-		
-		public void CompileTemplates (string templates, string assembly_name)
-		{
-			MingeEnvironment environment = new MingeEnvironment (new string [] { templates }) {
-				AssemblyName = Path.GetFileNameWithoutExtension (assembly_name),
-				AssemblyFile = assembly_name,
-			};
-			MingeCompiler compiler = new MingeCompiler (environment);
-
-			compiler.CompileTemplates ();	
-		}
-		
-		private static int LinkTemplates (IList<string> args)
-		{
-			string app_name;
-			string templates;
-			
-			if (args.Count > 0)
-				app_name = args [0];
-			else
-				app_name = Directory.GetCurrentDirectory () + ".dll";
-
-			if (args.Count > 1) 
-				templates = args [1];
-			else 
-				templates = COMPILED_TEMPLATES_ASSEMBLY;
-			
-			if (!File.Exists (app_name) || !File.Exists (templates)) {
-				Console.WriteLine ("manos-tool -build [AppName.dll] [TemplatesAssembly.dll]");
-				return 1;
-			}
-			
-			Driver d = new Driver ();
-			d.LinkTemplates (app_name, templates);
-			return 0;
-		}
-		
-		public void LinkTemplates (string app_name, string templates)
-		{
-			Mono.Merge.Driver.Run (app_name, new string [] { templates, app_name });
 		}
 		
 		private static void ShowHelp (OptionSet os)
