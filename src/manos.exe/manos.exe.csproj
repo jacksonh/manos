@@ -8,14 +8,14 @@
     <ProjectGuid>{482384E3-EB97-4A8E-9ED9-EACC31350B5E}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>manostool</RootNamespace>
-    <AssemblyName>manos-tool</AssemblyName>
+    <AssemblyName>manos</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\build\</OutputPath>
+    <OutputPath>..\..\build\</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -24,7 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\build\</OutputPath>
+    <OutputPath>..\..\build\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -40,7 +40,7 @@
     <Compile Include="ServerCommand.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Manos.csproj">
+    <ProjectReference Include="..\Manos\Manos.csproj">
       <Project>{2548B25A-2E1F-4E21-BC43-7E39B1F6F23F}</Project>
       <Name>Manos</Name>
     </ProjectReference>

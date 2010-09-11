@@ -2,7 +2,7 @@
 include config.make
 installdir = "$(prefix)/lib/manos/"
 conf=Debug
-SLN=src/Manos/Manos.sln
+SLN=src/Manos.sln
 VERBOSITY=normal
 XBUILD_ARGS=/verbosity:$(VERBOSITY) /nologo
 

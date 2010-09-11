@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\build\</OutputPath>
+    <OutputPath>..\..\build\</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,7 +25,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\build\</OutputPath>
+    <OutputPath>..\..\build\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -63,7 +63,7 @@
     <Folder Include="Nunit-Extensions\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Manos.csproj">
+    <ProjectReference Include="..\Manos\Manos.csproj">
       <Project>{2548B25A-2E1F-4E21-BC43-7E39B1F6F23F}</Project>
       <Name>Manos</Name>
     </ProjectReference>
