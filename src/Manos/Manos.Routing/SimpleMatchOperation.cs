@@ -141,7 +141,6 @@ namespace Manos.Routing
 					
 				Group group = new Group (start, end, pattern.Substring (start + 1, end - start - 1));
 				groups.Add (group);
-				Console.WriteLine ("GROUP NAME:  '{0}'", group.Name);
 				start = pattern.IndexOf ('{', end);
 			}
 			
