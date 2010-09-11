@@ -27,12 +27,39 @@ namespace Manos.Tests
 			}
 		}
 		
+		private class FakeModuleWithUninitializedModuleProperty : MockManosModule {
+		
+			public FakeModule MyModule {
+				get;
+				set;
+			}
+		}
+		
+		private class FakeModuleWithUninitializedModulePropertyAndNoPublicSetter : MockManosModule {
+		
+			public FakeModule MyModule {
+				get;
+				private set;
+			}
+		}
+		
+		private class FakeModuleWithInitializedModuleProperty : MockManosModule {
+		
+			private FakeModule my_module;
+			
+			public FakeModule MyModule {
+				get {
+					if (my_module == null)
+						my_module = new FakeModule ();
+					return my_module;
+				}
+			}
+		}
+		
 		[Test()]
 		public void TestAddRouteNull ()
 		{
 			ManosModule m = new ManosModule ();
-											
-			Should.Throw<Exception> (() => Console.WriteLine ());
 			
 			Should.Throw<ArgumentNullException> (() => m.Route (new ManosModule (), null, null));
 			Should.Throw<ArgumentNullException> (() => m.Route (new ManosAction (FakeAction), null, null));
@@ -307,6 +334,36 @@ namespace Manos.Tests
 			
 			req = new MockHttpRequest ("GET", "/FakeModule/FakeAction");
 			Assert.IsNull (m.Routes.Find (req));
+		}
+		
+		[Test]
+		public void AddImplicitProperties_AddInitializedModule_AddsModuleToRoutes ()
+		{
+			var m = new FakeModuleWithInitializedModuleProperty ();
+			
+			var request = new MockHttpRequest ("GET", "/MyModule/FakeAction");
+			var r = m.Routes.Find (request);
+			Assert.IsNotNull (r);
+		}
+		
+		[Test]
+		public void AddImplicitProperties_AddUninitializedModule_AddsModuleToRoutes ()
+		{
+			var m = new FakeModuleWithUninitializedModuleProperty ();
+			
+			var request = new MockHttpRequest ("GET", "/MyModule/FakeAction");
+			var r = m.Routes.Find (request);
+			Assert.IsNotNull (r);
+		}
+		
+		[Test]
+		public void AddImplicitProperties_AddUninitializedModuleWithNoPublicSetter_AddsModuleToRoutes ()
+		{
+			var m = new FakeModuleWithUninitializedModulePropertyAndNoPublicSetter ();
+			
+			var request = new MockHttpRequest ("GET", "/MyModule/FakeAction");
+			var r = m.Routes.Find (request);
+			Assert.IsNotNull (r);
 		}
 	}
 }

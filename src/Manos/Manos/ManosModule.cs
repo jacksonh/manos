@@ -325,13 +325,13 @@ namespace Manos {
 
 		private void AddImplicitRoutes ()
 		{
-			MethodInfo [] methods = this.GetType ().GetMethods ();
+			MethodInfo [] methods = GetType ().GetMethods ();
 
 			foreach (MethodInfo meth in methods) {
 				if (meth.ReturnType != typeof (void))
 					continue;
 				
-				if (IsIgnoredAction (meth))
+				if (IsIgnored (meth))
 					continue;
 				
 				ParameterInfo [] parameters = meth.GetParameters ();
@@ -345,6 +345,18 @@ namespace Manos {
 					continue;
 				}
 			}
+			
+			PropertyInfo [] properties = GetType ().GetProperties ();
+			
+			foreach (PropertyInfo prop in properties) {
+				if (!typeof (ManosModule).IsAssignableFrom (prop.PropertyType))
+					continue;
+				
+				if (IsIgnored (prop))
+					continue;
+				
+				AddImplicitModule (prop);
+			}
 		}
 
 		private bool IsActionSignature (ParameterInfo [] parameters)
@@ -352,9 +364,7 @@ namespace Manos {
 			if (parameters.Length != 1)
 				return false;
 			
-			// TODO: This should be a straight type == but for some reason
-			// on net 4.0 thats throwing an exception when running in nunit
-			if (typeof (IManosContext).IsSubclassOf (parameters [0].ParameterType))
+			if (parameters [0].ParameterType != typeof (IManosContext))
 				return false;
 
 			return true;
@@ -378,13 +388,13 @@ namespace Manos {
 			return true;
 		}
 		
-		private bool IsIgnoredAction (MethodInfo info)
+		private bool IsIgnored (MemberInfo info)
 		{
 			var atts = info.GetCustomAttributes (typeof (IgnoreAttribute), false);
 
 			return atts.Length > 0;
 		}
-
+		
 		private void AddActionHandler (RouteHandler routes, MethodInfo info)
 		{
 			HttpMethodAttribute [] atts = (HttpMethodAttribute []) info.GetCustomAttributes (typeof (HttpMethodAttribute), false);
@@ -404,6 +414,7 @@ namespace Manos {
 		{
 			ManosAction action = (ManosAction) Delegate.CreateDelegate (typeof (ManosAction), info);
 			ActionTarget target = new ActionTarget (action);
+
 			AddImplicitRouteHandler (target, new string [] { "/" + info.Name }, HttpMethods.RouteMethods);
 		}
 
@@ -446,6 +457,22 @@ namespace Manos {
 			AddImplicitRouteHandler (target, att.Patterns, att.Methods);
 		}
 		
+		private void AddImplicitModule (PropertyInfo prop)
+		{
+			var value = (ManosModule) prop.GetValue (this, null);
+			
+			if (value == null) {
+				try {
+					value = (ManosModule) Activator.CreateInstance (prop.PropertyType);
+				} catch (Exception e) {
+					throw new Exception (String.Format ("Unable to create default property value for '{0}'", prop), e);
+				}
+				
+				prop.SetValue (this, value, null);
+			}
+			
+			AddImplicitRouteHandler (value, new string [] { "/" + prop.Name }, HttpMethods.RouteMethods);
+		}
 	}
 }
 
