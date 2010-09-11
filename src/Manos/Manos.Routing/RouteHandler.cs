@@ -15,7 +15,7 @@ namespace Manos.Routing {
 
 	public class RouteHandler : IEnumerable<RouteHandler> {
 
-		private List<string> patterns;
+		private ObservableCollection<string> patterns;
 		private List<string> methods;
 
 		private IMatchOperation [] match_ops;
@@ -77,20 +77,21 @@ namespace Manos.Routing {
 		public IList<string> Patterns {
 			get { return patterns; }
 			set {
-				
-				//
-				// TODO: This needs to be an observablecollection so 
-				// I can raise an event when its changed and rebuild the 
-				// regex cache.
-				//
-				// Only reason it isn't now is because i don't have a 4.0
-				// profile installed in monodevelop
-				//
-				
 				if (value == null)
 					patterns = null;
-				else
-					patterns = new List<string> (value);
+				else {
+					patterns = new ObservableCollection<string> ();
+					
+					//
+					// TODO: ObservableCollection (IList) isn't implemented yet.
+					//
+					foreach (string s in value)
+						patterns.Add (s);
+					patterns.CollectionChanged += delegate(object sender, NotifyCollectionChangedEventArgs e) {
+						UpdateMatchOps ();
+					};
+				}
+				
 				UpdateMatchOps ();
 			}
 		}
