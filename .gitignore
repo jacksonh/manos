@@ -1,3 +1,7 @@
 *~
 bin/
 *.pidb
+build/
+config.log
+config.make
+
