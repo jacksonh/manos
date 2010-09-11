@@ -21,6 +21,8 @@ else
 	XBUILD=xbuild $(XBUILD_ARGS)
 endif
 
+NUNIT_CONSOLE = nunit-console4
+
 define MANOS_EXEC_SCRIPT
 "#!/bin/bash"
 exec mono $(install_bin_dir)manos.exe "\$@"
@@ -29,6 +31,9 @@ export MANOS_EXEC_SCRIPT
 
 all: 
 	$(XBUILD) $(SLN) /property:Configuration=$(conf)
+
+run-tests: all
+	$(NUNIT_CONSOLE) build/Manos.Tests.dll
 
 clean:
 	$(XBUILD) $(SLN) /property:Configuration=$(conf) /t:Clean
