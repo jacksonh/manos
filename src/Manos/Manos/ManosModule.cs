@@ -373,7 +373,6 @@ namespace Manos {
 		private bool IsParameterizedActionSignature (ParameterInfo [] parameters)
 		{
 			if (parameters.Length < 2) {
-				Console.WriteLine ("bad length:  {0}", parameters.Length);
 				return false;
 			}
 			
