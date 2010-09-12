@@ -7,7 +7,8 @@ version=0.0.1
 install_bin_dir = "$(prefix)/lib/manos/"
 install_data_dir = "$(prefix)/share/manos/"
 install_script_dir = "$(prefix)/bin/"
-install_man_dir = "$(prefix)/share/man/man1"
+install_man_dir = "$(prefix)/share/man/man1/"
+install_pc_dir = "$(prefix)/lib/pkg-config/"
 distdir = "manos-$(version)"
 
 XBUILD_ARGS=/verbosity:$(VERBOSITY) /nologo
@@ -24,10 +25,21 @@ endif
 NUNIT_CONSOLE = nunit-console4
 
 define MANOS_EXEC_SCRIPT
-"#!/bin/bash"
+#!/bin/bash
 exec mono $(install_bin_dir)manos.exe "\$@"
 endef
 export MANOS_EXEC_SCRIPT
+
+define MANOS_PC_SCRIPT
+Name: Manos
+Description: Manos
+Version: $(version)
+
+Requires: 
+Libs: -r:/usr/local/lib/manos/Manos.dll
+endef
+export MANOS_PC_SCRIPT
+
 
 all: 
 	$(XBUILD) $(SLN) /property:Configuration=$(conf)
@@ -39,7 +51,7 @@ clean:
 	$(XBUILD) $(SLN) /property:Configuration=$(conf) /t:Clean
 	rm -rf build/*
 
-install: install-data install-bin install-script install-man
+install: install-data install-bin install-script install-man install-pkg-config
 
 
 install-data:
@@ -58,6 +70,10 @@ install-script:
 install-man:
 	test -d "$(install_man_dir)" || mkdir "$(install_man_dir)"
 	cp -rf ./man/* "$(install_man_dir)"
+
+install-pkg-config:
+	test -d "$(install_pc_dir)" || mkdir "$(install_pc_dir)"
+	echo "$$MANOS_PC_SCRIPT" > $(install_pc_dir)manos.pc
 
 uninstall:
 	rm -rf "$(installdir)"
