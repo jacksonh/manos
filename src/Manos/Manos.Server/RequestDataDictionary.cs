@@ -56,7 +56,6 @@ namespace Manos.Server {
 				string value = nvc.Get (item.Key);
 				if (value == null)
 					continue;
-				Console.WriteLine ("VALUE:  '{0}'", value);
 				if (ItemStringContainsValue (value, item.Value))
 				    return true;
 			}
