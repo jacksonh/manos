@@ -4,6 +4,9 @@ using System.Reflection;
 using NUnit.Framework;
 using Manos.ShouldExt;
 
+using Manos.Testing;
+using Manos.Routing.Testing;
+
 namespace Manos.Routing.Tests
 {
 	
@@ -43,6 +46,69 @@ namespace Manos.Routing.Tests
 			var method = GetMethodWithNoArgs ();
 			
 			Should.Throw<ArgumentNullException> (() => new ParameterizedActionTarget ("foobar", method, null));
+		}
+		
+		[Test]
+		public void TryConvertType_StringValue_ReturnsTrue ()
+		{
+			IManosContext ctx = new ManosContextStub ();
+			
+			object data = null;
+			bool converted = ParameterizedActionTarget.TryConvertType (ctx, typeof (string), "foobar", out data);
+			Assert.IsTrue (converted);
+		}
+		
+		[Test]
+		public void TryConvertType_StringValue_SetsData ()
+		{
+			IManosContext ctx = new ManosContextStub ();
+			
+			object data = null;
+			
+			ParameterizedActionTarget.TryConvertType (ctx, typeof (string), "foobar", out data);
+			Assert.AreEqual ("foobar", data);
+		}
+		
+		[Test]
+		public void TryConvertType_IntValue_ReturnsTrue ()
+		{
+			IManosContext ctx = new ManosContextStub ();
+			
+			object data = null;
+			bool converted = ParameterizedActionTarget.TryConvertType (ctx, typeof (int), "42", out data);
+			Assert.IsTrue (converted);
+		}
+		
+		[Test]
+		public void TryConvertType_IntValue_SetsData ()
+		{
+			IManosContext ctx = new ManosContextStub ();
+			
+			object data = null;
+			
+			ParameterizedActionTarget.TryConvertType (ctx, typeof (int), "42", out data);
+			Assert.AreEqual (42, data);
+		}
+		
+		[Test]
+		public void TryConvertType_BadValue_ReturnsFalse ()
+		{
+			IManosContext ctx = new ManosContextStub ();
+			
+			object data = null;
+			bool converted = ParameterizedActionTarget.TryConvertType (ctx, typeof (int), "foobar", out data);
+			Assert.IsFalse (converted);
+		}
+		
+		[Test]
+		public void TryConvertType_IntValue_SetsDataNull ()
+		{
+			IManosContext ctx = new ManosContextStub ();
+			
+			object data = null;
+			
+			ParameterizedActionTarget.TryConvertType (ctx, typeof (int), "foobar", out data);
+			Assert.IsNull (data);
 		}
 	}
 }

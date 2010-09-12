@@ -80,7 +80,14 @@ namespace Manos.Routing
 		
 		public static bool TryConvertType (IManosContext ctx, Type type, string str_value, out object data)
 		{
-			data = str_value;
+			try {
+				data = Convert.ChangeType (str_value, type);
+			} catch (Exception e) {
+				Console.Error.WriteLine ("Error while converting '{0}' to '{1}'.", str_value, type);
+				
+				data = null;
+				return false;
+			}
 			
 			return true;
 		}
