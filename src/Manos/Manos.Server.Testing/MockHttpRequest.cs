@@ -30,6 +30,11 @@ namespace Manos.Server.Testing
 			private set;
 		}
 		
+		public bool Aborted {
+			get;
+			private set;
+		}
+		
 		public NameValueCollection UriData {
 			get {
 				if (uri_data == null)

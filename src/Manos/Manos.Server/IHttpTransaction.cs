@@ -17,6 +17,10 @@ namespace Manos.Server {
 			get;
 		}
 
+		bool Aborted {
+			get;	
+		}
+		
 		void Write (List<ArraySegment<byte>> data);
 
 		void SendFile (string file);

@@ -256,35 +256,6 @@ namespace Manos {
 			return AddRouteHandler (module, patterns, HttpMethods.TraceMethods);
 		}
 		
-		public void HandleTransaction (ManosApp app, IHttpTransaction con)
-		{
-			if (con == null)
-				throw new ArgumentNullException ("con");
-
-			var handler = Routes.Find (con.Request);
-			if (handler == null) {
-				con.Response.StatusCode = 404;
-				con.Response.Finish ();
-				return;
-			}
-
-			try {
-				handler.Invoke (app, new ManosContext (con));
-			} catch (Exception e) {
-				Console.Error.WriteLine ("Exception in transaction handler:");
-				Console.Error.WriteLine (e);
-				con.Response.StatusCode = 500;
-				//
-				// TODO: Maybe the cleanest thing to do is
-				// have a HandleError, HandleException thing
-				// on HttpTransaction, along with an UnhandledException
-				// method/event on ManosModule.
-				//
-			}
-
-			con.Response.Finish ();
-		}
-
 		public static void AddTimeout (TimeSpan timespan, TimeoutCallback callback)
 		{
 			AddTimeout (timespan, RepeatBehavior.Single, null, callback);
@@ -472,6 +443,7 @@ namespace Manos {
 			
 			AddImplicitRouteHandler (value, new string [] { "/" + prop.Name }, HttpMethods.RouteMethods);
 		}
+		
 	}
 }
 

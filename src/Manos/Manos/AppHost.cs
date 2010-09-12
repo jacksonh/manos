@@ -2,6 +2,8 @@
 
 using System;
 using System.Net;
+using System.Collections;
+using System.Collections.Generic;
 
 using Manos.Server;
 using Manos.Caching;
@@ -19,6 +21,7 @@ namespace Manos
 		
 		private static HttpServer server;
 		private static IManosCache cache = new ManosInProcCache ();
+		private static List<IManosPipe> pipes = new List<IManosPipe> ();
 		private static IOLoop ioloop = IOLoop.Instance;
 		
 		public static ManosApp App {
@@ -35,6 +38,10 @@ namespace Manos
 		
 		public static IOLoop IOLoop {
 			get { return ioloop; }	
+		}
+		
+		public static IList<IManosPipe> Pipes {
+			get { return pipes; }	
 		}
 		
 		public static IPAddress IPAddress {
@@ -85,7 +92,6 @@ namespace Manos
 		public static void HandleTransaction (IHttpTransaction con)
 		{
 			app.HandleTransaction (app, con);
-			return;
 		}
 		
 		public static void AddTimeout (TimeSpan timespan, IRepeatBehavior repeat, object data, TimeoutCallback callback)

@@ -68,6 +68,10 @@ namespace Manos.Server {
 			private set;
 		}
 
+		public bool Aborted {
+			get { return aborted; }	
+		}
+		
 		// Force the server to disconnect
 		public bool NoKeepAlive {
 			get;
