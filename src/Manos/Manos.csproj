@@ -97,6 +97,7 @@
     <Compile Include="Manos\IManosPipe.cs" />
     <Compile Include="Manos\ManosPipe.cs" />
     <Compile Include="Manos.Server\RequestDataDictionary.cs" />
+    <Compile Include="Manos.Collections\DataDictionary.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -106,6 +107,7 @@
     <Folder Include="Manos.Templates.Testing\" />
     <Folder Include="Manos.Server\" />
     <Folder Include="Manos.Caching\" />
+    <Folder Include="Manos.Collections\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Manos.Template\codegen.cs" />

@@ -13,12 +13,13 @@ using System.Collections.Specialized;
 
 using Mono.Unix.Native;
 
+using Manos.Collections;
 
 namespace Manos.Server {
 
 	public class HttpRequest : IHttpRequest {
 
-		private NameValueCollection uri_data;
+		private DataDictionary uri_data;
 		
 		public HttpRequest (IHttpTransaction transaction, HttpHeaders headers, string method, string resource, bool support_1_1)
 		{
@@ -30,6 +31,11 @@ namespace Manos.Server {
 
 			SetEncoding ();
 			SetPathAndQuery ();
+			
+			Data = new DataDictionary ();
+			Data.Children.Add (UriData);
+			Data.Children.Add (QueryData);
+			Data.Children.Add (PostData);
 		}
 
 		public IHttpTransaction Transaction {
@@ -62,20 +68,25 @@ namespace Manos.Server {
 			private set;
 		}
 		
-		public NameValueCollection PostData {
+		public DataDictionary Data {
+			get;
+			private set;
+		}
+		
+		public DataDictionary PostData {
 			get;
 			private set;
 		}
 
-		public NameValueCollection QueryData {
+		public DataDictionary QueryData {
 			get;
 			private set;
 		}
 
-		public NameValueCollection UriData {
+		public DataDictionary UriData {
 			get {
 				if (uri_data == null)
-					uri_data = new NameValueCollection ();
+					uri_data = new DataDictionary ();
 				return uri_data;
 			}
 		}

@@ -4,6 +4,7 @@ using NUnit.Framework;
 
 using Manos.Routing;
 using System.Collections.Specialized;
+using Manos.Collections;
 
 namespace Manos.Routing.Tests
 {
@@ -17,7 +18,7 @@ namespace Manos.Routing.Tests
 		public void TestIsMatch ()
 		{
 			var op = new NopMatchOperation ();
-			var data = new NameValueCollection ();
+			var data = new DataDictionary ();
 			int end;
 			
 			bool m = op.IsMatch ("foobar", 0, data, out end);

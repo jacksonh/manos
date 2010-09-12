@@ -37,13 +37,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
+using Manos.Collections;
 
 namespace Manos.Server {
 
 	public static class HttpUtility {
 
-		sealed class HttpQSCollection : NameValueCollection
+		sealed class HttpQSCollection : DataDictionary
 		{
+			/*
 			public override string ToString ()
 			{
 				int count = Count;
@@ -58,6 +60,7 @@ namespace Manos.Server {
 					sb.Length--;
 				return sb.ToString ();
 			}
+			*/
 		}
 
 		static IDictionary <string, char> HtmlEntities = InitHtmlEntities ();
@@ -166,28 +169,28 @@ namespace Manos.Server {
 			return val;
 		}
 		
-		public static NameValueCollection ParseUrlEncodedData (string data)
+		public static DataDictionary ParseUrlEncodedData (string data)
 		{
 			return ParseUrlEncodedData (data, Encoding.UTF8);
 		}
 
-		public static NameValueCollection ParseUrlEncodedData (string data, Encoding encoding)
+		public static DataDictionary ParseUrlEncodedData (string data, Encoding encoding)
 		{
 			if (data == null)
 				throw new ArgumentNullException ("data");
 			if (encoding == null)
 				throw new ArgumentNullException ("encoding");
 			if (data.Length == 0 || (data.Length == 1 && data[0] == '?'))
-				return new NameValueCollection ();
+				return new DataDictionary ();
 			if (data[0] == '?')
 				data = data.Substring (1);
 				
-			NameValueCollection result = new HttpQSCollection ();
+			DataDictionary result = new HttpQSCollection ();
 			ParseUrlEncodedData (data, encoding, result);
 			return result;
 		}
 
-		internal static void ParseUrlEncodedData (string data, Encoding encoding, NameValueCollection result)
+		internal static void ParseUrlEncodedData (string data, Encoding encoding, DataDictionary result)
 		{
 			if (data.Length == 0)
 				return;
@@ -228,7 +231,7 @@ namespace Manos.Server {
 				}
 				value = UrlDecode (decoded.Substring (valuePos, valueEnd - valuePos), encoding);
 
-				result.Add (name, value);
+				result.Set (name, value);
 				if (namePos == -1)
 					break;
 			}

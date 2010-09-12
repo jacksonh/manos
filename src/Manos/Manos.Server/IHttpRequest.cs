@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Specialized;
 
+using Manos.Collections;
+
 namespace Manos.Server {
 
 	public interface IHttpRequest {
@@ -15,7 +17,7 @@ namespace Manos.Server {
 			get;
 		}
 
-		NameValueCollection UriData {
+		DataDictionary UriData {
 			get;	
 		}
 	}

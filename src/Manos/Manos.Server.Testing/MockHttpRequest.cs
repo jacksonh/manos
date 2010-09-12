@@ -4,6 +4,7 @@ using System;
 using Manos;
 using Manos.Server;
 using System.Collections.Specialized;
+using Manos.Collections;
 
 namespace Manos.Server.Testing
 {
@@ -11,7 +12,7 @@ namespace Manos.Server.Testing
 
 	public class MockHttpRequest : IHttpRequest
 	{
-		private NameValueCollection uri_data;
+		private DataDictionary uri_data;
 		
 		public MockHttpRequest (string method, string local_path)
 		{
@@ -35,10 +36,10 @@ namespace Manos.Server.Testing
 			private set;
 		}
 		
-		public NameValueCollection UriData {
+		public DataDictionary UriData {
 			get {
 				if (uri_data == null)
-					uri_data = new NameValueCollection ();
+					uri_data = new DataDictionary ();
 				return uri_data;
 			}
 		}

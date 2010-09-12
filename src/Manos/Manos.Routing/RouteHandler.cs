@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 
 using Manos.Server;
 using System.Collections.Specialized;
+using Manos.Collections;
 
 namespace Manos.Routing {
 
@@ -157,17 +158,17 @@ namespace Manos.Routing {
 			if (!IsMethodMatch (request))
 				return null;
 						
-			NameValueCollection uri_data = null;
+			DataDictionary uri_data = null;
 			if (HasPatterns) {
 				int end;
-				uri_data = new NameValueCollection ();
+				uri_data = new DataDictionary ();
 				
 				if (!FindPatternMatch (request.LocalPath, uri_start, uri_data, out end)) {
 					return null;
 				}
 
 				if (Target != null) {
-					request.UriData.Add (uri_data);
+					request.UriData.Children.Add (uri_data);
 					return Target;
 				}
 
@@ -178,7 +179,7 @@ namespace Manos.Routing {
 				IManosTarget res = handler.Find (request, uri_start);
 				if (res != null) {
 					if (uri_data != null)
-						request.UriData.Add (uri_data);
+						request.UriData.Children.Add (uri_data);
 					return res;
 				}
 			}
@@ -186,7 +187,7 @@ namespace Manos.Routing {
 			return null;
 		}
 
-		public bool FindPatternMatch (string input, int start, NameValueCollection uri_data, out int end)
+		public bool FindPatternMatch (string input, int start, DataDictionary uri_data, out int end)
 		{
 			if (match_ops == null) {
 				end = start;

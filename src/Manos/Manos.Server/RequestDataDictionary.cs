@@ -127,7 +127,10 @@ namespace Manos.Server {
 		
 		public bool TryGetValue (string key, out string value)
 		{
-			throw new NotImplementedException ();
+			if (dictionary.TryGetValue (key, out value))
+				return true;
+			
+			return false;
 		}
 
 		public string this[string key] {

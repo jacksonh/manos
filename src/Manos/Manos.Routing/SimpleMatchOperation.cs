@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using Manos.Collections;
 
 namespace Manos.Routing
 {
@@ -40,7 +41,7 @@ namespace Manos.Routing
 			}
 		}
 		
-		public bool IsMatch (string input, int start, NameValueCollection data, out int end)
+		public bool IsMatch (string input, int start, DataDictionary data, out int end)
 		{
 			end = start;
 			
@@ -52,7 +53,7 @@ namespace Manos.Routing
 			int pattern_pos = 0;
 			
 			string data_str;
-			NameValueCollection local_data = new NameValueCollection ();
+			DataDictionary local_data = new DataDictionary ();
 			foreach (Group g in groups) {
 				// scan until start
 				int g_start = start + g.Start;
@@ -75,9 +76,9 @@ namespace Manos.Routing
 				if (g.End == pattern.Length - 1) {
 					// slurp until end
 					data_str = input.Substring (input_pos);
-					local_data.Add (g.Name, data_str);
+					local_data.Set (g.Name, data_str);
 					
-					data.Add (local_data);
+					data.Children.Add (local_data);
 					end = input.Length;
 					return true;
 				}
@@ -91,7 +92,7 @@ namespace Manos.Routing
 				}
 				
 				data_str = input.Substring (input_start, input_pos - input_start);
-				local_data.Add (g.Name, data_str);
+				local_data.Set (g.Name, data_str);
 				
 				input_pos++;
 				pattern_pos = g.End + 2;
@@ -109,7 +110,7 @@ namespace Manos.Routing
 				}
 			}
 			
-			data.Add (local_data);
+			data.Children.Add (local_data);
 			end = input_pos;
 			return true;
 		}

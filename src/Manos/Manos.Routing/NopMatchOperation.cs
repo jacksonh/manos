@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Specialized;
+using Manos.Collections;
 
 namespace Manos.Routing
 {
@@ -12,7 +13,7 @@ namespace Manos.Routing
 		{
 		}
 		
-		public bool IsMatch (string input, int start, NameValueCollection data, out int end)
+		public bool IsMatch (string input, int start, DataDictionary data, out int end)
 		{
 			end = start;
 			return true;

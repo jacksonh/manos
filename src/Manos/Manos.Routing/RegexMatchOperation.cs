@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Text.RegularExpressions;
+using Manos.Collections;
 
 
 
@@ -30,7 +31,7 @@ namespace Manos.Routing {
 			}
 		}
 
-		public bool IsMatch (string input, int start, NameValueCollection data, out int end)
+		public bool IsMatch (string input, int start, DataDictionary data, out int end)
 		{
 			Match m = regex.Match (input, start);
 
@@ -45,7 +46,7 @@ namespace Manos.Routing {
 			return true;
 		}
 
-		private void AddUriData (Match m, NameValueCollection uri_data)
+		private void AddUriData (Match m, DataDictionary uri_data)
 		{
 			string [] groups = regex.GetGroupNames ();
 			foreach (string gn in groups) {
@@ -59,7 +60,7 @@ namespace Manos.Routing {
 				int dummy;
 				if (Int32.TryParse (gn, out dummy))
 					continue;
-				uri_data.Add (gn, g.Value);
+				uri_data.Set (gn, g.Value);
 			}	
 		}
 	}

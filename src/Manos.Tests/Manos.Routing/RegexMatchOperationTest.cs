@@ -9,6 +9,8 @@ using Manos.Routing;
 using System.Collections.Specialized;
 using Manos.ShouldExt;
 
+using Manos.Collections;
+
 namespace Manos.Routing.Tests
 {
 
@@ -46,14 +48,13 @@ namespace Manos.Routing.Tests
 		{
 			var r = new Regex ("");
 			var op = new RegexMatchOperation (r);
-			var col = new NameValueCollection ();
+			var col = new DataDictionary ();
 			int end;
 
 			bool m = op.IsMatch ("", 0, col, out end);
 			
 			Assert.IsTrue (m, "a1");
-			Assert.AreEqual (0, col.Count, "a2");
-			Assert.AreEqual (0, end, "a3");
+			Assert.AreEqual (0, end, "a2");
 		}
 		
 		[Test]
@@ -61,7 +62,7 @@ namespace Manos.Routing.Tests
 		{
 			var r = new Regex (".og");
 			var op = new RegexMatchOperation (r);
-			var col = new NameValueCollection ();
+			var col = new DataDictionary ();
 			int end;
 			bool m;
 			
@@ -86,7 +87,7 @@ namespace Manos.Routing.Tests
 		{
 			var r = new Regex ("-(?<foo>.*?)-");
 			var op = new RegexMatchOperation (r);
-			var col = new NameValueCollection ();
+			var col = new DataDictionary ();
 			int end;
 			bool m;
 			
@@ -96,7 +97,7 @@ namespace Manos.Routing.Tests
 			Assert.AreEqual ("manos", col ["foo"], "a3");
 			Assert.AreEqual (7, end, "a4");
 			
-			col = new NameValueCollection ();
+			col = new DataDictionary ();
 			m = op.IsMatch ("manos-", 0, col, out end);
 			Assert.IsFalse (m, "a5");
 			Assert.AreEqual (0, col.Count, "a6");
