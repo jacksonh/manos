@@ -47,6 +47,9 @@ all:
 run-tests: all
 	$(NUNIT_CONSOLE) build/Manos.Tests.dll
 
+update-docs: all
+	mdoc update -o ./docs/api/en ./build/Manos.dll
+
 clean:
 	$(XBUILD) $(SLN) /property:Configuration=$(conf) /t:Clean
 	rm -rf build/*
@@ -74,6 +77,7 @@ install-man:
 install-pkg-config:
 	test -d "$(install_pc_dir)" || mkdir "$(install_pc_dir)"
 	echo "$$MANOS_PC_SCRIPT" > $(install_pc_dir)manos.pc
+
 
 uninstall:
 	rm -rf "$(installdir)"
