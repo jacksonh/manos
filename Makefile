@@ -54,7 +54,7 @@ clean:
 	$(XBUILD) $(SLN) /property:Configuration=$(conf) /t:Clean
 	rm -rf build/*
 
-install: install-data install-bin install-script install-man install-pkg-config
+install: update-docs install-data install-bin install-script install-man install-pkg-config
 
 
 install-data:
@@ -82,7 +82,7 @@ install-pkg-config:
 uninstall:
 	rm -rf "$(installdir)"
 
-dist: clean
+dist: clean update-docs
 	rm -rf "$(distdir)"
 	mkdir "$(distdir)"
 	cp -rf ./src/ ./data/ ./man "$(distdir)"
