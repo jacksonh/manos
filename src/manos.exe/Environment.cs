@@ -1,6 +1,7 @@
 
 using System;
 using System.IO;
+using System.Reflection;
 
 namespace Manos.Tool
 {
@@ -14,7 +15,16 @@ namespace Manos.Tool
 			LibDirectory = "lib";
 			TemplatesDirectory = "Templates";
 			WorkingDirectory = Directory.GetCurrentDirectory ();
-			DataDirectory = Path.Combine (System.Environment.GetFolderPath (System.Environment.SpecialFolder.CommonApplicationData), "manos-tool");
+			
+			string exe_path = typeof (Driver).Assembly.GetName ().CodeBase;
+			Console.WriteLine ("EXE PATH:  '{0}", exe_path);
+			string manos_dir = Path.GetDirectoryName (exe_path);
+			string lib_dir = Path.GetDirectoryName (manos_dir);
+			string prefix = Path.GetDirectoryName (lib_dir);
+			Console.WriteLine ("PREFIX:  '{0}'", prefix);
+			
+			DataDirectory = Path.Combine (prefix.ToString (), "share/manos/");
+			Console.WriteLine ("DATA DIRECTORY:  '{0}'", DataDirectory);
 		}
 		
 		public string LibDirectory {
