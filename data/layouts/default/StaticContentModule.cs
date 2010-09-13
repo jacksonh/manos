@@ -22,7 +22,7 @@ namespace $APPNAME {
 
 		public StaticContentModule ()
 		{
-			Get ("*", Content);
+			Get (".*", Content);
 
 		}
 
