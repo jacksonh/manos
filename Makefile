@@ -26,7 +26,7 @@ NUNIT_CONSOLE = nunit-console4
 
 define MANOS_EXEC_SCRIPT
 #!/bin/bash
-exec mono $(install_bin_dir)manos.exe "\$@"
+exec mono $(install_bin_dir)manos.exe "$$@"
 endef
 export MANOS_EXEC_SCRIPT
 
