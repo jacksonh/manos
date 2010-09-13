@@ -1,10 +1,10 @@
 
-using Mango;
+using Manos;
 
 
 namespace $APPNAME {
 
-	public class $APPNAME : MangoApp {
+	public class $APPNAME : ManosApp {
 
 		public $APPNAME ()
 		{

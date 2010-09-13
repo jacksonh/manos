@@ -2,7 +2,7 @@
 using System;
 using NUnit.Framework;
 
-using Mango;
+using Manos;
 
 
 namespace $APPNAME.Tests {

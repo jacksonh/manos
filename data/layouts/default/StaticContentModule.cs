@@ -3,12 +3,12 @@
 using System;
 using System.IO;
 
-using Mango;
+using Manos;
 
 
 //
-//  This the default StaticContentModule that comes with all Mango apps
-//  if you do not wish to serve any static content with Mango you can
+//  This the default StaticContentModule that comes with all Manos apps
+//  if you do not wish to serve any static content with Manos you can
 //  remove its route handler from <YourApp>.cs's constructor and delete
 //  this file.
 //
@@ -18,7 +18,7 @@ using Mango;
 
 namespace $APPNAME {
 
-	public class StaticContentModule : MangoModule {
+	public class StaticContentModule : ManosModule {
 
 		public StaticContentModule ()
 		{
@@ -26,7 +26,7 @@ namespace $APPNAME {
 
 		}
 
-		public static void Content (IMangoContext ctx)
+		public static void Content (IManosContext ctx)
 		{
 			string path = ctx.Request.LocalPath;
 
