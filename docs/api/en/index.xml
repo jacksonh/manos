@@ -35,6 +35,7 @@
       <Type Name="PostAttribute" Kind="Class" />
       <Type Name="PutAttribute" Kind="Class" />
       <Type Name="RepeatBehavior" Kind="Class" />
+      <Type Name="RouteAttribute" Kind="Class" />
       <Type Name="TimeoutCallback" Kind="Delegate" />
       <Type Name="TraceAttribute" Kind="Class" />
     </Namespace>

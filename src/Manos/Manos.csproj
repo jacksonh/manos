@@ -98,6 +98,7 @@
     <Compile Include="Manos\ManosPipe.cs" />
     <Compile Include="Manos.Server\RequestDataDictionary.cs" />
     <Compile Include="Manos.Collections\DataDictionary.cs" />
+    <Compile Include="Manos\RouteAttribute.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
