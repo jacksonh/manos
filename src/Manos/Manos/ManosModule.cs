@@ -382,19 +382,31 @@ namespace Manos {
 
 		private void AddDefaultHandlerForAction (RouteHandler routes, MethodInfo info)
 		{
-			ManosAction action = (ManosAction) Delegate.CreateDelegate (typeof (ManosAction), info);
-			ActionTarget target = new ActionTarget (action);
+			ManosAction action = ActionForMethod (info);
 
+			ActionTarget target = new ActionTarget (action);
 			AddImplicitRouteHandler (target, new string [] { "/" + info.Name }, HttpMethods.RouteMethods);
 		}
 
 		private void AddHandlerForAction (RouteHandler routes, HttpMethodAttribute att, MethodInfo info)
 		{
-			ManosAction action = (ManosAction) Delegate.CreateDelegate (typeof (ManosAction), info);
+			ManosAction action = ActionForMethod (info);
+			
 			ActionTarget target = new ActionTarget (action);
          	AddImplicitRouteHandler (target, att.Patterns, att.Methods);
 		}
 		
+		private ManosAction ActionForMethod (MethodInfo info)
+		{
+			ManosAction action;
+			
+			if (info.IsStatic)
+				action = (ManosAction) Delegate.CreateDelegate (typeof (ManosAction), info);
+			else
+				action = (ManosAction) Delegate.CreateDelegate (typeof (ManosAction), this, info);
+			
+			return action;
+		}
 		
 		private void AddParameterizedActionHandler (RouteHandler routes, MethodInfo info)
 		{
