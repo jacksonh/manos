@@ -16,15 +16,12 @@ namespace Manos.Tool
 			TemplatesDirectory = "Templates";
 			WorkingDirectory = Directory.GetCurrentDirectory ();
 			
-			string exe_path = typeof (Driver).Assembly.GetName ().CodeBase;
-			Console.WriteLine ("EXE PATH:  '{0}", exe_path);
+			string exe_path = new Uri (typeof (Driver).Assembly.GetName ().CodeBase).LocalPath;
 			string manos_dir = Path.GetDirectoryName (exe_path);
 			string lib_dir = Path.GetDirectoryName (manos_dir);
 			string prefix = Path.GetDirectoryName (lib_dir);
-			Console.WriteLine ("PREFIX:  '{0}'", prefix);
 			
 			DataDirectory = Path.Combine (prefix.ToString (), "share/manos/");
-			Console.WriteLine ("DATA DIRECTORY:  '{0}'", DataDirectory);
 		}
 		
 		public string LibDirectory {
