@@ -1,0 +1,103 @@
+<Overview>
+  <Assemblies>
+    <Assembly Name="Manos" Version="0.0.0.2">
+      <Attributes>
+        <Attribute>
+          <AttributeName>System.Reflection.AssemblyTitle("Manos.dll")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.RuntimeCompatibility(WrapNonExceptionThrows=true)</AttributeName>
+        </Attribute>
+      </Attributes>
+    </Assembly>
+  </Assemblies>
+  <Remarks>To be added.</Remarks>
+  <Copyright>To be added.</Copyright>
+  <Types>
+    <Namespace Name="Manos">
+      <Type Name="AppHost" Kind="Class" />
+      <Type Name="DeleteAttribute" Kind="Class" />
+      <Type Name="GetAttribute" Kind="Class" />
+      <Type Name="HeadAttribute" Kind="Class" />
+      <Type Name="HttpMethodAttribute" Kind="Class" />
+      <Type Name="HttpMethods" Kind="Class" />
+      <Type Name="IgnoreAttribute" Kind="Class" />
+      <Type Name="IManosContext" Kind="Interface" />
+      <Type Name="IManosPipe" Kind="Interface" />
+      <Type Name="InfiniteRepeatBehavior" Kind="Class" />
+      <Type Name="IRepeatBehavior" Kind="Interface" />
+      <Type Name="IterativeRepeatBehavior" Kind="Class" />
+      <Type Name="ManosApp" Kind="Class" />
+      <Type Name="ManosContext" Kind="Class" />
+      <Type Name="ManosModule" Kind="Class" />
+      <Type Name="ManosPipe" Kind="Class" />
+      <Type Name="OptionsAttribute" Kind="Class" />
+      <Type Name="PostAttribute" Kind="Class" />
+      <Type Name="PutAttribute" Kind="Class" />
+      <Type Name="RepeatBehavior" Kind="Class" />
+      <Type Name="TimeoutCallback" Kind="Delegate" />
+      <Type Name="TraceAttribute" Kind="Class" />
+    </Namespace>
+    <Namespace Name="Manos.Caching">
+      <Type Name="IManosCache" Kind="Interface" />
+      <Type Name="ManosInProcCache" Kind="Class" />
+      <Type Name="ManosInProcCache+CacheItem" Kind="Class" />
+    </Namespace>
+    <Namespace Name="Manos.Collections">
+      <Type Name="DataDictionary" Kind="Class" />
+    </Namespace>
+    <Namespace Name="Manos.Routing">
+      <Type Name="ActionTarget" Kind="Class" />
+      <Type Name="IManosTarget" Kind="Interface" />
+      <Type Name="IMatchOperation" Kind="Interface" />
+      <Type Name="ManosAction" Kind="Delegate" />
+      <Type Name="MatchOperationFactory" Kind="Class" />
+      <Type Name="NopMatchOperation" Kind="Class" />
+      <Type Name="ParameterizedAction" Kind="Delegate" />
+      <Type Name="ParameterizedActionFactory" Kind="Class" />
+      <Type Name="ParameterizedActionTarget" Kind="Class" />
+      <Type Name="RegexMatchOperation" Kind="Class" />
+      <Type Name="RouteHandler" Kind="Class" />
+      <Type Name="SimpleMatchOperation" Kind="Class" />
+      <Type Name="StringMatchOperation" Kind="Class" />
+    </Namespace>
+    <Namespace Name="Manos.Routing.Testing">
+      <Type Name="MockManosTarget" Kind="Class" />
+    </Namespace>
+    <Namespace Name="Manos.Server">
+      <Type Name="HttpConnectionCallback" Kind="Delegate" />
+      <Type Name="HttpException" Kind="Class" />
+      <Type Name="HttpHeaders" Kind="Class" />
+      <Type Name="HttpRequest" Kind="Class" />
+      <Type Name="HttpResponse" Kind="Class" />
+      <Type Name="HttpServer" Kind="Class" />
+      <Type Name="HttpTransaction" Kind="Class" />
+      <Type Name="HttpUtility" Kind="Class" />
+      <Type Name="IHttpRequest" Kind="Interface" />
+      <Type Name="IHttpResponse" Kind="Interface" />
+      <Type Name="IHttpTransaction" Kind="Interface" />
+      <Type Name="IOCallback" Kind="Delegate" />
+      <Type Name="IOHandler" Kind="Delegate" />
+      <Type Name="IOLoop" Kind="Class" />
+      <Type Name="IOStream" Kind="Class" />
+      <Type Name="IWriteOperation" Kind="Interface" />
+      <Type Name="ReadCallback" Kind="Delegate" />
+      <Type Name="RequestDataDictionary" Kind="Class" />
+      <Type Name="Timeout" Kind="Class" />
+      <Type Name="UriParser" Kind="Class" />
+      <Type Name="WriteBytesOperation" Kind="Class" />
+      <Type Name="WriteCallback" Kind="Delegate" />
+      <Type Name="WriteFileOperation" Kind="Class" />
+    </Namespace>
+    <Namespace Name="Manos.Server.Testing">
+      <Type Name="MockHttpRequest" Kind="Class" />
+      <Type Name="MockHttpTransaction" Kind="Class" />
+    </Namespace>
+    <Namespace Name="Manos.Testing">
+      <Type Name="ManosAppStub" Kind="Class" />
+      <Type Name="ManosContextStub" Kind="Class" />
+      <Type Name="MockManosModule" Kind="Class" />
+    </Namespace>
+  </Types>
+  <Title>Manos</Title>
+</Overview>

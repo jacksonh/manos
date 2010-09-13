@@ -1,0 +1,113 @@
+<Type Name="UriParser" FullName="Manos.Server.UriParser">
+  <TypeSignature Language="C#" Value="public static class UriParser" />
+  <AssemblyInfo>
+    <AssemblyName>Manos</AssemblyName>
+    <AssemblyVersion>0.0.0.2</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Object</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="TryParse">
+      <MemberSignature Language="C#" Value="public static bool TryParse (string uri, out string scheme, out string path, out string query);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="uri" Type="System.String" />
+        <Parameter Name="scheme" Type="System.String&amp;" RefType="out" />
+        <Parameter Name="path" Type="System.String&amp;" RefType="out" />
+        <Parameter Name="query" Type="System.String&amp;" RefType="out" />
+      </Parameters>
+      <Docs>
+        <param name="uri">To be added.</param>
+        <param name="scheme">To be added.</param>
+        <param name="path">To be added.</param>
+        <param name="query">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="TryParsePath">
+      <MemberSignature Language="C#" Value="public static bool TryParsePath (string uri, int start, out string path, out int end);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="uri" Type="System.String" />
+        <Parameter Name="start" Type="System.Int32" />
+        <Parameter Name="path" Type="System.String&amp;" RefType="out" />
+        <Parameter Name="end" Type="System.Int32&amp;" RefType="out" />
+      </Parameters>
+      <Docs>
+        <param name="uri">To be added.</param>
+        <param name="start">To be added.</param>
+        <param name="path">To be added.</param>
+        <param name="end">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="TryParseQuery">
+      <MemberSignature Language="C#" Value="public static bool TryParseQuery (string uri, int start, out string query);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="uri" Type="System.String" />
+        <Parameter Name="start" Type="System.Int32" />
+        <Parameter Name="query" Type="System.String&amp;" RefType="out" />
+      </Parameters>
+      <Docs>
+        <param name="uri">To be added.</param>
+        <param name="start">To be added.</param>
+        <param name="query">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="TryParseScheme">
+      <MemberSignature Language="C#" Value="public static bool TryParseScheme (string uri, out string scheme, out int end);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="uri" Type="System.String" />
+        <Parameter Name="scheme" Type="System.String&amp;" RefType="out" />
+        <Parameter Name="end" Type="System.Int32&amp;" RefType="out" />
+      </Parameters>
+      <Docs>
+        <param name="uri">To be added.</param>
+        <param name="scheme">To be added.</param>
+        <param name="end">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

@@ -1,0 +1,36 @@
+<Type Name="ParameterizedActionFactory" FullName="Manos.Routing.ParameterizedActionFactory">
+  <TypeSignature Language="C#" Value="public static class ParameterizedActionFactory" />
+  <AssemblyInfo>
+    <AssemblyName>Manos</AssemblyName>
+    <AssemblyVersion>0.0.0.2</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Object</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="CreateAction">
+      <MemberSignature Language="C#" Value="public static Manos.Routing.ParameterizedAction CreateAction (System.Reflection.MethodInfo method);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.ParameterizedAction</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="System.Reflection.MethodInfo" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

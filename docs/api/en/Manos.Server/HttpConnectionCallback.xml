@@ -1,0 +1,21 @@
+<Type Name="HttpConnectionCallback" FullName="Manos.Server.HttpConnectionCallback">
+  <TypeSignature Language="C#" Value="public delegate void HttpConnectionCallback(IHttpTransaction transaction);" />
+  <AssemblyInfo>
+    <AssemblyName>Manos</AssemblyName>
+    <AssemblyVersion>0.0.0.2</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Delegate</BaseTypeName>
+  </Base>
+  <Parameters>
+    <Parameter Name="transaction" Type="Manos.Server.IHttpTransaction" />
+  </Parameters>
+  <ReturnValue>
+    <ReturnType>System.Void</ReturnType>
+  </ReturnValue>
+  <Docs>
+    <param name="transaction">To be added.</param>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+</Type>

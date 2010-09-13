@@ -1,0 +1,23 @@
+<Type Name="TimeoutCallback" FullName="Manos.TimeoutCallback">
+  <TypeSignature Language="C#" Value="public delegate void TimeoutCallback(ManosApp app, object data);" />
+  <AssemblyInfo>
+    <AssemblyName>Manos</AssemblyName>
+    <AssemblyVersion>0.0.0.2</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Delegate</BaseTypeName>
+  </Base>
+  <Parameters>
+    <Parameter Name="app" Type="Manos.ManosApp" />
+    <Parameter Name="data" Type="System.Object" />
+  </Parameters>
+  <ReturnValue>
+    <ReturnType>System.Void</ReturnType>
+  </ReturnValue>
+  <Docs>
+    <param name="app">To be added.</param>
+    <param name="data">To be added.</param>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+</Type>

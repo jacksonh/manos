@@ -1,0 +1,23 @@
+<Type Name="ParameterizedAction" FullName="Manos.Routing.ParameterizedAction">
+  <TypeSignature Language="C#" Value="public delegate void ParameterizedAction(object target, object[] paramters);" />
+  <AssemblyInfo>
+    <AssemblyName>Manos</AssemblyName>
+    <AssemblyVersion>0.0.0.2</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Delegate</BaseTypeName>
+  </Base>
+  <Parameters>
+    <Parameter Name="target" Type="System.Object" />
+    <Parameter Name="paramters" Type="System.Object[]" />
+  </Parameters>
+  <ReturnValue>
+    <ReturnType>System.Void</ReturnType>
+  </ReturnValue>
+  <Docs>
+    <param name="target">To be added.</param>
+    <param name="paramters">To be added.</param>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+</Type>

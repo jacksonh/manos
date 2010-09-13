@@ -1,0 +1,915 @@
+<Type Name="ManosModule" FullName="Manos.ManosModule">
+  <TypeSignature Language="C#" Value="public class ManosModule" />
+  <AssemblyInfo>
+    <AssemblyName>Manos</AssemblyName>
+    <AssemblyVersion>0.0.0.2</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Object</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public ManosModule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="AddTimeout">
+      <MemberSignature Language="C#" Value="public static void AddTimeout (TimeSpan timespan, Manos.TimeoutCallback callback);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="timespan" Type="System.TimeSpan" />
+        <Parameter Name="callback" Type="Manos.TimeoutCallback" />
+      </Parameters>
+      <Docs>
+        <param name="timespan">To be added.</param>
+        <param name="callback">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="AddTimeout">
+      <MemberSignature Language="C#" Value="public static void AddTimeout (TimeSpan timespan, Manos.IRepeatBehavior repeat, Manos.TimeoutCallback callback);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="timespan" Type="System.TimeSpan" />
+        <Parameter Name="repeat" Type="Manos.IRepeatBehavior" />
+        <Parameter Name="callback" Type="Manos.TimeoutCallback" />
+      </Parameters>
+      <Docs>
+        <param name="timespan">To be added.</param>
+        <param name="repeat">To be added.</param>
+        <param name="callback">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="AddTimeout">
+      <MemberSignature Language="C#" Value="public static void AddTimeout (TimeSpan timespan, object data, Manos.TimeoutCallback callback);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="timespan" Type="System.TimeSpan" />
+        <Parameter Name="data" Type="System.Object" />
+        <Parameter Name="callback" Type="Manos.TimeoutCallback" />
+      </Parameters>
+      <Docs>
+        <param name="timespan">To be added.</param>
+        <param name="data">To be added.</param>
+        <param name="callback">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="AddTimeout">
+      <MemberSignature Language="C#" Value="public static void AddTimeout (TimeSpan timespan, Manos.IRepeatBehavior repeat, object data, Manos.TimeoutCallback callback);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="timespan" Type="System.TimeSpan" />
+        <Parameter Name="repeat" Type="Manos.IRepeatBehavior" />
+        <Parameter Name="data" Type="System.Object" />
+        <Parameter Name="callback" Type="Manos.TimeoutCallback" />
+      </Parameters>
+      <Docs>
+        <param name="timespan">To be added.</param>
+        <param name="repeat">To be added.</param>
+        <param name="data">To be added.</param>
+        <param name="callback">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Delete">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Delete (Manos.ManosModule module, string[] patterns);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="module" Type="Manos.ManosModule" />
+        <Parameter Name="patterns" Type="System.String[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="module">To be added.</param>
+        <param name="patterns">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Delete">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Delete (Manos.Routing.ManosAction action, string[] patterns);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="action" Type="Manos.Routing.ManosAction" />
+        <Parameter Name="patterns" Type="System.String[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="action">To be added.</param>
+        <param name="patterns">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Delete">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Delete (string pattern, Manos.ManosModule module);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="pattern" Type="System.String" />
+        <Parameter Name="module" Type="Manos.ManosModule" />
+      </Parameters>
+      <Docs>
+        <param name="pattern">To be added.</param>
+        <param name="module">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Delete">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Delete (string pattern, Manos.Routing.ManosAction action);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="pattern" Type="System.String" />
+        <Parameter Name="action" Type="Manos.Routing.ManosAction" />
+      </Parameters>
+      <Docs>
+        <param name="pattern">To be added.</param>
+        <param name="action">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Get">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Get (Manos.ManosModule module, string[] patterns);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="module" Type="Manos.ManosModule" />
+        <Parameter Name="patterns" Type="System.String[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="module">To be added.</param>
+        <param name="patterns">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Get">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Get (Manos.Routing.ManosAction action, string[] patterns);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="action" Type="Manos.Routing.ManosAction" />
+        <Parameter Name="patterns" Type="System.String[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="action">To be added.</param>
+        <param name="patterns">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Get">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Get (string pattern, Manos.ManosModule module);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="pattern" Type="System.String" />
+        <Parameter Name="module" Type="Manos.ManosModule" />
+      </Parameters>
+      <Docs>
+        <param name="pattern">To be added.</param>
+        <param name="module">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Get">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Get (string pattern, Manos.Routing.ManosAction action);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="pattern" Type="System.String" />
+        <Parameter Name="action" Type="Manos.Routing.ManosAction" />
+      </Parameters>
+      <Docs>
+        <param name="pattern">To be added.</param>
+        <param name="action">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Head">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Head (Manos.ManosModule module, string[] patterns);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="module" Type="Manos.ManosModule" />
+        <Parameter Name="patterns" Type="System.String[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="module">To be added.</param>
+        <param name="patterns">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Head">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Head (Manos.Routing.ManosAction action, string[] patterns);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="action" Type="Manos.Routing.ManosAction" />
+        <Parameter Name="patterns" Type="System.String[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="action">To be added.</param>
+        <param name="patterns">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Head">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Head (string pattern, Manos.ManosModule module);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="pattern" Type="System.String" />
+        <Parameter Name="module" Type="Manos.ManosModule" />
+      </Parameters>
+      <Docs>
+        <param name="pattern">To be added.</param>
+        <param name="module">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Head">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Head (string pattern, Manos.Routing.ManosAction action);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="pattern" Type="System.String" />
+        <Parameter Name="action" Type="Manos.Routing.ManosAction" />
+      </Parameters>
+      <Docs>
+        <param name="pattern">To be added.</param>
+        <param name="action">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Options">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Options (Manos.ManosModule module, string[] patterns);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="module" Type="Manos.ManosModule" />
+        <Parameter Name="patterns" Type="System.String[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="module">To be added.</param>
+        <param name="patterns">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Options">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Options (Manos.Routing.ManosAction action, string[] patterns);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="action" Type="Manos.Routing.ManosAction" />
+        <Parameter Name="patterns" Type="System.String[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="action">To be added.</param>
+        <param name="patterns">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Options">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Options (string pattern, Manos.ManosModule module);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="pattern" Type="System.String" />
+        <Parameter Name="module" Type="Manos.ManosModule" />
+      </Parameters>
+      <Docs>
+        <param name="pattern">To be added.</param>
+        <param name="module">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Options">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Options (string pattern, Manos.Routing.ManosAction action);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="pattern" Type="System.String" />
+        <Parameter Name="action" Type="Manos.Routing.ManosAction" />
+      </Parameters>
+      <Docs>
+        <param name="pattern">To be added.</param>
+        <param name="action">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Post">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Post (Manos.ManosModule module, string[] patterns);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="module" Type="Manos.ManosModule" />
+        <Parameter Name="patterns" Type="System.String[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="module">To be added.</param>
+        <param name="patterns">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Post">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Post (Manos.Routing.ManosAction action, string[] patterns);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="action" Type="Manos.Routing.ManosAction" />
+        <Parameter Name="patterns" Type="System.String[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="action">To be added.</param>
+        <param name="patterns">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Post">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Post (string pattern, Manos.ManosModule module);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="pattern" Type="System.String" />
+        <Parameter Name="module" Type="Manos.ManosModule" />
+      </Parameters>
+      <Docs>
+        <param name="pattern">To be added.</param>
+        <param name="module">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Post">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Post (string pattern, Manos.Routing.ManosAction action);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="pattern" Type="System.String" />
+        <Parameter Name="action" Type="Manos.Routing.ManosAction" />
+      </Parameters>
+      <Docs>
+        <param name="pattern">To be added.</param>
+        <param name="action">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Put">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Put (Manos.ManosModule module, string[] patterns);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="module" Type="Manos.ManosModule" />
+        <Parameter Name="patterns" Type="System.String[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="module">To be added.</param>
+        <param name="patterns">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Put">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Put (Manos.Routing.ManosAction action, string[] patterns);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="action" Type="Manos.Routing.ManosAction" />
+        <Parameter Name="patterns" Type="System.String[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="action">To be added.</param>
+        <param name="patterns">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Put">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Put (string pattern, Manos.ManosModule module);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="pattern" Type="System.String" />
+        <Parameter Name="module" Type="Manos.ManosModule" />
+      </Parameters>
+      <Docs>
+        <param name="pattern">To be added.</param>
+        <param name="module">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Put">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Put (string pattern, Manos.Routing.ManosAction action);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="pattern" Type="System.String" />
+        <Parameter Name="action" Type="Manos.Routing.ManosAction" />
+      </Parameters>
+      <Docs>
+        <param name="pattern">To be added.</param>
+        <param name="action">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Route">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Route (Manos.ManosModule module, string[] patterns);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="module" Type="Manos.ManosModule" />
+        <Parameter Name="patterns" Type="System.String[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="module">To be added.</param>
+        <param name="patterns">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Route">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Route (Manos.Routing.ManosAction action, string[] patterns);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="action" Type="Manos.Routing.ManosAction" />
+        <Parameter Name="patterns" Type="System.String[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="action">To be added.</param>
+        <param name="patterns">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Route">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Route (string pattern, Manos.ManosModule module);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="pattern" Type="System.String" />
+        <Parameter Name="module" Type="Manos.ManosModule" />
+      </Parameters>
+      <Docs>
+        <param name="pattern">To be added.</param>
+        <param name="module">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Route">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Route (string pattern, Manos.Routing.ManosAction action);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="pattern" Type="System.String" />
+        <Parameter Name="action" Type="Manos.Routing.ManosAction" />
+      </Parameters>
+      <Docs>
+        <param name="pattern">To be added.</param>
+        <param name="action">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Routes">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Routes { get; }" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="StartInternal">
+      <MemberSignature Language="C#" Value="protected void StartInternal ();" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Trace">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Trace (Manos.ManosModule module, string[] patterns);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="module" Type="Manos.ManosModule" />
+        <Parameter Name="patterns" Type="System.String[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="module">To be added.</param>
+        <param name="patterns">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Trace">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Trace (Manos.Routing.ManosAction action, string[] patterns);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="action" Type="Manos.Routing.ManosAction" />
+        <Parameter Name="patterns" Type="System.String[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="action">To be added.</param>
+        <param name="patterns">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Trace">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Trace (string pattern, Manos.ManosModule module);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="pattern" Type="System.String" />
+        <Parameter Name="module" Type="Manos.ManosModule" />
+      </Parameters>
+      <Docs>
+        <param name="pattern">To be added.</param>
+        <param name="module">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Trace">
+      <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Trace (string pattern, Manos.Routing.ManosAction action);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Routing.RouteHandler</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="pattern" Type="System.String" />
+        <Parameter Name="action" Type="Manos.Routing.ManosAction" />
+      </Parameters>
+      <Docs>
+        <param name="pattern">To be added.</param>
+        <param name="action">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

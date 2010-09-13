@@ -1,0 +1,39 @@
+<Type Name="IMatchOperation" FullName="Manos.Routing.IMatchOperation">
+  <TypeSignature Language="C#" Value="public interface IMatchOperation" />
+  <AssemblyInfo>
+    <AssemblyName>Manos</AssemblyName>
+    <AssemblyVersion>0.0.0.2</AssemblyVersion>
+  </AssemblyInfo>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="IsMatch">
+      <MemberSignature Language="C#" Value="public bool IsMatch (string input, int start, Manos.Collections.DataDictionary data, out int end);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.0.2</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="input" Type="System.String" />
+        <Parameter Name="start" Type="System.Int32" />
+        <Parameter Name="data" Type="Manos.Collections.DataDictionary" />
+        <Parameter Name="end" Type="System.Int32&amp;" RefType="out" />
+      </Parameters>
+      <Docs>
+        <param name="input">To be added.</param>
+        <param name="start">To be added.</param>
+        <param name="data">To be added.</param>
+        <param name="end">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

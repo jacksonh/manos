@@ -1,0 +1,23 @@
+<Type Name="ReadCallback" FullName="Manos.Server.ReadCallback">
+  <TypeSignature Language="C#" Value="public delegate void ReadCallback(IOStream stream, byte[] data);" />
+  <AssemblyInfo>
+    <AssemblyName>Manos</AssemblyName>
+    <AssemblyVersion>0.0.0.2</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Delegate</BaseTypeName>
+  </Base>
+  <Parameters>
+    <Parameter Name="stream" Type="Manos.Server.IOStream" />
+    <Parameter Name="data" Type="System.Byte[]" />
+  </Parameters>
+  <ReturnValue>
+    <ReturnType>System.Void</ReturnType>
+  </ReturnValue>
+  <Docs>
+    <param name="stream">To be added.</param>
+    <param name="data">To be added.</param>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+</Type>

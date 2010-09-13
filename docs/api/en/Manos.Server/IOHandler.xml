@@ -1,0 +1,23 @@
+<Type Name="IOHandler" FullName="Manos.Server.IOHandler">
+  <TypeSignature Language="C#" Value="public delegate void IOHandler(IntPtr fd, EpollEvents events);" />
+  <AssemblyInfo>
+    <AssemblyName>Manos</AssemblyName>
+    <AssemblyVersion>0.0.0.2</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Delegate</BaseTypeName>
+  </Base>
+  <Parameters>
+    <Parameter Name="fd" Type="System.IntPtr" />
+    <Parameter Name="events" Type="Mono.Unix.Native.EpollEvents" />
+  </Parameters>
+  <ReturnValue>
+    <ReturnType>System.Void</ReturnType>
+  </ReturnValue>
+  <Docs>
+    <param name="fd">To be added.</param>
+    <param name="events">To be added.</param>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+</Type>
