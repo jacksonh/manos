@@ -2,6 +2,7 @@
 
 using System;
 
+using System.Text;
 
 namespace Manos.Server {
 
@@ -11,6 +12,8 @@ namespace Manos.Server {
 		{
 			int end;
 
+			uri = HttpUtility.UrlDecode (uri, Encoding.Default);
+			
 			if (String.IsNullOrEmpty (uri)) {
 				scheme = null;
 				path = null;
