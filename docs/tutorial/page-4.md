@@ -1,4 +1,3 @@
-
 Manos Futures
 =============
 
@@ -52,7 +51,7 @@ Revision Four:
 -------------
 
 ### Simplified Deployment
-manos-tool will be able to create standalone applications with a bundled web server.  These
+manos will be able to create standalone applications with a bundled web server.  These
 applications can be run as a daemon on Linux or as a service on Windows.
 
 ### Cache-Control

@@ -86,10 +86,10 @@ for loop:
 Building and Running Templates
 ------------------------------
 
-To build and run our templates, we'll use the manos-tool again.
+To build and run our templates, we'll use the manos command again.
 
-    manos-tool -build
-    manos-tool -run
+    manos -build
+    manos -run
 
 if we navigate to http://localhost:8080/ we get a real web page.  Viewing the source should look something like this:
 

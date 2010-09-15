@@ -5,7 +5,7 @@ This tutorial will get you writing your first Manos apps in no time.
 
 We assume you already have Manos installed on your machine.  If you don't check out
 the Installation Guide. To ensure you have Manos running try typing the command
-manos-tool in a terminal.
+manos in a terminal.
 
 
 Create your first Manos Project
@@ -13,7 +13,7 @@ Create your first Manos Project
 
 To create your first Manos application all you need to do is run the following command:
 
-`manos-tool -init <YourApplicationName>`
+`manos -init <YourApplicationName>`
 
 Make sure you don't have any spaces in your application name.
 
@@ -93,16 +93,16 @@ Instead of creating an action method to handle the request we've just used a sim
 Building and Running Manos Apps
 -------------------------------
 
-To test out your application first you'll need to build it. You can do this using manos-tool:
+To test out your application first you'll need to build it. You can do this using manos:
 
-    manos-tool -build
+    manos -build
 
 This will compile our application and any templates or modules that we happen to have in your application directory.  In this case all we've got is
 the StaticContentModule and we haven't created any templates yet.  Once this is complete we'll have a HelloWorldApp.dll in our directory.
 
-To run this app all we'll use the manos-tool again:
+To run this app all we'll use the manos again:
 
-    manos-tool -run
+    manos -server
 
 Once the application is running you can check it out by navigating your browser to http://localhost:8080/
 
