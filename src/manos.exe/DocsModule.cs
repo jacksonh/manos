@@ -24,7 +24,7 @@ namespace Manos.Tool {
 
 			manuals = new Dictionary<string,string> ();
 
-			manuals.Add ("Installation", "install.md");
+			manuals.Add ("Installation", "installation.md");
 			manuals.Add ("Routing", "routing.md");
 			manuals.Add ("Caching Objects", "object-cache.md");
 			manuals.Add ("Pipes", "pipes.md");
