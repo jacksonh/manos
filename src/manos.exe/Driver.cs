@@ -36,7 +36,7 @@ namespace Manos.Tool
 			try {
 				extra = p.Parse(args);
 			} catch (OptionException){
-				Console.WriteLine ("Try `manos-tool --help' for more information.");
+				Console.WriteLine ("Try `manos --help' for more information.");
 				return 1;
 			}
 			
@@ -65,7 +65,7 @@ namespace Manos.Tool
 			try {
 				extra = p.Parse(args);
 			} catch (OptionException){
-				Console.WriteLine ("Try `manos-tool --help' for more information.");
+				Console.WriteLine ("Try `manos --help' for more information.");
 				return null;
 			}
 			
@@ -78,7 +78,7 @@ namespace Manos.Tool
 		private static int Init (IList<string> args)
 		{
 			if (args.Count < 1) {
-				Console.WriteLine ("manos-tool init <AppName>");
+				Console.WriteLine ("manos -init <AppName>");
 				Console.WriteLine ("This will initialize a new application with the supplied name.");
 			}
 				
@@ -148,7 +148,7 @@ namespace Manos.Tool
 		}
 		private static void ShowHelp (OptionSet os)
 		{
-			Console.WriteLine ("manos-tool usage is: manos-tool [command] [options]");
+			Console.WriteLine ("manos usage is: manos [command] [options]");
 			Console.WriteLine ();
 			os.WriteOptionDescriptions (Console.Out);
 		}
