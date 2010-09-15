@@ -29,6 +29,7 @@ namespace Manos.Tool
 				{ "h|?|help", v => help = v != null },
 				{ "init|i", v => command = Init },
 				{ "server|s", v => command = Server },
+				{ "docs|d", v => command = Docs },
 			};
 			
 			List<string> extra = null;
@@ -49,7 +50,6 @@ namespace Manos.Tool
 				return 1;
 			}
 			
-			Console.WriteLine ("executing command: {0}", command);
 			command (extra);
 			
 			return 0;
@@ -108,7 +108,7 @@ namespace Manos.Tool
 			Driver d = new Driver ();
 			
 			try {
-				d.Server ();
+				d.RunServer (args);
 			} catch (Exception e) {
 				Console.WriteLine ("error while serving application:");
 				Console.WriteLine (e);
@@ -118,13 +118,34 @@ namespace Manos.Tool
 			return 0;
 		}
 		
-		public void Server ()
+		public void RunServer (IList<string> args)
 		{
-			ServerCommand cmd = new ServerCommand (Environment);
+			ServerCommand cmd = new ServerCommand (Environment, args);
 			
 			cmd.Run ();
 		}
 		
+		private static int Docs (IList<string> args)
+		{
+			Driver d = new Driver ();
+			
+			try {
+				d.RunDocs ();
+			} catch (Exception e) {
+				Console.WriteLine ("error while serving application:");
+				Console.WriteLine (e);
+				return 1;
+			}
+			
+			return 0;
+		}
+		
+		public void RunDocs ()
+		{
+			DocsCommand cmd = new DocsCommand (Environment);
+			
+			cmd.Run ();
+		}
 		private static void ShowHelp (OptionSet os)
 		{
 			Console.WriteLine ("manos-tool usage is: manos-tool [command] [options]");

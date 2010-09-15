@@ -35,6 +35,10 @@ namespace Manos.Server {
 		}
 
 		void Write (string str);
+		void Write (string str, params object [] prms);
+		
+		void WriteLine (string str);
+		void WriteLine (string str, params object [] prms);
 
 		void Write (byte [] data);
 

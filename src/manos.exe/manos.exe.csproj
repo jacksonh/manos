@@ -38,6 +38,9 @@
     <Compile Include="InitCommand.cs" />
     <Compile Include="Environment.cs" />
     <Compile Include="ServerCommand.cs" />
+    <Compile Include="DocsCommand.cs" />
+    <Compile Include="DocsModule.cs" />
+    <Compile Include="Markdown.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Manos\Manos.csproj">

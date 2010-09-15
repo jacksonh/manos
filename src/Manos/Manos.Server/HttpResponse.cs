@@ -75,6 +75,21 @@ namespace Manos.Server {
 			WriteToBody (data);
 		}
 
+		public void Write (string str, params object [] prms)
+		{
+			Write (String.Format (str, prms));	
+		}
+		
+		public void WriteLine (string str)
+		{
+			Write (str + Environment.NewLine);	
+		}
+		
+		public void WriteLine (string str, params object [] prms)
+		{
+			WriteLine (String.Format (str, prms));	
+		}
+		
 		public void SendFile (string file)
 		{
 			FileInfo fi = new FileInfo (file);

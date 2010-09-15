@@ -1,7 +1,10 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Collections;
+using System.Collections.Generic;
 
 using Manos;
 using Manos.Server;
@@ -16,14 +19,24 @@ namespace Manos.Tool
 		private int? port;
 		private string application_assembly;
 		
-		public ServerCommand (Environment env)
+		public ServerCommand (Environment env) : this (env, new List<string> ())
+		{
+		}
+		
+		public ServerCommand (Environment env, IList<string> args)
 		{
 			Environment = env;
+			Arguments = args;
 		}
 		
 		public Environment Environment {
 			get;
 			private set;
+		}
+		
+		public IList<string> Arguments {
+			get;
+			set;
 		}
 		
 		public string ApplicationAssembly {
@@ -67,12 +80,50 @@ namespace Manos.Tool
 				if (t.BaseType == typeof (ManosApp)) {
 					if (app != null)
 						throw new Exception ("Library contains multiple apps.");
-					app = (ManosApp) Activator.CreateInstance (t);
+					app = CreateAppInstance (t);
 				}
 			}
 
 			Console.WriteLine ("running app:  {0}", app);
 			return app;
+		}
+		
+		public ManosApp CreateAppInstance (Type t)
+		{
+			int arg_count = Arguments.Count;
+			ConstructorInfo [] constructors = t.GetConstructors ();
+			
+			foreach (ConstructorInfo ci in constructors.Where (c => c.GetParameters ().Count () == arg_count)) {
+				object [] args = ArgsForParams (ci.GetParameters ());
+				if (args == null)
+					continue;
+				try {
+					return (ManosApp) Activator.CreateInstance (t, args);
+				} catch (Exception e) {
+					Console.Error.WriteLine ("Exception creating App Type: '{0}'.", t);
+					Console.Error.WriteLine (e);
+				}
+			}
+			
+			return null;
+		}
+		
+		public object [] ArgsForParams (ParameterInfo [] prms)
+		{
+			object [] res = new object [prms.Length];
+			
+			for (int i = 0; i < prms.Count (); i++) {
+				try {
+					res [i] = Convert.ChangeType (Arguments [i], prms [i].ParameterType);
+				} catch (Exception e) {
+					Console.Error.WriteLine ("Exception converting type: '{0}'.", prms [i].ParameterType);
+					Console.Error.WriteLine (e);
+					
+					return null;
+				}
+			}
+			
+			return res;
 		}
 	}
 }
