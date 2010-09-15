@@ -17,7 +17,7 @@ namespace Manos.Server {
 	public class HttpServer {
 
 		// This gets called on every request so lets just use a hard coded string instead of reflection
-		public static readonly string ServerVersion = "0.0.0.1";
+		public static readonly string ServerVersion = "0.0.1-a";
 
 		private HttpConnectionCallback callback;
 		private IOLoop ioloop;

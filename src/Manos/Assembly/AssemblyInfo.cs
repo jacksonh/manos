@@ -9,4 +9,4 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle ("Manos.dll")]
 
-[assembly: AssemblyVersion ("0.0.0.2")]
+[assembly: AssemblyVersion ("0.0.1-a")]

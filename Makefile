@@ -3,7 +3,7 @@ include config.make
 conf=Debug
 SLN=src/Manos.sln
 VERBOSITY=normal
-version=0.0.1
+version=0.0.1-a
 install_bin_dir = "$(prefix)/lib/manos/"
 install_data_dir = "$(prefix)/share/manos/"
 install_docs_dir = "$(prefix)/share/manos/docs/"
