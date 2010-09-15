@@ -6,6 +6,7 @@ VERBOSITY=normal
 version=0.0.1
 install_bin_dir = "$(prefix)/lib/manos/"
 install_data_dir = "$(prefix)/share/manos/"
+install_docs_dir = "$(prefix)/share/manos/docs/"
 install_script_dir = "$(prefix)/bin/"
 install_man_dir = "$(prefix)/share/man/man1/"
 install_pc_dir = "$(prefix)/lib/pkg-config/"
@@ -54,12 +55,16 @@ clean:
 	$(XBUILD) $(SLN) /property:Configuration=$(conf) /t:Clean
 	rm -rf build/*
 
-install: update-docs install-data install-bin install-script install-man install-pkg-config
+install: update-docs install-bin install-data install-docs install-script install-man install-pkg-config
 
 
 install-data:
 	test -d "$(install_data_dir)" || mkdir "$(install_data_dir)"
 	cp -rf ./data/* "$(install_data_dir)"
+
+install-docs:
+	test -d "$(install_docs_dir)" || mkdir "$(install_docs_dir)"
+	cp -rf ./docs/* "$(install_docs_dir)"
 
 install-bin: all
 	test -d "$(install_bin_dir)" || mkdir "$(install_bin_dir)"
