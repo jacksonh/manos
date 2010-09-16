@@ -18,8 +18,6 @@ using Manos.Collections;
 namespace Manos.Server {
 
 	public class HttpRequest : IHttpRequest {
-
-		private DataDictionary uri_data;
 		
 		public HttpRequest (IHttpTransaction transaction, HttpHeaders headers, string method, string resource, bool support_1_1)
 		{
@@ -29,13 +27,17 @@ namespace Manos.Server {
 			ResourceUri = resource;
 			Http_1_1_Supported = support_1_1;
 
-			SetEncoding ();
-			SetPathAndQuery ();
-			
 			Data = new DataDictionary ();
+			UriData = new DataDictionary ();
+			QueryData = new DataDictionary ();
+			PostData = new DataDictionary ();
+			
 			Data.Children.Add (UriData);
 			Data.Children.Add (QueryData);
 			Data.Children.Add (PostData);
+		
+			SetEncoding ();
+			SetPathAndQuery ();
 		}
 
 		public IHttpTransaction Transaction {
@@ -84,11 +86,8 @@ namespace Manos.Server {
 		}
 
 		public DataDictionary UriData {
-			get {
-				if (uri_data == null)
-					uri_data = new DataDictionary ();
-				return uri_data;
-			}
+			get;
+			private set;
 		}
 		
 		public Encoding ContentEncoding {
@@ -123,7 +122,10 @@ namespace Manos.Server {
 			}
 
 			LocalPath = path;
-			QueryData = HttpUtility.ParseUrlEncodedData (query);
+			// TODO: Pass this to the encoder to populate
+			DataDictionary query_data = HttpUtility.ParseUrlEncodedData (query);
+			if (query_data != null)
+				QueryData.Children.Add (query_data);
 		}
 
 		internal void SetWwwFormData (byte [] data)
@@ -137,7 +139,10 @@ namespace Manos.Server {
 
 			string post = Encoding.ASCII.GetString (data);
 
-			PostData = HttpUtility.ParseUrlEncodedData (post);
+			// TODO: pass this to the encoder to populate
+			DataDictionary post_data = HttpUtility.ParseUrlEncodedData (post);
+			if (post_data != null)
+				PostData.Children.Add (post_data);
 		}
 
 		internal void SetMultiPartFormData (byte [] data)
