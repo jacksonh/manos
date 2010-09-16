@@ -4,8 +4,10 @@ Getting Started with Manos
 This tutorial will get you writing your first Manos apps in no time.
 
 We assume you already have Manos installed on your machine.  If you don't check out
-the Installation Guide. To ensure you have Manos running try typing the command
-manos in a terminal.
+the Installation Guide. To ensure you have Manos running try typing the manos -help
+command in a terminal.
+
+    manos -help
 
 
 Create your first Manos Project
