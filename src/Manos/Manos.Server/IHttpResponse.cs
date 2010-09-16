@@ -47,6 +47,8 @@ namespace Manos.Server {
 		void Finish ();
 
 		void SetHeader (string name, string value);
+		
+		void Redirect (string url);
 	}
 }
 

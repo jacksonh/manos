@@ -102,6 +102,17 @@ namespace Manos.Server {
 			Transaction.Finish ();
 		}
 
+		public void Redirect (string url)
+		{
+			buffer.Clear ();
+			
+			StatusCode =  302;
+			SetHeader ("Location", url);
+			
+			WriteMetaData ();
+			Transaction.Finish ();
+		}
+		
 		public void WriteMetaData ()
 		{
 			if (WriteHeaders)
