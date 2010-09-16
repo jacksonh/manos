@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 
 using Manos.Server;
 using Manos.Routing;
+using Manos.Caching;
 
 #if BUILD_TEMPLATES
 using Manos.Templates;
@@ -30,6 +31,12 @@ namespace Manos {
 			get { return routes; }
 		}
 
+		public IManosCache Cache {
+			get {
+				return AppHost.Cache;	
+			}
+		}
+		
 		private RouteHandler AddRouteHandler (ManosModule module, string [] patterns, string [] methods)
 		{
 			if (module == null)
