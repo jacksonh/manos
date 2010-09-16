@@ -69,6 +69,7 @@ namespace Manos.Tool
 		{
 			app = LoadLibrary (ApplicationAssembly);
 
+			Console.WriteLine ("Running {0} on port {1}.", app, Port);
 			AppHost.Start (app);
 		}
 		
@@ -84,7 +85,6 @@ namespace Manos.Tool
 				}
 			}
 
-			Console.WriteLine ("running app:  {0}", app);
 			return app;
 		}
 		
