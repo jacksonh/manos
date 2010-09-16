@@ -21,7 +21,7 @@ namespace Manos.Routing {
 
 		private IMatchOperation [] match_ops;
 
-		internal RouteHandler ()
+		public RouteHandler ()
 		{
 			SetupChildrenCollection ();
 		}
@@ -196,7 +196,9 @@ namespace Manos.Routing {
 			
 			foreach (IMatchOperation op in match_ops) {
 				if (op.IsMatch (input, start, uri_data, out end)) {
-					return true;
+					if (Children.Count () > 0 || end == input.Length) {
+						return true;
+					}
 				}
 			}
 			

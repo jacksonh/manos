@@ -21,6 +21,10 @@ namespace Manos.Routing.Tests
 		{
 		}
 		
+		private static void FakeAction2 (IManosContext ctx)
+		{
+		}
+
 		[Test()]
 		public void TestStrMatch ()
 		{
@@ -141,6 +145,41 @@ namespace Manos.Routing.Tests
 			var rh = new RouteHandler ("foo", "GET", new ActionTarget (FakeAction));
 			
 			Should.Throw<InvalidOperationException> (() => rh.Children.Add (new RouteHandler ("foo", "POST")));
+		}
+
+		[Test]
+		public void Find_PartialMatchAtBeginningOfChildlessHandler_ReturnsProperRoute ()
+		{
+			var rh_bad = new RouteHandler ("foo", "GET", new ActionTarget (FakeAction));
+			var rh_good = new RouteHandler ("foobar", "GET", new ActionTarget (FakeAction2));
+			var rh = new RouteHandler ();
+			
+			rh.Children.Add (rh_bad);
+			rh.Children.Add (rh_good);
+
+			
+			var request = new MockHttpRequest ("GET", "foobar");
+			var res = rh.Find (request);
+			
+			Assert.AreEqual (rh_good.Target, res);
+		}
+		
+		[Test]
+		public void Find_PartialMatchAtBeginningOfHandlerWithChildren_ReturnsProperRoute ()
+		{
+			var rh_bad = new RouteHandler ("foo", "GET");
+			var rh_good = new RouteHandler ("foobar", "GET", new ActionTarget (FakeAction2));
+			var rh = new RouteHandler ();
+			
+			rh_bad.Children.Add (new RouteHandler ("blah", "GET", new ActionTarget (FakeAction)));
+			
+			rh.Children.Add (rh_bad);
+			rh.Children.Add (rh_good);
+
+			var request = new MockHttpRequest ("GET", "foobar");
+			var res = rh.Find (request);
+			
+			Assert.AreEqual (rh_good.Target, res);
 		}
 	}
 }
