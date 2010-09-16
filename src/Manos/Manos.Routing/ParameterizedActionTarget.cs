@@ -69,7 +69,7 @@ namespace Manos.Routing
 			
 			for (int i = 2; i < data.Length; i++) {
 				string name = parameters [i].Name;
-				string strd = ctx.Request.UriData.Get (name);
+				string strd = ctx.Request.Data.Get (name);
 			
 				if (!TryConvertType (ctx, parameters [i].ParameterType, strd, out data [i]))
 				    return false;
