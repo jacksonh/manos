@@ -115,9 +115,7 @@ namespace Manos.Routing.Tests
 			
 			int end;
 			DataDictionary data = new DataDictionary ();
-			Console.WriteLine ("about to do match");
 			simple.IsMatch ("manos/mono", 0, data, out end);
-			Console.WriteLine ("done with match");
 			
 			Assert.AreEqual (10, end);
 		}
@@ -156,6 +154,17 @@ namespace Manos.Routing.Tests
 			
 			simple.IsMatch ("/yup/more/data/foo/", 0, data, out end);
 			Assert.AreEqual (5, end);
+		}
+		
+		public void IsMatch_MatchSecondLastChar_ReturnsTrue ()
+		{
+			var simple = new SimpleMatchOperation ("/foo/{bar}~");
+			
+			int end;
+			DataDictionary data = new DataDictionary ();
+			
+			bool is_match = simple.IsMatch ("/foo/barbaz~", 0, data, out end);
+			Assert.IsTrue (is_match);
 		}
 	}
 }

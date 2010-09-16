@@ -87,13 +87,13 @@ namespace Manos.Routing
 				char end_marker = pattern [g.End + 1];
 				while (input [input_pos] != end_marker) {
 					input_pos++;
-					if (input_pos > input.Length)
+					if (input_pos >= input.Length)
 						return false;
 				}
 				
 				data_str = input.Substring (input_start, input_pos - input_start);
 				local_data.Set (g.Name, data_str);
-				
+
 				input_pos++;
 				pattern_pos = g.End + 2;
 			}
