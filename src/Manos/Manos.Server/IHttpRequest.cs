@@ -17,6 +17,10 @@ namespace Manos.Server {
 			get;
 		}
 
+		DataDictionary Data {
+			get;	
+		}
+		
 		DataDictionary UriData {
 			get;	
 		}

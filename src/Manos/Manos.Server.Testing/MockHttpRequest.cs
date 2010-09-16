@@ -12,6 +12,7 @@ namespace Manos.Server.Testing
 
 	public class MockHttpRequest : IHttpRequest
 	{
+		private DataDictionary data;
 		private DataDictionary uri_data;
 		
 		public MockHttpRequest (string method, string local_path)
@@ -34,6 +35,14 @@ namespace Manos.Server.Testing
 		public bool Aborted {
 			get;
 			private set;
+		}
+		
+		public DataDictionary Data {
+			get {
+				if (data == null)
+					data = new DataDictionary ();
+				return data;
+			}
 		}
 		
 		public DataDictionary UriData {
