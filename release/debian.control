@@ -1,0 +1,12 @@
+Source: manos
+Section: unknown
+Priority: optional
+Maintainer: Jackson Harper <jackson@novell.com>
+Build-Depends: debhelper (>= 4.1.16), mono (>= 2.8)
+
+Package: manos
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: Manos de Mono 
+ Manos is a web application framework built on top of Mono.
+
