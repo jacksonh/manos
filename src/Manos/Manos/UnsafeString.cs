@@ -48,13 +48,6 @@ namespace Manos
 			return input.ToString ();	
 		}
 		
-		/*
-		public static explicit operator string (UnsafeString input)
-		{
-			return input.ToString ();	
-		}
-		*/
-		
 		public static string Escape (string input)
 		{
 			bool dummy;
