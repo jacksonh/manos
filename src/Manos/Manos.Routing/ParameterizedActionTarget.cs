@@ -65,10 +65,15 @@ namespace Manos.Routing
 		{
 			data = new object [parameters.Length];
 			
-			data [0] = app;
-			data [1] = ctx;
+			int param_start = 1;
+			data [0] = ctx;
 			
-			for (int i = 2; i < data.Length; i++) {
+			if (typeof (ManosApp).IsAssignableFrom (parameters [1].ParameterType)) {
+				data [1] = app;
+				++param_start;
+			}
+			
+			for (int i = param_start; i < data.Length; i++) {
 				string name = parameters [i].Name;
 				UnsafeString strd = ctx.Request.Data.Get (name);
 			

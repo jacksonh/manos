@@ -350,17 +350,12 @@ namespace Manos {
 
 		private bool IsParameterizedActionSignature (ParameterInfo [] parameters)
 		{
-			if (parameters.Length < 2) {
+			if (parameters.Length < 1) {
 				return false;
 			}
 			
-			if (parameters [0].ParameterType != typeof (ManosApp) && !parameters [0].ParameterType.IsSubclassOf (typeof (ManosApp))) {
+			if (parameters [0].ParameterType != typeof (IManosContext))
 				return false;
-			}
-			
-			if (typeof (IManosContext) != parameters [1].ParameterType) {
-				return false;
-			}
 			
 			return true;
 		}
