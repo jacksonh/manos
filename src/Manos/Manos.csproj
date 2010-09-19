@@ -99,6 +99,7 @@
     <Compile Include="Manos.Server\RequestDataDictionary.cs" />
     <Compile Include="Manos.Collections\DataDictionary.cs" />
     <Compile Include="Manos\RouteAttribute.cs" />
+    <Compile Include="Manos\UnsafeString.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -109,6 +110,8 @@
     <Folder Include="Manos.Server\" />
     <Folder Include="Manos.Caching\" />
     <Folder Include="Manos.Collections\" />
+    <Folder Include="Manos.Util\" />
+    <Folder Include="Manos.Util\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Manos.Template\codegen.cs" />

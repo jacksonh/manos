@@ -92,11 +92,35 @@
       </Docs>
     </Member>
     <Member MemberName="TryConvertType">
+      <MemberSignature Language="C#" Value="public static bool TryConvertType (Manos.IManosContext ctx, Type type, Manos.UnsafeString unsafe_str_value, out object data);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.1.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="ctx" Type="Manos.IManosContext" />
+        <Parameter Name="type" Type="System.Type" />
+        <Parameter Name="unsafe_str_value" Type="Manos.UnsafeString" />
+        <Parameter Name="data" Type="System.Object&amp;" RefType="out" />
+      </Parameters>
+      <Docs>
+        <param name="ctx">To be added.</param>
+        <param name="type">To be added.</param>
+        <param name="unsafe_str_value">To be added.</param>
+        <param name="data">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="TryConvertType">
       <MemberSignature Language="C#" Value="public static bool TryConvertType (Manos.IManosContext ctx, Type type, string str_value, out object data);" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>

@@ -38,6 +38,7 @@
       <Type Name="RouteAttribute" Kind="Class" />
       <Type Name="TimeoutCallback" Kind="Delegate" />
       <Type Name="TraceAttribute" Kind="Class" />
+      <Type Name="UnsafeString" Kind="Class" />
     </Namespace>
     <Namespace Name="Manos.Caching">
       <Type Name="IManosCache" Kind="Interface" />

@@ -54,7 +54,7 @@ namespace Manos.Routing.Tests
 			IManosContext ctx = new ManosContextStub ();
 			
 			object data = null;
-			bool converted = ParameterizedActionTarget.TryConvertType (ctx, typeof (string), "foobar", out data);
+			bool converted = ParameterizedActionTarget.TryConvertType (ctx, typeof (string), new UnsafeString ("foobar"), out data);
 			Assert.IsTrue (converted);
 		}
 		
@@ -65,7 +65,7 @@ namespace Manos.Routing.Tests
 			
 			object data = null;
 			
-			ParameterizedActionTarget.TryConvertType (ctx, typeof (string), "foobar", out data);
+			ParameterizedActionTarget.TryConvertType (ctx, typeof (string), new UnsafeString ("foobar"), out data);
 			Assert.AreEqual ("foobar", data);
 		}
 		
@@ -75,7 +75,7 @@ namespace Manos.Routing.Tests
 			IManosContext ctx = new ManosContextStub ();
 			
 			object data = null;
-			bool converted = ParameterizedActionTarget.TryConvertType (ctx, typeof (int), "42", out data);
+			bool converted = ParameterizedActionTarget.TryConvertType (ctx, typeof (int), new UnsafeString ("42"), out data);
 			Assert.IsTrue (converted);
 		}
 		
@@ -86,7 +86,7 @@ namespace Manos.Routing.Tests
 			
 			object data = null;
 			
-			ParameterizedActionTarget.TryConvertType (ctx, typeof (int), "42", out data);
+			ParameterizedActionTarget.TryConvertType (ctx, typeof (int), new UnsafeString ("42"), out data);
 			Assert.AreEqual (42, data);
 		}
 		
@@ -96,7 +96,7 @@ namespace Manos.Routing.Tests
 			IManosContext ctx = new ManosContextStub ();
 			
 			object data = null;
-			bool converted = ParameterizedActionTarget.TryConvertType (ctx, typeof (int), "foobar", out data);
+			bool converted = ParameterizedActionTarget.TryConvertType (ctx, typeof (int), new UnsafeString ("foobar"), out data);
 			Assert.IsFalse (converted);
 		}
 		
@@ -107,7 +107,7 @@ namespace Manos.Routing.Tests
 			
 			object data = null;
 			
-			ParameterizedActionTarget.TryConvertType (ctx, typeof (int), "foobar", out data);
+			ParameterizedActionTarget.TryConvertType (ctx, typeof (int), new UnsafeString ("foobar"), out data);
 			Assert.IsNull (data);
 		}
 	}

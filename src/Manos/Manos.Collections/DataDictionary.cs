@@ -5,21 +5,20 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
-
 namespace Manos.Collections
 {
 	public class DataDictionary
 	{
-		private Dictionary<string,string> dictionary;
+		private Dictionary<string,UnsafeString> dictionary;
 		private List<DataDictionary> children;
 		
 		public DataDictionary ()
 		{
-			dictionary = new Dictionary<string, string> ();
+			dictionary = new Dictionary<string, UnsafeString> ();
 		}
 		
 		public string this [string key] {
-			get { return Get (key); }
+			get { return GetString (key); }
 			set { Set (key, value); }
 		}
 		
@@ -40,9 +39,9 @@ namespace Manos.Collections
 			}
 		}
 		
-		public string Get (string key)
+		public UnsafeString Get (string key)
 		{
-			string value = null;
+			UnsafeString value = null;
 			
 			if (dictionary.TryGetValue (key, out value))
 				return value;
@@ -52,8 +51,23 @@ namespace Manos.Collections
 			
 			return value;
 		}
+		
+		public string GetString (string key)
+		{
+			UnsafeString str = Get (key);
 			
+			if (str == null)
+				return null;
+			
+			return str.SafeValue;
+		}
+		
 		public void Set (string key, string value)
+		{
+			dictionary [key] = new UnsafeString (value);
+		}
+		
+		public void Set (string key, UnsafeString value)
 		{
 			dictionary [key] = value;
 		}

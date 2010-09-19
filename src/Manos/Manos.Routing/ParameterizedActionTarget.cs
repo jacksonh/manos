@@ -2,6 +2,7 @@
 using System;
 using System.Reflection;
 
+
 namespace Manos.Routing
 {
 	public class ParameterizedActionTarget : IManosTarget
@@ -69,7 +70,7 @@ namespace Manos.Routing
 			
 			for (int i = 2; i < data.Length; i++) {
 				string name = parameters [i].Name;
-				string strd = ctx.Request.Data.Get (name);
+				UnsafeString strd = ctx.Request.Data.Get (name);
 			
 				if (!TryConvertType (ctx, parameters [i].ParameterType, strd, out data [i]))
 				    return false;
@@ -78,11 +79,18 @@ namespace Manos.Routing
 			return true;
 		}
 		
-		public static bool TryConvertType (IManosContext ctx, Type type, string str_value, out object data)
+		public static bool TryConvertType (IManosContext ctx, Type type, UnsafeString unsafe_str_value, out object data)
 		{
+			if (type == typeof (UnsafeString)) {
+				data = unsafe_str_value;
+				return true;
+			}
+			
+			string str_value = unsafe_str_value.SafeValue;
+			
 			try {
 				data = Convert.ChangeType (str_value, type);
-			} catch (Exception e) {
+			} catch {
 				Console.Error.WriteLine ("Error while converting '{0}' to '{1}'.", str_value, type);
 				
 				data = null;
