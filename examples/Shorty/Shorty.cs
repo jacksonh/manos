@@ -31,7 +31,7 @@ namespace Shorty {
 		}
 
 		[Post ("/submit-link")]
-		public void SubmitLink (Shorty app, IManosContext ctx, string link)
+		public void SubmitLink (IManosContext ctx, Shorty app, string link)
 		{
 			string id = GenerateHash (link, 5);
 
@@ -40,7 +40,7 @@ namespace Shorty {
 		}
 
 		[Route ("/r/{id}~")]
-		public void LinkInfo (Shorty app, IManosContext ctx, string id)
+		public void LinkInfo (IManosContext ctx, Shorty app, string id)
 		{
 			LinkData info = Cache [id] as LinkData;
 
@@ -57,7 +57,7 @@ namespace Shorty {
 		}
 
 		[Route ("/r/{id}")]
-		public void Redirector (Shorty app, IManosContext ctx, string id)
+		public void Redirector (IManosContext ctx, Shorty app, string id)
 		{
 			LinkData info = Cache [id] as LinkData;
 
