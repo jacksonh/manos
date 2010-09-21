@@ -100,13 +100,13 @@ Finally, we need to create a hashing function for generating unique ids based on
         SHA1 sha = new SHA1CryptoServiceProvider (); 
 	data = sha.ComputeHash (data);
 
-	string base64 = Convert.ToBase64String (data);
+        string base64 = Convert.ToBase64String (data);
 
         int i = 0;
-	StringBuilder result = new StringBuilder ();
-	while (result.Length < length) {
-	    if (Char.IsLetterOrDigit (base64 [i]))
-	        result.Append (base64 [i]);
+        StringBuilder result = new StringBuilder ();
+        while (result.Length < length) {
+            if (Char.IsLetterOrDigit (base64 [i]))
+                result.Append (base64 [i]);
             ++i;
             if (i >= base64.Length)
                 return null;
