@@ -98,7 +98,7 @@ Finally, we need to create a hashing function for generating unique ids based on
         byte [] data = Encoding.Default.GetBytes (str);
 
         SHA1 sha = new SHA1CryptoServiceProvider (); 
-	data = sha.ComputeHash (data);
+        data = sha.ComputeHash (data);
 
         string base64 = Convert.ToBase64String (data);
 
@@ -123,8 +123,8 @@ cache and then redirect the user to their LinkInfo page.
     {
         string id = GenerateHash (link, 5);
 
-	Cache [id] = new LinkData (link);
-	ctx.Response.Redirect ("/r/" + id + "~");
+        Cache [id] = new LinkData (link);
+        ctx.Response.Redirect ("/r/" + id + "~");
     }
 
 
