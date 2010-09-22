@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 using System.Linq;
 
@@ -20,11 +21,11 @@ namespace Manos.Server {
 
 	public class IOLoop {
 
-		public static readonly int MAX_EVENTS = 24;
+		public static readonly int MAX_EVENTS = 128;
 
 		public static readonly EpollEvents EPOLL_READ_EVENTS = EpollEvents.EPOLLIN;
 		public static readonly EpollEvents EPOLL_WRITE_EVENTS = EpollEvents.EPOLLOUT;
-		public static readonly EpollEvents EPOLL_ERROR_EVENTS = EpollEvents.EPOLLERR | EpollEvents.EPOLLHUP | EpollEvents.EPOLLRDHUP;
+		public static readonly EpollEvents EPOLL_ERROR_EVENTS = EpollEvents.EPOLLERR | EpollEvents.EPOLLHUP;
 
 		private int epfd;
 		private bool running;
