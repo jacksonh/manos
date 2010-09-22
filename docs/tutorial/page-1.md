@@ -29,7 +29,7 @@ We'll call our app Shorty;
     manos -init Shorty
 
 This will create a folder named Shorty and a few files and subfolders. Assuming
-your application was named HelloWorld, you'll now have a structure something like this:
+your application was named Shorty, you'll now have a structure something like this:
 
 
     Shorty/
