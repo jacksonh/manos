@@ -118,7 +118,7 @@ namespace Manos.Server {
 			while (events.Count > 0) {
 				var e = events.Dequeue ();
 
-				RunHandler (e.fd, e.events);
+				RunHandler ((IntPtr) e.fd, e.events);
 			}
 		}
 
@@ -236,18 +236,18 @@ namespace Manos.Server {
 		
 		private void Register (IntPtr fd, EpollEvents events)
 		{
-			Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_ADD, fd, events);
+			Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_ADD, (int) fd, events);
 		}
 
 		
 		private void Modify (IntPtr fd, EpollEvents events)
 		{
-			Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_MOD, fd, events);
+			Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_MOD, (int) fd, events);
 		}
 
 		private void Unregister (IntPtr fd)
 		{
-			Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_DEL, fd, 0);
+			Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_DEL, (int) fd, 0);
 		}
 		
 	}
