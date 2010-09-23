@@ -27,7 +27,8 @@ namespace Shorty {
                                      <input type='text' name='link' />
                                      <input type='submit' />
                                     </form>
-                                   </body>");
+                                   </body>
+				  </html>");
 		}
 
 		[Post ("/submit-link")]

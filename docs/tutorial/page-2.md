@@ -65,7 +65,8 @@ in this release, we need to write the HTML ourself (or we could use another temp
                                      <input type='text' name='link'>
                                      <input type='submit'>
                                     </form>
-                                   </body>");
+                                   </body>
+                                  </html>");
     }
 
 It's not beautiful, but that will at least let us get some links into our application.
