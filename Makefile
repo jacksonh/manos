@@ -1,4 +1,4 @@
-
+$(if $(wildcard config.make),,$(error You need to run './configure' before running 'make'.))
 include config.make
 conf=Debug
 SLN=src/Manos.sln
@@ -43,6 +43,7 @@ export MANOS_PC_SCRIPT
 
 
 all: 
+	@test -f config.make || (echo "You need to run ./configure." && exit 1)
 	$(XBUILD) $(SLN) /property:Configuration=$(conf)
 
 run-tests: all
