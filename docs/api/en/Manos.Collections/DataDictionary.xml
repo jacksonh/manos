@@ -26,6 +26,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor() cil managed" />
     </Member>
     <Member MemberName="Children">
       <MemberSignature Language="C#" Value="public System.Collections.Generic.IList&lt;Manos.Collections.DataDictionary&gt; Children { get; }" />
@@ -42,6 +43,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Generic.IList`1&lt;class Manos.Collections.DataDictionary&gt; Children" />
     </Member>
     <Member MemberName="Count">
       <MemberSignature Language="C#" Value="public int Count { get; }" />
@@ -58,6 +60,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance int32 Count" />
     </Member>
     <Member MemberName="Get">
       <MemberSignature Language="C#" Value="public Manos.UnsafeString Get (string key);" />
@@ -77,6 +80,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.UnsafeString Get(string key) cil managed" />
     </Member>
     <Member MemberName="Get">
       <MemberSignature Language="C#" Value="public string Get (string key);" />
@@ -115,6 +119,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance string GetString(string key) cil managed" />
     </Member>
     <Member MemberName="Item">
       <MemberSignature Language="C#" Value="public string this[string key] { set; get; }" />
@@ -135,6 +140,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance string Item(string)" />
     </Member>
     <Member MemberName="Set">
       <MemberSignature Language="C#" Value="public void Set (string key, Manos.UnsafeString value);" />
@@ -155,6 +161,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Set(string key, class Manos.UnsafeString value) cil managed" />
     </Member>
     <Member MemberName="Set">
       <MemberSignature Language="C#" Value="public void Set (string key, string value);" />
@@ -176,6 +183,8 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Set(string key, string value) cil managed" />
     </Member>
   </Members>
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit DataDictionary extends System.Object" />
 </Type>

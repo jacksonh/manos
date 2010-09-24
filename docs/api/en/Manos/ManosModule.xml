@@ -26,6 +26,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor() cil managed" />
     </Member>
     <Member MemberName="AddTimeout">
       <MemberSignature Language="C#" Value="public static void AddTimeout (TimeSpan timespan, Manos.TimeoutCallback callback);" />
@@ -47,6 +48,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void AddTimeout(valuetype System.TimeSpan timespan, class Manos.TimeoutCallback callback) cil managed" />
     </Member>
     <Member MemberName="AddTimeout">
       <MemberSignature Language="C#" Value="public static void AddTimeout (TimeSpan timespan, Manos.IRepeatBehavior repeat, Manos.TimeoutCallback callback);" />
@@ -70,6 +72,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void AddTimeout(valuetype System.TimeSpan timespan, class Manos.IRepeatBehavior repeat, class Manos.TimeoutCallback callback) cil managed" />
     </Member>
     <Member MemberName="AddTimeout">
       <MemberSignature Language="C#" Value="public static void AddTimeout (TimeSpan timespan, object data, Manos.TimeoutCallback callback);" />
@@ -93,6 +96,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void AddTimeout(valuetype System.TimeSpan timespan, object data, class Manos.TimeoutCallback callback) cil managed" />
     </Member>
     <Member MemberName="AddTimeout">
       <MemberSignature Language="C#" Value="public static void AddTimeout (TimeSpan timespan, Manos.IRepeatBehavior repeat, object data, Manos.TimeoutCallback callback);" />
@@ -118,6 +122,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void AddTimeout(valuetype System.TimeSpan timespan, class Manos.IRepeatBehavior repeat, object data, class Manos.TimeoutCallback callback) cil managed" />
     </Member>
     <Member MemberName="Cache">
       <MemberSignature Language="C#" Value="public Manos.Caching.IManosCache Cache { get; }" />
@@ -133,6 +138,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Caching.IManosCache Cache" />
     </Member>
     <Member MemberName="Delete">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Delete (Manos.ManosModule module, string[] patterns);" />
@@ -161,6 +167,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Delete(class Manos.ManosModule module, string[] patterns) cil managed" />
     </Member>
     <Member MemberName="Delete">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Delete (Manos.Routing.ManosAction action, string[] patterns);" />
@@ -189,6 +196,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Delete(class Manos.Routing.ManosAction action, string[] patterns) cil managed" />
     </Member>
     <Member MemberName="Delete">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Delete (string pattern, Manos.ManosModule module);" />
@@ -211,6 +219,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Delete(string pattern, class Manos.ManosModule module) cil managed" />
     </Member>
     <Member MemberName="Delete">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Delete (string pattern, Manos.Routing.ManosAction action);" />
@@ -233,6 +242,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Delete(string pattern, class Manos.Routing.ManosAction action) cil managed" />
     </Member>
     <Member MemberName="Get">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Get (Manos.ManosModule module, string[] patterns);" />
@@ -261,6 +271,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Get(class Manos.ManosModule module, string[] patterns) cil managed" />
     </Member>
     <Member MemberName="Get">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Get (Manos.Routing.ManosAction action, string[] patterns);" />
@@ -289,6 +300,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Get(class Manos.Routing.ManosAction action, string[] patterns) cil managed" />
     </Member>
     <Member MemberName="Get">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Get (string pattern, Manos.ManosModule module);" />
@@ -311,6 +323,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Get(string pattern, class Manos.ManosModule module) cil managed" />
     </Member>
     <Member MemberName="Get">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Get (string pattern, Manos.Routing.ManosAction action);" />
@@ -333,6 +346,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Get(string pattern, class Manos.Routing.ManosAction action) cil managed" />
     </Member>
     <Member MemberName="Head">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Head (Manos.ManosModule module, string[] patterns);" />
@@ -361,6 +375,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Head(class Manos.ManosModule module, string[] patterns) cil managed" />
     </Member>
     <Member MemberName="Head">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Head (Manos.Routing.ManosAction action, string[] patterns);" />
@@ -389,6 +404,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Head(class Manos.Routing.ManosAction action, string[] patterns) cil managed" />
     </Member>
     <Member MemberName="Head">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Head (string pattern, Manos.ManosModule module);" />
@@ -411,6 +427,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Head(string pattern, class Manos.ManosModule module) cil managed" />
     </Member>
     <Member MemberName="Head">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Head (string pattern, Manos.Routing.ManosAction action);" />
@@ -433,6 +450,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Head(string pattern, class Manos.Routing.ManosAction action) cil managed" />
     </Member>
     <Member MemberName="Options">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Options (Manos.ManosModule module, string[] patterns);" />
@@ -461,6 +479,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Options(class Manos.ManosModule module, string[] patterns) cil managed" />
     </Member>
     <Member MemberName="Options">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Options (Manos.Routing.ManosAction action, string[] patterns);" />
@@ -489,6 +508,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Options(class Manos.Routing.ManosAction action, string[] patterns) cil managed" />
     </Member>
     <Member MemberName="Options">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Options (string pattern, Manos.ManosModule module);" />
@@ -511,6 +531,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Options(string pattern, class Manos.ManosModule module) cil managed" />
     </Member>
     <Member MemberName="Options">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Options (string pattern, Manos.Routing.ManosAction action);" />
@@ -533,6 +554,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Options(string pattern, class Manos.Routing.ManosAction action) cil managed" />
     </Member>
     <Member MemberName="Post">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Post (Manos.ManosModule module, string[] patterns);" />
@@ -561,6 +583,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Post(class Manos.ManosModule module, string[] patterns) cil managed" />
     </Member>
     <Member MemberName="Post">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Post (Manos.Routing.ManosAction action, string[] patterns);" />
@@ -589,6 +612,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Post(class Manos.Routing.ManosAction action, string[] patterns) cil managed" />
     </Member>
     <Member MemberName="Post">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Post (string pattern, Manos.ManosModule module);" />
@@ -611,6 +635,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Post(string pattern, class Manos.ManosModule module) cil managed" />
     </Member>
     <Member MemberName="Post">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Post (string pattern, Manos.Routing.ManosAction action);" />
@@ -633,6 +658,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Post(string pattern, class Manos.Routing.ManosAction action) cil managed" />
     </Member>
     <Member MemberName="Put">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Put (Manos.ManosModule module, string[] patterns);" />
@@ -661,6 +687,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Put(class Manos.ManosModule module, string[] patterns) cil managed" />
     </Member>
     <Member MemberName="Put">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Put (Manos.Routing.ManosAction action, string[] patterns);" />
@@ -689,6 +716,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Put(class Manos.Routing.ManosAction action, string[] patterns) cil managed" />
     </Member>
     <Member MemberName="Put">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Put (string pattern, Manos.ManosModule module);" />
@@ -711,6 +739,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Put(string pattern, class Manos.ManosModule module) cil managed" />
     </Member>
     <Member MemberName="Put">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Put (string pattern, Manos.Routing.ManosAction action);" />
@@ -733,6 +762,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Put(string pattern, class Manos.Routing.ManosAction action) cil managed" />
     </Member>
     <Member MemberName="Route">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Route (Manos.ManosModule module, string[] patterns);" />
@@ -761,6 +791,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Route(class Manos.ManosModule module, string[] patterns) cil managed" />
     </Member>
     <Member MemberName="Route">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Route (Manos.Routing.ManosAction action, string[] patterns);" />
@@ -789,6 +820,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Route(class Manos.Routing.ManosAction action, string[] patterns) cil managed" />
     </Member>
     <Member MemberName="Route">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Route (string pattern, Manos.ManosModule module);" />
@@ -811,6 +843,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Route(string pattern, class Manos.ManosModule module) cil managed" />
     </Member>
     <Member MemberName="Route">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Route (string pattern, Manos.Routing.ManosAction action);" />
@@ -833,6 +866,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Route(string pattern, class Manos.Routing.ManosAction action) cil managed" />
     </Member>
     <Member MemberName="Routes">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Routes { get; }" />
@@ -849,6 +883,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Routing.RouteHandler Routes" />
     </Member>
     <Member MemberName="StartInternal">
       <MemberSignature Language="C#" Value="protected void StartInternal ();" />
@@ -865,6 +900,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method familyhidebysig instance void StartInternal() cil managed" />
     </Member>
     <Member MemberName="Trace">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Trace (Manos.ManosModule module, string[] patterns);" />
@@ -893,6 +929,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Trace(class Manos.ManosModule module, string[] patterns) cil managed" />
     </Member>
     <Member MemberName="Trace">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Trace (Manos.Routing.ManosAction action, string[] patterns);" />
@@ -921,6 +958,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Trace(class Manos.Routing.ManosAction action, string[] patterns) cil managed" />
     </Member>
     <Member MemberName="Trace">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Trace (string pattern, Manos.ManosModule module);" />
@@ -943,6 +981,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Trace(string pattern, class Manos.ManosModule module) cil managed" />
     </Member>
     <Member MemberName="Trace">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Trace (string pattern, Manos.Routing.ManosAction action);" />
@@ -965,6 +1004,8 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Trace(string pattern, class Manos.Routing.ManosAction action) cil managed" />
     </Member>
   </Members>
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit ManosModule extends System.Object" />
 </Type>

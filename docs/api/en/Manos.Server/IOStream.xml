@@ -31,6 +31,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(class System.Net.Sockets.Socket socket, class Manos.Server.IOLoop ioloop) cil managed" />
     </Member>
     <Member MemberName="AdjustSegments">
       <MemberSignature Language="C#" Value="public static void AdjustSegments (int len, System.Collections.Generic.IList&lt;ArraySegment&lt;byte&gt;&gt; write_data);" />
@@ -52,6 +53,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void AdjustSegments(int32 len, class System.Collections.Generic.IList`1&lt;valuetype System.ArraySegment`1&lt;unsigned int8&gt;&gt; write_data) cil managed" />
     </Member>
     <Member MemberName="Close">
       <MemberSignature Language="C#" Value="public void Close ();" />
@@ -68,6 +70,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Close() cil managed" />
     </Member>
     <Member MemberName="IOLoop">
       <MemberSignature Language="C#" Value="public Manos.Server.IOLoop IOLoop { get; }" />
@@ -84,6 +87,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IOLoop IOLoop" />
     </Member>
     <Member MemberName="IsClosed">
       <MemberSignature Language="C#" Value="public bool IsClosed { get; }" />
@@ -100,6 +104,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance bool IsClosed" />
     </Member>
     <Member MemberName="IsReading">
       <MemberSignature Language="C#" Value="public bool IsReading { get; }" />
@@ -116,6 +121,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance bool IsReading" />
     </Member>
     <Member MemberName="IsWriting">
       <MemberSignature Language="C#" Value="public bool IsWriting { get; }" />
@@ -132,6 +138,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance bool IsWriting" />
     </Member>
     <Member MemberName="ReadBytes">
       <MemberSignature Language="C#" Value="public void ReadBytes (int num_bytes, Manos.Server.ReadCallback callback);" />
@@ -153,6 +160,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void ReadBytes(int32 num_bytes, class Manos.Server.ReadCallback callback) cil managed" />
     </Member>
     <Member MemberName="ReadChunkSize">
       <MemberSignature Language="C#" Value="public int ReadChunkSize { set; get; }" />
@@ -169,6 +177,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance int32 ReadChunkSize" />
     </Member>
     <Member MemberName="ReadUntil">
       <MemberSignature Language="C#" Value="public void ReadUntil (string delimiter, Manos.Server.ReadCallback callback);" />
@@ -190,6 +199,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void ReadUntil(string delimiter, class Manos.Server.ReadCallback callback) cil managed" />
     </Member>
     <Member MemberName="SendFile">
       <MemberSignature Language="C#" Value="public void SendFile (string file, Manos.Server.WriteCallback callback);" />
@@ -211,6 +221,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void SendFile(string file, class Manos.Server.WriteCallback callback) cil managed" />
     </Member>
     <Member MemberName="Write">
       <MemberSignature Language="C#" Value="public void Write (System.Collections.Generic.IList&lt;ArraySegment&lt;byte&gt;&gt; data, Manos.Server.WriteCallback callback);" />
@@ -232,6 +243,8 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Write(class System.Collections.Generic.IList`1&lt;valuetype System.ArraySegment`1&lt;unsigned int8&gt;&gt; data, class Manos.Server.WriteCallback callback) cil managed" />
     </Member>
   </Members>
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit IOStream extends System.Object" />
 </Type>

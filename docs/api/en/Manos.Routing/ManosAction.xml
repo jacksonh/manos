@@ -19,4 +19,5 @@
     <summary>To be added.</summary>
     <remarks>To be added.</remarks>
   </Docs>
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed ManosAction extends System.MulticastDelegate" />
 </Type>

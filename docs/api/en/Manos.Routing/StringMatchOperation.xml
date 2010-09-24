@@ -33,6 +33,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(string str) cil managed" />
     </Member>
     <Member MemberName="IsMatch">
       <MemberSignature Language="C#" Value="public bool IsMatch (string input, int start, Manos.Collections.DataDictionary data, out int end);" />
@@ -59,6 +60,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance bool IsMatch(string input, int32 start, class Manos.Collections.DataDictionary data, int32 end) cil managed" />
     </Member>
     <Member MemberName="String">
       <MemberSignature Language="C#" Value="public string String { set; get; }" />
@@ -75,6 +77,8 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance string String" />
     </Member>
   </Members>
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit StringMatchOperation extends System.Object implements class Manos.Routing.IMatchOperation" />
 </Type>

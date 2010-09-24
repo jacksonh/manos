@@ -37,6 +37,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(object target, class System.Reflection.MethodInfo method, class Manos.Routing.ParameterizedAction action) cil managed" />
     </Member>
     <Member MemberName="Action">
       <MemberSignature Language="C#" Value="public Delegate Action { set; get; }" />
@@ -53,6 +54,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Delegate Action" />
     </Member>
     <Member MemberName="Invoke">
       <MemberSignature Language="C#" Value="public void Invoke (Manos.ManosApp app, Manos.IManosContext ctx);" />
@@ -74,6 +76,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Invoke(class Manos.ManosApp app, class Manos.IManosContext ctx) cil managed" />
     </Member>
     <Member MemberName="Target">
       <MemberSignature Language="C#" Value="public object Target { get; }" />
@@ -90,6 +93,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance object Target" />
     </Member>
     <Member MemberName="TryConvertType">
       <MemberSignature Language="C#" Value="public static bool TryConvertType (Manos.IManosContext ctx, Type type, Manos.UnsafeString unsafe_str_value, out object data);" />
@@ -115,6 +119,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool TryConvertType(class Manos.IManosContext ctx, class System.Type type, class Manos.UnsafeString unsafe_str_value, object data) cil managed" />
     </Member>
     <Member MemberName="TryConvertType">
       <MemberSignature Language="C#" Value="public static bool TryConvertType (Manos.IManosContext ctx, Type type, string str_value, out object data);" />
@@ -166,6 +171,8 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool TryGetDataForParamList(class System.Reflection.ParameterInfo[] parameters, class Manos.ManosApp app, class Manos.IManosContext ctx, object[] data) cil managed" />
     </Member>
   </Members>
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit ParameterizedActionTarget extends System.Object implements class Manos.Routing.IManosTarget" />
 </Type>

@@ -28,6 +28,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".field public static initonly string[] DeleteMethods" />
     </Member>
     <Member MemberName="GetMethods">
       <MemberSignature Language="C#" Value="public static readonly string[] GetMethods;" />
@@ -43,6 +44,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".field public static initonly string[] GetMethods" />
     </Member>
     <Member MemberName="HeadMethods">
       <MemberSignature Language="C#" Value="public static readonly string[] HeadMethods;" />
@@ -58,6 +60,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".field public static initonly string[] HeadMethods" />
     </Member>
     <Member MemberName="OptionsMethods">
       <MemberSignature Language="C#" Value="public static readonly string[] OptionsMethods;" />
@@ -73,6 +76,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".field public static initonly string[] OptionsMethods" />
     </Member>
     <Member MemberName="PostMethods">
       <MemberSignature Language="C#" Value="public static readonly string[] PostMethods;" />
@@ -88,6 +92,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".field public static initonly string[] PostMethods" />
     </Member>
     <Member MemberName="PutMethods">
       <MemberSignature Language="C#" Value="public static readonly string[] PutMethods;" />
@@ -103,6 +108,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".field public static initonly string[] PutMethods" />
     </Member>
     <Member MemberName="RouteMethods">
       <MemberSignature Language="C#" Value="public static readonly string[] RouteMethods;" />
@@ -118,6 +124,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".field public static initonly string[] RouteMethods" />
     </Member>
     <Member MemberName="TraceMethods">
       <MemberSignature Language="C#" Value="public static readonly string[] TraceMethods;" />
@@ -133,6 +140,8 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".field public static initonly string[] TraceMethods" />
     </Member>
   </Members>
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi abstract sealed beforefieldinit HttpMethods extends System.Object" />
 </Type>

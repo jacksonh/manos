@@ -26,6 +26,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Delegate Action" />
     </Member>
     <Member MemberName="Invoke">
       <MemberSignature Language="C#" Value="public void Invoke (Manos.ManosApp app, Manos.IManosContext ctx);" />
@@ -47,6 +48,8 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Invoke(class Manos.ManosApp app, class Manos.IManosContext ctx) cil managed" />
     </Member>
   </Members>
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IManosTarget" />
 </Type>

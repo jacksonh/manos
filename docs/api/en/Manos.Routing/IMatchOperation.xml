@@ -36,6 +36,8 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance bool IsMatch(string input, int32 start, class Manos.Collections.DataDictionary data, int32 end) cil managed" />
     </Member>
   </Members>
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IMatchOperation" />
 </Type>

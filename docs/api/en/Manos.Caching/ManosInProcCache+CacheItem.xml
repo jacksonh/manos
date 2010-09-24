@@ -31,6 +31,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(string key, object item) cil managed" />
     </Member>
     <Member MemberName="IsRemoved">
       <MemberSignature Language="C#" Value="public bool IsRemoved;" />
@@ -46,6 +47,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".field public bool IsRemoved" />
     </Member>
     <Member MemberName="Item">
       <MemberSignature Language="C#" Value="public object Item;" />
@@ -61,6 +63,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".field public object Item" />
     </Member>
     <Member MemberName="Key">
       <MemberSignature Language="C#" Value="public string Key;" />
@@ -76,6 +79,8 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".field public string Key" />
     </Member>
   </Members>
+  <TypeSignature Language="ILAsm" Value=".class nested public auto ansi beforefieldinit ManosInProcCache/CacheItem extends System.Object" />
 </Type>

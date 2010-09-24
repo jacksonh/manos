@@ -31,6 +31,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(class Manos.Server.HttpConnectionCallback callback, class Manos.Server.IOLoop ioloop) cil managed" />
     </Member>
     <Member MemberName="Bind">
       <MemberSignature Language="C#" Value="public void Bind (System.Net.IPEndPoint endpoint);" />
@@ -50,6 +51,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Bind(class System.Net.IPEndPoint endpoint) cil managed" />
     </Member>
     <Member MemberName="IOLoop">
       <MemberSignature Language="C#" Value="public Manos.Server.IOLoop IOLoop { get; }" />
@@ -66,6 +68,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IOLoop IOLoop" />
     </Member>
     <Member MemberName="ServerVersion">
       <MemberSignature Language="C#" Value="public static readonly string ServerVersion;" />
@@ -81,6 +84,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".field public static initonly string ServerVersion" />
     </Member>
     <Member MemberName="Socket">
       <MemberSignature Language="C#" Value="public System.Net.Sockets.Socket Socket { get; }" />
@@ -97,6 +101,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Net.Sockets.Socket Socket" />
     </Member>
     <Member MemberName="Start">
       <MemberSignature Language="C#" Value="public void Start ();" />
@@ -113,6 +118,8 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Start() cil managed" />
     </Member>
   </Members>
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit HttpServer extends System.Object" />
 </Type>

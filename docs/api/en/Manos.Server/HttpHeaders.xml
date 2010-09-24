@@ -26,6 +26,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor() cil managed" />
     </Member>
     <Member MemberName="CONTENT_LENGTH_KEY">
       <MemberSignature Language="C#" Value="public static readonly string CONTENT_LENGTH_KEY;" />
@@ -41,6 +42,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".field public static initonly string CONTENT_LENGTH_KEY" />
     </Member>
     <Member MemberName="ContentLength">
       <MemberSignature Language="C#" Value="public Nullable&lt;long&gt; ContentLength { set; get; }" />
@@ -57,6 +59,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance valuetype System.Nullable`1&lt;int64&gt; ContentLength" />
     </Member>
     <Member MemberName="Count">
       <MemberSignature Language="C#" Value="public int Count { get; }" />
@@ -73,6 +76,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance int32 Count" />
     </Member>
     <Member MemberName="IsValidHeaderName">
       <MemberSignature Language="C#" Value="public bool IsValidHeaderName (string name);" />
@@ -93,6 +97,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance bool IsValidHeaderName(string name) cil managed" />
     </Member>
     <Member MemberName="Item">
       <MemberSignature Language="C#" Value="public string this[string name] { get; }" />
@@ -113,6 +118,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance string Item(string)" />
     </Member>
     <Member MemberName="Keys">
       <MemberSignature Language="C#" Value="public System.Collections.Generic.Dictionary&lt;string,string&gt;.KeyCollection Keys { get; }" />
@@ -129,6 +135,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Generic.Dictionary`2/KeyCollection&lt;string, string&gt; Keys" />
     </Member>
     <Member MemberName="NormalizeName">
       <MemberSignature Language="C#" Value="public static string NormalizeName (string name);" />
@@ -149,6 +156,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig string NormalizeName(string name) cil managed" />
     </Member>
     <Member MemberName="Parse">
       <MemberSignature Language="C#" Value="public void Parse (System.IO.TextReader reader);" />
@@ -168,6 +176,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Parse(class System.IO.TextReader reader) cil managed" />
     </Member>
     <Member MemberName="SetContentLength">
       <MemberSignature Language="C#" Value="public void SetContentLength (string value);" />
@@ -187,6 +196,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void SetContentLength(string value) cil managed" />
     </Member>
     <Member MemberName="SetHeader">
       <MemberSignature Language="C#" Value="public void SetHeader (string name, string value);" />
@@ -208,6 +218,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void SetHeader(string name, string value) cil managed" />
     </Member>
     <Member MemberName="TryGetValue">
       <MemberSignature Language="C#" Value="public bool TryGetValue (string key, out string value);" />
@@ -230,6 +241,7 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance bool TryGetValue(string key, string value) cil managed" />
     </Member>
     <Member MemberName="Write">
       <MemberSignature Language="C#" Value="public byte[] Write (System.Text.Encoding encoding);" />
@@ -250,6 +262,8 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance unsigned int8[] Write(class System.Text.Encoding encoding) cil managed" />
     </Member>
   </Members>
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit HttpHeaders extends System.Object" />
 </Type>

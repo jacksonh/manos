@@ -39,6 +39,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(class Manos.Server.HttpServer server, class Manos.Server.IOStream stream, class System.Net.Sockets.Socket socket, class Manos.Server.HttpConnectionCallback callback) cil managed" />
     </Member>
     <Member MemberName="Abort">
       <MemberSignature Language="C#" Value="public void Abort (int status, string message, object[] p);" />
@@ -68,6 +69,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Abort(int32 status, string message, object[] p) cil managed" />
     </Member>
     <Member MemberName="Aborted">
       <MemberSignature Language="C#" Value="public bool Aborted { get; }" />
@@ -84,6 +86,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance bool Aborted" />
     </Member>
     <Member MemberName="BeginTransaction">
       <MemberSignature Language="C#" Value="public static void BeginTransaction (Manos.Server.HttpServer server, Manos.Server.IOStream stream, System.Net.Sockets.Socket socket, Manos.Server.HttpConnectionCallback cb);" />
@@ -109,6 +112,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void BeginTransaction(class Manos.Server.HttpServer server, class Manos.Server.IOStream stream, class System.Net.Sockets.Socket socket, class Manos.Server.HttpConnectionCallback cb) cil managed" />
     </Member>
     <Member MemberName="ConnectionCallback">
       <MemberSignature Language="C#" Value="public Manos.Server.HttpConnectionCallback ConnectionCallback { get; }" />
@@ -125,6 +129,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.HttpConnectionCallback ConnectionCallback" />
     </Member>
     <Member MemberName="ConnectionFinished">
       <MemberSignature Language="C#" Value="public bool ConnectionFinished { get; }" />
@@ -141,6 +146,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance bool ConnectionFinished" />
     </Member>
     <Member MemberName="Finish">
       <MemberSignature Language="C#" Value="public void Finish ();" />
@@ -157,6 +163,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Finish() cil managed" />
     </Member>
     <Member MemberName="IOStream">
       <MemberSignature Language="C#" Value="public Manos.Server.IOStream IOStream { get; }" />
@@ -173,6 +180,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IOStream IOStream" />
     </Member>
     <Member MemberName="NoKeepAlive">
       <MemberSignature Language="C#" Value="public bool NoKeepAlive { set; get; }" />
@@ -189,6 +197,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance bool NoKeepAlive" />
     </Member>
     <Member MemberName="Request">
       <MemberSignature Language="C#" Value="public Manos.Server.HttpRequest Request { get; }" />
@@ -205,6 +214,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.HttpRequest Request" />
     </Member>
     <Member MemberName="Response">
       <MemberSignature Language="C#" Value="public Manos.Server.HttpResponse Response { get; }" />
@@ -221,6 +231,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.HttpResponse Response" />
     </Member>
     <Member MemberName="Run">
       <MemberSignature Language="C#" Value="public void Run ();" />
@@ -237,6 +248,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Run() cil managed" />
     </Member>
     <Member MemberName="SendFile">
       <MemberSignature Language="C#" Value="public void SendFile (string file);" />
@@ -256,6 +268,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void SendFile(string file) cil managed" />
     </Member>
     <Member MemberName="Server">
       <MemberSignature Language="C#" Value="public Manos.Server.HttpServer Server { get; }" />
@@ -272,6 +285,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.HttpServer Server" />
     </Member>
     <Member MemberName="Socket">
       <MemberSignature Language="C#" Value="public System.Net.Sockets.Socket Socket { get; }" />
@@ -288,6 +302,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Net.Sockets.Socket Socket" />
     </Member>
     <Member MemberName="Write">
       <MemberSignature Language="C#" Value="public void Write (System.Collections.Generic.List&lt;ArraySegment&lt;byte&gt;&gt; data);" />
@@ -307,6 +322,8 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Write(class System.Collections.Generic.List`1&lt;valuetype System.ArraySegment`1&lt;unsigned int8&gt;&gt; data) cil managed" />
     </Member>
   </Members>
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit HttpTransaction extends System.Object implements class Manos.Server.IHttpTransaction" />
 </Type>

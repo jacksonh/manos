@@ -30,6 +30,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor() cil managed" />
     </Member>
     <Member MemberName="Action">
       <MemberSignature Language="C#" Value="public Delegate Action { set; get; }" />
@@ -46,6 +47,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Delegate Action" />
     </Member>
     <Member MemberName="Invoke">
       <MemberSignature Language="C#" Value="public void Invoke (Manos.ManosApp app, Manos.IManosContext ctx);" />
@@ -67,6 +69,8 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Invoke(class Manos.ManosApp app, class Manos.IManosContext ctx) cil managed" />
     </Member>
   </Members>
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit MockManosTarget extends System.Object implements class Manos.Routing.IManosTarget" />
 </Type>

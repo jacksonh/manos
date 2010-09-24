@@ -16,4 +16,5 @@
     <summary>To be added.</summary>
     <remarks>To be added.</remarks>
   </Docs>
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed IOCallback extends System.MulticastDelegate" />
 </Type>

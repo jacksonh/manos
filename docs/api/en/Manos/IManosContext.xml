@@ -26,6 +26,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IHttpRequest Request" />
     </Member>
     <Member MemberName="Response">
       <MemberSignature Language="C#" Value="public Manos.Server.IHttpResponse Response { get; }" />
@@ -42,6 +43,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IHttpResponse Response" />
     </Member>
     <Member MemberName="Transaction">
       <MemberSignature Language="C#" Value="public Manos.Server.IHttpTransaction Transaction { get; }" />
@@ -58,6 +60,8 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IHttpTransaction Transaction" />
     </Member>
   </Members>
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IManosContext" />
 </Type>

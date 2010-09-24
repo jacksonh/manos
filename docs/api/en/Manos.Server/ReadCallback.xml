@@ -21,4 +21,5 @@
     <summary>To be added.</summary>
     <remarks>To be added.</remarks>
   </Docs>
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed ReadCallback extends System.MulticastDelegate" />
 </Type>

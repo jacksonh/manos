@@ -35,6 +35,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(string file, class Manos.Server.WriteCallback callback) cil managed" />
     </Member>
     <Member MemberName="Callback">
       <MemberSignature Language="C#" Value="public Manos.Server.WriteCallback Callback { set; get; }" />
@@ -51,6 +52,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.WriteCallback Callback" />
     </Member>
     <Member MemberName="File">
       <MemberSignature Language="C#" Value="public string File { set; get; }" />
@@ -67,6 +69,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance string File" />
     </Member>
     <Member MemberName="Write">
       <MemberSignature Language="C#" Value="public void Write (Manos.Server.IOStream stream);" />
@@ -86,6 +89,8 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Write(class Manos.Server.IOStream stream) cil managed" />
     </Member>
   </Members>
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit WriteFileOperation extends System.Object implements class Manos.Server.IWriteOperation" />
 </Type>

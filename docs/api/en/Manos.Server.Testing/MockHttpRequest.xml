@@ -35,6 +35,7 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(string method, string local_path) cil managed" />
     </Member>
     <Member MemberName="Aborted">
       <MemberSignature Language="C#" Value="public bool Aborted { get; }" />
@@ -51,6 +52,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance bool Aborted" />
     </Member>
     <Member MemberName="Data">
       <MemberSignature Language="C#" Value="public Manos.Collections.DataDictionary Data { get; }" />
@@ -66,6 +68,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Collections.DataDictionary Data" />
     </Member>
     <Member MemberName="LocalPath">
       <MemberSignature Language="C#" Value="public string LocalPath { get; }" />
@@ -82,6 +85,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance string LocalPath" />
     </Member>
     <Member MemberName="Method">
       <MemberSignature Language="C#" Value="public string Method { get; }" />
@@ -98,6 +102,7 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance string Method" />
     </Member>
     <Member MemberName="UriData">
       <MemberSignature Language="C#" Value="public Manos.Collections.DataDictionary UriData { get; }" />
@@ -114,6 +119,8 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Collections.DataDictionary UriData" />
     </Member>
   </Members>
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit MockHttpRequest extends System.Object implements class Manos.Server.IHttpRequest" />
 </Type>
