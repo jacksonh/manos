@@ -15,7 +15,6 @@ check_package ()
 {
 	name=`echo $1 | cut -d\; -f1`
 	version=`echo $1 | cut -d\; -f2`
-
 	echo -n "Checking for package '$name'.." | tee -a config.log
 	pkg-config --atleast-version=$version $name
 	if [ $? -ne 0 ]; then
@@ -36,6 +35,17 @@ check_required_packages ()
 		[ $retval -ne 0 ] && return $retval
 	done
 	return 0
+}
+
+check_darwin ()
+{
+	# This is hacky convience thing for Mac users that just installed vanialla Mono without setting up env
+	# that don't have PKG_CONFIG_PATH defined. 
+	unamestr=`uname`
+	if [[ "$unamestr" == 'Darwin' && -n "${PKG_CONFIG_PATH-x}" && -d /Library/Frameworks/Mono.framework/ ]]; then
+		echo "adding default Mono installation to PKG_CONFIG_PATH. Override by setting PKG_CONFIG_PATH"
+		export PKG_CONFIG_PATH=/Library/Frameworks/Mono.framework/Versions/Current/lib/pkgconfig/
+	fi	  
 }
 
 while test x$1 != x; do
@@ -60,7 +70,9 @@ while test x$1 != x; do
 		shift
 done
 
+check_darwin
 check_required_packages
+
 [ $? -eq 1 ] && exit 1
 
 echo "prefix=$prefix" > config.make
