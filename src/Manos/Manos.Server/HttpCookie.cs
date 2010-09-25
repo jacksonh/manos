@@ -96,6 +96,8 @@ namespace Manos.Server
 				builder.Append ("; HttpOnly");	
 			}
 			
+			builder.Append ("\r\n");
+			
 			return builder.ToString ();
 		}
 		

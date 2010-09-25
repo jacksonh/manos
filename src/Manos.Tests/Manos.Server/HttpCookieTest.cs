@@ -60,7 +60,7 @@ namespace Manos.Server.Tests
 			var cookie = new HttpCookie (name, value);
 			
 			var header = cookie.ToHeaderString ();
-			Assert.AreEqual ("Set-Cookie: foobar=value", header);
+			Assert.AreEqual ("Set-Cookie: foobar=value\r\n", header);
 		}
 		
 		[Test]
@@ -71,7 +71,7 @@ namespace Manos.Server.Tests
 			var cookie = new HttpCookie (name, value);
 			
 			var header = cookie.ToHeaderString ();
-			Assert.AreEqual ("Set-Cookie: foobar=\"the value\"", header);
+			Assert.AreEqual ("Set-Cookie: foobar=\"the value\"\r\n", header);
 		}
 		
 		[Test]
@@ -82,7 +82,7 @@ namespace Manos.Server.Tests
 			var cookie = new HttpCookie (name, value);
 			
 			var header = cookie.ToHeaderString ();
-			Assert.AreEqual ("Set-Cookie: foobar=\"value;\"", header);
+			Assert.AreEqual ("Set-Cookie: foobar=\"value;\"\r\n", header);
 		}
 		
 		[Test]
@@ -93,7 +93,7 @@ namespace Manos.Server.Tests
 			var cookie = new HttpCookie (name, value);
 			
 			var header = cookie.ToHeaderString ();
-			Assert.AreEqual ("Set-Cookie: foobar=\"val,ue\"", header);
+			Assert.AreEqual ("Set-Cookie: foobar=\"val,ue\"\r\n", header);
 		}
 		
 		[Test]
@@ -104,7 +104,7 @@ namespace Manos.Server.Tests
 			var cookie = new HttpCookie (name, value);
 			
 			var header = cookie.ToHeaderString ();
-			Assert.AreEqual ("Set-Cookie: \"foo,bar\"=value", header);
+			Assert.AreEqual ("Set-Cookie: \"foo,bar\"=value\r\n", header);
 		}
 		
 		[Test]
@@ -117,7 +117,7 @@ namespace Manos.Server.Tests
 			cookie.Domain = "http://manos-de-mono.com";
 			
 			var header = cookie.ToHeaderString ();
-			Assert.AreEqual ("Set-Cookie: foobar=value; domain=http://manos-de-mono.com", header);
+			Assert.AreEqual ("Set-Cookie: foobar=value; domain=http://manos-de-mono.com\r\n", header);
 		}
 		
 		[Test]
@@ -130,7 +130,7 @@ namespace Manos.Server.Tests
 			cookie.Path = "/foobar/";
 			
 			var header = cookie.ToHeaderString ();
-			Assert.AreEqual ("Set-Cookie: foobar=value; path=/foobar/", header);
+			Assert.AreEqual ("Set-Cookie: foobar=value; path=/foobar/\r\n", header);
 		}
 		
 		[Test]
@@ -143,7 +143,7 @@ namespace Manos.Server.Tests
 			cookie.Expires = new DateTime (2010, 8, 4, 10, 11, 12, DateTimeKind.Utc);
 			
 			var header = cookie.ToHeaderString ();
-			Assert.AreEqual ("Set-Cookie: foobar=value; expires=Wed, 04 Aug 2010 10:11:12 GMT", header);
+			Assert.AreEqual ("Set-Cookie: foobar=value; expires=Wed, 04 Aug 2010 10:11:12 GMT\r\n", header);
 		}
 		
 		[Test]
@@ -156,7 +156,7 @@ namespace Manos.Server.Tests
 			cookie.Secure = true;
 			
 			var header = cookie.ToHeaderString ();
-			Assert.AreEqual ("Set-Cookie: foobar=value; secure", header);
+			Assert.AreEqual ("Set-Cookie: foobar=value; secure\r\n", header);
 		}
 		
 		[Test]
@@ -169,7 +169,7 @@ namespace Manos.Server.Tests
 			cookie.HttpOnly = true;
 			
 			var header = cookie.ToHeaderString ();
-			Assert.AreEqual ("Set-Cookie: foobar=value; HttpOnly", header);
+			Assert.AreEqual ("Set-Cookie: foobar=value; HttpOnly\r\n", header);
 		}
 	}
 }
