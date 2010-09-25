@@ -342,7 +342,7 @@ namespace Manos.Server {
 		{
 			ReadCallback callback = read_callback;
 			byte [] data = read_buffer.GetBuffer ();
-			byte [] read = new byte [end + 1];
+			byte [] read = new byte [end];
 
 			Array.Copy (data, 0, read, 0, end); 
 
