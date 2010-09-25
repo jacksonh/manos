@@ -30,6 +30,8 @@ namespace Manos.Server {
 			WriteStatusLine = true;
 
 			Headers = new HttpHeaders ();
+			Cookies = new Dictionary<string, HttpCookie> ();
+			
 			SetStandardHeaders ();
 		}
 
@@ -63,6 +65,11 @@ namespace Manos.Server {
 			set;
 		}
 
+		public Dictionary<string,HttpCookie> Cookies {
+			get;
+			private set;
+		}
+		
 		public void Write (string str)
 		{
 			byte [] data = Encoding.GetBytes (str);
@@ -117,6 +124,7 @@ namespace Manos.Server {
 		{
 			if (WriteHeaders)
 				InsertHeaders ();
+			
 			if (WriteStatusLine)
 				InsertStatusLine ();
 		}
@@ -134,9 +142,72 @@ namespace Manos.Server {
 			Headers.SetHeader (name, value);
 		}
 
+		public void SetCookie (string name, HttpCookie cookie)
+		{
+			Cookies [name] = cookie;
+		}
+		
+		public HttpCookie SetCookie (string name, string value)
+		{
+			if (name == null)
+				throw new ArgumentNullException ("name");
+			if (value == null)
+				throw new ArgumentNullException ("value");
+			
+			var cookie = new HttpCookie (name, value);
+			
+			SetCookie (name, cookie);
+			return cookie;
+		}
+		
+		public HttpCookie SetCookie (string name, string value, string domain)
+		{
+			if (name == null)
+				throw new ArgumentNullException ("name");
+			if (value == null)
+				throw new ArgumentNullException ("value");
+			
+			var cookie = new HttpCookie (name, value);
+			cookie.Domain = domain;
+			
+			SetCookie (name, cookie);
+			return cookie;
+		}
+		
+		public HttpCookie SetCookie (string name, string value, DateTime expires)
+		{
+			return SetCookie (name, value, null, expires);
+		}
+		
+		public HttpCookie SetCookie (string name, string value, string domain, DateTime expires)
+		{
+			if (name == null)
+				throw new ArgumentNullException ("name");
+			if (value == null)
+				throw new ArgumentNullException ("value");
+			
+			var cookie = new HttpCookie (name, value);
+			
+			cookie.Domain = domain;
+			cookie.Expires = expires;
+			
+			SetCookie (name, cookie);
+			return cookie;
+		}
+		
+		public HttpCookie SetCookie (string name, string value, TimeSpan max_age)
+		{
+			return SetCookie (name, value, DateTime.Now + max_age);
+		}
+		
+		public HttpCookie SetCookie (string name, string value, string domain, TimeSpan max_age)
+		{
+			return SetCookie (name, value, domain, DateTime.Now + max_age);
+		}
+		
 		private void InsertHeaders ()
 		{
-			byte [] data = Headers.Write (Encoding);
+			byte [] data = Headers.Write (Cookies.Values, Encoding);
 			buffer.Insert (0, new ArraySegment<byte> (data));
 		}
 

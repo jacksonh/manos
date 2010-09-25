@@ -47,6 +47,14 @@ namespace Manos.Server {
 		void Finish ();
 
 		void SetHeader (string name, string value);
+				
+		void SetCookie (string name, HttpCookie cookie);
+		HttpCookie SetCookie (string name, string value);
+		HttpCookie SetCookie (string name, string value, string domain);
+		HttpCookie SetCookie (string name, string value, DateTime expires);
+		HttpCookie SetCookie (string name, string value, string domain, DateTime expires);
+		HttpCookie SetCookie (string name, string value, TimeSpan max_age);
+		HttpCookie SetCookie (string name, string value, string domain, TimeSpan max_age);
 		
 		void Redirect (string url);
 	}
