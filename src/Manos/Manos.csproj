@@ -100,6 +100,7 @@
     <Compile Include="Manos.Collections\DataDictionary.cs" />
     <Compile Include="Manos\RouteAttribute.cs" />
     <Compile Include="Manos\UnsafeString.cs" />
+    <Compile Include="Manos.Server\HttpCookie.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
