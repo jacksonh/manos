@@ -73,6 +73,29 @@ namespace Manos.Server
 				builder.Append (EscapeStr (kv.Value));
 			}
 			
+			if (Domain != null) {
+				builder.Append ("; domain=");
+				builder.Append (EscapeStr (Domain));
+			}
+			
+			if (Path != null) {
+				builder.Append ("; path=");
+				builder.Append (EscapeStr (Path));
+			}
+			
+			if (Expires != DateTime.MinValue) {
+				builder.Append ("; expires=");
+				builder.Append (Expires.ToUniversalTime ().ToString ("r"));
+			}
+			
+			if (Secure) {
+				builder.Append ("; secure");	
+			}
+			
+			if (HttpOnly) {
+				builder.Append ("; HttpOnly");	
+			}
+			
 			return builder.ToString ();
 		}
 		
@@ -85,6 +108,8 @@ namespace Manos.Server
 		
 		public static string EscapeStr (string key)
 		{
+			// TODO: UrlEncode
+			
 			bool do_escape = false;
 			
 			for (int i = 0; i < key.Length; i++) {

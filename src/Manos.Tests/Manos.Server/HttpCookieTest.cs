@@ -107,6 +107,70 @@ namespace Manos.Server.Tests
 			Assert.AreEqual ("Set-Cookie: \"foo,bar\"=value", header);
 		}
 		
+		[Test]
+		public void ToHeaderString_NameValueAndDomain_Formatting ()
+		{
+			var name = "foobar";
+			var value = "value";
+			var cookie = new HttpCookie (name, value);
+			
+			cookie.Domain = "http://manos-de-mono.com";
+			
+			var header = cookie.ToHeaderString ();
+			Assert.AreEqual ("Set-Cookie: foobar=value; domain=http://manos-de-mono.com", header);
+		}
+		
+		[Test]
+		public void ToHeaderString_NameValueAndPath_Formatting ()
+		{
+			var name = "foobar";
+			var value = "value";
+			var cookie = new HttpCookie (name, value);
+			
+			cookie.Path = "/foobar/";
+			
+			var header = cookie.ToHeaderString ();
+			Assert.AreEqual ("Set-Cookie: foobar=value; path=/foobar/", header);
+		}
+		
+		[Test]
+		public void ToHeaderString_NameValueAndExpires_Formatting ()
+		{
+			var name = "foobar";
+			var value = "value";
+			var cookie = new HttpCookie (name, value);
+			
+			cookie.Expires = new DateTime (2010, 8, 4, 10, 11, 12, DateTimeKind.Utc);
+			
+			var header = cookie.ToHeaderString ();
+			Assert.AreEqual ("Set-Cookie: foobar=value; expires=Wed, 04 Aug 2010 10:11:12 GMT", header);
+		}
+		
+		[Test]
+		public void ToHeaderString_NameValueAndSecure_Formatting ()
+		{
+			var name = "foobar";
+			var value = "value";
+			var cookie = new HttpCookie (name, value);
+			
+			cookie.Secure = true;
+			
+			var header = cookie.ToHeaderString ();
+			Assert.AreEqual ("Set-Cookie: foobar=value; secure", header);
+		}
+		
+		[Test]
+		public void ToHeaderString_NameValueAndHttpOnly_Formatting ()
+		{
+			var name = "foobar";
+			var value = "value";
+			var cookie = new HttpCookie (name, value);
+			
+			cookie.HttpOnly = true;
+			
+			var header = cookie.ToHeaderString ();
+			Assert.AreEqual ("Set-Cookie: foobar=value; HttpOnly", header);
+		}
 	}
 }
 
