@@ -6,6 +6,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+
 
 using Mono.Unix.Native;
 
@@ -17,7 +19,7 @@ namespace Manos.Server {
 		public static readonly string CONTENT_LENGTH_KEY = "Content-Length";
 		
 		private long? content_length;
-		private Dictionary<string,string> items = new Dictionary<string,string> ();
+		private NameValueCollection items = new NameValueCollection ();
 
 		public HttpHeaders ()
 		{
@@ -49,16 +51,11 @@ namespace Manos.Server {
 		public int Count {
 			get { return items.Count; }	
 		}
-		
-		public Dictionary<string,string>.KeyCollection Keys {
-			get {
-				return items.Keys;
-			}
-		}
 
 		public bool TryGetValue (string key, out string value)
 		{
-			return items.TryGetValue (NormalizeName (key), out value);
+			value = items [NormalizeName (key)];
+			return (value != null);
 		}
 
 		public void Parse (TextReader reader)
@@ -106,10 +103,11 @@ namespace Manos.Server {
 		public byte [] Write (ICollection<HttpCookie> cookies, Encoding encoding)
 		{
 			StringBuilder builder = new StringBuilder ();
-			foreach (var header in items) {
-				builder.Append (header.Key);
+			foreach (var h in items.Keys) {
+				string header = (string) h;
+				builder.Append (NormalizeName (header));
 				builder.Append (": ");
-				builder.Append (header.Value);
+				builder.Append (items [header]);
 				builder.Append ("\r\n");
 			}
 			foreach (HttpCookie cookie in cookies) {
