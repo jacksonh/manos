@@ -25,7 +25,7 @@ namespace Shorty {
                                    <body>
                                     <form method='POST' action='submit-link'>
                                      <input type='text' name='link' /><br />
-				     <input type='checkbox' name='show_info' /> Show me the info page, instead of redirecting.<br />
+                                     <input type='checkbox' name='show_info' /> Show me the info page, instead of redirecting.<br />
                                      <input type='submit' />
                                     </form>
                                    </body>
@@ -55,27 +55,27 @@ namespace Shorty {
 			}
 
 			ctx.Response.WriteLine (@"<html>
-                                   <head><title>Welcome to Shorty</title></head>
-                                   <body>
-                                    <a href='{0}'>{0}</a> was clicked {1} times.
-                                   </body>", info.Link, info.Clicks);
+                                     <head><title>Welcome to Shorty</title></head>
+                                     <body>
+                                      <a href='{0}'>{0}</a> was clicked {1} times.
+                                     </body>
+				    </html>", info.Link, info.Clicks);
 		}
 
 		[Route ("/r/{id}")]
 		public void Redirector (IManosContext ctx, Shorty app, string id)
 		{
-			LinkData info = Cache [id] as LinkData;
+			if (ctx.Request.Cookies.Get ("show_info") != null) {
+				LinkInfo (ctx, app, id);
+				return;
+			}
 
+			LinkData info = Cache [id] as LinkData;
 			if (info == null) {
 				ctx.Response.StatusCode = 404;
 				return;
 			}
 
-			if (ctx.Request.Cookies.Get ("show_info") != null) {
-				LinkInfo (ctx, app, id);
-				return;
-			}
-			
 			//
 			// Because multiple http transactions could be occuring at the
 			// same time, we need to make sure this shared data is incremented
