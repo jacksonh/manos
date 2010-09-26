@@ -1,6 +1,6 @@
 
 using Manos;
-
+using Manos.Collections;
 
 using System;
 using System.Text;
@@ -24,7 +24,8 @@ namespace Shorty {
                                    <head><title>Welcome to Shorty</title></head>
                                    <body>
                                     <form method='POST' action='submit-link'>
-                                     <input type='text' name='link' />
+                                     <input type='text' name='link' /><br />
+				     <input type='checkbox' name='show_info' /> Show me the info page, instead of redirecting.<br />
                                      <input type='submit' />
                                     </form>
                                    </body>
@@ -32,9 +33,12 @@ namespace Shorty {
 		}
 
 		[Post ("/submit-link")]
-		public void SubmitLink (IManosContext ctx, Shorty app, string link)
+		public void SubmitLink (IManosContext ctx, Shorty app, string link, bool show_info)
 		{
 			string id = GenerateHash (link, 5);
+
+			if (show_info)
+				ctx.Response.SetCookie ("show_info", "true");
 
 			Cache [id] = new LinkData (link);
 			ctx.Response.Redirect ("/r/" + id + "~");
@@ -53,7 +57,7 @@ namespace Shorty {
 			ctx.Response.WriteLine (@"<html>
                                    <head><title>Welcome to Shorty</title></head>
                                    <body>
-                                    {0} was clicked {1} times.
+                                    <a href='{0}'>{0}</a> was clicked {1} times.
                                    </body>", info.Link, info.Clicks);
 		}
 
@@ -67,6 +71,11 @@ namespace Shorty {
 				return;
 			}
 
+			if (ctx.Request.Cookies.Get ("show_info") != null) {
+				LinkInfo (ctx, app, id);
+				return;
+			}
+			
 			//
 			// Because multiple http transactions could be occuring at the
 			// same time, we need to make sure this shared data is incremented
