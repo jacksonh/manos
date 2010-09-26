@@ -148,8 +148,9 @@ corresponding data.  If no data is found, the user is given a 404 error.
 	ctx.Response.WriteLine (@"<html>
                                    <head><title>Welcome to Shorty</title></head>
                                    <body>
-                                    {0} was clicked {1} times.
-                                   </body>", info.Link, info.Clicks);
+                                    <a href='{0}'>{0}</a> was clicked {1} times.
+                                   </body>
+                                  </html>", info.Link, info.Clicks);
     }
 
 
@@ -180,6 +181,39 @@ System.Threading.Interlocked.Increment method.
         Interlocked.Increment (ref info.Clicks);
 
         ctx.Response.Redirect (info.Link);
+    }
+
+Adding a Redirection Cookie
+---------------------------
+
+If we are the creator of a redirection link, there is a good chance we don't
+want to be redirected when we click the link, we're more interested in how
+many peope have clicked our link. To facilitate this can allow the creator
+to set a cookie when they create a new redirection link. Then, in the Redirector
+method we can check for the cookie and display the LinkInfo page if it is set.
+
+First off, lets add the option for setting the cookie.  To do this lets just
+add a checkbox to the Index page.
+
+    <input type='checkbox' name='show_info' /> Show me the info page, instead of redirecting.<br />
+
+and we'll update our SubmitLink signature to accept the show_info as a
+boolean parameter.  Manos's type converters will turn the 'on'/'off' values
+that the browser submits into true/false booleans for us.
+
+    public void SubmitLink (IManosContext ctx, Shorty app, string link, bool show_info)
+
+and finally, we'll set the cookie if show_info is true.
+
+    if (show_info)
+        ctx.Response.SetCookie ("show_info", "true");
+
+Now that the cookie is set on the browser, we just need to check it and call
+LinkInfo at the top of our Redirector method.
+
+    if (ctx.Request.Cookies.Get ("show_info") != null) {
+        LinkInfo (ctx, app, id);
+        return;
     }
 
 
