@@ -5,6 +5,7 @@
     <AssemblyVersion>0.0.0.2</AssemblyVersion>
     <AssemblyVersion>0.0.1.0</AssemblyVersion>
     <AssemblyVersion>0.0.2.0</AssemblyVersion>
+    <AssemblyVersion>0.0.3.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -22,6 +23,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.IMatchOperation</ReturnType>
@@ -44,6 +46,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Char[]</ReturnType>
@@ -61,6 +64,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Char[]</ReturnType>

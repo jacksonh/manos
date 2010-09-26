@@ -1,6 +1,6 @@
 <Overview>
   <Assemblies>
-    <Assembly Name="Manos" Version="0.0.2.0">
+    <Assembly Name="Manos" Version="0.0.3.0">
       <Attributes>
         <Attribute>
           <AttributeName>System.Reflection.AssemblyTitle("Manos.dll")</AttributeName>
@@ -68,6 +68,7 @@
     </Namespace>
     <Namespace Name="Manos.Server">
       <Type Name="HttpConnectionCallback" Kind="Delegate" />
+      <Type Name="HttpCookie" Kind="Class" />
       <Type Name="HttpException" Kind="Class" />
       <Type Name="HttpHeaders" Kind="Class" />
       <Type Name="HttpRequest" Kind="Class" />

@@ -5,6 +5,7 @@
     <AssemblyVersion>0.0.0.2</AssemblyVersion>
     <AssemblyVersion>0.0.1.0</AssemblyVersion>
     <AssemblyVersion>0.0.2.0</AssemblyVersion>
+    <AssemblyVersion>0.0.3.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -26,6 +27,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <Parameters>
         <Parameter Name="transaction" Type="Manos.Server.IHttpTransaction" />
@@ -52,6 +54,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Text.Encoding</ReturnType>
@@ -63,6 +66,22 @@
       </Docs>
       <MemberSignature Language="ILAsm" Value=".property instance class System.Text.Encoding ContentEncoding" />
     </Member>
+    <Member MemberName="Cookies">
+      <MemberSignature Language="C#" Value="public Manos.Collections.DataDictionary Cookies { get; }" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Collections.DataDictionary</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
     <Member MemberName="Data">
       <MemberSignature Language="C#" Value="public Manos.Collections.DataDictionary Data { get; }" />
       <MemberType>Property</MemberType>
@@ -70,6 +89,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Collections.DataDictionary</ReturnType>
@@ -88,6 +108,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.HttpHeaders</ReturnType>
@@ -106,6 +127,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -124,6 +146,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -142,6 +165,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -160,6 +184,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Collections.DataDictionary</ReturnType>
@@ -178,6 +203,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Collections.DataDictionary</ReturnType>
@@ -196,6 +222,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -214,6 +241,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.IHttpTransaction</ReturnType>
@@ -232,6 +260,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Collections.DataDictionary</ReturnType>

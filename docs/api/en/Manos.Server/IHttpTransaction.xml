@@ -5,6 +5,7 @@
     <AssemblyVersion>0.0.0.2</AssemblyVersion>
     <AssemblyVersion>0.0.1.0</AssemblyVersion>
     <AssemblyVersion>0.0.2.0</AssemblyVersion>
+    <AssemblyVersion>0.0.3.0</AssemblyVersion>
   </AssemblyInfo>
   <Interfaces />
   <Docs>
@@ -19,6 +20,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -50,6 +52,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -68,6 +71,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -86,6 +90,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.HttpRequest</ReturnType>
@@ -104,6 +109,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.HttpResponse</ReturnType>
@@ -122,6 +128,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -143,6 +150,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>

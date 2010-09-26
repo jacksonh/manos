@@ -5,6 +5,7 @@
     <AssemblyVersion>0.0.0.2</AssemblyVersion>
     <AssemblyVersion>0.0.1.0</AssemblyVersion>
     <AssemblyVersion>0.0.2.0</AssemblyVersion>
+    <AssemblyVersion>0.0.3.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -22,6 +23,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <Parameters>
         <Parameter Name="callback" Type="Manos.Server.HttpConnectionCallback" />
@@ -42,6 +44,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -63,6 +66,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.IOLoop</ReturnType>
@@ -81,6 +85,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -98,6 +103,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Net.Sockets.Socket</ReturnType>
@@ -116,6 +122,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>

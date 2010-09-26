@@ -5,6 +5,7 @@
     <AssemblyVersion>0.0.0.2</AssemblyVersion>
     <AssemblyVersion>0.0.1.0</AssemblyVersion>
     <AssemblyVersion>0.0.2.0</AssemblyVersion>
+    <AssemblyVersion>0.0.3.0</AssemblyVersion>
   </AssemblyInfo>
   <Interfaces />
   <Docs>
@@ -19,6 +20,7 @@
         <AssemblyVersion>0.0.0.2</AssemblyVersion>
         <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
