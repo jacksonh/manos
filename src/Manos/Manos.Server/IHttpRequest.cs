@@ -24,6 +24,10 @@ namespace Manos.Server {
 		DataDictionary UriData {
 			get;	
 		}
+		
+		DataDictionary Cookies {
+			get;	
+		}
 	}
 }
 

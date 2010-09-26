@@ -14,6 +14,7 @@ namespace Manos.Server.Testing
 	{
 		private DataDictionary data;
 		private DataDictionary uri_data;
+		private DataDictionary cookies;
 		
 		public MockHttpRequest (string method, string local_path)
 		{
@@ -50,6 +51,14 @@ namespace Manos.Server.Testing
 				if (uri_data == null)
 					uri_data = new DataDictionary ();
 				return uri_data;
+			}
+		}
+		
+		public DataDictionary Cookies {
+			get {
+				if (cookies == null)
+					cookies = new DataDictionary ();
+				return cookies;
 			}
 		}
 	}

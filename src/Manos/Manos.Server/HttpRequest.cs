@@ -19,6 +19,8 @@ namespace Manos.Server {
 
 	public class HttpRequest : IHttpRequest {
 		
+		private DataDictionary cookies;
+		
 		public HttpRequest (IHttpTransaction transaction, HttpHeaders headers, string method, string resource, bool support_1_1)
 		{
 			Transaction = transaction;
@@ -35,7 +37,7 @@ namespace Manos.Server {
 			Data.Children.Add (UriData);
 			Data.Children.Add (QueryData);
 			Data.Children.Add (PostData);
-		
+					
 			SetEncoding ();
 			SetPathAndQuery ();
 		}
@@ -90,6 +92,14 @@ namespace Manos.Server {
 			private set;
 		}
 		
+		public DataDictionary Cookies {
+			get {
+				if (cookies == null)
+					cookies = ParseCookies ();
+				return cookies;
+			}
+		}
+		
 		public Encoding ContentEncoding {
 			get;
 			private set;
@@ -128,6 +138,16 @@ namespace Manos.Server {
 				QueryData.Children.Add (query_data);
 		}
 
+		private DataDictionary ParseCookies ()
+		{
+			string cookie_header = Headers ["Cookie"];
+			
+			if (cookie_header == null)
+				return new DataDictionary ();
+			
+			return HttpCookie.FromHeader (cookie_header);
+		}
+		
 		internal void SetWwwFormData (byte [] data)
 		{
 			//

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using Manos.Collections;
 
 namespace Manos.Server
 {
@@ -129,6 +130,40 @@ namespace Manos.Server
 				return String.Concat ('\"', key, '\"');
 			return key;
 		}
+		
+		public static DataDictionary FromHeader (string header)
+		{
+			int eq_idx = -1;
+			int key_idx = 0;
+			DataDictionary dict = new DataDictionary ();
+
+			for (int i = 0; i < header.Length; i++) {
+				if (header [i] == ';') {
+					if (eq_idx == -1)
+						continue;
+					string key = header.Substring (key_idx, eq_idx - key_idx);
+					string value = header.Substring (eq_idx + 1, i - eq_idx - 1);
+					
+					dict.Set (key.Trim (), value.Trim ());
+					
+					key_idx = i + 1;
+					eq_idx = -1;
+					continue;
+				}
+				
+				if (header [i] == '=')
+					eq_idx = i;
+			}
+			
+			if (eq_idx != -1) {
+				string key = header.Substring (key_idx, eq_idx - key_idx);
+				string value = header.Substring (eq_idx + 1);
+					
+				dict.Set (key.Trim (), value.Trim ());
+			}
+			
+			return dict;
+		}	
 	}
 }
 

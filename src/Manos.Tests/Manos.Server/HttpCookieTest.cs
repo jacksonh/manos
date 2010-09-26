@@ -171,6 +171,116 @@ namespace Manos.Server.Tests
 			var header = cookie.ToHeaderString ();
 			Assert.AreEqual ("Set-Cookie: foobar=value; HttpOnly\r\n", header);
 		}
+		
+		[Test]
+		public void FromHeader_SingleValue_SetsValue ()
+		{
+			var header = "foo=bar";
+			var dict = HttpCookie.FromHeader (header);
+			
+			var value = dict ["foo"];
+			Assert.AreEqual ("bar", value);
+		}
+		
+		[Test]
+		public void FromHeader_SingleValueSpaceBeforeEquals_SetsValueNoSpaces ()
+		{
+			var header = "foo =bar";
+			var dict = HttpCookie.FromHeader (header);
+			
+			var value = dict ["foo"];
+			Assert.AreEqual ("bar", value);
+		}
+		
+		[Test]
+		public void FromHeader_SingleValueSpaceAfterEquals_SetsValueNoSpaces ()
+		{
+			var header = "foo= bar";
+			var dict = HttpCookie.FromHeader (header);
+			
+			var value = dict ["foo"];
+			Assert.AreEqual ("bar", value);
+		}
+		
+		[Test]
+		public void FromHeader_TwoValues_SetsFirstValue ()
+		{
+			var header = "foo=bar;blah=bra";
+			var dict = HttpCookie.FromHeader (header);
+			
+			var value = dict ["foo"];
+			Assert.AreEqual ("bar", value);
+		}
+		
+		[Test]
+		public void FromHeader_TwoValues_SetsSecondValue ()
+		{
+			var header = "blah=bra;foo=bar";
+			var dict = HttpCookie.FromHeader (header);
+			
+			var value = dict ["foo"];
+			Assert.AreEqual ("bar", value);
+		}
+		
+		[Test]
+		public void FromHeader_TwoValuesWhiteSpaceBetween_SetsFirstValue ()
+		{
+			var header = "foo=bar ; blah=bra";
+			var dict = HttpCookie.FromHeader (header);
+			
+			var value = dict ["foo"];
+			Assert.AreEqual ("bar", value);
+		}
+		
+		[Test]
+		public void FromHeader_TwoValuesWhiteSpaceBetween_SetsSecondValue ()
+		{
+			var header = "blah=bra ; foo=bar";
+			var dict = HttpCookie.FromHeader (header);
+			
+			var value = dict ["foo"];
+			Assert.AreEqual ("bar", value);
+		}
+		
+		[Test]
+		public void FromHeader_EmptyValue_DoesNotThrow ()
+		{
+			var header = " ; ";
+			var dict = HttpCookie.FromHeader (header);
+			
+			Should.NotThrow (() => HttpCookie.FromHeader (header));
+		}
+		
+		[Test]
+		public void FromHeader_EmptyValue_ReturnsEmptyDict ()
+		{
+			var header = " ; ";
+			var dict = HttpCookie.FromHeader (header);
+			
+			HttpCookie.FromHeader (header);
+			
+			Assert.AreEqual (0, dict.Count);
+		}
+		
+		[Test]
+		public void FromHeader_KeyNoValue_DoesNotThrow ()
+		{
+			var header = "foobar";
+			var dict = HttpCookie.FromHeader (header);
+			
+			Should.NotThrow (() => HttpCookie.FromHeader (header));
+		}
+		
+		[Test]
+		public void FromHeader_KeyNoValue_ReturnsEmptyDict ()
+		{
+			var header = "foobar";
+			var dict = HttpCookie.FromHeader (header);
+			
+			HttpCookie.FromHeader (header);
+			
+			Assert.AreEqual (0, dict.Count);
+		}
 	}
 }
 
