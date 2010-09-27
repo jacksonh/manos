@@ -101,6 +101,7 @@
     <Compile Include="Manos\RouteAttribute.cs" />
     <Compile Include="Manos\UnsafeString.cs" />
     <Compile Include="Manos.Server\HttpCookie.cs" />
+    <Compile Include="Manos.Server\HttpResponseStream.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
