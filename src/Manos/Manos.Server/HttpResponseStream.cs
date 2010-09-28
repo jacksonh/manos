@@ -92,7 +92,34 @@ namespace Manos.Server
 		
 		public override int Read (byte[] buffer, int offset, int count)
 		{
-			throw new System.NotImplementedException();
+			if (buffer == null)
+				throw new ArgumentNullException ("buffer");
+			if (offset < 0)
+				throw new ArgumentOutOfRangeException ("offset");
+			if (count < 0)
+				throw new ArgumentOutOfRangeException ("count");
+			if (offset + count > buffer.Length)
+				throw new ArgumentException ("The sum of offset and count is larger than the buffer length.");
+			
+			long read_count = 0;
+			while (current_segment < segments.Count) {
+
+				if (segment_offset == CurrentSegment.Count) {
+					segment_offset = 0;
+					++current_segment;
+					continue;
+				}
+				
+				long amount = Math.Min (count - read_count, CurrentSegment.Count - segment_offset);
+				Array.Copy (CurrentSegment.Array, CurrentSegment.Offset + segment_offset, buffer, offset + read_count, amount);
+				read_count += amount;
+				segment_offset += amount;
+				
+				if (read_count == count)
+					break;
+			}
+			
+			return (int) read_count;
 		}
 		
 		

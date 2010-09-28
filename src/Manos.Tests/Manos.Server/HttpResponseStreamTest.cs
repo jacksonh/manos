@@ -317,6 +317,104 @@ namespace Manos.Server.Tests
 			long length = stream.Length;
 			Assert.AreEqual (20, length);
 		}
+		
+		[Test]
+		public void Read_SingleBuffer_UpdatesPosition ()
+		{
+			var stream = new HttpResponseStream ();
+			var buffer = new byte [10];
+			
+			stream.Write (buffer, 0, 10);
+			stream.Seek (0, SeekOrigin.Begin);
+			stream.Read (buffer, 0, 5);
+			
+			long position = stream.Position;
+			Assert.AreEqual (5, position);
+		}
+		
+		[Test]
+		public void Read_MultipleBuffers_UpdatesPosition ()
+		{
+			var stream = new HttpResponseStream ();
+			var buffer = new byte [10];
+			
+			stream.Write (buffer, 0, 10);
+			stream.Write (buffer, 0, 10);
+			stream.Write (buffer, 0, 10);
+			
+			stream.Seek (15, SeekOrigin.Begin);
+			stream.Read (buffer, 0, 5);
+			
+			long position = stream.Position;
+			Assert.AreEqual (20, position);
+		}
+		
+		[Test]
+		public void Read_ReadLastItem_UpdatesPosition ()
+		{
+			var stream = new HttpResponseStream ();
+			var buffer = new byte [10];
+			
+			stream.Write (buffer, 0, 10);
+			
+			stream.Seek (-1, SeekOrigin.End);
+			stream.Read (buffer, 0, 1);
+			
+			long position = stream.Position;
+			Assert.AreEqual (10, position);
+		}
+		
+		[Test]
+		public void Read_PastEndOfStream_ReturnsAmountRead ()
+		{
+			var stream = new HttpResponseStream ();
+			var buffer = new byte [10];
+			
+			stream.Write (buffer, 0, 10);
+			
+			stream.Seek (-1, SeekOrigin.End);
+			int amount_read = stream.Read (buffer, 0, 2);
+			
+			Assert.AreEqual (1, amount_read);
+		}
+		
+		[Test]
+		public void Read_SingleBuffer_CorrectData ()
+		{
+			var stream = new HttpResponseStream ();
+			var write_buffer = new byte [3];
+			var read_buffer = new byte [1];
+			
+			write_buffer [2] = 0xFA;
+			
+			stream.Write (write_buffer, 0, 3);
+			
+			stream.Seek (-1, SeekOrigin.End);
+			stream.Read (read_buffer, 0, 1);
+			
+			byte read_byte = read_buffer [0];
+			Assert.AreEqual (0xFA, read_byte);
+		}
+		
+		[Test]
+		public void Read_MultipleBuffers_CorrectData ()
+		{
+			var stream = new HttpResponseStream ();
+			var write_buffer1 = new byte [3];
+			var write_buffer2 = new byte [3];
+			var read_buffer = new byte [6];
+			
+			stream.Write (write_buffer1, 0, 3);
+			
+			write_buffer2 [0] = 0xFA;
+			stream.Write (write_buffer2, 0, 3);
+			
+			stream.Seek (0, SeekOrigin.Begin);
+			stream.Read (read_buffer, 0, 6);
+			
+			byte read_byte = read_buffer [3];
+			Assert.AreEqual (0xFA, read_byte);
+		}
 	}
 }
 
