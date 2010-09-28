@@ -20,6 +20,13 @@ namespace Manos.Server
 	// doing things.
 	//
 	
+	// One fear here is StreamWriters that write single bytes at a time. This 
+	// would create a long list of single byte arrays. An easy fix for this
+	// would be to start using the unused space at the end of segments and
+	// start making a minimum segment size, so in the case of a single byte
+	// write, we would create a 24 byte buffer and set the count to 1, the
+	// next write would use the remaining 23 bytes.
+	//
 	public class HttpResponseStream : Stream
 	{
 		private long segment_offset;
