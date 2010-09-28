@@ -236,18 +236,18 @@ namespace Manos.Server {
 		
 		private void Register (IntPtr fd, EpollEvents events)
 		{
-			Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_ADD, (int) fd, events);
+			Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_ADD, fd, events);
 		}
 
 		
 		private void Modify (IntPtr fd, EpollEvents events)
 		{
-			Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_MOD, (int) fd, events);
+			Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_MOD, fd, events);
 		}
 
 		private void Unregister (IntPtr fd)
 		{
-			Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_DEL, (int) fd, 0);
+			Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_DEL, fd, 0);
 		}
 		
 	}
