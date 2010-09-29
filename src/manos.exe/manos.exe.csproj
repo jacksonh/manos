@@ -41,6 +41,7 @@
     <Compile Include="DocsCommand.cs" />
     <Compile Include="DocsModule.cs" />
     <Compile Include="Markdown.cs" />
+    <Compile Include="BuildCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Manos\Manos.csproj">
@@ -49,7 +50,4 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <None Include="BuildCommand.cs" />
-  </ItemGroup>
 </Project>

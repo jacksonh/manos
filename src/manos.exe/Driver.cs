@@ -30,6 +30,7 @@ namespace Manos.Tool
 				{ "init|i", v => command = Init },
 				{ "server|s", v => command = Server },
 				{ "docs|d", v => command = Docs },
+				{ "build|b", v => command = Build },
 			};
 			
 			List<string> extra = null;
@@ -146,6 +147,29 @@ namespace Manos.Tool
 			
 			cmd.Run ();
 		}
+
+		private static int Build (IList<string> args)
+		{
+			Driver d = new Driver ();
+			
+			try {
+				d.RunBuild ();
+			} catch (Exception e) {
+				Console.WriteLine ("error while building application:");
+				Console.WriteLine (e);
+				return 1;
+			}
+			
+			return 0;
+		}
+		
+		public void RunBuild ()
+		{
+			BuildCommand cmd = new BuildCommand (Environment);
+			
+			cmd.Run ();
+		}
+		
 		private static void ShowHelp (OptionSet os)
 		{
 			Console.WriteLine ("manos usage is: manos [command] [options]");

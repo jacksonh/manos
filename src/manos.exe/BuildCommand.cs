@@ -3,6 +3,8 @@ using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Diagnostics;
 using Microsoft.CSharp;
 using System.CodeDom.Compiler;
 
@@ -65,11 +67,40 @@ namespace Manos.Tool
 		
 		public void Run ()
 		{
+			if (RunXBuild ())
+				return;
+			if (RunMake ())
+				return;
+
 			CompileCS ();
-			CompileTemplates ();
-			MergeLibraries ();
 		}
-		
+
+		public bool RunXBuild ()
+		{
+			string [] slns = Directory.GetFiles (Directory.GetCurrentDirectory (), "*.sln");
+			Console.WriteLine ("COMPILING SOLUTION:  '{0}'  '{1}'", slns.Length, Directory.GetCurrentDirectory ());
+			if (slns.Length < 1)
+				return false;
+
+			foreach (string sln in slns) {
+				Process p = Process.Start ("xbuild", sln);
+				p.WaitForExit ();
+			}
+
+			return true;
+		}
+
+		public bool RunMake ()
+		{
+			if (!File.Exists ("Makefile") && !File.Exists ("makefile"))
+				return false;
+
+			Process p = Process.Start ("make");
+			p.WaitForExit ();
+			
+			return true;
+		}
+
 		public void CompileCS ()
 		{
 			var provider = new CSharpCodeProvider ();
@@ -79,11 +110,9 @@ namespace Manos.Tool
 				Console.WriteLine (s);	
 			}
 			
-			Console.WriteLine ("output assembly: {0}", OutputAssembly);
 			var results = provider.CompileAssemblyFromFile (options, Sources);
 			
 			if (results.Errors.Count > 0) {
-				Console.WriteLine ("Compiler Errors.");
 				foreach (var e in results.Errors) {
 					Console.WriteLine (e);	
 				}
@@ -116,24 +145,26 @@ namespace Manos.Tool
 		
 		private string [] CreateReferencesList ()
 		{
-			Console.WriteLine ("lib directory:  {0}", Environment.LibDirectory);
-			if 	(!Directory.Exists (Environment.LibDirectory))
-				return new string [0];
+			var libs = new List<string> ();
 			
-			List<string> libs = new List<string> ();
+			AddDefaultReferences (libs);
+			
+			if 	(!Directory.Exists (Environment.LibDirectory))
+				return libs.ToArray ();
+			
 			foreach (string lib in Directory.GetFiles (Environment.LibDirectory)) {
 				if (!lib.EndsWith (".dll", StringComparison.InvariantCultureIgnoreCase))
 					continue;
 				libs.Add (lib);
 			}
 			
-			AddDefaultReferences (libs);
-			
 			return libs.ToArray ();
 		}
 		
 		private void AddDefaultReferences (List<string> libs)
 		{
+			string manosdll = Path.Combine (Environment.ManosDirectory, "Manos.dll");
+			libs.Add (manosdll);
 		}
 	}
 }

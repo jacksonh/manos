@@ -17,14 +17,19 @@ namespace Manos.Tool
 			WorkingDirectory = Directory.GetCurrentDirectory ();
 			
 			string exe_path = new Uri (typeof (Driver).Assembly.GetName ().CodeBase).LocalPath;
-			string manos_dir = Path.GetDirectoryName (exe_path);
-			string lib_dir = Path.GetDirectoryName (manos_dir);
+			ManosDirectory = Path.GetDirectoryName (exe_path);
+			string lib_dir = Path.GetDirectoryName (ManosDirectory);
 			string prefix = Path.GetDirectoryName (lib_dir);
 			
 			DataDirectory = Path.Combine (prefix.ToString (), "share/manos/");
 		}
 		
 		public string LibDirectory {
+			get;
+			set;
+		}
+		
+		public string ManosDirectory {
 			get;
 			set;
 		}

@@ -1,6 +1,6 @@
 <Overview>
   <Assemblies>
-    <Assembly Name="Manos" Version="0.0.3.0">
+    <Assembly Name="Manos" Version="0.0.2.0">
       <Attributes>
         <Attribute>
           <AttributeName>System.Reflection.AssemblyTitle("Manos.dll")</AttributeName>
@@ -73,6 +73,7 @@
       <Type Name="HttpHeaders" Kind="Class" />
       <Type Name="HttpRequest" Kind="Class" />
       <Type Name="HttpResponse" Kind="Class" />
+      <Type Name="HttpResponseStream" Kind="Class" />
       <Type Name="HttpServer" Kind="Class" />
       <Type Name="HttpTransaction" Kind="Class" />
       <Type Name="HttpUtility" Kind="Class" />
