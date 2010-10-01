@@ -9,7 +9,7 @@ install_data_dir = "$(prefix)/share/manos/"
 install_docs_dir = "$(prefix)/share/manos/docs/"
 install_script_dir = "$(prefix)/bin/"
 install_man_dir = "$(prefix)/share/man/man1/"
-install_pc_dir = "$(prefix)/lib/pkg-config/"
+install_pc_dir = "$(prefix)/lib/pkgconfig/"
 distdir = "manos-$(version)"
 
 XBUILD_ARGS=/verbosity:$(VERBOSITY) /nologo
