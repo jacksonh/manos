@@ -50,6 +50,7 @@
     </Namespace>
     <Namespace Name="Manos.Routing">
       <Type Name="ActionTarget" Kind="Class" />
+      <Type Name="HtmlFormDataTypeConverter" Kind="Class" />
       <Type Name="IManosTarget" Kind="Interface" />
       <Type Name="IMatchOperation" Kind="Interface" />
       <Type Name="ManosAction" Kind="Delegate" />

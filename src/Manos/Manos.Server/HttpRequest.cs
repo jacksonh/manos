@@ -148,28 +148,13 @@ namespace Manos.Server {
 			return HttpCookie.FromHeader (cookie_header);
 		}
 		
-		internal void SetWwwFormData (byte [] data)
+		public void SetWwwFormData (DataDictionary data)
 		{
-			//
-			// The best I can tell, you can't actually set the content-type of
-			// the url-encoded form data.  Looking at the source of apache
-			// seems to confirm this.  So for now I wont worry about the
-			// encoding type and I'll just use ASCII.
-			//
-
-			string post = Encoding.ASCII.GetString (data);
-
-			// TODO: pass this to the encoder to populate
-			DataDictionary post_data = HttpUtility.ParseUrlEncodedData (post);
-			if (post_data != null)
-				PostData.Children.Add (post_data);
-		}
-
-		internal void SetMultiPartFormData (byte [] data)
-		{
-			string post = Encoding.ASCII.GetString (data);
-
-			Console.WriteLine ("MULTIPART:  {0}", post);
+		       if (data == null) {
+		       	  PostData.Clear ();
+			  return;
+		       }
+		       PostData.Children.Add (data);
 		}
 	}
 }

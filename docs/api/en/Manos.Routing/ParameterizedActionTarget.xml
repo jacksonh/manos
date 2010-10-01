@@ -105,6 +105,30 @@
       </Docs>
       <MemberSignature Language="ILAsm" Value=".property instance object Target" />
     </Member>
+    <Member MemberName="TryConvertFormData">
+      <MemberSignature Language="C#" Value="public static bool TryConvertFormData (Type type, string str_value, out object data);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool TryConvertFormData(class System.Type type, string str_value, object data) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.2.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="System.Type" />
+        <Parameter Name="str_value" Type="System.String" />
+        <Parameter Name="data" Type="System.Object&amp;" RefType="out" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <param name="str_value">To be added.</param>
+        <param name="data">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
     <Member MemberName="TryConvertType">
       <MemberSignature Language="C#" Value="public static bool TryConvertType (Manos.IManosContext ctx, Type type, Manos.UnsafeString unsafe_str_value, out object data);" />
       <MemberType>Method</MemberType>

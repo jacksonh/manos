@@ -11,6 +11,7 @@ using System.Collections.Generic;
 
 using Mono.Unix.Native;
 
+using Manos.Collections;
 
 namespace Manos.Server {
 
@@ -58,12 +59,12 @@ namespace Manos.Server {
 			private set;
 		}
 
-		public HttpRequest Request {
+		public IHttpRequest Request {
 			get;
 			private set;
 		}
 
-		public HttpResponse Response {
+		public IHttpResponse Response {
 			get;
 			private set;
 		}
@@ -209,14 +210,36 @@ namespace Manos.Server {
 			if (Request.Method == "POST") {
 				string ct = Request.Headers ["Content-Type"];
 				if (ct == "application/x-www-form-urlencoded")
-					Request.SetWwwFormData (data);
+					OnWwwFormData (data);
 				else if (ct == "multipart/form-data")
-					Request.SetMultiPartFormData (data);
+					OnMultiPartFormData (data);
 			}
 
 			Server.IOLoop.QueueTransaction (this);
 		}
 
+		private void OnWwwFormData (byte [] data)
+		{
+			//
+			// The best I can tell, you can't actually set the content-type of
+			// the url-encoded form data.  Looking at the source of apache
+			// seems to confirm this.  So for now I wont worry about the
+			// encoding type and I'll just use ASCII.
+			//
+
+			string post = Encoding.ASCII.GetString (data);
+
+			// TODO: pass this to the encoder to populate
+			DataDictionary post_data = HttpUtility.ParseUrlEncodedData (post);
+			if (post_data != null)
+				Request.SetWwwFormData (post_data);
+		}
+
+		private void OnMultiPartFormData (byte [] data)
+		{
+			throw new NotImplementedException ();
+		}
+		
 		private bool Version_1_1_Supported (string version)
 		{
 			return version == "HTTP/1.1";

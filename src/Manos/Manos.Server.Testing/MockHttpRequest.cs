@@ -14,12 +14,26 @@ namespace Manos.Server.Testing
 	{
 		private DataDictionary data;
 		private DataDictionary uri_data;
+		private DataDictionary post_data;
+		private DataDictionary query_data;
 		private DataDictionary cookies;
+		private HttpHeaders headers;
+
+		private bool http_1_1_supported;
 		
 		public MockHttpRequest (string method, string local_path)
 		{
 			Method = method;
 			LocalPath = local_path;
+
+			data = new DataDictionary ();
+			uri_data = new DataDictionary ();
+			query_data = new DataDictionary ();
+			post_data = new DataDictionary ();
+			
+			data.Children.Add (UriData);
+			data.Children.Add (QueryData);
+			data.Children.Add (PostData);
 		}
 		
 		public string Method {
@@ -40,26 +54,56 @@ namespace Manos.Server.Testing
 		
 		public DataDictionary Data {
 			get {
-				if (data == null)
-					data = new DataDictionary ();
 				return data;
 			}
 		}
 		
+		public DataDictionary PostData {
+			get {
+			    return post_data;
+			}
+		}
+
 		public DataDictionary UriData {
 			get {
-				if (uri_data == null)
-					uri_data = new DataDictionary ();
 				return uri_data;
 			}
 		}
 		
+		public DataDictionary QueryData {
+			get {
+			    return query_data;
+			}
+		}
+
 		public DataDictionary Cookies {
 			get {
 				if (cookies == null)
 					cookies = new DataDictionary ();
 				return cookies;
 			}
+		}
+		
+		public HttpHeaders Headers {
+			get {
+			    if (headers == null)
+			       headers = new HttpHeaders ();
+			    return headers;
+			}
+		}
+		
+		public bool Http_1_1_Supported {
+			get {
+			    return http_1_1_supported;
+			}
+			set {
+			    http_1_1_supported = value;
+			}
+		}
+
+		public void SetWwwFormData (DataDictionary data)
+		{
+			PostData.Children.Add (data);
 		}
 	}
 }

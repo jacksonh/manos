@@ -9,11 +9,11 @@ namespace Manos.Server {
 
 	public interface IHttpTransaction {
 
-		HttpRequest Request {
+		IHttpRequest Request {
 			get;
 		}
 
-		HttpResponse Response {
+		IHttpResponse Response {
 			get;
 		}
 
