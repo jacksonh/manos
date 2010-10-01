@@ -61,6 +61,12 @@ namespace Manos.Collections
 			
 			return str.SafeValue;
 		}
+	
+		public void Clear ()
+		{
+			dictionary.Clear ();
+			children = null;
+		}	
 		
 		public void Set (string key, string value)
 		{
