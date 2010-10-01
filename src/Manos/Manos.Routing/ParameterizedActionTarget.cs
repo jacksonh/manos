@@ -91,7 +91,10 @@ namespace Manos.Routing
 				return true;
 			}
 			
-			string str_value = unsafe_str_value.SafeValue;
+			string str_value = unsafe_str_value == null ? null : unsafe_str_value.SafeValue;
+			
+			if (TryConvertFormData (type, str_value, out data))
+				return true;
 			
 			try {
 				data = Convert.ChangeType (str_value, type);
@@ -103,6 +106,14 @@ namespace Manos.Routing
 			}
 			
 			return true;
+		}
+		
+		public static bool TryConvertFormData (Type type, string str_value, out object data)
+		{
+			var converter = new HtmlFormDataTypeConverter (type);
+			
+			data = converter.ConvertFrom (str_value);
+			return data != null;
 		}
 	}
 }

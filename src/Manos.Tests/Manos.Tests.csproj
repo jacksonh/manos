@@ -55,6 +55,7 @@
     <Compile Include="Manos.Collections\DataDictionaryTest.cs" />
     <Compile Include="Manos.Server\HttpCookieTest.cs" />
     <Compile Include="Manos.Server\HttpResponseStreamTest.cs" />
+    <Compile Include="Manos.Routing\HtmlFormDataTypeConverterTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Manos.Routing\" />

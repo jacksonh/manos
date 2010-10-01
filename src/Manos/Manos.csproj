@@ -102,6 +102,7 @@
     <Compile Include="Manos\UnsafeString.cs" />
     <Compile Include="Manos.Server\HttpCookie.cs" />
     <Compile Include="Manos.Server\HttpResponseStream.cs" />
+    <Compile Include="Manos.Routing\HtmlFormDataTypeConverter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
