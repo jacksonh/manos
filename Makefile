@@ -98,3 +98,7 @@ dist: clean update-docs
 release: dist
 	cp manos-"$(version)".tar.bz2 release/.
 	cd release && rpmbuild -ba manos.spec
+
+gem: all
+	cp release/manos.gemspec build/.
+	cd build && gem build manos.gemspec
