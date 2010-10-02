@@ -417,6 +417,36 @@ namespace Manos.Server.Tests
 		}
 
 		[Test]
+		public void Write_LongerThanBufferInSingleBuffer_SetsCorrectLength ()
+		{
+			var stream = new HttpResponseStream ();
+			var write_buffer = new byte [5];
+
+			stream.Write (write_buffer, 0, 5);
+
+			stream.Position = 2;
+			stream.Write (write_buffer, 0, 5);
+
+			var length = stream.Length;
+			Assert.AreEqual (7, length);
+		}
+
+		[Test]
+		public void Write_ShorterThanBufferInSingleBuffer_SetsCorrectLength ()
+		{
+			var stream = new HttpResponseStream ();
+			var write_buffer = new byte [5];
+
+			stream.Write (write_buffer, 0, 5);
+
+			stream.Position = 2;
+			stream.Write (write_buffer, 0, 2);
+
+			var length = stream.Length;
+			Assert.AreEqual (5, length);
+		}
+
+		[Test]
 		public void Write_InFirstBufferOfTwoBufferStream_SetsCorrectLength ()
 		{
 			var stream = new HttpResponseStream ();
