@@ -1,0 +1,9 @@
+
+These are some functional/stress tests.  Nothing very elaborate but they are useful for testing the entire manos pipeline. 
+
+Right now there is a really basic structure to the tests. You pass a uri and an expected result.  You can also add a load_uri, this guy will be passed to the load tester function and ensures that somehow the expected results aren't getting mixed with the results from the load tester.
+
+
+TODO:
+ * Hookup more of the Stream tests.
+ * Add pipeline tests
