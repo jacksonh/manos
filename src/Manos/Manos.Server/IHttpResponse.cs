@@ -15,6 +15,10 @@ namespace Manos.Server {
 			get;
 		}
 
+		HttpResponseStream Stream {
+			get;
+		}
+
 		Encoding Encoding {
 			get;
 		}

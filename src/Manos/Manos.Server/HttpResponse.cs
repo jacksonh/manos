@@ -17,8 +17,6 @@ namespace Manos.Server {
 
 	public class HttpResponse : IHttpResponse {
 
-		private List<ArraySegment<byte>> buffer = new List<ArraySegment<byte>> ();
-
 		public HttpResponse (IHttpTransaction transaction, Encoding encoding)
 		{
 			Transaction = transaction;
@@ -30,6 +28,7 @@ namespace Manos.Server {
 			WriteStatusLine = true;
 
 			Headers = new HttpHeaders ();
+			Stream = new HttpResponseStream ();
 			Cookies = new Dictionary<string, HttpCookie> ();
 			
 			SetStandardHeaders ();
@@ -41,6 +40,11 @@ namespace Manos.Server {
 		}
 
 		public HttpHeaders Headers {
+			get;
+			private set;
+		}
+
+		public HttpResponseStream Stream {
 			get;
 			private set;
 		}
@@ -103,7 +107,7 @@ namespace Manos.Server {
 			SetHeader ("Content-Length", fi.Length.ToString ());
 			
 			WriteMetaData ();
-			Transaction.Write (buffer);
+			Transaction.Write (Stream.GetBuffers ());
 			
 			Transaction.SendFile (file);
 			Transaction.Finish ();
@@ -111,7 +115,7 @@ namespace Manos.Server {
 
 		public void Redirect (string url)
 		{
-			buffer.Clear ();
+			Stream.Position = 0;
 			
 			StatusCode =  302;
 			SetHeader ("Location", url);
@@ -133,7 +137,7 @@ namespace Manos.Server {
 		{
 			WriteMetaData ();
 			
-			Transaction.Write (buffer);
+			Transaction.Write (Stream.GetBuffers ());
 			Transaction.Finish ();
 		}
 
@@ -208,7 +212,8 @@ namespace Manos.Server {
 		private void InsertHeaders ()
 		{
 			byte [] data = Headers.Write (Cookies.Values, Encoding);
-			buffer.Insert (0, new ArraySegment<byte> (data));
+			Stream.Position = 0;
+			Stream.Insert (data, 0, data.Length);
 		}
 
 		private void InsertStatusLine ()
@@ -216,12 +221,13 @@ namespace Manos.Server {
 			string line = String.Format ("HTTP/1.0 {0} {1}\r\n", StatusCode, GetStatusDescription (StatusCode));
 			byte [] data = Encoding.GetBytes (line);
 
-			buffer.Insert (0, new ArraySegment<byte> (data));
+			Stream.Position = 0;
+			Stream.Insert (data, 0, data.Length);
 		}
 
 		private void WriteToBody (byte [] data)
 		{
-			buffer.Add (new ArraySegment<byte> (data));
+			Stream.Write (data, 0, data.Length);
 
 			Headers.ContentLength += data.Length;
 		}
