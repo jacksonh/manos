@@ -249,7 +249,16 @@ namespace Manos.Server
 			segments.Add (new ArraySegment<byte> (filler, 0, filler.Length));
 		}
 		
-		
+		public void Insert (byte [] buffer, int offset, int count)
+		{
+			if (AtEnd) {
+			   Write (buffer, offset, count);
+			   return;
+			}
+
+			
+		}
+
 		public override void Write (byte[] buffer, int offset, int count)
 		{
 			if (AtEnd) {
@@ -258,19 +267,76 @@ namespace Manos.Server
 				segment_offset = count;
 				return;
 			}
+
+			if (CurrentSegment.Count - segment_offset > count) {
+			   // There is room to stick this in the current segment.
+			   Array.Copy (buffer, offset, CurrentSegment.Array, segment_offset, count);
+			   return;
+			}
+
+			int index = current_segment;
+			RemoveBytes (count);
+
+			segments.Insert (index + 1, new ArraySegment<byte> (buffer, offset, count));
+			current_segment = index + 1;
+			segment_offset = count;
+		}
+
+		private void CutSegment (int segment, long position)
+		{
+			var s = segments [segment];
+
+			if (position == s.Count) {
+			   // At the end of the segment so nothing needs to be done.
+			   return;
+			}
 			
-			// Snip the current segment off and insert a new one.
-			segments [current_segment] = new ArraySegment<byte> (CurrentSegment.Array, CurrentSegment.Offset, (int) segment_offset);
+			var data = new byte [s.Count - position];
+			Array.Copy (s.Array, s.Offset + position, data, 0, s.Count - position);
+
+			var after = new ArraySegment<byte> (data, 0, data.Length);
+			segments.Insert (segment + 1, after);
+
+			segments [segment] = new ArraySegment<byte> (s.Array, s.Offset, (int) position);
+		}
+
+		private void RemoveBytes (int amount)
+		{
+			if (CurrentSegment.Offset != segment_offset) {
+			   CutSegment (current_segment, segment_offset);
+			   ++current_segment;
+			   segment_offset = 0;
+			}
+
+			int segment = current_segment;
+			int offset = (int) segment_offset;
+			int removed = 0;
+
+			int start_segment = current_segment;
+			while (segment <= segments.Count - 1) {
+
+			      int segment_len = segments [segment].Count - offset;
+			      
+			      if (removed + segment_len == amount) {
+				 break;
+			      }
+
+			      if (removed + segment_len > amount) {
+			      	 // we need to end in this segment, truncate it by the proper amount
+				 int len = segment_len - (amount - removed);
+				 segments [segment] = new ArraySegment<byte> (segments [segment].Array, segments [segment].Offset, len);
+				 break;
+			      }
+
+			      removed += segment_len;
+			      ++segment;
+			      offset = 0;
+			}
 			
-			if (current_segment == segments.Count - 1) {
-				segments.Add (new ArraySegment<byte> (buffer, offset, count));
-				current_segment = segments.Count - 1;
-				segment_offset = count;
-			} else {
-				segments.Insert (current_segment + 1, new ArraySegment<byte> (buffer, offset, count));
-				current_segment = current_segment + 1;
-				segment_offset = count;
-			}     
+			int num_segments = segment - start_segment;
+			for (int i = 0; i < num_segments; i++) {
+			    segments.RemoveAt (start_segment);
+			}
 		}
 	}
 }
