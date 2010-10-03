@@ -459,7 +459,7 @@ namespace Manos.Server.Tests
 			stream.Write (write_buffer, 0, 5);
 
 			var length = stream.Length;
-			Assert.AreEqual (9, length);			
+			Assert.AreEqual (10, length);			
 		}
 
 		[Test]
@@ -469,14 +469,12 @@ namespace Manos.Server.Tests
 			var write_buffer = new byte [5];
 			var write_buffer2 = new byte [6];
 
-			Console.WriteLine ("begin write across");
 			stream.Write (write_buffer, 0, 5);
 			stream.Write (write_buffer, 0, 5);
 			stream.Write (write_buffer, 0, 5);
 			stream.Seek (2, SeekOrigin.Begin);
 
 			stream.Write (write_buffer2, 0, 6);
-			Console.WriteLine ("end write across");
 
 			var length = stream.Length;
 			Assert.AreEqual (15, length);			
