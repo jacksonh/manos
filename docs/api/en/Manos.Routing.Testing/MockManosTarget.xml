@@ -1,9 +1,8 @@
 <Type Name="MockManosTarget" FullName="Manos.Routing.Testing.MockManosTarget">
   <TypeSignature Language="C#" Value="public class MockManosTarget : Manos.Routing.IManosTarget" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit MockManosTarget extends System.Object implements class Manos.Routing.IManosTarget" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.0.2</AssemblyVersion>
-    <AssemblyVersion>0.0.1.0</AssemblyVersion>
     <AssemblyVersion>0.0.2.0</AssemblyVersion>
     <AssemblyVersion>0.0.3.0</AssemblyVersion>
   </AssemblyInfo>
@@ -22,10 +21,9 @@
   <Members>
     <Member MemberName=".ctor">
       <MemberSignature Language="C#" Value="public MockManosTarget ();" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor() cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -34,14 +32,12 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor() cil managed" />
     </Member>
     <Member MemberName="Action">
       <MemberSignature Language="C#" Value="public Delegate Action { set; get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Delegate Action" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -53,14 +49,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance class System.Delegate Action" />
     </Member>
     <Member MemberName="Invoke">
       <MemberSignature Language="C#" Value="public void Invoke (Manos.ManosApp app, Manos.IManosContext ctx);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Invoke(class Manos.ManosApp app, class Manos.IManosContext ctx) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -77,8 +71,6 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Invoke(class Manos.ManosApp app, class Manos.IManosContext ctx) cil managed" />
     </Member>
   </Members>
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit MockManosTarget extends System.Object implements class Manos.Routing.IManosTarget" />
 </Type>

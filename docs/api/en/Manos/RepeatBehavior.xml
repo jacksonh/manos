@@ -1,9 +1,8 @@
 <Type Name="RepeatBehavior" FullName="Manos.RepeatBehavior">
   <TypeSignature Language="C#" Value="public static class RepeatBehavior" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi abstract sealed beforefieldinit RepeatBehavior extends System.Object" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.0.2</AssemblyVersion>
-    <AssemblyVersion>0.0.1.0</AssemblyVersion>
     <AssemblyVersion>0.0.2.0</AssemblyVersion>
     <AssemblyVersion>0.0.3.0</AssemblyVersion>
   </AssemblyInfo>
@@ -18,10 +17,9 @@
   <Members>
     <Member MemberName="Forever">
       <MemberSignature Language="C#" Value="public static Manos.IRepeatBehavior Forever { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property class Manos.IRepeatBehavior Forever" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -33,14 +31,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property class Manos.IRepeatBehavior Forever" />
     </Member>
     <Member MemberName="Iterations">
       <MemberSignature Language="C#" Value="public static Manos.IRepeatBehavior Iterations (int num_iterations);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class Manos.IRepeatBehavior Iterations(int32 num_iterations) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -56,14 +52,12 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class Manos.IRepeatBehavior Iterations(int32 num_iterations) cil managed" />
     </Member>
     <Member MemberName="Single">
       <MemberSignature Language="C#" Value="public static Manos.IRepeatBehavior Single { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property class Manos.IRepeatBehavior Single" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -75,8 +69,6 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property class Manos.IRepeatBehavior Single" />
     </Member>
   </Members>
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi abstract sealed beforefieldinit RepeatBehavior extends System.Object" />
 </Type>

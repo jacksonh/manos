@@ -1,9 +1,8 @@
 <Type Name="ManosPipe" FullName="Manos.ManosPipe">
   <TypeSignature Language="C#" Value="public class ManosPipe : Manos.IManosPipe" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit ManosPipe extends System.Object implements class Manos.IManosPipe" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.0.2</AssemblyVersion>
-    <AssemblyVersion>0.0.1.0</AssemblyVersion>
     <AssemblyVersion>0.0.2.0</AssemblyVersion>
     <AssemblyVersion>0.0.3.0</AssemblyVersion>
   </AssemblyInfo>
@@ -22,10 +21,9 @@
   <Members>
     <Member MemberName=".ctor">
       <MemberSignature Language="C#" Value="public ManosPipe ();" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor() cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -34,14 +32,12 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor() cil managed" />
     </Member>
     <Member MemberName="OnError">
       <MemberSignature Language="C#" Value="public void OnError (Manos.IManosContext ctx);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void OnError(class Manos.IManosContext ctx) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -56,14 +52,12 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void OnError(class Manos.IManosContext ctx) cil managed" />
     </Member>
     <Member MemberName="OnPostProcessRequest">
       <MemberSignature Language="C#" Value="public void OnPostProcessRequest (Manos.ManosApp app, Manos.Server.IHttpTransaction transaction);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void OnPostProcessRequest(class Manos.ManosApp app, class Manos.Server.IHttpTransaction transaction) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -80,14 +74,12 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void OnPostProcessRequest(class Manos.ManosApp app, class Manos.Server.IHttpTransaction transaction) cil managed" />
     </Member>
     <Member MemberName="OnPostProcessTarget">
       <MemberSignature Language="C#" Value="public void OnPostProcessTarget (Manos.IManosContext ctx, Manos.Routing.IManosTarget target);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void OnPostProcessTarget(class Manos.IManosContext ctx, class Manos.Routing.IManosTarget target) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -104,14 +96,12 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void OnPostProcessTarget(class Manos.IManosContext ctx, class Manos.Routing.IManosTarget target) cil managed" />
     </Member>
     <Member MemberName="OnPreProcessRequest">
       <MemberSignature Language="C#" Value="public void OnPreProcessRequest (Manos.ManosApp app, Manos.Server.IHttpTransaction transaction);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void OnPreProcessRequest(class Manos.ManosApp app, class Manos.Server.IHttpTransaction transaction) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -128,14 +118,12 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void OnPreProcessRequest(class Manos.ManosApp app, class Manos.Server.IHttpTransaction transaction) cil managed" />
     </Member>
     <Member MemberName="OnPreProcessTarget">
       <MemberSignature Language="C#" Value="public Manos.Routing.IManosTarget OnPreProcessTarget (Manos.IManosContext ctx);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance class Manos.Routing.IManosTarget OnPreProcessTarget(class Manos.IManosContext ctx) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -151,8 +139,6 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance class Manos.Routing.IManosTarget OnPreProcessTarget(class Manos.IManosContext ctx) cil managed" />
     </Member>
   </Members>
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit ManosPipe extends System.Object implements class Manos.IManosPipe" />
 </Type>

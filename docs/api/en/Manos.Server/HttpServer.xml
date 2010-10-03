@@ -1,9 +1,8 @@
 <Type Name="HttpServer" FullName="Manos.Server.HttpServer">
   <TypeSignature Language="C#" Value="public class HttpServer" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit HttpServer extends System.Object" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.0.2</AssemblyVersion>
-    <AssemblyVersion>0.0.1.0</AssemblyVersion>
     <AssemblyVersion>0.0.2.0</AssemblyVersion>
     <AssemblyVersion>0.0.3.0</AssemblyVersion>
   </AssemblyInfo>
@@ -18,10 +17,9 @@
   <Members>
     <Member MemberName=".ctor">
       <MemberSignature Language="C#" Value="public HttpServer (Manos.Server.HttpConnectionCallback callback, Manos.Server.IOLoop ioloop);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(class Manos.Server.HttpConnectionCallback callback, class Manos.Server.IOLoop ioloop) cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -35,14 +33,12 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(class Manos.Server.HttpConnectionCallback callback, class Manos.Server.IOLoop ioloop) cil managed" />
     </Member>
     <Member MemberName="Bind">
       <MemberSignature Language="C#" Value="public void Bind (System.Net.IPEndPoint endpoint);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Bind(class System.Net.IPEndPoint endpoint) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -57,14 +53,12 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Bind(class System.Net.IPEndPoint endpoint) cil managed" />
     </Member>
     <Member MemberName="IOLoop">
       <MemberSignature Language="C#" Value="public Manos.Server.IOLoop IOLoop { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IOLoop IOLoop" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -76,14 +70,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IOLoop IOLoop" />
     </Member>
     <Member MemberName="ServerVersion">
       <MemberSignature Language="C#" Value="public static readonly string ServerVersion;" />
+      <MemberSignature Language="ILAsm" Value=".field public static initonly string ServerVersion" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -94,14 +86,12 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".field public static initonly string ServerVersion" />
     </Member>
     <Member MemberName="Socket">
       <MemberSignature Language="C#" Value="public System.Net.Sockets.Socket Socket { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Net.Sockets.Socket Socket" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -113,14 +103,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance class System.Net.Sockets.Socket Socket" />
     </Member>
     <Member MemberName="Start">
       <MemberSignature Language="C#" Value="public void Start ();" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Start() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -132,8 +120,6 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Start() cil managed" />
     </Member>
   </Members>
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit HttpServer extends System.Object" />
 </Type>

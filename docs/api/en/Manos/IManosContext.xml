@@ -1,9 +1,8 @@
 <Type Name="IManosContext" FullName="Manos.IManosContext">
   <TypeSignature Language="C#" Value="public interface IManosContext" />
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IManosContext" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.0.2</AssemblyVersion>
-    <AssemblyVersion>0.0.1.0</AssemblyVersion>
     <AssemblyVersion>0.0.2.0</AssemblyVersion>
     <AssemblyVersion>0.0.3.0</AssemblyVersion>
   </AssemblyInfo>
@@ -15,10 +14,9 @@
   <Members>
     <Member MemberName="Request">
       <MemberSignature Language="C#" Value="public Manos.Server.IHttpRequest Request { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IHttpRequest Request" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -30,14 +28,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IHttpRequest Request" />
     </Member>
     <Member MemberName="Response">
       <MemberSignature Language="C#" Value="public Manos.Server.IHttpResponse Response { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IHttpResponse Response" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -49,14 +45,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IHttpResponse Response" />
     </Member>
     <Member MemberName="Transaction">
       <MemberSignature Language="C#" Value="public Manos.Server.IHttpTransaction Transaction { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IHttpTransaction Transaction" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -68,8 +62,6 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IHttpTransaction Transaction" />
     </Member>
   </Members>
-  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IManosContext" />
 </Type>

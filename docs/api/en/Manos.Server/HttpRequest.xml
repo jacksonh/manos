@@ -1,9 +1,8 @@
 <Type Name="HttpRequest" FullName="Manos.Server.HttpRequest">
   <TypeSignature Language="C#" Value="public class HttpRequest : Manos.Server.IHttpRequest" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit HttpRequest extends System.Object implements class Manos.Server.IHttpRequest" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.0.2</AssemblyVersion>
-    <AssemblyVersion>0.0.1.0</AssemblyVersion>
     <AssemblyVersion>0.0.2.0</AssemblyVersion>
     <AssemblyVersion>0.0.3.0</AssemblyVersion>
   </AssemblyInfo>
@@ -22,10 +21,9 @@
   <Members>
     <Member MemberName=".ctor">
       <MemberSignature Language="C#" Value="public HttpRequest (Manos.Server.IHttpTransaction transaction, Manos.Server.HttpHeaders headers, string method, string resource, bool support_1_1);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(class Manos.Server.IHttpTransaction transaction, class Manos.Server.HttpHeaders headers, string method, string resource, bool support_1_1) cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -45,14 +43,12 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(class Manos.Server.IHttpTransaction transaction, class Manos.Server.HttpHeaders headers, string method, string resource, bool support_1_1) cil managed" />
     </Member>
     <Member MemberName="ContentEncoding">
       <MemberSignature Language="C#" Value="public System.Text.Encoding ContentEncoding { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Text.Encoding ContentEncoding" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -64,10 +60,10 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance class System.Text.Encoding ContentEncoding" />
     </Member>
     <Member MemberName="Cookies">
       <MemberSignature Language="C#" Value="public Manos.Collections.DataDictionary Cookies { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Collections.DataDictionary Cookies" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
@@ -81,14 +77,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Collections.DataDictionary Cookies" />
     </Member>
     <Member MemberName="Data">
       <MemberSignature Language="C#" Value="public Manos.Collections.DataDictionary Data { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Collections.DataDictionary Data" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -100,14 +94,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Collections.DataDictionary Data" />
     </Member>
     <Member MemberName="Headers">
       <MemberSignature Language="C#" Value="public Manos.Server.HttpHeaders Headers { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.HttpHeaders Headers" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -119,14 +111,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.HttpHeaders Headers" />
     </Member>
     <Member MemberName="Http_1_1_Supported">
       <MemberSignature Language="C#" Value="public bool Http_1_1_Supported { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance bool Http_1_1_Supported" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -138,14 +128,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance bool Http_1_1_Supported" />
     </Member>
     <Member MemberName="LocalPath">
       <MemberSignature Language="C#" Value="public string LocalPath { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance string LocalPath" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -157,14 +145,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance string LocalPath" />
     </Member>
     <Member MemberName="Method">
       <MemberSignature Language="C#" Value="public string Method { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance string Method" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -176,14 +162,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance string Method" />
     </Member>
     <Member MemberName="PostData">
       <MemberSignature Language="C#" Value="public Manos.Collections.DataDictionary PostData { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Collections.DataDictionary PostData" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -195,14 +179,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Collections.DataDictionary PostData" />
     </Member>
     <Member MemberName="QueryData">
       <MemberSignature Language="C#" Value="public Manos.Collections.DataDictionary QueryData { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Collections.DataDictionary QueryData" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -214,14 +196,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Collections.DataDictionary QueryData" />
     </Member>
     <Member MemberName="ResourceUri">
       <MemberSignature Language="C#" Value="public string ResourceUri { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance string ResourceUri" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -233,7 +213,6 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance string ResourceUri" />
     </Member>
     <Member MemberName="SetWwwFormData">
       <MemberSignature Language="C#" Value="public void SetWwwFormData (Manos.Collections.DataDictionary data);" />
@@ -241,6 +220,7 @@
       <MemberType>Method</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -256,10 +236,9 @@
     </Member>
     <Member MemberName="Transaction">
       <MemberSignature Language="C#" Value="public Manos.Server.IHttpTransaction Transaction { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IHttpTransaction Transaction" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -271,14 +250,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IHttpTransaction Transaction" />
     </Member>
     <Member MemberName="UriData">
       <MemberSignature Language="C#" Value="public Manos.Collections.DataDictionary UriData { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Collections.DataDictionary UriData" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -290,8 +267,6 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Collections.DataDictionary UriData" />
     </Member>
   </Members>
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit HttpRequest extends System.Object implements class Manos.Server.IHttpRequest" />
 </Type>

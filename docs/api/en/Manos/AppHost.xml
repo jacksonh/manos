@@ -1,9 +1,8 @@
 <Type Name="AppHost" FullName="Manos.AppHost">
   <TypeSignature Language="C#" Value="public static class AppHost" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi abstract sealed beforefieldinit AppHost extends System.Object" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.0.2</AssemblyVersion>
-    <AssemblyVersion>0.0.1.0</AssemblyVersion>
     <AssemblyVersion>0.0.2.0</AssemblyVersion>
     <AssemblyVersion>0.0.3.0</AssemblyVersion>
   </AssemblyInfo>
@@ -12,16 +11,15 @@
   </Base>
   <Interfaces />
   <Docs>
-    <summary>The AppHost hosts your Manos application. </summary>
+    <summary>To be added.</summary>
     <remarks>To be added.</remarks>
   </Docs>
   <Members>
     <Member MemberName="AddTimeout">
       <MemberSignature Language="C#" Value="public static void AddTimeout (TimeSpan timespan, Manos.IRepeatBehavior repeat, object data, Manos.TimeoutCallback callback);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void AddTimeout(valuetype System.TimeSpan timespan, class Manos.IRepeatBehavior repeat, object data, class Manos.TimeoutCallback callback) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -42,14 +40,12 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void AddTimeout(valuetype System.TimeSpan timespan, class Manos.IRepeatBehavior repeat, object data, class Manos.TimeoutCallback callback) cil managed" />
     </Member>
     <Member MemberName="App">
       <MemberSignature Language="C#" Value="public static Manos.ManosApp App { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property class Manos.ManosApp App" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -61,14 +57,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property class Manos.ManosApp App" />
     </Member>
     <Member MemberName="Cache">
       <MemberSignature Language="C#" Value="public static Manos.Caching.IManosCache Cache { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property class Manos.Caching.IManosCache Cache" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -80,14 +74,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property class Manos.Caching.IManosCache Cache" />
     </Member>
     <Member MemberName="HandleTransaction">
       <MemberSignature Language="C#" Value="public static void HandleTransaction (Manos.Server.IHttpTransaction con);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void HandleTransaction(class Manos.Server.IHttpTransaction con) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -102,14 +94,12 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void HandleTransaction(class Manos.Server.IHttpTransaction con) cil managed" />
     </Member>
     <Member MemberName="IOLoop">
       <MemberSignature Language="C#" Value="public static Manos.Server.IOLoop IOLoop { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property class Manos.Server.IOLoop IOLoop" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -121,14 +111,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property class Manos.Server.IOLoop IOLoop" />
     </Member>
     <Member MemberName="IPAddress">
       <MemberSignature Language="C#" Value="public static System.Net.IPAddress IPAddress { set; get; }" />
+      <MemberSignature Language="ILAsm" Value=".property class System.Net.IPAddress IPAddress" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -140,14 +128,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property class System.Net.IPAddress IPAddress" />
     </Member>
     <Member MemberName="Pipes">
       <MemberSignature Language="C#" Value="public static System.Collections.Generic.IList&lt;Manos.IManosPipe&gt; Pipes { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property class System.Collections.Generic.IList`1&lt;class Manos.IManosPipe&gt; Pipes" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -159,14 +145,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property class System.Collections.Generic.IList`1&lt;class Manos.IManosPipe&gt; Pipes" />
     </Member>
     <Member MemberName="Port">
       <MemberSignature Language="C#" Value="public static int Port { set; get; }" />
+      <MemberSignature Language="ILAsm" Value=".property int32 Port" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -178,14 +162,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property int32 Port" />
     </Member>
     <Member MemberName="RunTimeout">
       <MemberSignature Language="C#" Value="public static void RunTimeout (Manos.Server.Timeout t);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void RunTimeout(class Manos.Server.Timeout t) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -200,14 +182,12 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void RunTimeout(class Manos.Server.Timeout t) cil managed" />
     </Member>
     <Member MemberName="Server">
       <MemberSignature Language="C#" Value="public static Manos.Server.HttpServer Server { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property class Manos.Server.HttpServer Server" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -219,14 +199,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property class Manos.Server.HttpServer Server" />
     </Member>
     <Member MemberName="Start">
       <MemberSignature Language="C#" Value="public static void Start (Manos.ManosApp application);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Start(class Manos.ManosApp application) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -241,14 +219,12 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Start(class Manos.ManosApp application) cil managed" />
     </Member>
     <Member MemberName="Stop">
       <MemberSignature Language="C#" Value="public static void Stop ();" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Stop() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -260,8 +236,6 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Stop() cil managed" />
     </Member>
   </Members>
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi abstract sealed beforefieldinit AppHost extends System.Object" />
 </Type>

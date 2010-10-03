@@ -1,9 +1,8 @@
 <Type Name="WriteFileOperation" FullName="Manos.Server.WriteFileOperation">
   <TypeSignature Language="C#" Value="public class WriteFileOperation : Manos.Server.IWriteOperation" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit WriteFileOperation extends System.Object implements class Manos.Server.IWriteOperation" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.0.2</AssemblyVersion>
-    <AssemblyVersion>0.0.1.0</AssemblyVersion>
     <AssemblyVersion>0.0.2.0</AssemblyVersion>
     <AssemblyVersion>0.0.3.0</AssemblyVersion>
   </AssemblyInfo>
@@ -22,10 +21,9 @@
   <Members>
     <Member MemberName=".ctor">
       <MemberSignature Language="C#" Value="public WriteFileOperation (string file, Manos.Server.WriteCallback callback);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(string file, class Manos.Server.WriteCallback callback) cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -39,14 +37,12 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(string file, class Manos.Server.WriteCallback callback) cil managed" />
     </Member>
     <Member MemberName="Callback">
       <MemberSignature Language="C#" Value="public Manos.Server.WriteCallback Callback { set; get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.WriteCallback Callback" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -58,14 +54,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.WriteCallback Callback" />
     </Member>
     <Member MemberName="File">
       <MemberSignature Language="C#" Value="public string File { set; get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance string File" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -77,14 +71,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance string File" />
     </Member>
     <Member MemberName="Write">
       <MemberSignature Language="C#" Value="public void Write (Manos.Server.IOStream stream);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Write(class Manos.Server.IOStream stream) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -99,8 +91,6 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Write(class Manos.Server.IOStream stream) cil managed" />
     </Member>
   </Members>
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit WriteFileOperation extends System.Object implements class Manos.Server.IWriteOperation" />
 </Type>

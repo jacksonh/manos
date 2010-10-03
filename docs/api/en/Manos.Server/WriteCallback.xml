@@ -1,9 +1,8 @@
 <Type Name="WriteCallback" FullName="Manos.Server.WriteCallback">
   <TypeSignature Language="C#" Value="public delegate void WriteCallback();" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed WriteCallback extends System.MulticastDelegate" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.0.2</AssemblyVersion>
-    <AssemblyVersion>0.0.1.0</AssemblyVersion>
     <AssemblyVersion>0.0.2.0</AssemblyVersion>
     <AssemblyVersion>0.0.3.0</AssemblyVersion>
   </AssemblyInfo>
@@ -18,5 +17,4 @@
     <summary>To be added.</summary>
     <remarks>To be added.</remarks>
   </Docs>
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed WriteCallback extends System.MulticastDelegate" />
 </Type>

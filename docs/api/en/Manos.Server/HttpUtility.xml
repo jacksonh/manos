@@ -1,9 +1,8 @@
 <Type Name="HttpUtility" FullName="Manos.Server.HttpUtility">
   <TypeSignature Language="C#" Value="public static class HttpUtility" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi abstract sealed beforefieldinit HttpUtility extends System.Object" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.0.2</AssemblyVersion>
-    <AssemblyVersion>0.0.1.0</AssemblyVersion>
     <AssemblyVersion>0.0.2.0</AssemblyVersion>
     <AssemblyVersion>0.0.3.0</AssemblyVersion>
   </AssemblyInfo>
@@ -18,10 +17,9 @@
   <Members>
     <Member MemberName="ParseUrlEncodedData">
       <MemberSignature Language="C#" Value="public static Manos.Collections.DataDictionary ParseUrlEncodedData (string data);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class Manos.Collections.DataDictionary ParseUrlEncodedData(string data) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -37,14 +35,12 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class Manos.Collections.DataDictionary ParseUrlEncodedData(string data) cil managed" />
     </Member>
     <Member MemberName="ParseUrlEncodedData">
       <MemberSignature Language="C#" Value="public static Manos.Collections.DataDictionary ParseUrlEncodedData (string data, System.Text.Encoding encoding);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class Manos.Collections.DataDictionary ParseUrlEncodedData(string data, class System.Text.Encoding encoding) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -62,14 +58,12 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class Manos.Collections.DataDictionary ParseUrlEncodedData(string data, class System.Text.Encoding encoding) cil managed" />
     </Member>
     <Member MemberName="UrlDecode">
       <MemberSignature Language="C#" Value="public static string UrlDecode (string s, System.Text.Encoding e);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig string UrlDecode(string s, class System.Text.Encoding e) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -87,8 +81,6 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig string UrlDecode(string s, class System.Text.Encoding e) cil managed" />
     </Member>
   </Members>
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi abstract sealed beforefieldinit HttpUtility extends System.Object" />
 </Type>

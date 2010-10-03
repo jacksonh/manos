@@ -1,9 +1,8 @@
 <Type Name="IterativeRepeatBehavior" FullName="Manos.IterativeRepeatBehavior">
   <TypeSignature Language="C#" Value="public class IterativeRepeatBehavior : Manos.IRepeatBehavior" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit IterativeRepeatBehavior extends System.Object implements class Manos.IRepeatBehavior" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.0.2</AssemblyVersion>
-    <AssemblyVersion>0.0.1.0</AssemblyVersion>
     <AssemblyVersion>0.0.2.0</AssemblyVersion>
     <AssemblyVersion>0.0.3.0</AssemblyVersion>
   </AssemblyInfo>
@@ -22,10 +21,9 @@
   <Members>
     <Member MemberName=".ctor">
       <MemberSignature Language="C#" Value="public IterativeRepeatBehavior (int num_iterations);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(int32 num_iterations) cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -37,14 +35,12 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(int32 num_iterations) cil managed" />
     </Member>
     <Member MemberName="RemainingIterations">
       <MemberSignature Language="C#" Value="public int RemainingIterations { set; get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance int32 RemainingIterations" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -56,14 +52,12 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance int32 RemainingIterations" />
     </Member>
     <Member MemberName="RepeatPerformed">
       <MemberSignature Language="C#" Value="public void RepeatPerformed ();" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void RepeatPerformed() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -75,14 +69,12 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void RepeatPerformed() cil managed" />
     </Member>
     <Member MemberName="ShouldContinueToRepeat">
       <MemberSignature Language="C#" Value="public bool ShouldContinueToRepeat ();" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance bool ShouldContinueToRepeat() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -95,8 +87,6 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance bool ShouldContinueToRepeat() cil managed" />
     </Member>
   </Members>
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit IterativeRepeatBehavior extends System.Object implements class Manos.IRepeatBehavior" />
 </Type>

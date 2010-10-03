@@ -1,9 +1,8 @@
 <Type Name="RegexMatchOperation" FullName="Manos.Routing.RegexMatchOperation">
   <TypeSignature Language="C#" Value="public class RegexMatchOperation : Manos.Routing.IMatchOperation" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit RegexMatchOperation extends System.Object implements class Manos.Routing.IMatchOperation" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.0.2</AssemblyVersion>
-    <AssemblyVersion>0.0.1.0</AssemblyVersion>
     <AssemblyVersion>0.0.2.0</AssemblyVersion>
     <AssemblyVersion>0.0.3.0</AssemblyVersion>
   </AssemblyInfo>
@@ -22,10 +21,9 @@
   <Members>
     <Member MemberName=".ctor">
       <MemberSignature Language="C#" Value="public RegexMatchOperation (System.Text.RegularExpressions.Regex regex);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(class System.Text.RegularExpressions.Regex regex) cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -37,14 +35,12 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(class System.Text.RegularExpressions.Regex regex) cil managed" />
     </Member>
     <Member MemberName="IsMatch">
       <MemberSignature Language="C#" Value="public bool IsMatch (string input, int start, Manos.Collections.DataDictionary data, out int end);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance bool IsMatch(string input, int32 start, class Manos.Collections.DataDictionary data, int32 end) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -66,14 +62,12 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance bool IsMatch(string input, int32 start, class Manos.Collections.DataDictionary data, int32 end) cil managed" />
     </Member>
     <Member MemberName="Regex">
       <MemberSignature Language="C#" Value="public System.Text.RegularExpressions.Regex Regex { set; get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Text.RegularExpressions.Regex Regex" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -85,8 +79,6 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance class System.Text.RegularExpressions.Regex Regex" />
     </Member>
   </Members>
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit RegexMatchOperation extends System.Object implements class Manos.Routing.IMatchOperation" />
 </Type>

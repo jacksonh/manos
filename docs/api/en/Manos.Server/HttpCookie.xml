@@ -1,5 +1,6 @@
 <Type Name="HttpCookie" FullName="Manos.Server.HttpCookie">
   <TypeSignature Language="C#" Value="public class HttpCookie" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit HttpCookie extends System.Object" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
     <AssemblyVersion>0.0.2.0</AssemblyVersion>
@@ -16,6 +17,7 @@
   <Members>
     <Member MemberName=".ctor">
       <MemberSignature Language="C#" Value="public HttpCookie (string name, string value);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(string name, string value) cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
@@ -31,10 +33,10 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(string name, string value) cil managed" />
     </Member>
     <Member MemberName="Domain">
       <MemberSignature Language="C#" Value="public string Domain { set; get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance string Domain" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
@@ -48,10 +50,10 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance string Domain" />
     </Member>
     <Member MemberName="EscapeStr">
       <MemberSignature Language="C#" Value="public static string EscapeStr (string key);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig string EscapeStr(string key) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
@@ -69,10 +71,10 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig string EscapeStr(string key) cil managed" />
     </Member>
     <Member MemberName="Expires">
       <MemberSignature Language="C#" Value="public DateTime Expires { set; get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance valuetype System.DateTime Expires" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
@@ -86,10 +88,10 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance valuetype System.DateTime Expires" />
     </Member>
     <Member MemberName="FromHeader">
       <MemberSignature Language="C#" Value="public static Manos.Collections.DataDictionary FromHeader (string header);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class Manos.Collections.DataDictionary FromHeader(string header) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
@@ -107,10 +109,10 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class Manos.Collections.DataDictionary FromHeader(string header) cil managed" />
     </Member>
     <Member MemberName="HttpOnly">
       <MemberSignature Language="C#" Value="public bool HttpOnly { set; get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance bool HttpOnly" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
@@ -124,10 +126,10 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance bool HttpOnly" />
     </Member>
     <Member MemberName="Path">
       <MemberSignature Language="C#" Value="public string Path { set; get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance string Path" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
@@ -141,10 +143,10 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance string Path" />
     </Member>
     <Member MemberName="Secure">
       <MemberSignature Language="C#" Value="public bool Secure { set; get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance bool Secure" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
@@ -158,10 +160,10 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance bool Secure" />
     </Member>
     <Member MemberName="ToHeaderString">
       <MemberSignature Language="C#" Value="public string ToHeaderString ();" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance string ToHeaderString() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
@@ -176,10 +178,10 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance string ToHeaderString() cil managed" />
     </Member>
     <Member MemberName="ToJsString">
       <MemberSignature Language="C#" Value="public string ToJsString ();" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance string ToJsString() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
@@ -194,10 +196,10 @@
         <returns>To be added.</returns>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance string ToJsString() cil managed" />
     </Member>
     <Member MemberName="Values">
       <MemberSignature Language="C#" Value="public System.Collections.Generic.Dictionary&lt;string,string&gt; Values { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Generic.Dictionary`2&lt;string, string&gt; Values" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
@@ -211,10 +213,10 @@
         <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Generic.Dictionary`2&lt;string, string&gt; Values" />
     </Member>
     <Member MemberName="WriteHeader">
       <MemberSignature Language="C#" Value="public void WriteHeader (Manos.Server.IHttpResponse response);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void WriteHeader(class Manos.Server.IHttpResponse response) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
@@ -231,8 +233,6 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void WriteHeader(class Manos.Server.IHttpResponse response) cil managed" />
     </Member>
   </Members>
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit HttpCookie extends System.Object" />
 </Type>

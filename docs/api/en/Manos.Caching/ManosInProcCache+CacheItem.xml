@@ -1,9 +1,8 @@
 <Type Name="ManosInProcCache+CacheItem" FullName="Manos.Caching.ManosInProcCache+CacheItem">
   <TypeSignature Language="C#" Value="public class ManosInProcCache.CacheItem" />
+  <TypeSignature Language="ILAsm" Value=".class nested public auto ansi beforefieldinit ManosInProcCache/CacheItem extends System.Object" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.0.2</AssemblyVersion>
-    <AssemblyVersion>0.0.1.0</AssemblyVersion>
     <AssemblyVersion>0.0.2.0</AssemblyVersion>
     <AssemblyVersion>0.0.3.0</AssemblyVersion>
   </AssemblyInfo>
@@ -18,10 +17,9 @@
   <Members>
     <Member MemberName=".ctor">
       <MemberSignature Language="C#" Value="public CacheItem (string key, object item);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(string key, object item) cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -35,14 +33,12 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(string key, object item) cil managed" />
     </Member>
     <Member MemberName="IsRemoved">
       <MemberSignature Language="C#" Value="public bool IsRemoved;" />
+      <MemberSignature Language="ILAsm" Value=".field public bool IsRemoved" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -53,14 +49,12 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".field public bool IsRemoved" />
     </Member>
     <Member MemberName="Item">
       <MemberSignature Language="C#" Value="public object Item;" />
+      <MemberSignature Language="ILAsm" Value=".field public object Item" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -71,14 +65,12 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".field public object Item" />
     </Member>
     <Member MemberName="Key">
       <MemberSignature Language="C#" Value="public string Key;" />
+      <MemberSignature Language="ILAsm" Value=".field public string Key" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.0.2</AssemblyVersion>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
         <AssemblyVersion>0.0.2.0</AssemblyVersion>
         <AssemblyVersion>0.0.3.0</AssemblyVersion>
       </AssemblyInfo>
@@ -89,8 +81,6 @@
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>
-      <MemberSignature Language="ILAsm" Value=".field public string Key" />
     </Member>
   </Members>
-  <TypeSignature Language="ILAsm" Value=".class nested public auto ansi beforefieldinit ManosInProcCache/CacheItem extends System.Object" />
 </Type>
