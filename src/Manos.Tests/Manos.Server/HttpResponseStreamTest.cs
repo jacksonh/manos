@@ -72,6 +72,17 @@ namespace Manos.Server.Tests
 		}
 		
 		[Test]
+		public void Seek_SeekToBeginningOfEmptyStream_SetsPosition ()
+		{
+			var stream = new HttpResponseStream ();
+
+			stream.Seek (0, SeekOrigin.Begin);
+
+			var position = stream.Position;
+			Assert.AreEqual (0, position);
+		}
+
+		[Test]
 		public void SeekOrigin_NegativePastBeginning_Throws ()
 		{
 			var stream = new HttpResponseStream ();
@@ -478,6 +489,55 @@ namespace Manos.Server.Tests
 
 			var length = stream.Length;
 			Assert.AreEqual (15, length);			
+		}
+
+		[Test]
+		public void Insert_BeginningOfStream_SetsCorrectLength ()
+		{
+			var stream = new HttpResponseStream ();
+			var write_buffer = new byte [10];
+
+			stream.Write (write_buffer, 0, 10);
+			stream.Position = 0;
+			
+			stream.Insert (write_buffer, 0, 10);
+
+			var length = stream.Length;
+			Assert.AreEqual (20, length);
+		}
+
+		[Test]
+		public void Insert_BeginningOfStream_SetsCorrectPosition ()
+		{
+			var stream = new HttpResponseStream ();
+			var write_buffer = new byte [10];
+
+			stream.Write (write_buffer, 0, 10);
+			stream.Position = 0;
+			
+			stream.Insert (write_buffer, 0, 5);
+
+			var position = stream.Position;
+			Assert.AreEqual (5, position);
+		}
+
+		[Test]
+		public void Insert_BeginningOfStream_SetsCorrectData ()
+		{
+			var stream = new HttpResponseStream ();
+			var write_buffer = new byte [10];
+			var write_buffer2 = new byte [10];
+
+			
+			stream.Write (write_buffer, 0, 10);
+			stream.Position = 0;
+			
+			write_buffer2 [2] = 0xFA;
+			stream.Insert (write_buffer2, 0, 10);
+
+			stream.Position = 2;
+			var data = stream.ReadByte ();
+			Assert.AreEqual (0xFA, data);
 		}
 	}
 }

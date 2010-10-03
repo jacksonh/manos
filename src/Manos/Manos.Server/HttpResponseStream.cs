@@ -149,6 +149,12 @@ namespace Manos.Server
 			if (offset < 0)
 				throw new ArgumentException ("Can not seek past beginning of stream.");
 			
+			if (offset == 0) {
+			   current_segment = 0;
+			   segment_offset = 0;
+			   return 0;
+			}
+			   
 			if (segments.Count < 1)
 				throw new ArgumentException ("Can not seek on empty stream.");
 			
@@ -256,7 +262,14 @@ namespace Manos.Server
 			   return;
 			}
 
-			
+			var segment = new ArraySegment<byte> (buffer, offset, count);
+			segments.Insert (current_segment, segment);
+			segment_offset = count;
+		}
+
+		public List<ArraySegment<byte>> GetBuffers ()
+		{
+			return segments;
 		}
 
 		public override void Write (byte[] buffer, int offset, int count)
