@@ -39,7 +39,7 @@ need any parameters, so it simply implements the ManosAction delegate. It also t
 of Route's params constructor to route a few different strings to itself.
 
 The second method SubmitLink will be called when we submit our form.  We don't really want people
-accidently going to thise "page", so it will only accept POST requests. Note that we are recieving
+accidently going to this "page", so it will only accept POST requests. Note that we are recieving
 the link as a parameter.  The link will be set in form data.
 
 The last two methods use the simple routing syntax to map pieces of the request url to parameters.
