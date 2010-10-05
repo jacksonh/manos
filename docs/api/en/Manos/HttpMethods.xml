@@ -1,10 +1,8 @@
 <Type Name="HttpMethods" FullName="Manos.HttpMethods">
   <TypeSignature Language="C#" Value="public static class HttpMethods" />
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi abstract sealed beforefieldinit HttpMethods extends System.Object" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.2.0</AssemblyVersion>
-    <AssemblyVersion>0.0.3.0</AssemblyVersion>
+    <AssemblyVersion>0.0.4.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -17,11 +15,9 @@
   <Members>
     <Member MemberName="DeleteMethods">
       <MemberSignature Language="C#" Value="public static readonly string[] DeleteMethods;" />
-      <MemberSignature Language="ILAsm" Value=".field public static initonly string[] DeleteMethods" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String[]</ReturnType>
@@ -33,11 +29,9 @@
     </Member>
     <Member MemberName="GetMethods">
       <MemberSignature Language="C#" Value="public static readonly string[] GetMethods;" />
-      <MemberSignature Language="ILAsm" Value=".field public static initonly string[] GetMethods" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String[]</ReturnType>
@@ -49,11 +43,9 @@
     </Member>
     <Member MemberName="HeadMethods">
       <MemberSignature Language="C#" Value="public static readonly string[] HeadMethods;" />
-      <MemberSignature Language="ILAsm" Value=".field public static initonly string[] HeadMethods" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String[]</ReturnType>
@@ -65,11 +57,9 @@
     </Member>
     <Member MemberName="OptionsMethods">
       <MemberSignature Language="C#" Value="public static readonly string[] OptionsMethods;" />
-      <MemberSignature Language="ILAsm" Value=".field public static initonly string[] OptionsMethods" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String[]</ReturnType>
@@ -81,11 +71,9 @@
     </Member>
     <Member MemberName="PostMethods">
       <MemberSignature Language="C#" Value="public static readonly string[] PostMethods;" />
-      <MemberSignature Language="ILAsm" Value=".field public static initonly string[] PostMethods" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String[]</ReturnType>
@@ -97,11 +85,9 @@
     </Member>
     <Member MemberName="PutMethods">
       <MemberSignature Language="C#" Value="public static readonly string[] PutMethods;" />
-      <MemberSignature Language="ILAsm" Value=".field public static initonly string[] PutMethods" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String[]</ReturnType>
@@ -113,11 +99,9 @@
     </Member>
     <Member MemberName="RouteMethods">
       <MemberSignature Language="C#" Value="public static readonly string[] RouteMethods;" />
-      <MemberSignature Language="ILAsm" Value=".field public static initonly string[] RouteMethods" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String[]</ReturnType>
@@ -129,11 +113,9 @@
     </Member>
     <Member MemberName="TraceMethods">
       <MemberSignature Language="C#" Value="public static readonly string[] TraceMethods;" />
-      <MemberSignature Language="ILAsm" Value=".field public static initonly string[] TraceMethods" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String[]</ReturnType>

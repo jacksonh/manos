@@ -1,10 +1,8 @@
 <Type Name="IHttpResponse" FullName="Manos.Server.IHttpResponse">
   <TypeSignature Language="C#" Value="public interface IHttpResponse" />
-  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IHttpResponse" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.2.0</AssemblyVersion>
-    <AssemblyVersion>0.0.3.0</AssemblyVersion>
+    <AssemblyVersion>0.0.4.0</AssemblyVersion>
   </AssemblyInfo>
   <Interfaces />
   <Docs>
@@ -14,11 +12,9 @@
   <Members>
     <Member MemberName="Encoding">
       <MemberSignature Language="C#" Value="public System.Text.Encoding Encoding { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class System.Text.Encoding Encoding" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Text.Encoding</ReturnType>
@@ -31,11 +27,9 @@
     </Member>
     <Member MemberName="Finish">
       <MemberSignature Language="C#" Value="public void Finish ();" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Finish() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -48,11 +42,9 @@
     </Member>
     <Member MemberName="Headers">
       <MemberSignature Language="C#" Value="public Manos.Server.HttpHeaders Headers { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.HttpHeaders Headers" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.HttpHeaders</ReturnType>
@@ -65,11 +57,9 @@
     </Member>
     <Member MemberName="Redirect">
       <MemberSignature Language="C#" Value="public void Redirect (string url);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Redirect(string url) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -85,11 +75,9 @@
     </Member>
     <Member MemberName="SendFile">
       <MemberSignature Language="C#" Value="public void SendFile (string file);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void SendFile(string file) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -105,11 +93,9 @@
     </Member>
     <Member MemberName="SetCookie">
       <MemberSignature Language="C#" Value="public void SetCookie (string name, Manos.Server.HttpCookie cookie);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void SetCookie(string name, class Manos.Server.HttpCookie cookie) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -127,11 +113,9 @@
     </Member>
     <Member MemberName="SetCookie">
       <MemberSignature Language="C#" Value="public Manos.Server.HttpCookie SetCookie (string name, string value);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance class Manos.Server.HttpCookie SetCookie(string name, string value) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.HttpCookie</ReturnType>
@@ -150,11 +134,9 @@
     </Member>
     <Member MemberName="SetCookie">
       <MemberSignature Language="C#" Value="public Manos.Server.HttpCookie SetCookie (string name, string value, DateTime expires);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance class Manos.Server.HttpCookie SetCookie(string name, string value, valuetype System.DateTime expires) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.HttpCookie</ReturnType>
@@ -175,11 +157,9 @@
     </Member>
     <Member MemberName="SetCookie">
       <MemberSignature Language="C#" Value="public Manos.Server.HttpCookie SetCookie (string name, string value, string domain);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance class Manos.Server.HttpCookie SetCookie(string name, string value, string domain) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.HttpCookie</ReturnType>
@@ -200,11 +180,9 @@
     </Member>
     <Member MemberName="SetCookie">
       <MemberSignature Language="C#" Value="public Manos.Server.HttpCookie SetCookie (string name, string value, TimeSpan max_age);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance class Manos.Server.HttpCookie SetCookie(string name, string value, valuetype System.TimeSpan max_age) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.HttpCookie</ReturnType>
@@ -225,11 +203,9 @@
     </Member>
     <Member MemberName="SetCookie">
       <MemberSignature Language="C#" Value="public Manos.Server.HttpCookie SetCookie (string name, string value, string domain, DateTime expires);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance class Manos.Server.HttpCookie SetCookie(string name, string value, string domain, valuetype System.DateTime expires) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.HttpCookie</ReturnType>
@@ -252,11 +228,9 @@
     </Member>
     <Member MemberName="SetCookie">
       <MemberSignature Language="C#" Value="public Manos.Server.HttpCookie SetCookie (string name, string value, string domain, TimeSpan max_age);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance class Manos.Server.HttpCookie SetCookie(string name, string value, string domain, valuetype System.TimeSpan max_age) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.HttpCookie</ReturnType>
@@ -279,11 +253,9 @@
     </Member>
     <Member MemberName="SetHeader">
       <MemberSignature Language="C#" Value="public void SetHeader (string name, string value);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void SetHeader(string name, string value) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -301,11 +273,9 @@
     </Member>
     <Member MemberName="StatusCode">
       <MemberSignature Language="C#" Value="public int StatusCode { set; get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance int32 StatusCode" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Int32</ReturnType>
@@ -318,11 +288,9 @@
     </Member>
     <Member MemberName="Stream">
       <MemberSignature Language="C#" Value="public Manos.Server.HttpResponseStream Stream { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.HttpResponseStream Stream" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.HttpResponseStream</ReturnType>
@@ -335,11 +303,9 @@
     </Member>
     <Member MemberName="Transaction">
       <MemberSignature Language="C#" Value="public Manos.Server.IHttpTransaction Transaction { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IHttpTransaction Transaction" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.IHttpTransaction</ReturnType>
@@ -352,11 +318,9 @@
     </Member>
     <Member MemberName="Write">
       <MemberSignature Language="C#" Value="public void Write (byte[] data);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Write(unsigned int8[] data) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -372,11 +336,9 @@
     </Member>
     <Member MemberName="Write">
       <MemberSignature Language="C#" Value="public void Write (string str);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Write(string str) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -392,11 +354,9 @@
     </Member>
     <Member MemberName="Write">
       <MemberSignature Language="C#" Value="public void Write (string str, object[] prms);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Write(string str, object[] prms) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -420,11 +380,9 @@
     </Member>
     <Member MemberName="WriteHeaders">
       <MemberSignature Language="C#" Value="public bool WriteHeaders { set; get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance bool WriteHeaders" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -437,11 +395,9 @@
     </Member>
     <Member MemberName="WriteLine">
       <MemberSignature Language="C#" Value="public void WriteLine (string str);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void WriteLine(string str) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -457,11 +413,9 @@
     </Member>
     <Member MemberName="WriteLine">
       <MemberSignature Language="C#" Value="public void WriteLine (string str, object[] prms);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void WriteLine(string str, object[] prms) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -485,11 +439,9 @@
     </Member>
     <Member MemberName="WriteStatusLine">
       <MemberSignature Language="C#" Value="public bool WriteStatusLine { set; get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance bool WriteStatusLine" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>

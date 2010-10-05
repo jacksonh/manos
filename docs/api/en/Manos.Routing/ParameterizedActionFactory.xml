@@ -1,10 +1,8 @@
 <Type Name="ParameterizedActionFactory" FullName="Manos.Routing.ParameterizedActionFactory">
   <TypeSignature Language="C#" Value="public static class ParameterizedActionFactory" />
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi abstract sealed beforefieldinit ParameterizedActionFactory extends System.Object" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.2.0</AssemblyVersion>
-    <AssemblyVersion>0.0.3.0</AssemblyVersion>
+    <AssemblyVersion>0.0.4.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -17,11 +15,9 @@
   <Members>
     <Member MemberName="CreateAction">
       <MemberSignature Language="C#" Value="public static Manos.Routing.ParameterizedAction CreateAction (System.Reflection.MethodInfo method);" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class Manos.Routing.ParameterizedAction CreateAction(class System.Reflection.MethodInfo method) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.ParameterizedAction</ReturnType>

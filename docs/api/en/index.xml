@@ -1,6 +1,6 @@
 <Overview>
   <Assemblies>
-    <Assembly Name="Manos" Version="0.0.3.0">
+    <Assembly Name="Manos" Version="0.0.4.0">
       <Attributes>
         <Attribute>
           <AttributeName>System.Reflection.AssemblyTitle("Manos.dll")</AttributeName>
@@ -81,8 +81,6 @@
       <Type Name="IHttpRequest" Kind="Interface" />
       <Type Name="IHttpResponse" Kind="Interface" />
       <Type Name="IHttpTransaction" Kind="Interface" />
-      <Type Name="IOCallback" Kind="Delegate" />
-      <Type Name="IOHandler" Kind="Delegate" />
       <Type Name="IOLoop" Kind="Class" />
       <Type Name="IOStream" Kind="Class" />
       <Type Name="IWriteOperation" Kind="Interface" />

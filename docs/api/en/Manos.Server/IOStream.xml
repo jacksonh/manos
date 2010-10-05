@@ -1,10 +1,8 @@
 <Type Name="IOStream" FullName="Manos.Server.IOStream">
   <TypeSignature Language="C#" Value="public class IOStream" />
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit IOStream extends System.Object" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.2.0</AssemblyVersion>
-    <AssemblyVersion>0.0.3.0</AssemblyVersion>
+    <AssemblyVersion>0.0.4.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -17,11 +15,9 @@
   <Members>
     <Member MemberName=".ctor">
       <MemberSignature Language="C#" Value="public IOStream (System.Net.Sockets.Socket socket, Manos.Server.IOLoop ioloop);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(class System.Net.Sockets.Socket socket, class Manos.Server.IOLoop ioloop) cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <Parameters>
         <Parameter Name="socket" Type="System.Net.Sockets.Socket" />
@@ -36,11 +32,9 @@
     </Member>
     <Member MemberName="AdjustSegments">
       <MemberSignature Language="C#" Value="public static void AdjustSegments (int len, System.Collections.Generic.IList&lt;ArraySegment&lt;byte&gt;&gt; write_data);" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void AdjustSegments(int32 len, class System.Collections.Generic.IList`1&lt;valuetype System.ArraySegment`1&lt;unsigned int8&gt;&gt; write_data) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -58,11 +52,9 @@
     </Member>
     <Member MemberName="Close">
       <MemberSignature Language="C#" Value="public void Close ();" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Close() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -75,11 +67,9 @@
     </Member>
     <Member MemberName="IOLoop">
       <MemberSignature Language="C#" Value="public Manos.Server.IOLoop IOLoop { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IOLoop IOLoop" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.IOLoop</ReturnType>
@@ -92,11 +82,9 @@
     </Member>
     <Member MemberName="IsClosed">
       <MemberSignature Language="C#" Value="public bool IsClosed { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance bool IsClosed" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -109,11 +97,9 @@
     </Member>
     <Member MemberName="IsReading">
       <MemberSignature Language="C#" Value="public bool IsReading { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance bool IsReading" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -126,11 +112,9 @@
     </Member>
     <Member MemberName="IsWriting">
       <MemberSignature Language="C#" Value="public bool IsWriting { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance bool IsWriting" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -143,11 +127,9 @@
     </Member>
     <Member MemberName="ReadBytes">
       <MemberSignature Language="C#" Value="public void ReadBytes (int num_bytes, Manos.Server.ReadCallback callback);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void ReadBytes(int32 num_bytes, class Manos.Server.ReadCallback callback) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -165,11 +147,9 @@
     </Member>
     <Member MemberName="ReadChunkSize">
       <MemberSignature Language="C#" Value="public int ReadChunkSize { set; get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance int32 ReadChunkSize" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Int32</ReturnType>
@@ -182,11 +162,9 @@
     </Member>
     <Member MemberName="ReadUntil">
       <MemberSignature Language="C#" Value="public void ReadUntil (string delimiter, Manos.Server.ReadCallback callback);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void ReadUntil(string delimiter, class Manos.Server.ReadCallback callback) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -204,11 +182,9 @@
     </Member>
     <Member MemberName="SendFile">
       <MemberSignature Language="C#" Value="public void SendFile (string file, Manos.Server.WriteCallback callback);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void SendFile(string file, class Manos.Server.WriteCallback callback) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -226,11 +202,9 @@
     </Member>
     <Member MemberName="Write">
       <MemberSignature Language="C#" Value="public void Write (System.Collections.Generic.IList&lt;ArraySegment&lt;byte&gt;&gt; data, Manos.Server.WriteCallback callback);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Write(class System.Collections.Generic.IList`1&lt;valuetype System.ArraySegment`1&lt;unsigned int8&gt;&gt; data, class Manos.Server.WriteCallback callback) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>

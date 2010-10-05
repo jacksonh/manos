@@ -1,10 +1,8 @@
 <Type Name="ManosContext" FullName="Manos.ManosContext">
   <TypeSignature Language="C#" Value="public class ManosContext : Manos.IManosContext" />
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit ManosContext extends System.Object implements class Manos.IManosContext" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.2.0</AssemblyVersion>
-    <AssemblyVersion>0.0.3.0</AssemblyVersion>
+    <AssemblyVersion>0.0.4.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -21,11 +19,9 @@
   <Members>
     <Member MemberName=".ctor">
       <MemberSignature Language="C#" Value="public ManosContext (Manos.Server.IHttpTransaction transaction);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(class Manos.Server.IHttpTransaction transaction) cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <Parameters>
         <Parameter Name="transaction" Type="Manos.Server.IHttpTransaction" />
@@ -38,11 +34,9 @@
     </Member>
     <Member MemberName="Request">
       <MemberSignature Language="C#" Value="public Manos.Server.IHttpRequest Request { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IHttpRequest Request" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.IHttpRequest</ReturnType>
@@ -55,11 +49,9 @@
     </Member>
     <Member MemberName="Response">
       <MemberSignature Language="C#" Value="public Manos.Server.IHttpResponse Response { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IHttpResponse Response" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.IHttpResponse</ReturnType>
@@ -72,11 +64,9 @@
     </Member>
     <Member MemberName="Transaction">
       <MemberSignature Language="C#" Value="public Manos.Server.IHttpTransaction Transaction { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IHttpTransaction Transaction" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.IHttpTransaction</ReturnType>

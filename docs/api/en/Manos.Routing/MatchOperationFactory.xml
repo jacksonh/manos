@@ -1,10 +1,8 @@
 <Type Name="MatchOperationFactory" FullName="Manos.Routing.MatchOperationFactory">
   <TypeSignature Language="C#" Value="public static class MatchOperationFactory" />
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi abstract sealed beforefieldinit MatchOperationFactory extends System.Object" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.2.0</AssemblyVersion>
-    <AssemblyVersion>0.0.3.0</AssemblyVersion>
+    <AssemblyVersion>0.0.4.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -17,11 +15,9 @@
   <Members>
     <Member MemberName="Create">
       <MemberSignature Language="C#" Value="public static Manos.Routing.IMatchOperation Create (string pattern);" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class Manos.Routing.IMatchOperation Create(string pattern) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.IMatchOperation</ReturnType>
@@ -38,11 +34,9 @@
     </Member>
     <Member MemberName="REGEX_CHARS">
       <MemberSignature Language="C#" Value="public static readonly char[] REGEX_CHARS;" />
-      <MemberSignature Language="ILAsm" Value=".field public static initonly char[] REGEX_CHARS" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Char[]</ReturnType>
@@ -54,11 +48,9 @@
     </Member>
     <Member MemberName="SIMPLE_CHARS">
       <MemberSignature Language="C#" Value="public static readonly char[] SIMPLE_CHARS;" />
-      <MemberSignature Language="ILAsm" Value=".field public static initonly char[] SIMPLE_CHARS" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Char[]</ReturnType>

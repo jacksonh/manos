@@ -1,10 +1,8 @@
 <Type Name="IMatchOperation" FullName="Manos.Routing.IMatchOperation">
   <TypeSignature Language="C#" Value="public interface IMatchOperation" />
-  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IMatchOperation" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.2.0</AssemblyVersion>
-    <AssemblyVersion>0.0.3.0</AssemblyVersion>
+    <AssemblyVersion>0.0.4.0</AssemblyVersion>
   </AssemblyInfo>
   <Interfaces />
   <Docs>
@@ -14,11 +12,9 @@
   <Members>
     <Member MemberName="IsMatch">
       <MemberSignature Language="C#" Value="public bool IsMatch (string input, int start, Manos.Collections.DataDictionary data, out int end);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance bool IsMatch(string input, int32 start, class Manos.Collections.DataDictionary data, int32 end) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>

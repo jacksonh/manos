@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Collections;
 using System.Collections.Generic;
 
+using Libev;
 using Mono.Unix.Native;
 
 
@@ -19,7 +20,6 @@ namespace Manos.Server {
 
 		private Socket socket;
 		private IOLoop ioloop;
-		private EpollEvents state;
 
 		private MemoryStream read_buffer;
 		private int read_bytes = -1;
@@ -46,6 +46,9 @@ namespace Manos.Server {
 			}
 		}
 
+		private IOWatcher read_watcher;
+		private IOWatcher write_watcher;
+
 		public IOStream (Socket socket, IOLoop ioloop)
 		{
 			this.socket = socket;
@@ -55,8 +58,8 @@ namespace Manos.Server {
 
 			socket.Blocking = false;
 
-			state = IOLoop.EPOLL_ERROR_EVENTS;
-			ioloop.AddHandler (socket.Handle, HandleEvents, state);
+			read_watcher = new IOWatcher (socket.Handle, EventTypes.Read, ioloop.EventLoop, HandleIORead);
+			write_watcher = new IOWatcher (socket.Handle, EventTypes.Write, ioloop.EventLoop, HandleIOWrite);
 		}
 
 		public IOLoop IOLoop {
@@ -105,7 +108,7 @@ namespace Manos.Server {
 				return;
 			}
 
-			AddIOState (IOLoop.EPOLL_READ_EVENTS);
+			EnableReading ();
 		}
 
 		public void ReadBytes (int num_bytes, ReadCallback callback)
@@ -120,7 +123,7 @@ namespace Manos.Server {
 				return;
 			}
 			
-			AddIOState (IOLoop.EPOLL_READ_EVENTS);
+			EnableReading ();
 		}
 
 		public void Write (IList<ArraySegment<byte>> data, WriteCallback callback)
@@ -130,7 +133,7 @@ namespace Manos.Server {
 			write_data = data;
 			write_callback = callback;
 
-			AddIOState (IOLoop.EPOLL_WRITE_EVENTS);
+			EnableWriting ();
 		}
 
 		public void SendFile (string file, WriteCallback callback)
@@ -142,23 +145,40 @@ namespace Manos.Server {
 			send_file = new FileStream (file, FileMode.Open, FileAccess.Read);
 			send_file_offset = 0;
 			send_file_count = send_file.Length;
+
+			EnableWriting ();
 		}
 
 		public void Close ()
-		{
+		{			
 			if (socket == null)
-				return;
-			ioloop.RemoveHandler (socket.Handle);
+				return;			
+
+			DisableReading ();
+			DisableWriting ();
+
 			socket.Close ();
 			socket = null;
 		}
 
-		private void AddIOState (EpollEvents events)
+		private void EnableReading ()
 		{
-			if ((state & events) != 0)
-				return;
-			ioloop.UpdateHandler (socket.Handle, events);
-				
+			read_watcher.Start ();
+		}
+
+		private void EnableWriting ()
+		{
+			write_watcher.Start ();
+		}
+
+		private void DisableReading ()
+		{
+			read_watcher.Stop ();
+		}
+
+		private void DisableWriting ()
+		{
+			write_watcher.Stop ();
 		}
 
 		private void CheckCanRead ()
@@ -179,38 +199,17 @@ namespace Manos.Server {
 
 		private void HandleEvents (IntPtr fd, EpollEvents events)
 		{
-			if (IsClosed) {
-				Console.Error.WriteLine ("events on closed socket.");
-				return;
-			}
+			
+		}
 
-			if (fd != socket.Handle)
-				throw new Exception ("Incorrectly routed event.");
-
-			if ((events & IOLoop.EPOLL_READ_EVENTS) != 0)
-				HandleRead ();
-
-			if (IsClosed)
-				return;
-
-			if ((events & IOLoop.EPOLL_WRITE_EVENTS) != 0) {
-				if (send_file == null)
-					HandleWrite ();
-				else
-					HandleSendFile ();
-			}
-
-			if (IsClosed)
-				return;
-
-			EpollEvents state = IOLoop.EPOLL_ERROR_EVENTS;
-			if (read_delimiter != null || read_bytes != -1)
-				state |= IOLoop.EPOLL_READ_EVENTS;
-			if (write_data != null)
-				state |= IOLoop.EPOLL_WRITE_EVENTS;
-
-			if (state != this.state)
-				ioloop.UpdateHandler (socket.Handle, state);
+		private void HandleIORead (Loop loop, IOWatcher watcher, int revents)
+		{
+			HandleRead ();
+		}
+		
+		private void HandleIOWrite (Loop loop, IOWatcher watcher, int revents)
+		{
+			HandleWrite ();
 		}
 
 		private void HandleRead ()
@@ -224,7 +223,8 @@ namespace Manos.Server {
 					return;
 				Close ();
 				throw se;
-			} catch {
+			} catch (Exception e) {
+			  	Console.WriteLine (e);
 				Close ();
 				throw;
 			}
@@ -271,9 +271,12 @@ namespace Manos.Server {
 		
 		private void HandleWrite ()
 		{
-			int len = socket.Send (write_data);
-
-			AdjustSegments (len, write_data);
+			try {
+			    int len = socket.Send (write_data);
+			    AdjustSegments (len, write_data);
+			} catch (Exception e) {
+			    Console.WriteLine (e);
+			}
 
 			if (write_data.Count == 0)
 				FinishWrite ();
@@ -354,6 +357,8 @@ namespace Manos.Server {
 			read_buffer.Write (data, end, data.Length - end);
 			
 			callback (this, read);
+
+			DisableReading ();
 		}
 
 		private void FinishWrite ()
@@ -364,6 +369,8 @@ namespace Manos.Server {
 			write_callback = null;
 
 			callback ();
+
+			DisableWriting ();
 		}
 		
 		private void FinishSendFile ()
@@ -378,6 +385,8 @@ namespace Manos.Server {
 			send_file_offset = 0;
 			
 			callback ();
+
+			DisableWriting ();
 		}
 	}
 

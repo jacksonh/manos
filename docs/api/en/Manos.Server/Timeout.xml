@@ -1,10 +1,8 @@
 <Type Name="Timeout" FullName="Manos.Server.Timeout">
   <TypeSignature Language="C#" Value="public class Timeout" />
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit Timeout extends System.Object" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.2.0</AssemblyVersion>
-    <AssemblyVersion>0.0.3.0</AssemblyVersion>
+    <AssemblyVersion>0.0.4.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -16,22 +14,20 @@
   </Docs>
   <Members>
     <Member MemberName=".ctor">
-      <MemberSignature Language="C#" Value="public Timeout (DateTime expires, TimeSpan span, Manos.IRepeatBehavior repeat, object data, Manos.TimeoutCallback callback);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(valuetype System.DateTime expires, valuetype System.TimeSpan span, class Manos.IRepeatBehavior repeat, object data, class Manos.TimeoutCallback callback) cil managed" />
+      <MemberSignature Language="C#" Value="public Timeout (TimeSpan begin, TimeSpan span, Manos.IRepeatBehavior repeat, object data, Manos.TimeoutCallback callback);" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <Parameters>
-        <Parameter Name="expires" Type="System.DateTime" />
+        <Parameter Name="begin" Type="System.TimeSpan" />
         <Parameter Name="span" Type="System.TimeSpan" />
         <Parameter Name="repeat" Type="Manos.IRepeatBehavior" />
         <Parameter Name="data" Type="System.Object" />
         <Parameter Name="callback" Type="Manos.TimeoutCallback" />
       </Parameters>
       <Docs>
-        <param name="expires">To be added.</param>
+        <param name="begin">To be added.</param>
         <param name="span">To be added.</param>
         <param name="repeat">To be added.</param>
         <param name="data">To be added.</param>
@@ -42,11 +38,9 @@
     </Member>
     <Member MemberName="Run">
       <MemberSignature Language="C#" Value="public void Run (Manos.ManosApp app);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Run(class Manos.ManosApp app) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -62,11 +56,9 @@
     </Member>
     <Member MemberName="ShouldContinueToRepeat">
       <MemberSignature Language="C#" Value="public bool ShouldContinueToRepeat ();" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance bool ShouldContinueToRepeat() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>

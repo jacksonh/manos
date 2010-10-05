@@ -1,10 +1,8 @@
 <Type Name="IManosContext" FullName="Manos.IManosContext">
   <TypeSignature Language="C#" Value="public interface IManosContext" />
-  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IManosContext" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.2.0</AssemblyVersion>
-    <AssemblyVersion>0.0.3.0</AssemblyVersion>
+    <AssemblyVersion>0.0.4.0</AssemblyVersion>
   </AssemblyInfo>
   <Interfaces />
   <Docs>
@@ -14,11 +12,9 @@
   <Members>
     <Member MemberName="Request">
       <MemberSignature Language="C#" Value="public Manos.Server.IHttpRequest Request { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IHttpRequest Request" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.IHttpRequest</ReturnType>
@@ -31,11 +27,9 @@
     </Member>
     <Member MemberName="Response">
       <MemberSignature Language="C#" Value="public Manos.Server.IHttpResponse Response { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IHttpResponse Response" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.IHttpResponse</ReturnType>
@@ -48,11 +42,9 @@
     </Member>
     <Member MemberName="Transaction">
       <MemberSignature Language="C#" Value="public Manos.Server.IHttpTransaction Transaction { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IHttpTransaction Transaction" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.IHttpTransaction</ReturnType>

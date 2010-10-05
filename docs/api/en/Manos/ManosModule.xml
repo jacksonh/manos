@@ -1,10 +1,8 @@
 <Type Name="ManosModule" FullName="Manos.ManosModule">
   <TypeSignature Language="C#" Value="public class ManosModule" />
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit ManosModule extends System.Object" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.2.0</AssemblyVersion>
-    <AssemblyVersion>0.0.3.0</AssemblyVersion>
+    <AssemblyVersion>0.0.4.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -17,11 +15,9 @@
   <Members>
     <Member MemberName=".ctor">
       <MemberSignature Language="C#" Value="public ManosModule ();" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor() cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <Parameters />
       <Docs>
@@ -31,11 +27,9 @@
     </Member>
     <Member MemberName="AddTimeout">
       <MemberSignature Language="C#" Value="public static void AddTimeout (TimeSpan timespan, Manos.TimeoutCallback callback);" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void AddTimeout(valuetype System.TimeSpan timespan, class Manos.TimeoutCallback callback) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -53,11 +47,9 @@
     </Member>
     <Member MemberName="AddTimeout">
       <MemberSignature Language="C#" Value="public static void AddTimeout (TimeSpan timespan, Manos.IRepeatBehavior repeat, Manos.TimeoutCallback callback);" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void AddTimeout(valuetype System.TimeSpan timespan, class Manos.IRepeatBehavior repeat, class Manos.TimeoutCallback callback) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -77,11 +69,9 @@
     </Member>
     <Member MemberName="AddTimeout">
       <MemberSignature Language="C#" Value="public static void AddTimeout (TimeSpan timespan, object data, Manos.TimeoutCallback callback);" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void AddTimeout(valuetype System.TimeSpan timespan, object data, class Manos.TimeoutCallback callback) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -101,11 +91,9 @@
     </Member>
     <Member MemberName="AddTimeout">
       <MemberSignature Language="C#" Value="public static void AddTimeout (TimeSpan timespan, Manos.IRepeatBehavior repeat, object data, Manos.TimeoutCallback callback);" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void AddTimeout(valuetype System.TimeSpan timespan, class Manos.IRepeatBehavior repeat, object data, class Manos.TimeoutCallback callback) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -127,11 +115,9 @@
     </Member>
     <Member MemberName="Cache">
       <MemberSignature Language="C#" Value="public Manos.Caching.IManosCache Cache { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Caching.IManosCache Cache" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Caching.IManosCache</ReturnType>
@@ -144,11 +130,9 @@
     </Member>
     <Member MemberName="Delete">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Delete (Manos.ManosModule module, string[] patterns);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Delete(class Manos.ManosModule module, string[] patterns) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -173,11 +157,9 @@
     </Member>
     <Member MemberName="Delete">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Delete (Manos.Routing.ManosAction action, string[] patterns);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Delete(class Manos.Routing.ManosAction action, string[] patterns) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -202,11 +184,9 @@
     </Member>
     <Member MemberName="Delete">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Delete (string pattern, Manos.ManosModule module);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Delete(string pattern, class Manos.ManosModule module) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -225,11 +205,9 @@
     </Member>
     <Member MemberName="Delete">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Delete (string pattern, Manos.Routing.ManosAction action);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Delete(string pattern, class Manos.Routing.ManosAction action) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -248,11 +226,9 @@
     </Member>
     <Member MemberName="Get">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Get (Manos.ManosModule module, string[] patterns);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Get(class Manos.ManosModule module, string[] patterns) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -277,11 +253,9 @@
     </Member>
     <Member MemberName="Get">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Get (Manos.Routing.ManosAction action, string[] patterns);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Get(class Manos.Routing.ManosAction action, string[] patterns) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -306,11 +280,9 @@
     </Member>
     <Member MemberName="Get">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Get (string pattern, Manos.ManosModule module);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Get(string pattern, class Manos.ManosModule module) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -329,11 +301,9 @@
     </Member>
     <Member MemberName="Get">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Get (string pattern, Manos.Routing.ManosAction action);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Get(string pattern, class Manos.Routing.ManosAction action) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -352,11 +322,9 @@
     </Member>
     <Member MemberName="Head">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Head (Manos.ManosModule module, string[] patterns);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Head(class Manos.ManosModule module, string[] patterns) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -381,11 +349,9 @@
     </Member>
     <Member MemberName="Head">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Head (Manos.Routing.ManosAction action, string[] patterns);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Head(class Manos.Routing.ManosAction action, string[] patterns) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -410,11 +376,9 @@
     </Member>
     <Member MemberName="Head">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Head (string pattern, Manos.ManosModule module);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Head(string pattern, class Manos.ManosModule module) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -433,11 +397,9 @@
     </Member>
     <Member MemberName="Head">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Head (string pattern, Manos.Routing.ManosAction action);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Head(string pattern, class Manos.Routing.ManosAction action) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -456,11 +418,9 @@
     </Member>
     <Member MemberName="Options">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Options (Manos.ManosModule module, string[] patterns);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Options(class Manos.ManosModule module, string[] patterns) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -485,11 +445,9 @@
     </Member>
     <Member MemberName="Options">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Options (Manos.Routing.ManosAction action, string[] patterns);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Options(class Manos.Routing.ManosAction action, string[] patterns) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -514,11 +472,9 @@
     </Member>
     <Member MemberName="Options">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Options (string pattern, Manos.ManosModule module);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Options(string pattern, class Manos.ManosModule module) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -537,11 +493,9 @@
     </Member>
     <Member MemberName="Options">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Options (string pattern, Manos.Routing.ManosAction action);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Options(string pattern, class Manos.Routing.ManosAction action) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -560,11 +514,9 @@
     </Member>
     <Member MemberName="Post">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Post (Manos.ManosModule module, string[] patterns);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Post(class Manos.ManosModule module, string[] patterns) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -589,11 +541,9 @@
     </Member>
     <Member MemberName="Post">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Post (Manos.Routing.ManosAction action, string[] patterns);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Post(class Manos.Routing.ManosAction action, string[] patterns) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -618,11 +568,9 @@
     </Member>
     <Member MemberName="Post">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Post (string pattern, Manos.ManosModule module);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Post(string pattern, class Manos.ManosModule module) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -641,11 +589,9 @@
     </Member>
     <Member MemberName="Post">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Post (string pattern, Manos.Routing.ManosAction action);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Post(string pattern, class Manos.Routing.ManosAction action) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -664,11 +610,9 @@
     </Member>
     <Member MemberName="Put">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Put (Manos.ManosModule module, string[] patterns);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Put(class Manos.ManosModule module, string[] patterns) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -693,11 +637,9 @@
     </Member>
     <Member MemberName="Put">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Put (Manos.Routing.ManosAction action, string[] patterns);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Put(class Manos.Routing.ManosAction action, string[] patterns) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -722,11 +664,9 @@
     </Member>
     <Member MemberName="Put">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Put (string pattern, Manos.ManosModule module);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Put(string pattern, class Manos.ManosModule module) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -745,11 +685,9 @@
     </Member>
     <Member MemberName="Put">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Put (string pattern, Manos.Routing.ManosAction action);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Put(string pattern, class Manos.Routing.ManosAction action) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -768,11 +706,9 @@
     </Member>
     <Member MemberName="Route">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Route (Manos.ManosModule module, string[] patterns);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Route(class Manos.ManosModule module, string[] patterns) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -797,11 +733,9 @@
     </Member>
     <Member MemberName="Route">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Route (Manos.Routing.ManosAction action, string[] patterns);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Route(class Manos.Routing.ManosAction action, string[] patterns) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -826,11 +760,9 @@
     </Member>
     <Member MemberName="Route">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Route (string pattern, Manos.ManosModule module);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Route(string pattern, class Manos.ManosModule module) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -849,11 +781,9 @@
     </Member>
     <Member MemberName="Route">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Route (string pattern, Manos.Routing.ManosAction action);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Route(string pattern, class Manos.Routing.ManosAction action) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -872,11 +802,9 @@
     </Member>
     <Member MemberName="Routes">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Routes { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Routing.RouteHandler Routes" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -889,11 +817,9 @@
     </Member>
     <Member MemberName="StartInternal">
       <MemberSignature Language="C#" Value="protected void StartInternal ();" />
-      <MemberSignature Language="ILAsm" Value=".method familyhidebysig instance void StartInternal() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -906,11 +832,9 @@
     </Member>
     <Member MemberName="Trace">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Trace (Manos.ManosModule module, string[] patterns);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Trace(class Manos.ManosModule module, string[] patterns) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -935,11 +859,9 @@
     </Member>
     <Member MemberName="Trace">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Trace (Manos.Routing.ManosAction action, string[] patterns);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Trace(class Manos.Routing.ManosAction action, string[] patterns) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -964,11 +886,9 @@
     </Member>
     <Member MemberName="Trace">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Trace (string pattern, Manos.ManosModule module);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Trace(string pattern, class Manos.ManosModule module) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>
@@ -987,11 +907,9 @@
     </Member>
     <Member MemberName="Trace">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Trace (string pattern, Manos.Routing.ManosAction action);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Manos.Routing.RouteHandler Trace(string pattern, class Manos.Routing.ManosAction action) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Routing.RouteHandler</ReturnType>

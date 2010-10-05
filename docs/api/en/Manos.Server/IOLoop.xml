@@ -1,10 +1,8 @@
 <Type Name="IOLoop" FullName="Manos.Server.IOLoop">
   <TypeSignature Language="C#" Value="public class IOLoop" />
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit IOLoop extends System.Object" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.2.0</AssemblyVersion>
-    <AssemblyVersion>0.0.3.0</AssemblyVersion>
+    <AssemblyVersion>0.0.4.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -17,11 +15,9 @@
   <Members>
     <Member MemberName=".ctor">
       <MemberSignature Language="C#" Value="public IOLoop ();" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor() cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <Parameters />
       <Docs>
@@ -29,57 +25,11 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="AddCallback">
-      <MemberSignature Language="C#" Value="public void AddCallback (Manos.Server.IOCallback callback);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void AddCallback(class Manos.Server.IOCallback callback) cil managed" />
-      <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
-      </AssemblyInfo>
-      <ReturnValue>
-        <ReturnType>System.Void</ReturnType>
-      </ReturnValue>
-      <Parameters>
-        <Parameter Name="callback" Type="Manos.Server.IOCallback" />
-      </Parameters>
-      <Docs>
-        <param name="callback">To be added.</param>
-        <summary>To be added.</summary>
-        <remarks>To be added.</remarks>
-      </Docs>
-    </Member>
-    <Member MemberName="AddHandler">
-      <MemberSignature Language="C#" Value="public void AddHandler (IntPtr fd, Manos.Server.IOHandler handler, Mono.Unix.Native.EpollEvents events);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void AddHandler(native int fd, class Manos.Server.IOHandler handler, valuetype Mono.Unix.Native.EpollEvents events) cil managed" />
-      <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
-      </AssemblyInfo>
-      <ReturnValue>
-        <ReturnType>System.Void</ReturnType>
-      </ReturnValue>
-      <Parameters>
-        <Parameter Name="fd" Type="System.IntPtr" />
-        <Parameter Name="handler" Type="Manos.Server.IOHandler" />
-        <Parameter Name="events" Type="Mono.Unix.Native.EpollEvents" />
-      </Parameters>
-      <Docs>
-        <param name="fd">To be added.</param>
-        <param name="handler">To be added.</param>
-        <param name="events">To be added.</param>
-        <summary>To be added.</summary>
-        <remarks>To be added.</remarks>
-      </Docs>
-    </Member>
     <Member MemberName="AddTimeout">
       <MemberSignature Language="C#" Value="public void AddTimeout (Manos.Server.Timeout timeout);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void AddTimeout(class Manos.Server.Timeout timeout) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -93,81 +43,26 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="EPOLL_ERROR_EVENTS">
-      <MemberSignature Language="C#" Value="public static readonly Mono.Unix.Native.EpollEvents EPOLL_ERROR_EVENTS;" />
-      <MemberSignature Language="ILAsm" Value=".field public static initonly valuetype Mono.Unix.Native.EpollEvents EPOLL_ERROR_EVENTS" />
-      <MemberType>Field</MemberType>
+    <Member MemberName="EventLoop">
+      <MemberSignature Language="C#" Value="public Libev.Loop EventLoop { get; }" />
+      <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>Mono.Unix.Native.EpollEvents</ReturnType>
+        <ReturnType>Libev.Loop</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>To be added.</summary>
-        <remarks>To be added.</remarks>
-      </Docs>
-    </Member>
-    <Member MemberName="EPOLL_READ_EVENTS">
-      <MemberSignature Language="C#" Value="public static readonly Mono.Unix.Native.EpollEvents EPOLL_READ_EVENTS;" />
-      <MemberSignature Language="ILAsm" Value=".field public static initonly valuetype Mono.Unix.Native.EpollEvents EPOLL_READ_EVENTS" />
-      <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
-      </AssemblyInfo>
-      <ReturnValue>
-        <ReturnType>Mono.Unix.Native.EpollEvents</ReturnType>
-      </ReturnValue>
-      <Docs>
-        <summary>To be added.</summary>
-        <remarks>To be added.</remarks>
-      </Docs>
-    </Member>
-    <Member MemberName="EPOLL_WRITE_EVENTS">
-      <MemberSignature Language="C#" Value="public static readonly Mono.Unix.Native.EpollEvents EPOLL_WRITE_EVENTS;" />
-      <MemberSignature Language="ILAsm" Value=".field public static initonly valuetype Mono.Unix.Native.EpollEvents EPOLL_WRITE_EVENTS" />
-      <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
-      </AssemblyInfo>
-      <ReturnValue>
-        <ReturnType>Mono.Unix.Native.EpollEvents</ReturnType>
-      </ReturnValue>
-      <Docs>
-        <summary>To be added.</summary>
-        <remarks>To be added.</remarks>
-      </Docs>
-    </Member>
-    <Member MemberName="HandleCallbackException">
-      <MemberSignature Language="C#" Value="public void HandleCallbackException (Exception e);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void HandleCallbackException(class System.Exception e) cil managed" />
-      <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
-      </AssemblyInfo>
-      <ReturnValue>
-        <ReturnType>System.Void</ReturnType>
-      </ReturnValue>
-      <Parameters>
-        <Parameter Name="e" Type="System.Exception" />
-      </Parameters>
-      <Docs>
-        <param name="e">To be added.</param>
-        <summary>To be added.</summary>
+        <value>To be added.</value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
     <Member MemberName="Instance">
       <MemberSignature Language="C#" Value="public static Manos.Server.IOLoop Instance { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property class Manos.Server.IOLoop Instance" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.IOLoop</ReturnType>
@@ -178,29 +73,11 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="MAX_EVENTS">
-      <MemberSignature Language="C#" Value="public static readonly int MAX_EVENTS;" />
-      <MemberSignature Language="ILAsm" Value=".field public static initonly int32 MAX_EVENTS" />
-      <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
-      </AssemblyInfo>
-      <ReturnValue>
-        <ReturnType>System.Int32</ReturnType>
-      </ReturnValue>
-      <Docs>
-        <summary>To be added.</summary>
-        <remarks>To be added.</remarks>
-      </Docs>
-    </Member>
     <Member MemberName="QueueTransaction">
       <MemberSignature Language="C#" Value="public void QueueTransaction (Manos.Server.HttpTransaction trans);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void QueueTransaction(class Manos.Server.HttpTransaction trans) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -214,73 +91,11 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="RemoveCallback">
-      <MemberSignature Language="C#" Value="public void RemoveCallback (Manos.Server.IOCallback callback);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void RemoveCallback(class Manos.Server.IOCallback callback) cil managed" />
-      <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
-      </AssemblyInfo>
-      <ReturnValue>
-        <ReturnType>System.Void</ReturnType>
-      </ReturnValue>
-      <Parameters>
-        <Parameter Name="callback" Type="Manos.Server.IOCallback" />
-      </Parameters>
-      <Docs>
-        <param name="callback">To be added.</param>
-        <summary>To be added.</summary>
-        <remarks>To be added.</remarks>
-      </Docs>
-    </Member>
-    <Member MemberName="RemoveHandler">
-      <MemberSignature Language="C#" Value="public void RemoveHandler (IntPtr fd);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void RemoveHandler(native int fd) cil managed" />
-      <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
-      </AssemblyInfo>
-      <ReturnValue>
-        <ReturnType>System.Void</ReturnType>
-      </ReturnValue>
-      <Parameters>
-        <Parameter Name="fd" Type="System.IntPtr" />
-      </Parameters>
-      <Docs>
-        <param name="fd">To be added.</param>
-        <summary>To be added.</summary>
-        <remarks>To be added.</remarks>
-      </Docs>
-    </Member>
-    <Member MemberName="RunCallback">
-      <MemberSignature Language="C#" Value="public void RunCallback (Manos.Server.IOCallback callback);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void RunCallback(class Manos.Server.IOCallback callback) cil managed" />
-      <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
-      </AssemblyInfo>
-      <ReturnValue>
-        <ReturnType>System.Void</ReturnType>
-      </ReturnValue>
-      <Parameters>
-        <Parameter Name="callback" Type="Manos.Server.IOCallback" />
-      </Parameters>
-      <Docs>
-        <param name="callback">To be added.</param>
-        <summary>To be added.</summary>
-        <remarks>To be added.</remarks>
-      </Docs>
-    </Member>
     <Member MemberName="Start">
       <MemberSignature Language="C#" Value="public void Start ();" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Start() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -293,39 +108,15 @@
     </Member>
     <Member MemberName="Stop">
       <MemberSignature Language="C#" Value="public void Stop ();" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Stop() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
-        <remarks>To be added.</remarks>
-      </Docs>
-    </Member>
-    <Member MemberName="UpdateHandler">
-      <MemberSignature Language="C#" Value="public void UpdateHandler (IntPtr fd, Mono.Unix.Native.EpollEvents events);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void UpdateHandler(native int fd, valuetype Mono.Unix.Native.EpollEvents events) cil managed" />
-      <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
-      </AssemblyInfo>
-      <ReturnValue>
-        <ReturnType>System.Void</ReturnType>
-      </ReturnValue>
-      <Parameters>
-        <Parameter Name="fd" Type="System.IntPtr" />
-        <Parameter Name="events" Type="Mono.Unix.Native.EpollEvents" />
-      </Parameters>
-      <Docs>
-        <param name="fd">To be added.</param>
-        <param name="events">To be added.</param>
         <summary>To be added.</summary>
         <remarks>To be added.</remarks>
       </Docs>

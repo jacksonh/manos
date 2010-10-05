@@ -1,10 +1,8 @@
 <Type Name="WriteBytesOperation" FullName="Manos.Server.WriteBytesOperation">
   <TypeSignature Language="C#" Value="public class WriteBytesOperation : Manos.Server.IWriteOperation" />
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit WriteBytesOperation extends System.Object implements class Manos.Server.IWriteOperation" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.2.0</AssemblyVersion>
-    <AssemblyVersion>0.0.3.0</AssemblyVersion>
+    <AssemblyVersion>0.0.4.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -21,11 +19,9 @@
   <Members>
     <Member MemberName=".ctor">
       <MemberSignature Language="C#" Value="public WriteBytesOperation (System.Collections.Generic.IList&lt;ArraySegment&lt;byte&gt;&gt; bytes, Manos.Server.WriteCallback callback);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(class System.Collections.Generic.IList`1&lt;valuetype System.ArraySegment`1&lt;unsigned int8&gt;&gt; bytes, class Manos.Server.WriteCallback callback) cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <Parameters>
         <Parameter Name="bytes" Type="System.Collections.Generic.IList&lt;System.ArraySegment&lt;System.Byte&gt;&gt;" />
@@ -40,11 +36,9 @@
     </Member>
     <Member MemberName="Bytes">
       <MemberSignature Language="C#" Value="public System.Collections.Generic.IList&lt;ArraySegment&lt;byte&gt;&gt; Bytes { set; get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Generic.IList`1&lt;valuetype System.ArraySegment`1&lt;unsigned int8&gt;&gt; Bytes" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Collections.Generic.IList&lt;System.ArraySegment&lt;System.Byte&gt;&gt;</ReturnType>
@@ -57,11 +51,9 @@
     </Member>
     <Member MemberName="Callback">
       <MemberSignature Language="C#" Value="public Manos.Server.WriteCallback Callback { set; get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.WriteCallback Callback" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.WriteCallback</ReturnType>
@@ -74,11 +66,9 @@
     </Member>
     <Member MemberName="Write">
       <MemberSignature Language="C#" Value="public void Write (Manos.Server.IOStream stream);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Write(class Manos.Server.IOStream stream) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>

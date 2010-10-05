@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Collections;
 using System.Collections.Generic;
 
+using Libev;
 using Mono.Unix.Native;
 
 
@@ -17,10 +18,11 @@ namespace Manos.Server {
 	public class HttpServer {
 
 		// This gets called on every request so lets just use a hard coded string instead of reflection
-		public static readonly string ServerVersion = "0.0.3";
+		public static readonly string ServerVersion = "0.0.4";
 
 		private HttpConnectionCallback callback;
 		private IOLoop ioloop;
+		private IOWatcher iowatcher;
 
 		public HttpServer (HttpConnectionCallback callback, IOLoop ioloop)
 		{
@@ -48,13 +50,35 @@ namespace Manos.Server {
 
 		public void Start ()
 		{
-			ioloop.AddHandler (Socket.Handle, HandleEvents, IOLoop.EPOLL_READ_EVENTS);
+//			ioloop.AddHandler (Socket.Handle, HandleEvents, IOLoop.EPOLL_READ_EVENTS);
+			
+			iowatcher = new IOWatcher (Socket.Handle, EventTypes.Read, ioloop.EventLoop, HandleIOEvents);
+			iowatcher.Start ();
 		}
 
 		private void HandleEvents (IntPtr fd, EpollEvents events)
 		{
 			while (true) {
 				Socket s = null;
+				try {
+					s = Socket.Accept ();
+				} catch (SocketException se) {
+					if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
+						return;
+					throw se;
+				} catch {
+					throw;
+				}
+
+				IOStream iostream = new IOStream (s, IOLoop);
+				HttpTransaction.BeginTransaction (this, iostream, s, callback);
+			}
+		}
+
+		private void HandleIOEvents (Loop loop, IOWatcher watcher, int revents)
+		{
+			while (true) {
+			      	Socket s = null;
 				try {
 					s = Socket.Accept ();
 				} catch (SocketException se) {

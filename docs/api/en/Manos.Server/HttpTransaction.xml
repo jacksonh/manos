@@ -1,10 +1,8 @@
 <Type Name="HttpTransaction" FullName="Manos.Server.HttpTransaction">
   <TypeSignature Language="C#" Value="public class HttpTransaction : Manos.Server.IHttpTransaction" />
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit HttpTransaction extends System.Object implements class Manos.Server.IHttpTransaction" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.2.0</AssemblyVersion>
-    <AssemblyVersion>0.0.3.0</AssemblyVersion>
+    <AssemblyVersion>0.0.4.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -21,11 +19,9 @@
   <Members>
     <Member MemberName=".ctor">
       <MemberSignature Language="C#" Value="public HttpTransaction (Manos.Server.HttpServer server, Manos.Server.IOStream stream, System.Net.Sockets.Socket socket, Manos.Server.HttpConnectionCallback callback);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(class Manos.Server.HttpServer server, class Manos.Server.IOStream stream, class System.Net.Sockets.Socket socket, class Manos.Server.HttpConnectionCallback callback) cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <Parameters>
         <Parameter Name="server" Type="Manos.Server.HttpServer" />
@@ -44,11 +40,9 @@
     </Member>
     <Member MemberName="Abort">
       <MemberSignature Language="C#" Value="public void Abort (int status, string message, object[] p);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Abort(int32 status, string message, object[] p) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -74,11 +68,9 @@
     </Member>
     <Member MemberName="Aborted">
       <MemberSignature Language="C#" Value="public bool Aborted { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance bool Aborted" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -91,11 +83,9 @@
     </Member>
     <Member MemberName="BeginTransaction">
       <MemberSignature Language="C#" Value="public static void BeginTransaction (Manos.Server.HttpServer server, Manos.Server.IOStream stream, System.Net.Sockets.Socket socket, Manos.Server.HttpConnectionCallback cb);" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void BeginTransaction(class Manos.Server.HttpServer server, class Manos.Server.IOStream stream, class System.Net.Sockets.Socket socket, class Manos.Server.HttpConnectionCallback cb) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -117,11 +107,9 @@
     </Member>
     <Member MemberName="ConnectionCallback">
       <MemberSignature Language="C#" Value="public Manos.Server.HttpConnectionCallback ConnectionCallback { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.HttpConnectionCallback ConnectionCallback" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.HttpConnectionCallback</ReturnType>
@@ -134,11 +122,9 @@
     </Member>
     <Member MemberName="ConnectionFinished">
       <MemberSignature Language="C#" Value="public bool ConnectionFinished { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance bool ConnectionFinished" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -151,11 +137,9 @@
     </Member>
     <Member MemberName="Finish">
       <MemberSignature Language="C#" Value="public void Finish ();" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Finish() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -168,11 +152,9 @@
     </Member>
     <Member MemberName="IOStream">
       <MemberSignature Language="C#" Value="public Manos.Server.IOStream IOStream { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IOStream IOStream" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.IOStream</ReturnType>
@@ -185,11 +167,9 @@
     </Member>
     <Member MemberName="NoKeepAlive">
       <MemberSignature Language="C#" Value="public bool NoKeepAlive { set; get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance bool NoKeepAlive" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -202,11 +182,9 @@
     </Member>
     <Member MemberName="Request">
       <MemberSignature Language="C#" Value="public Manos.Server.IHttpRequest Request { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IHttpRequest Request" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.IHttpRequest</ReturnType>
@@ -219,11 +197,9 @@
     </Member>
     <Member MemberName="Response">
       <MemberSignature Language="C#" Value="public Manos.Server.IHttpResponse Response { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.IHttpResponse Response" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.IHttpResponse</ReturnType>
@@ -236,11 +212,9 @@
     </Member>
     <Member MemberName="Run">
       <MemberSignature Language="C#" Value="public void Run ();" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Run() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -253,11 +227,9 @@
     </Member>
     <Member MemberName="SendFile">
       <MemberSignature Language="C#" Value="public void SendFile (string file);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void SendFile(string file) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -273,11 +245,9 @@
     </Member>
     <Member MemberName="Server">
       <MemberSignature Language="C#" Value="public Manos.Server.HttpServer Server { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class Manos.Server.HttpServer Server" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.HttpServer</ReturnType>
@@ -290,11 +260,9 @@
     </Member>
     <Member MemberName="Socket">
       <MemberSignature Language="C#" Value="public System.Net.Sockets.Socket Socket { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class System.Net.Sockets.Socket Socket" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Net.Sockets.Socket</ReturnType>
@@ -307,11 +275,9 @@
     </Member>
     <Member MemberName="Write">
       <MemberSignature Language="C#" Value="public void Write (System.Collections.Generic.List&lt;ArraySegment&lt;byte&gt;&gt; data);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Write(class System.Collections.Generic.List`1&lt;valuetype System.ArraySegment`1&lt;unsigned int8&gt;&gt; data) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>

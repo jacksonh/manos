@@ -1,4 +1,4 @@
-version = '0.0.2'
+version = '0.0.4'
 
 Gem::Specification.new do |spec|
   spec.platform    = Gem::Platform::CURRENT

@@ -1,10 +1,8 @@
 <Type Name="IterativeRepeatBehavior" FullName="Manos.IterativeRepeatBehavior">
   <TypeSignature Language="C#" Value="public class IterativeRepeatBehavior : Manos.IRepeatBehavior" />
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit IterativeRepeatBehavior extends System.Object implements class Manos.IRepeatBehavior" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.2.0</AssemblyVersion>
-    <AssemblyVersion>0.0.3.0</AssemblyVersion>
+    <AssemblyVersion>0.0.4.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -21,11 +19,9 @@
   <Members>
     <Member MemberName=".ctor">
       <MemberSignature Language="C#" Value="public IterativeRepeatBehavior (int num_iterations);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(int32 num_iterations) cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <Parameters>
         <Parameter Name="num_iterations" Type="System.Int32" />
@@ -38,11 +34,9 @@
     </Member>
     <Member MemberName="RemainingIterations">
       <MemberSignature Language="C#" Value="public int RemainingIterations { set; get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance int32 RemainingIterations" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Int32</ReturnType>
@@ -55,11 +49,9 @@
     </Member>
     <Member MemberName="RepeatPerformed">
       <MemberSignature Language="C#" Value="public void RepeatPerformed ();" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void RepeatPerformed() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -72,11 +64,9 @@
     </Member>
     <Member MemberName="ShouldContinueToRepeat">
       <MemberSignature Language="C#" Value="public bool ShouldContinueToRepeat ();" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance bool ShouldContinueToRepeat() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>

@@ -1,255 +1,92 @@
 
 
 using System;
+using System.Linq;
 using System.Text;
-using System.Net;
-using System.Net.Sockets;
+using System.Threading;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-using System.Linq;
-
-using Mono.Unix.Native;
-using System.Threading;
+using Libev;
 
 
 namespace Manos.Server {
 
-	public delegate void IOCallback ();
-	public delegate void IOHandler (IntPtr fd, EpollEvents events);
-
 	public class IOLoop {
-
-		public static readonly int MAX_EVENTS = 128;
-
-		public static readonly EpollEvents EPOLL_READ_EVENTS = EpollEvents.EPOLLIN;
-		public static readonly EpollEvents EPOLL_WRITE_EVENTS = EpollEvents.EPOLLOUT;
-		public static readonly EpollEvents EPOLL_ERROR_EVENTS = EpollEvents.EPOLLERR | EpollEvents.EPOLLHUP;
-
-		private int epfd;
-		private bool running;
-
-		private Queue<EpollEvent> events = new Queue<EpollEvent> ();
-
+	       
 		private static IOLoop instance = new IOLoop ();
 		
-		private List<IOCallback> callbacks = new List<IOCallback> ();
-		private Dictionary<IntPtr,IOHandler> handlers = new Dictionary<IntPtr,IOHandler> ();
-		private List<HttpTransaction> transactions = new List<HttpTransaction> ();
-		private List<Timeout> timeouts = new List<Timeout> ();
+		private bool running;
+
+		private Loop evloop;
+		private PrepareWatcher prepare_watcher;
+
 
 		public IOLoop ()
 		{
-			epfd = Syscall.epoll_create (MAX_EVENTS);
+			evloop = Loop.CreateDefaultLoop (0);
+
+			prepare_watcher = new PrepareWatcher (evloop, HandlePrepareEvent);
+			prepare_watcher.Start ();
 		}
 
 		public static IOLoop Instance {
 			get { return instance; }
 		}
+
+		public Loop EventLoop {
+		       get { return evloop; }
+		}
 		
 		public void QueueTransaction (HttpTransaction trans)
 		{
-			transactions.Add (trans);	
+			//
+			// Since the switch to libev, it seems best to just run them
+			// for now I'll leave the queueing function call in, so its
+			// easy to experiment later.
+
+			trans.Run ();
 		}
 		
 		public void Start ()
 		{
 			running = true;
 			
-			EpollEvent [] new_events = new EpollEvent [MAX_EVENTS];
-			while (true) {
-				int timeout = 5000;
-				
-				transactions.Clear ();
-
-				RunCallbacks ();
-
-				if (callbacks.Count > 0)
-					timeout = 0;
-
-				RunTimeouts ();
-				
-				if (timeouts.Count > 0 ) {
-					int milli = (int) ((timeouts [0].expires - DateTime.UtcNow).TotalMilliseconds + 0.5);
-					timeout = Math.Min ((int) milli, timeout);
-				}
-				
-				if (!running)
-					break;
-				
-				int num_events = Syscall.epoll_wait (epfd, new_events, MAX_EVENTS, timeout);
-				
-				if (num_events == -1)
-					throw new Exception ("Something catastrophic happened.");
-				
-				RunHandlers (new_events, num_events);
-				
-				RunTransactions ();
-			}
-			running = false;
+			evloop.RunBlocking ();
 		}
 
 		public void Stop ()
 		{
+			// This will need to tickle the loop so it wakes up and calls 
+			// the prepare handler.
+
 			running = false;
 		}
 
-		private void RunCallbacks ()
+		private void HandlePrepareEvent (Loop loop, PrepareWatcher watcher, int revents)
 		{
-			List<IOCallback> callbacks = new List<IOCallback> (this.callbacks);
-
-			foreach (IOCallback callback in callbacks) {
-
-				// A callback can remove another callback
-				if (!this.callbacks.Contains (callback))
-					continue;
-
-				RunCallback (callback);
-			}
-		}
-
-		private void RunHandlers (EpollEvent [] new_events, int num_events)
-		{
-			for (int i = 0; i < num_events; i++) {
-				events.Enqueue (new_events [i]);
-			}
-
-			while (events.Count > 0) {
-				var e = events.Dequeue ();
-
-				RunHandler ((IntPtr) e.fd, e.events);
-			}
-		}
-
-		private void RunTransactions ()
-		{
-			if (transactions.Count <= 0)
-				return;
-			
-			transactions.AsParallel ().ForAll (t => t.Run ());
-			/*
-			foreach (HttpTransaction t in transactions) {
-				t.Run ();	
-			}
-			*/
-			/*
-			foreach (HttpTransaction t in transactions) {
-				 System.Threading.ThreadPool.QueueUserWorkItem (o => t.Run ());
-			}
-			*/
-			/*
-			int n = transactions.Count;
-			ManualResetEvent done = new ManualResetEvent (false);
-			foreach (HttpTransaction item in transactions) {
-     			ThreadPool.QueueUserWorkItem (delegate {
-            	  item.Run ();
-              		if (Interlocked.Decrement (ref n) == -1)
-                    	 done.Set ();
-              	});
-			}
-			done.WaitOne ();
-			*/
-		}
-		
-		private void RunHandler (IntPtr fd, EpollEvents events)
-		{
-			handlers [fd] (fd, events);
-		}
-		
-		public void AddHandler (IntPtr fd, IOHandler handler, EpollEvents events)
-		{
-			handlers [fd] = handler;
-			Register (fd, events | EPOLL_ERROR_EVENTS);
-		}
-
-		public void UpdateHandler (IntPtr fd, EpollEvents events)
-		{
-			
-			Modify (fd, events | EPOLL_ERROR_EVENTS);
-		}
-
-		public void RemoveHandler (IntPtr fd)
-		{
-			handlers.Remove (fd);
-			// events.Remove (fd);
-
-			Unregister (fd);
-		}
-
-		public void AddCallback (IOCallback callback)
-		{
-			callbacks.Add (callback);
-		}
-
-		public void RemoveCallback (IOCallback callback)
-		{
-			callbacks.Remove (callback);
-		}
-
-		public void RunCallback (IOCallback callback)
-		{
-			try {
-				callback ();
-			} catch (Exception e) {
-				HandleCallbackException (e);
-			}
-		}
-
-		public void HandleCallbackException (Exception e)
-		{
-			Console.WriteLine ("Exception in callback");
-			Console.WriteLine (e);
+			if (!running) {
+			   loop.Unloop (UnloopType.All);
+			   prepare_watcher.Stop ();
+		        }
 		}
 
 		public void AddTimeout (Timeout timeout)
 		{
-			int i;
-			for (i = 0; i < timeouts.Count; i++) {
-				if (timeouts [i].expires > timeout.expires)
-					break;
-			}
-			
-			if (i == timeouts.Count)
-				timeouts.Add (timeout);
-			else 
-				timeouts.Insert (0, timeout);
+			TimerWatcher t = new TimerWatcher (timeout.begin, timeout.span, evloop, HandleTimeout);
+			t.UserData = timeout;
+			t.Start ();
 		}
 
-		private void RunTimeouts ()
+		private void HandleTimeout (Loop loop, TimerWatcher timeout, int revents)
 		{
-			List<Timeout> removed = new List<Timeout> ();
-			
-			
-			foreach (Timeout t in timeouts) {
-				if (t.expires > DateTime.UtcNow)
-					break;
-				AppHost.RunTimeout (t);
-				if (!t.ShouldContinueToRepeat ())
-					removed.Add (t);
-				else
-					t.expires = DateTime.UtcNow + t.span;
-			}
-			
-			removed.ForEach (t => timeouts.Remove (t));
-		}
-		
-		private void Register (IntPtr fd, EpollEvents events)
-		{
-			Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_ADD, (int) fd, events);
-		}
+			Timeout t = (Timeout) timeout.UserData;
 
-		
-		private void Modify (IntPtr fd, EpollEvents events)
-		{
-			Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_MOD, (int) fd, events);
+			AppHost.RunTimeout (t);
+			if (!t.ShouldContinueToRepeat ())
+			   timeout.Stop ();
 		}
-
-		private void Unregister (IntPtr fd)
-		{
-			Syscall.epoll_ctl (epfd, EpollOp.EPOLL_CTL_DEL, (int) fd, 0);
-		}
-		
 	}
 }
 

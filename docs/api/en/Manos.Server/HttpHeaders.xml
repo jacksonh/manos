@@ -1,10 +1,8 @@
 <Type Name="HttpHeaders" FullName="Manos.Server.HttpHeaders">
   <TypeSignature Language="C#" Value="public class HttpHeaders" />
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit HttpHeaders extends System.Object" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.2.0</AssemblyVersion>
-    <AssemblyVersion>0.0.3.0</AssemblyVersion>
+    <AssemblyVersion>0.0.4.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -17,11 +15,9 @@
   <Members>
     <Member MemberName=".ctor">
       <MemberSignature Language="C#" Value="public HttpHeaders ();" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor() cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <Parameters />
       <Docs>
@@ -31,11 +27,9 @@
     </Member>
     <Member MemberName="CONTENT_LENGTH_KEY">
       <MemberSignature Language="C#" Value="public static readonly string CONTENT_LENGTH_KEY;" />
-      <MemberSignature Language="ILAsm" Value=".field public static initonly string CONTENT_LENGTH_KEY" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -47,11 +41,9 @@
     </Member>
     <Member MemberName="ContentLength">
       <MemberSignature Language="C#" Value="public Nullable&lt;long&gt; ContentLength { set; get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance valuetype System.Nullable`1&lt;int64&gt; ContentLength" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Nullable&lt;System.Int64&gt;</ReturnType>
@@ -64,11 +56,9 @@
     </Member>
     <Member MemberName="Count">
       <MemberSignature Language="C#" Value="public int Count { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance int32 Count" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Int32</ReturnType>
@@ -81,11 +71,9 @@
     </Member>
     <Member MemberName="IsValidHeaderName">
       <MemberSignature Language="C#" Value="public bool IsValidHeaderName (string name);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance bool IsValidHeaderName(string name) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -102,11 +90,9 @@
     </Member>
     <Member MemberName="Item">
       <MemberSignature Language="C#" Value="public string this[string name] { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance string Item(string)" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -123,11 +109,9 @@
     </Member>
     <Member MemberName="NormalizeName">
       <MemberSignature Language="C#" Value="public static string NormalizeName (string name);" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig string NormalizeName(string name) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -144,11 +128,9 @@
     </Member>
     <Member MemberName="Parse">
       <MemberSignature Language="C#" Value="public void Parse (System.IO.TextReader reader);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Parse(class System.IO.TextReader reader) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -164,11 +146,9 @@
     </Member>
     <Member MemberName="SetContentLength">
       <MemberSignature Language="C#" Value="public void SetContentLength (string value);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void SetContentLength(string value) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -184,11 +164,9 @@
     </Member>
     <Member MemberName="SetHeader">
       <MemberSignature Language="C#" Value="public void SetHeader (string name, string value);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void SetHeader(string name, string value) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -206,11 +184,9 @@
     </Member>
     <Member MemberName="TryGetValue">
       <MemberSignature Language="C#" Value="public bool TryGetValue (string key, out string value);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance bool TryGetValue(string key, string value) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -229,11 +205,9 @@
     </Member>
     <Member MemberName="Write">
       <MemberSignature Language="C#" Value="public byte[] Write (System.Collections.Generic.ICollection&lt;Manos.Server.HttpCookie&gt; cookies, System.Text.Encoding encoding);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance unsigned int8[] Write(class System.Collections.Generic.ICollection`1&lt;class Manos.Server.HttpCookie&gt; cookies, class System.Text.Encoding encoding) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Byte[]</ReturnType>

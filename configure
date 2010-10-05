@@ -1,6 +1,6 @@
 #!/bin/bash
 prefix=/usr/local
-common_packages=" mono;2.8"
+common_packages=" mono;2.8 libev-sharp;0.0.2"
 
 usage ()
 {

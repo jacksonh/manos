@@ -5,15 +5,15 @@ namespace Manos.Server
 {
 	public class Timeout
 	{
-		internal DateTime expires;
+		internal TimeSpan begin;
 		internal TimeSpan span;
 		internal IRepeatBehavior repeat;
 		internal object data;
 		internal TimeoutCallback callback;
 		
-		public Timeout (DateTime expires, TimeSpan span, IRepeatBehavior repeat, object data, TimeoutCallback callback)
+		public Timeout (TimeSpan begin, TimeSpan span, IRepeatBehavior repeat, object data, TimeoutCallback callback)
 		{
-			this.expires = expires;
+			this.begin = begin;
 			this.span = span;
 			this.repeat = repeat;
 			this.data = data;

@@ -1,10 +1,8 @@
 <Type Name="AppHost" FullName="Manos.AppHost">
   <TypeSignature Language="C#" Value="public static class AppHost" />
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi abstract sealed beforefieldinit AppHost extends System.Object" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.2.0</AssemblyVersion>
-    <AssemblyVersion>0.0.3.0</AssemblyVersion>
+    <AssemblyVersion>0.0.4.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -17,11 +15,9 @@
   <Members>
     <Member MemberName="AddTimeout">
       <MemberSignature Language="C#" Value="public static void AddTimeout (TimeSpan timespan, Manos.IRepeatBehavior repeat, object data, Manos.TimeoutCallback callback);" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void AddTimeout(valuetype System.TimeSpan timespan, class Manos.IRepeatBehavior repeat, object data, class Manos.TimeoutCallback callback) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -41,13 +37,37 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
+    <Member MemberName="AddTimeout">
+      <MemberSignature Language="C#" Value="public static void AddTimeout (TimeSpan begin, TimeSpan timespan, Manos.IRepeatBehavior repeat, object data, Manos.TimeoutCallback callback);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="begin" Type="System.TimeSpan" />
+        <Parameter Name="timespan" Type="System.TimeSpan" />
+        <Parameter Name="repeat" Type="Manos.IRepeatBehavior" />
+        <Parameter Name="data" Type="System.Object" />
+        <Parameter Name="callback" Type="Manos.TimeoutCallback" />
+      </Parameters>
+      <Docs>
+        <param name="begin">To be added.</param>
+        <param name="timespan">To be added.</param>
+        <param name="repeat">To be added.</param>
+        <param name="data">To be added.</param>
+        <param name="callback">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
     <Member MemberName="App">
       <MemberSignature Language="C#" Value="public static Manos.ManosApp App { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property class Manos.ManosApp App" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.ManosApp</ReturnType>
@@ -60,11 +80,9 @@
     </Member>
     <Member MemberName="Cache">
       <MemberSignature Language="C#" Value="public static Manos.Caching.IManosCache Cache { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property class Manos.Caching.IManosCache Cache" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Caching.IManosCache</ReturnType>
@@ -77,11 +95,9 @@
     </Member>
     <Member MemberName="HandleTransaction">
       <MemberSignature Language="C#" Value="public static void HandleTransaction (Manos.Server.IHttpTransaction con);" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void HandleTransaction(class Manos.Server.IHttpTransaction con) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -97,11 +113,9 @@
     </Member>
     <Member MemberName="IOLoop">
       <MemberSignature Language="C#" Value="public static Manos.Server.IOLoop IOLoop { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property class Manos.Server.IOLoop IOLoop" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.IOLoop</ReturnType>
@@ -114,11 +128,9 @@
     </Member>
     <Member MemberName="IPAddress">
       <MemberSignature Language="C#" Value="public static System.Net.IPAddress IPAddress { set; get; }" />
-      <MemberSignature Language="ILAsm" Value=".property class System.Net.IPAddress IPAddress" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Net.IPAddress</ReturnType>
@@ -131,11 +143,9 @@
     </Member>
     <Member MemberName="Pipes">
       <MemberSignature Language="C#" Value="public static System.Collections.Generic.IList&lt;Manos.IManosPipe&gt; Pipes { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property class System.Collections.Generic.IList`1&lt;class Manos.IManosPipe&gt; Pipes" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Collections.Generic.IList&lt;Manos.IManosPipe&gt;</ReturnType>
@@ -148,11 +158,9 @@
     </Member>
     <Member MemberName="Port">
       <MemberSignature Language="C#" Value="public static int Port { set; get; }" />
-      <MemberSignature Language="ILAsm" Value=".property int32 Port" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Int32</ReturnType>
@@ -165,11 +173,9 @@
     </Member>
     <Member MemberName="RunTimeout">
       <MemberSignature Language="C#" Value="public static void RunTimeout (Manos.Server.Timeout t);" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void RunTimeout(class Manos.Server.Timeout t) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -185,11 +191,9 @@
     </Member>
     <Member MemberName="Server">
       <MemberSignature Language="C#" Value="public static Manos.Server.HttpServer Server { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property class Manos.Server.HttpServer Server" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Server.HttpServer</ReturnType>
@@ -202,11 +206,9 @@
     </Member>
     <Member MemberName="Start">
       <MemberSignature Language="C#" Value="public static void Start (Manos.ManosApp application);" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Start(class Manos.ManosApp application) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -222,11 +224,9 @@
     </Member>
     <Member MemberName="Stop">
       <MemberSignature Language="C#" Value="public static void Stop ();" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Stop() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>

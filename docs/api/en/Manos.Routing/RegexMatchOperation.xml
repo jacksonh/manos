@@ -1,10 +1,8 @@
 <Type Name="RegexMatchOperation" FullName="Manos.Routing.RegexMatchOperation">
   <TypeSignature Language="C#" Value="public class RegexMatchOperation : Manos.Routing.IMatchOperation" />
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit RegexMatchOperation extends System.Object implements class Manos.Routing.IMatchOperation" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
-    <AssemblyVersion>0.0.2.0</AssemblyVersion>
-    <AssemblyVersion>0.0.3.0</AssemblyVersion>
+    <AssemblyVersion>0.0.4.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -21,11 +19,9 @@
   <Members>
     <Member MemberName=".ctor">
       <MemberSignature Language="C#" Value="public RegexMatchOperation (System.Text.RegularExpressions.Regex regex);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(class System.Text.RegularExpressions.Regex regex) cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <Parameters>
         <Parameter Name="regex" Type="System.Text.RegularExpressions.Regex" />
@@ -38,11 +34,9 @@
     </Member>
     <Member MemberName="IsMatch">
       <MemberSignature Language="C#" Value="public bool IsMatch (string input, int start, Manos.Collections.DataDictionary data, out int end);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance bool IsMatch(string input, int32 start, class Manos.Collections.DataDictionary data, int32 end) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -65,11 +59,9 @@
     </Member>
     <Member MemberName="Regex">
       <MemberSignature Language="C#" Value="public System.Text.RegularExpressions.Regex Regex { set; get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class System.Text.RegularExpressions.Regex Regex" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>0.0.2.0</AssemblyVersion>
-        <AssemblyVersion>0.0.3.0</AssemblyVersion>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Text.RegularExpressions.Regex</ReturnType>
