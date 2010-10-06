@@ -4,7 +4,7 @@ conf=Debug
 SLN=src/Manos.sln
 VERBOSITY=normal
 version=0.0.4
-install_bin_dir = "$(prefix)/lib/manos/"
+install_bin_dir = $(prefix)/lib/manos/
 install_data_dir = "$(prefix)/share/manos/"
 install_docs_dir = "$(prefix)/share/manos/docs/"
 install_script_dir = "$(prefix)/bin/"
@@ -27,7 +27,7 @@ NUNIT_CONSOLE = nunit-console4
 
 define MANOS_EXEC_SCRIPT
 #!/bin/bash
-exec mono $$MONO_OPTIONS $(install_bin_dir)manos.exe "$$@"
+exec mono $$MONO_OPTIONS "$(install_bin_dir)manos.exe" "$$@"
 endef
 export MANOS_EXEC_SCRIPT
 
@@ -37,7 +37,7 @@ Description: Manos
 Version: $(version)
 
 Requires: 
-Libs: -r:/usr/local/lib/manos/Manos.dll
+Libs: -r:$(install_bin_dir)Manos.dll
 endef
 export MANOS_PC_SCRIPT
 
