@@ -50,7 +50,7 @@ namespace Manos.Templates {
 		}
 	}
 
-	public class MingeTokenizer {
+	public class TemplateTokenizer {
 
 		private TokenOperators token_ops;
 		private Token current;
@@ -62,7 +62,7 @@ namespace Manos.Templates {
 		private bool have_unget;
 		private int unget_value;
 
-		private MingeEnvironment environment;
+		private TemplateEnvironment environment;
 
 		private string source;
 		private TextReader reader;
@@ -70,7 +70,7 @@ namespace Manos.Templates {
 
 		bool in_code_block = false;
 
-		public MingeTokenizer (MingeEnvironment env, TextReader reader)
+		public TemplateTokenizer (TemplateEnvironment env, TextReader reader)
 		{
 			this.environment = env;
 			this.reader = reader;
@@ -336,7 +336,7 @@ namespace Manos.Templates {
 		private Dictionary<int,TokenType> single_char_ops = new Dictionary<int,TokenType> ();
 		private Dictionary<string,TokenType> double_char_ops = new Dictionary<string,TokenType> ();
 
-		public TokenOperators (MingeEnvironment env)
+		public TokenOperators (TemplateEnvironment env)
 		{
 			single_char_ops.Add ('+', TokenType.TOKEN_ADD);
 			single_char_ops.Add ('-', TokenType.TOKEN_SUB);

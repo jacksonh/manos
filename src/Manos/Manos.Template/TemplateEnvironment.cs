@@ -4,11 +4,8 @@ using System.IO;
 
 namespace Manos.Templates {
 
-	public class MingeEnvironment {
+	public class TemplateEnvironment {
 
-		private static readonly string DefaultAppDomainName = "MINGE_DOMAIN";
-		private static readonly string DefaultAssemblyName = "minge-compiled-templates";
-		private static readonly string DefaultAssemblyFile = "minge-compiled-templates.dll";
 		private static readonly string [] DefaultAllowedExtensions = new string [] { ".htm", ".html" };
 
 		private static readonly string DefaultCommentStartString = "{#";
@@ -20,10 +17,6 @@ namespace Manos.Templates {
 		private static readonly string DefaultVariableStartString = "{{";
 		private static readonly string DefaultVariableEndString = "}}";
 
-		private string assembly_name = DefaultAssemblyName;
-		private string assembly_file = DefaultAssemblyFile;
-		
-		private string app_domain_name = DefaultAppDomainName;
 		private string [] allowed_extensions = DefaultAllowedExtensions;
 
 		private string comment_start_string = DefaultCommentStartString;
@@ -35,29 +28,20 @@ namespace Manos.Templates {
 		private string variable_start_string = DefaultVariableStartString;
 		private string variable_end_string = DefaultVariableEndString;		
 
-
 		private bool is_running = false;
 
-		public MingeEnvironment () : this (new string [] { Directory.GetCurrentDirectory () } )
+		public TemplateEnvironment ()
 		{
+			TemplateDirectory = "Templates";
+			AssemblyFile = Path.GetDirectoryName (Directory.GetCurrentDirectory ()) + ".Templates.dll";
 		}
 
-		public MingeEnvironment (string [] templatedirs) : this (Directory.GetCurrentDirectory (), templatedirs)
-		{
-		}
-
-		public MingeEnvironment (string bindir, string [] templatedirs)
-		{
-			BinDirectory = bindir;
-			TemplateDirectories = templatedirs;
-		}
-		
-		public string BinDirectory {
+		public string AssemblyFile {
 			get;
 			private set;
 		}
 
-		public string [] TemplateDirectories {
+		public string TemplateDirectory {
 			get;
 			private set;
 		}
@@ -68,44 +52,6 @@ namespace Manos.Templates {
 				if (is_running)
 					throw new Exception ();
 				allowed_extensions = value;
-			}
-		}
-
-		public string AssemblyName {
-			get {
-				return assembly_name;
-			}
-			set {
-				if (is_running)
-					throw new Exception ();
-				assembly_name = value;
-				
-			}
-		}
-
-		public string AssemblyFile {
-			get {
-				return assembly_file;
-			}
-			set {
-				if (is_running)
-					throw new Exception ();
-				assembly_file = value;
-			}
-		}
-
-		public string AssemblyPath {
-			get {
-				return Path.Combine (BinDirectory, AssemblyFile);
-			}
-		}
-
-		public string AppDomainName {
-			get { return app_domain_name; }
-			set {
-				if (is_running)
-					throw new Exception ();
-				app_domain_name = value;
 			}
 		}
 

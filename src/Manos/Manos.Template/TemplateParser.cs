@@ -8,25 +8,23 @@ using System.Collections.Generic;
 
 namespace Manos.Templates {
 
-	public class MingeParser {
+	public class TemplateParser {
 
-		private Application application;
-		private MingeEnvironment environment;
+	        private ITemplateCodegen codegen;
+		private TemplateEnvironment environment;
 
-		private Page current_page;
-
-		public MingeParser (MingeEnvironment environment, Application application)
+		public TemplateParser (TemplateEnvironment environment, ITemplateCodegen codegen)
 		{
-			this.application = application;
+			this.codegen = codegen;
 			this.environment = environment;
 		}
 
-		public Page ParsePage (string name, TextReader reader)
+		public void ParsePage (string name, TextReader reader)
 		{
 			Console.WriteLine ("parsing page:  {0}", name);
-			MingeTokenizer tk = new MingeTokenizer (environment, reader);
+			TemplateTokenizer tk = new TemplateTokenizer (environment, reader);
 
-			current_page = application.CreatePage (name);
+			codegen.BeginPage (name);
 
 			Token tok = null;
 			StringBuilder data = new StringBuilder ();
@@ -49,25 +47,22 @@ namespace Manos.Templates {
 					break;
 				case TokenType.TOKEN_EOF:
 					FlushData (data);
-					current_page.Save ();
-					return current_page;
+					codegen.EndPage ();
+					return;
 				default:
 					data.Append (tok.Value);
 					break;
 				}
 			}
-
-			return null;
 		}
 
 		public void FlushData (StringBuilder data)
 		{
-			current_page.AddData (data.ToString ());
-//			Console.WriteLine ("DATA: {0}", data);
+			codegen.AddData (data.ToString ());
 			data.Length = 0;
 		}
 
-		public void ParseVariable (MingeTokenizer tk)
+		public void ParseVariable (TemplateTokenizer tk)
 		{
 			Expression exp = ParseExpression (tk, TokenType.TOKEN_BLOCK_END);
 
@@ -75,11 +70,10 @@ namespace Manos.Templates {
 				RaiseFailure (tk, String.Format ("Invalid variable statement found, '{0}' token found when a {1} was expected.",
 						tk.Current.Value, environment.VariableEndString));
 						
-			current_page.EmitSinglePrint (exp);
-
+			codegen.EmitSinglePrint (exp);
 		}
 
-		public void ParseComment (MingeTokenizer tk)
+		public void ParseComment (TemplateTokenizer tk)
 		{
 			Token tok;
 			StringBuilder builder = new StringBuilder ();
@@ -97,7 +91,7 @@ namespace Manos.Templates {
 			// FAIL
 		}
 
-		public void ParseControlBlock (MingeTokenizer tk)
+		public void ParseControlBlock (TemplateTokenizer tk)
 		{
 			Token tok;
 			StringBuilder builder = new StringBuilder ();
@@ -117,7 +111,7 @@ namespace Manos.Templates {
 			} while (tok.Type != TokenType.TOKEN_EOF);
 		}
 
-		public void ParseStatement (MingeTokenizer tk)
+		public void ParseStatement (TemplateTokenizer tk)
 		{
 			Token tok = NextNonWhiteSpaceToken (tk);
 
@@ -127,14 +121,14 @@ namespace Manos.Templates {
 			}
 
 			switch (tok.Value) {
-			case "print":
-				ParsePrint (tk);
+//			case "print":
+//				ParsePrint (tk);
+//				break;
+			case "foreach":
+				ParseForeachLoop (tk);
 				break;
-			case "for":
-				ParseForLoop (tk);
-				break;
-			case "endfor":
-				ParseEndForLoop (tk);
+			case "endforeach":
+				ParseEndForeachLoop (tk);
 				break;
 			case "if":
 				ParseIf (tk);
@@ -154,15 +148,15 @@ namespace Manos.Templates {
 			case "extends":
 				ParseExtends (tk);
 				break;
-			case "macro":
-				ParseMacro (tk);
-				break;
-			case "endmacro":
-				ParseEndMacro (tk);
-				break;			
-			case "set":
-				ParseSet (tk);
-				break;
+//			case "macro":
+//				ParseMacro (tk);
+//				break;
+//			case "endmacro":
+//				ParseEndMacro (tk);
+//				break;			
+//			case "set":
+//				ParseSet (tk);
+//				break;
 			case "include":
 			case "from":
 			case "import":
@@ -174,7 +168,8 @@ namespace Manos.Templates {
 			}
 		}
 
-		public void ParsePrint (MingeTokenizer tk)
+/*
+		public void ParsePrint (TemplateTokenizer tk)
 		{
 			Token tok;
 			bool first = true;
@@ -198,10 +193,12 @@ namespace Manos.Templates {
 			if (tok.Type == TokenType.TOKEN_EOF)
 				RaiseFailure (tk, "Unexpected end of file.");
 
-			current_page.EmitPrint (expressions);
+			codegen.EmitPrint (expressions);
 		}
 
-		public void ParseSet (MingeTokenizer tk)
+*/
+/*
+		public void ParseSet (TemplateTokenizer tk)
 		{
 			Token tok = NextNonWhiteSpaceToken (tk);
 			if (tok.Type != TokenType.TOKEN_NAME)
@@ -215,26 +212,27 @@ namespace Manos.Templates {
 			
 			Expression expression = ParseExpression (tk, TokenType.TOKEN_BLOCK_END);
 
-			current_page.EmitSet (target, expression);
+			codegen.EmitSet (target, expression);
 		}
-
-		public void ParseIf (MingeTokenizer tk)
+*/
+		public void ParseIf (TemplateTokenizer tk)
 		{
 			Expression expression = ParseExpression (tk, TokenType.TOKEN_BLOCK_END);
 
-			current_page.EmitIf (expression);
+			codegen.EmitIf (expression);
 		}
 
-		public void ParseElse (MingeTokenizer tk)
+		public void ParseElse (TemplateTokenizer tk)
 		{
+			Expression condition = null;
 			Token tok = NextNonWhiteSpaceToken (tk);
 			if (tok.Type != TokenType.TOKEN_BLOCK_END)
-				RaiseFailure (tk, String.Format ("Invalid '{0}' token found in else statement.", tok.Value));
+			   condition = ParseExpression (tk, TokenType.TOKEN_BLOCK_END);
 
-			current_page.EmitElse ();
+			codegen.EmitElse (null);
 		}
 
-		public void ParseEndIf (MingeTokenizer tk)
+		public void ParseEndIf (TemplateTokenizer tk)
 		{
 			Token tok = NextNonWhiteSpaceToken (tk);
 			while (tok.Type != TokenType.TOKEN_BLOCK_END) {
@@ -242,24 +240,36 @@ namespace Manos.Templates {
 				tok = NextNonWhiteSpaceToken (tk);
 			}
 
-			current_page.EmitEndIf ();
+			codegen.EmitEndIf ();
 		}
 
-		public void ParseBlock (MingeTokenizer tk)
+		public void ParseBlock (TemplateTokenizer tk)
 		{
 			Token tok = NextNonWhiteSpaceToken (tk);
 
 			if (tok.Type != TokenType.TOKEN_NAME)
 				RaiseFailure (tk, String.Format ("Invalid '{0}' token found in block statement.", tok.Value));
+			
+			string name = tok.Value;
 
-			current_page.BeginBlock (tok.Value);
+			/*
+			List<ArgumentDefinition> args = null;
+
+			tok = NextNonWhiteSpaceToken (tk);
+			if (tok.Type == TokenType.TOKEN_LPAREN) {
+				args = ParseArgumentDefinitions (tk);
+				tok = NextNonWhiteSpaceToken (tk);
+			}
+			*/
+
+			codegen.BeginBlock (name);
 
 			tok = NextNonWhiteSpaceToken (tk);
 			if (tok.Type != TokenType.TOKEN_BLOCK_END)
 				RaiseFailure (tk, String.Format ("Invalid '{0}' token found in block statement.", tok.Value));
 		}
 
-		public void ParseEndBlock (MingeTokenizer tk)
+		public void ParseEndBlock (TemplateTokenizer tk)
 		{
 			Token tok = NextNonWhiteSpaceToken (tk);
 
@@ -270,29 +280,28 @@ namespace Manos.Templates {
 			}
 
 			// Name matching is optional, we pass null if no name is supplied
-			current_page.EndBlock (name);
+			codegen.EndBlock (name);
 
 			if (tok.Type != TokenType.TOKEN_BLOCK_END)
 				RaiseFailure (tk, String.Format ("Invalid '{0}' token found in endblock statement.", tok.Value));
 		}
 
-		public void ParseExtends (MingeTokenizer tk)
+		public void ParseExtends (TemplateTokenizer tk)
 		{
 			Token tok = NextNonWhiteSpaceToken (tk);
 
 			if (tok.Type != TokenType.TOKEN_QUOTED_STRING)
 				RaiseFailure (tk, String.Format ("Invalid '{0}' token found in extends statement.", tok.Value));
 
-			Console.WriteLine ("extending:  {0}", tok.Value);
-			current_page.EmitExtends (ValueOfQuotedString (tok.Value));
+			codegen.EmitExtends (ValueOfQuotedString (tok.Value));
 
 			tok = NextNonWhiteSpaceToken (tk);
 
 			if (tok.Type != TokenType.TOKEN_BLOCK_END)
 				RaiseFailure (tk, String.Format ("Invalid '{0}' token found in extends statement.", tok.Value));
 		}
-
-		public void ParseMacro (MingeTokenizer tk)
+/*
+		public void ParseMacro (TemplateTokenizer tk)
 		{
 			Token tok = NextNonWhiteSpaceToken (tk);
 
@@ -309,13 +318,13 @@ namespace Manos.Templates {
 				tok = NextNonWhiteSpaceToken (tk);
 			}
 
-			current_page.BeginMacro (name, args);
+			codegen.BeginMacro (name, args);
 
 			if (tok.Type != TokenType.TOKEN_BLOCK_END)
 				RaiseFailure (tk, String.Format ("Invalid macro definition, expect block end got a '{0}'.", tok.Value));
 		}
 
-		public void ParseEndMacro (MingeTokenizer tk)
+		public void ParseEndMacro (TemplateTokenizer tk)
 		{
 			string name = null;
 			Token tok = NextNonWhiteSpaceToken (tk);
@@ -330,12 +339,12 @@ namespace Manos.Templates {
 			
 			current_page.EndMacro (name);
 		}
-
-		public Expression ParseExpression (MingeTokenizer tk, TokenType end_token_type, bool allow_conditionals=true)
+*/
+		public Expression ParseExpression (TemplateTokenizer tk, TokenType end_token_type, bool allow_conditionals=true)
 		{
-			Value target_value = ParseRValue (tk);
-
 			Expression expression = null;
+			/*
+			Value target_value = ParseRValue (tk);
 
 			Token tok = NextNonWhiteSpaceToken (tk);
 			if (tok.Type == TokenType.TOKEN_DOT) {
@@ -368,7 +377,7 @@ namespace Manos.Templates {
 			while (tok.Type != end_token_type && tok.Type != TokenType.TOKEN_EOF) {
 
 				if (tok.Type == TokenType.TOKEN_PIPE) {
-					Filter filter = ParseFilter (tk);
+					TemplateFilter filter = ParseFilter (tk);
 					expression.AddFilter (filter);
 				} else if (allow_conditionals && IsConditionalToken (tok)) {
 					CompareOperator compare = CompareOperatorFromToken (tok);
@@ -381,42 +390,12 @@ namespace Manos.Templates {
 
 			if (tok.Type == TokenType.TOKEN_EOF)
 				RaiseFailure (tk, "Unexpected eof of file found while parsing expression.");
-
+			*/
 			return expression;
+			
 		}
 
-		public bool IsConditionalToken (Token tok)
-		{
-			return CompareOperatorFromToken (tok) != CompareOperator.Invalid;
-		}
-
-		public CompareOperator CompareOperatorFromToken (Token tok)
-		{
-			CompareOperator res = CompareOperator.Invalid;
-
-			switch (tok.Type) {
-			case TokenType.TOKEN_NAME:
-				if ("is" == tok.Value)
-					res = CompareOperator.Is;
-				break;
-			case TokenType.TOKEN_EQ:
-				res = CompareOperator.Equal;
-				break;
-			case TokenType.TOKEN_NE:
-				res = CompareOperator.NotEqual;
-				break;
-			case TokenType.TOKEN_GTEQ:
-				res = CompareOperator.GreaterThanOrEqual;
-				break;
-			case TokenType.TOKEN_LTEQ:
-				res = CompareOperator.LessThanOrEqual;
-				break;
-			}
-
-			return res;
-		}
-
-		public void ParseForLoop (MingeTokenizer tk)
+		public void ParseForeachLoop (TemplateTokenizer tk)
 		{
 			Token tok = NextNonWhiteSpaceToken (tk);
 
@@ -429,10 +408,10 @@ namespace Manos.Templates {
 
 			Expression iter = ParseExpression (tk, TokenType.TOKEN_BLOCK_END);
 
-			current_page.BeginForLoop (variable_name, iter);
+			codegen.BeginForeachLoop (variable_name, iter);
 		}
 
-		public void ParseEndForLoop (MingeTokenizer tk)
+		public void ParseEndForeachLoop (TemplateTokenizer tk)
 		{
 			Token tok = NextNonWhiteSpaceToken (tk);
 			while (tok.Type != TokenType.TOKEN_BLOCK_END) {
@@ -440,10 +419,10 @@ namespace Manos.Templates {
 				tok = NextNonWhiteSpaceToken (tk);
 			}
 
-			current_page.EndForLoop ();
+			codegen.EndForeachLoop ();
 		}
 
-		public string ParseSubscript (MingeTokenizer tk)
+		public string ParseSubscript (TemplateTokenizer tk)
 		{
 			Token tok = NextNonWhiteSpaceToken (tk);
 
@@ -460,7 +439,8 @@ namespace Manos.Templates {
 			return value;
 		}
 
-		public Filter ParseFilter (MingeTokenizer tk)
+		/*
+		public TemplateFilter ParseFilter (TemplateTokenizer tk)
 		{
 			Token tok = NextNonWhiteSpaceToken (tk);
 
@@ -481,10 +461,11 @@ namespace Manos.Templates {
 				NextNonWhiteSpaceToken (tk);
 			}
 
-			return new Filter (name, args);
+			return new TemplateFilter (name, args);
 		}
-
-		public List<Expression> ParseArguments (MingeTokenizer tk)
+		*/
+/*
+		public List<Expression> ParseArguments (TemplateTokenizer tk)
 		{
 			List<Expression> expressions = new List<Expression> ();
 
@@ -507,7 +488,7 @@ namespace Manos.Templates {
 			return expressions;
 		}
 
-		public List<ArgumentDefinition> ParseArgumentDefinitions (MingeTokenizer tk)
+		public List<ArgumentDefinition> ParseArgumentDefinitions (TemplateTokenizer tk)
 		{
 			Token tok = NextNonWhiteSpaceToken (tk);
 			List<ArgumentDefinition> args = new List<ArgumentDefinition> ();
@@ -545,61 +526,8 @@ namespace Manos.Templates {
 
 			return args;
 		}
-
-		public Value ParseRValue (MingeTokenizer tk)
-		{
-			Value value = null;
-
-			Token tok = NextNonWhiteSpaceToken (tk);
-			switch (tok.Type) {
-			case TokenType.TOKEN_NAME:
-				value = new VariableValue (new NamedTarget (tok.Value));
-				break;
-			case TokenType.TOKEN_QUOTED_STRING:
-				value = new ConstantStringValue (ValueOfQuotedString (tok.Value));
-				break;
-			case TokenType.TOKEN_DOUBLE:
-				value = new ConstantDoubleValue ((double) tok.TokenizedValue);
-				break;
-			case TokenType.TOKEN_INTEGER:
-				value = new ConstantIntValue ((int) tok.TokenizedValue);
-				break;
-			default:
-				RaiseFailure (tk, String.Format ("Unexpected token '{0}', in rvalue", tok.Value));
-				break;
-			}
-
-			return value;
-		}
-
-		public ConstantValue ParseConstantValue (MingeTokenizer tk)
-		{
-			ConstantValue value = null;
-
-			Token tok = NextNonWhiteSpaceToken (tk);
-			switch (tok.Type) {
-			case TokenType.TOKEN_QUOTED_STRING:
-				value = new ConstantStringValue (ValueOfQuotedString (tok.Value));
-				break;
-			default:
-				RaiseFailure (tk, String.Format ("Unexpected token '{0}', in constant value", tok.Value));
-				break;
-			}
-
-			return value;
-		}
-
-		public Target ParseAssignmentTarget (MingeTokenizer tk, bool with_tuple=true, bool name_only=false, string extra_end_rules=null)
-		{
-			Token tok = NextNonWhiteSpaceToken (tk);
-
-			if (tok.Type == TokenType.TOKEN_NAME)
-				return new NamedTarget (tok.Value);
-
-			return null;
-		}
-
-		public Token NextNonWhiteSpaceToken (MingeTokenizer tk)
+*/
+		public Token NextNonWhiteSpaceToken (TemplateTokenizer tk)
 		{
 			Token tok;
 
@@ -616,7 +544,7 @@ namespace Manos.Templates {
 			return res;
 		}
 
-		private void Expect (MingeTokenizer tk, TokenType type, string value, string error="Expected symbol {0} not found.")
+		private void Expect (TemplateTokenizer tk, TokenType type, string value, string error="Expected symbol {0} not found.")
 		{
 			Token tok = NextNonWhiteSpaceToken (tk);
 
@@ -624,7 +552,7 @@ namespace Manos.Templates {
 				RaiseFailure (tk, String.Format (error, value));
 		}
 			
-		private void RaiseFailure (MingeTokenizer tk, string error)
+		private void RaiseFailure (TemplateTokenizer tk, string error)
 		{
 			throw new Exception (String.Format ("({0}:{1}) FAILURE: {2}", tk.Line, tk.Column, error));
 		}

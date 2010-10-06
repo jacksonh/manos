@@ -7,13 +7,9 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
-using Manos.Server;
-
 namespace Manos.Templates {
 
-	  public class TemplateCSharpCodegen {
-
-	  	 private TemplateParser parser;
+	  public class ITemplateCodegen {
 
 	  	 public void BeginPage (string name)
 		 {
@@ -35,10 +31,6 @@ namespace Manos.Templates {
 		 {
 		 }
 
-		 public void EmitPrint (Expression expression)
-		 {
-		 }
-
 		 public void EmitIf (Expression expression)
 		 {
 		 }
@@ -51,11 +43,19 @@ namespace Manos.Templates {
 		 {
 		 }
 
-		 public void BeginBlock (string name, List<ArgumentDefinition> args)
+		 public void BeginBlock (string name)
 		 {
 		 }
 
 		 public void EndBlock (string name)
+		 {
+		 }
+
+		 public void BeginForeachLoop (string var, Expression expression)
+		 {
+		 }
+
+		 public void EndForeachLoop ()
 		 {
 		 }
 	  }

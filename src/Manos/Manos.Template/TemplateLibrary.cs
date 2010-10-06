@@ -9,8 +9,6 @@ using Manos.Server;
 
 namespace Manos.Templates {
 
-	public delegate string MingeFilter (string input, object [] args);
-
 	public static class BuiltinFilters {
 
 		public static string __upper (string input)
@@ -47,7 +45,7 @@ namespace Manos.Templates {
 		}
 	}
 
-	public static class MingeFilterManager {
+	public static class TemplateFilterManager {
 
 		public static MethodInfo GetFilter (string filter)
 		{
@@ -59,25 +57,10 @@ namespace Manos.Templates {
 		}
 	}
 
-	public interface IMingePage {
+	public interface ITemplatePage {
 
-		void Render (IManosContext context, object the_arg);
-		void RenderToResponse (IHttpResponse response, object the_arg);
+		void Render (IManosContext context, Stream stream, object the_arg);
 	}
-
-	
-	[Serializable]
-	public class MingePage : IMingePage {
-
-		public void Render (IManosContext context, object the_arg)
-		{
-			RenderToResponse (context.Response, the_arg);
-		}
-
-		public virtual void RenderToResponse (IHttpResponse response, object the_arg)
-		{
-		}
-	}
-
 }
+
 
