@@ -176,7 +176,7 @@ namespace Manos.Server {
 			read_watcher.Stop ();
 		}
 
-		private void DisableWriting ()
+		public void DisableWriting ()
 		{
 			write_watcher.Stop ();
 		}
@@ -209,7 +209,10 @@ namespace Manos.Server {
 		
 		private void HandleIOWrite (Loop loop, IOWatcher watcher, int revents)
 		{
-			HandleWrite ();
+			if (send_file == null)
+                           HandleWrite ();
+			else
+                           HandleSendFile ();
 		}
 
 		private void HandleRead ()
@@ -369,8 +372,6 @@ namespace Manos.Server {
 			write_callback = null;
 
 			callback ();
-
-			DisableWriting ();
 		}
 		
 		private void FinishSendFile ()
@@ -385,8 +386,6 @@ namespace Manos.Server {
 			send_file_offset = 0;
 			
 			callback ();
-
-			DisableWriting ();
 		}
 	}
 

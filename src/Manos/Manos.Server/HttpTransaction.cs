@@ -154,9 +154,10 @@ namespace Manos.Server {
 			Response = null;
 
 			if (disconnect) {
-				IOStream.Close ();
+			   	IOStream.Close ();
 				return;
-			}
+			} else 
+				IOStream.DisableWriting ();
 
 			IOStream.ReadUntil ("\r\n\r\n", OnHeaders);
 		}
