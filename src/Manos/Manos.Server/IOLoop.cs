@@ -58,9 +58,6 @@ namespace Manos.Server {
 
 		public void Stop ()
 		{
-			// This will need to tickle the loop so it wakes up and calls 
-			// the prepare handler.
-
 			running = false;
 		}
 
