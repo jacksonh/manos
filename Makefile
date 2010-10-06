@@ -86,7 +86,8 @@ install-pkg-config:
 
 
 uninstall:
-	rm -rf "$(installdir)"
+	echo "not implemented"
+#	rm -rf "$(installdir)"
 
 dist: clean update-docs
 	rm -rf "$(distdir)"
