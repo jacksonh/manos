@@ -1,0 +1,349 @@
+<Type Name="TemplateParser" FullName="Manos.Templates.TemplateParser">
+  <TypeSignature Language="C#" Value="public class TemplateParser" />
+  <AssemblyInfo>
+    <AssemblyName>Manos</AssemblyName>
+    <AssemblyVersion>0.0.4.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Object</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public TemplateParser (Manos.Templates.TemplateEnvironment environment, Manos.Templates.ITemplateCodegen codegen);" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters>
+        <Parameter Name="environment" Type="Manos.Templates.TemplateEnvironment" />
+        <Parameter Name="codegen" Type="Manos.Templates.ITemplateCodegen" />
+      </Parameters>
+      <Docs>
+        <param name="environment">To be added.</param>
+        <param name="codegen">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="FlushData">
+      <MemberSignature Language="C#" Value="public void FlushData (System.Text.StringBuilder data);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="data" Type="System.Text.StringBuilder" />
+      </Parameters>
+      <Docs>
+        <param name="data">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="NextNonWhiteSpaceToken">
+      <MemberSignature Language="C#" Value="public Manos.Templates.Token NextNonWhiteSpaceToken (Manos.Templates.TemplateTokenizer tk);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Templates.Token</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="tk" Type="Manos.Templates.TemplateTokenizer" />
+      </Parameters>
+      <Docs>
+        <param name="tk">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ParseBlock">
+      <MemberSignature Language="C#" Value="public void ParseBlock (Manos.Templates.TemplateTokenizer tk);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="tk" Type="Manos.Templates.TemplateTokenizer" />
+      </Parameters>
+      <Docs>
+        <param name="tk">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ParseComment">
+      <MemberSignature Language="C#" Value="public void ParseComment (Manos.Templates.TemplateTokenizer tk);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="tk" Type="Manos.Templates.TemplateTokenizer" />
+      </Parameters>
+      <Docs>
+        <param name="tk">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ParseControlBlock">
+      <MemberSignature Language="C#" Value="public void ParseControlBlock (Manos.Templates.TemplateTokenizer tk);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="tk" Type="Manos.Templates.TemplateTokenizer" />
+      </Parameters>
+      <Docs>
+        <param name="tk">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ParseElse">
+      <MemberSignature Language="C#" Value="public void ParseElse (Manos.Templates.TemplateTokenizer tk);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="tk" Type="Manos.Templates.TemplateTokenizer" />
+      </Parameters>
+      <Docs>
+        <param name="tk">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ParseEndBlock">
+      <MemberSignature Language="C#" Value="public void ParseEndBlock (Manos.Templates.TemplateTokenizer tk);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="tk" Type="Manos.Templates.TemplateTokenizer" />
+      </Parameters>
+      <Docs>
+        <param name="tk">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ParseEndForeachLoop">
+      <MemberSignature Language="C#" Value="public void ParseEndForeachLoop (Manos.Templates.TemplateTokenizer tk);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="tk" Type="Manos.Templates.TemplateTokenizer" />
+      </Parameters>
+      <Docs>
+        <param name="tk">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ParseEndIf">
+      <MemberSignature Language="C#" Value="public void ParseEndIf (Manos.Templates.TemplateTokenizer tk);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="tk" Type="Manos.Templates.TemplateTokenizer" />
+      </Parameters>
+      <Docs>
+        <param name="tk">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ParseExpression">
+      <MemberSignature Language="C#" Value="public Manos.Templates.Expression ParseExpression (Manos.Templates.TemplateTokenizer tk, Manos.Templates.TokenType end_token_type, bool allow_conditionals);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Templates.Expression</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="tk" Type="Manos.Templates.TemplateTokenizer" />
+        <Parameter Name="end_token_type" Type="Manos.Templates.TokenType" />
+        <Parameter Name="allow_conditionals" Type="System.Boolean" />
+      </Parameters>
+      <Docs>
+        <param name="tk">To be added.</param>
+        <param name="end_token_type">To be added.</param>
+        <param name="allow_conditionals">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ParseExtends">
+      <MemberSignature Language="C#" Value="public void ParseExtends (Manos.Templates.TemplateTokenizer tk);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="tk" Type="Manos.Templates.TemplateTokenizer" />
+      </Parameters>
+      <Docs>
+        <param name="tk">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ParseForeachLoop">
+      <MemberSignature Language="C#" Value="public void ParseForeachLoop (Manos.Templates.TemplateTokenizer tk);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="tk" Type="Manos.Templates.TemplateTokenizer" />
+      </Parameters>
+      <Docs>
+        <param name="tk">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ParseIf">
+      <MemberSignature Language="C#" Value="public void ParseIf (Manos.Templates.TemplateTokenizer tk);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="tk" Type="Manos.Templates.TemplateTokenizer" />
+      </Parameters>
+      <Docs>
+        <param name="tk">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ParsePage">
+      <MemberSignature Language="C#" Value="public void ParsePage (string name, System.IO.TextReader reader);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="name" Type="System.String" />
+        <Parameter Name="reader" Type="System.IO.TextReader" />
+      </Parameters>
+      <Docs>
+        <param name="name">To be added.</param>
+        <param name="reader">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ParseStatement">
+      <MemberSignature Language="C#" Value="public void ParseStatement (Manos.Templates.TemplateTokenizer tk);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="tk" Type="Manos.Templates.TemplateTokenizer" />
+      </Parameters>
+      <Docs>
+        <param name="tk">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ParseSubscript">
+      <MemberSignature Language="C#" Value="public string ParseSubscript (Manos.Templates.TemplateTokenizer tk);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.String</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="tk" Type="Manos.Templates.TemplateTokenizer" />
+      </Parameters>
+      <Docs>
+        <param name="tk">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ParseVariable">
+      <MemberSignature Language="C#" Value="public void ParseVariable (Manos.Templates.TemplateTokenizer tk);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="tk" Type="Manos.Templates.TemplateTokenizer" />
+      </Parameters>
+      <Docs>
+        <param name="tk">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

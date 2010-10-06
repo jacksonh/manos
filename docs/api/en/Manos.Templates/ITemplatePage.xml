@@ -1,0 +1,36 @@
+<Type Name="ITemplatePage" FullName="Manos.Templates.ITemplatePage">
+  <TypeSignature Language="C#" Value="public interface ITemplatePage" />
+  <AssemblyInfo>
+    <AssemblyName>Manos</AssemblyName>
+    <AssemblyVersion>0.0.4.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="Render">
+      <MemberSignature Language="C#" Value="public void Render (Manos.IManosContext context, System.IO.Stream stream, object the_arg);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="context" Type="Manos.IManosContext" />
+        <Parameter Name="stream" Type="System.IO.Stream" />
+        <Parameter Name="the_arg" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="context">To be added.</param>
+        <param name="stream">To be added.</param>
+        <param name="the_arg">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>
