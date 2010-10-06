@@ -96,6 +96,23 @@
       <Type Name="MockHttpRequest" Kind="Class" />
       <Type Name="MockHttpTransaction" Kind="Class" />
     </Namespace>
+    <Namespace Name="Manos.Templates">
+      <Type Name="BuiltinFilters" Kind="Class" />
+      <Type Name="Expression" Kind="Class" />
+      <Type Name="IManosTemplate" Kind="Interface" />
+      <Type Name="ITemplateCodegen" Kind="Class" />
+      <Type Name="ITemplatePage" Kind="Interface" />
+      <Type Name="ManosTemplate" Kind="Class" />
+      <Type Name="TemplateEngine" Kind="Class" />
+      <Type Name="TemplateEnvironment" Kind="Class" />
+      <Type Name="TemplateFactory" Kind="Class" />
+      <Type Name="TemplateFilterManager" Kind="Class" />
+      <Type Name="TemplateParser" Kind="Class" />
+      <Type Name="TemplateTokenizer" Kind="Class" />
+      <Type Name="Token" Kind="Class" />
+      <Type Name="TokenOperators" Kind="Class" />
+      <Type Name="TokenType" Kind="Enumeration" />
+    </Namespace>
     <Namespace Name="Manos.Testing">
       <Type Name="ManosAppStub" Kind="Class" />
       <Type Name="ManosContextStub" Kind="Class" />

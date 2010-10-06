@@ -1,5 +1,5 @@
 <Type Name="IgnoreAttribute" FullName="Manos.IgnoreAttribute">
-  <TypeSignature Language="C#" Value="public abstract class IgnoreAttribute : Attribute" />
+  <TypeSignature Language="C#" Value="public class IgnoreAttribute : Attribute" />
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
     <AssemblyVersion>0.0.4.0</AssemblyVersion>
@@ -19,7 +19,7 @@
   </Docs>
   <Members>
     <Member MemberName=".ctor">
-      <MemberSignature Language="C#" Value="protected IgnoreAttribute ();" />
+      <MemberSignature Language="C#" Value="public IgnoreAttribute ();" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>

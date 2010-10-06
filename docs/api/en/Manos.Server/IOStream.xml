@@ -65,6 +65,21 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
+    <Member MemberName="DisableWriting">
+      <MemberSignature Language="C#" Value="public void DisableWriting ();" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
     <Member MemberName="IOLoop">
       <MemberSignature Language="C#" Value="public Manos.Server.IOLoop IOLoop { get; }" />
       <MemberType>Property</MemberType>
