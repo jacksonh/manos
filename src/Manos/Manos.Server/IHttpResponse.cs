@@ -1,6 +1,7 @@
 
 
 using System;
+using System.IO;
 using System.Text;
 
 namespace Manos.Server {
@@ -16,6 +17,11 @@ namespace Manos.Server {
 		}
 
 		HttpResponseStream Stream {
+			get;
+		}
+
+		
+		StreamWriter Writer {
 			get;
 		}
 
