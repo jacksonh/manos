@@ -17,6 +17,8 @@ namespace Manos.Server {
 
 	public class HttpResponse : IHttpResponse {
 
+	       	private bool metadata_written = true;
+
 		public HttpResponse (IHttpTransaction transaction, Encoding encoding)
 		{
 			Transaction = transaction;
@@ -29,6 +31,7 @@ namespace Manos.Server {
 
 			Headers = new HttpHeaders ();
 			Stream = new HttpResponseStream ();
+			Writer = new StreamWriter (Stream);
 			Cookies = new Dictionary<string, HttpCookie> ();
 			
 			SetStandardHeaders ();
@@ -45,6 +48,11 @@ namespace Manos.Server {
 		}
 
 		public HttpResponseStream Stream {
+			get;
+			private set;
+		}
+
+		public StreamWriter Writer {
 			get;
 			private set;
 		}
@@ -104,13 +112,12 @@ namespace Manos.Server {
 		public void SendFile (string file)
 		{
 			FileInfo fi = new FileInfo (file);
-			SetHeader ("Content-Length", fi.Length.ToString ());
-			
+
+			Headers.ContentLength = fi.Length;
+	
 			WriteMetaData ();
 			Transaction.Write (Stream.GetBuffers ());
-			
 			Transaction.SendFile (file);
-			Transaction.Finish ();
 		}
 
 		public void Redirect (string url)
@@ -121,16 +128,20 @@ namespace Manos.Server {
 			SetHeader ("Location", url);
 			
 			WriteMetaData ();
-			Transaction.Finish ();
 		}
 		
 		public void WriteMetaData ()
 		{
+			if (metadata_written)
+			   return;
+
 			if (WriteHeaders)
 				InsertHeaders ();
 			
 			if (WriteStatusLine)
 				InsertStatusLine ();
+
+			metadata_written = true;
 		}
 		
 		public void Finish ()
