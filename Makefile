@@ -60,28 +60,28 @@ install: update-docs install-bin install-data install-docs install-script instal
 
 
 install-data:
-	test -d "$(install_data_dir)" || mkdir "$(install_data_dir)"
+	test -d "$(install_data_dir)" || mkdir -p "$(install_data_dir)"
 	cp -rf ./data/* "$(install_data_dir)"
 
 install-docs:
-	test -d "$(install_docs_dir)" || mkdir "$(install_docs_dir)"
+	test -d "$(install_docs_dir)" || mkdir -p "$(install_docs_dir)"
 	cp -rf ./docs/* "$(install_docs_dir)"
 
 install-bin: all
-	test -d "$(install_bin_dir)" || mkdir "$(install_bin_dir)"
+	test -d "$(install_bin_dir)" || mkdir -p "$(install_bin_dir)"
 	cp -rf ./build/* "$(install_bin_dir)"
 
 install-script:
-	test -d "$(install_script_dir)" || mkdir "$(install_script_dir)"
+	test -d "$(install_script_dir)" || mkdir -p "$(install_script_dir)"
 	echo "$$MANOS_EXEC_SCRIPT" > $(install_script_dir)manos
 	chmod +x "$(install_script_dir)"manos
 
 install-man:
-	test -d "$(install_man_dir)" || mkdir "$(install_man_dir)"
+	test -d "$(install_man_dir)" || mkdir -p "$(install_man_dir)"
 	cp -rf ./man/* "$(install_man_dir)"
 
 install-pkg-config:
-	test -d "$(install_pc_dir)" || mkdir "$(install_pc_dir)"
+	test -d "$(install_pc_dir)" || mkdir -p "$(install_pc_dir)"
 	echo "$$MANOS_PC_SCRIPT" > $(install_pc_dir)manos.pc
 
 
