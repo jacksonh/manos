@@ -10,10 +10,6 @@ using System.Collections.Generic;
 
 namespace Manos.Templates {
 
-	public class FooBarTest {
-		
-	}
-	
 	public static class Engine {
 
 		private static Dictionary<string,Type> loaded_templates = new Dictionary<string,Type> ();
