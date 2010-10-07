@@ -213,8 +213,10 @@ namespace Manos.Server {
 			if (send_file == null && write_data == null)
 			   return;
 
-			if (send_file != null)
+			if (send_file != null) {
 			   HandleSendFile ();
+			   return;
+			}
 
                         HandleWrite ();
 		}
@@ -267,7 +269,7 @@ namespace Manos.Server {
 			// TODO: Need to handle WOULDBLOCK here.
 			// 
 			
-			while (send_file_offset >= send_file_count) {
+			while (send_file_offset < send_file_count) {
 			      try {
 			      	  Syscall.sendfile (socket.Handle.ToInt32 (), 
 			          		    send_file.Handle.ToInt32 (), 
