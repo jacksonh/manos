@@ -55,6 +55,11 @@ namespace TestApp {
 			    ctx.Response.Write (the_string);
 			}
 		}
+
+		public void SendFile (IManosContext ctx, string name)
+		{
+			ctx.Response.SendFile (name);
+		}
 	}
 }
 
