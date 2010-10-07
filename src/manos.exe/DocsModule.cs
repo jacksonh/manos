@@ -42,7 +42,7 @@ namespace Manos.Tool {
 		}
 
 		[Route ("/Manuals/{manual}")]
-		public void Manual (DocsModule docs, IManosContext ctx, string manual)
+		public void Manual (IManosContext ctx, string manual)
 		{
 			string md_page;
 
@@ -55,7 +55,7 @@ namespace Manos.Tool {
 		}
 
 		[Route ("/Tutorial/{page}")]
-		public void Tutorial (DocsModule docs, IManosContext ctx, int page)
+		public void Tutorial (IManosContext ctx, int page)
 		{
 			WriteMarkdownDocsPage (ctx.Response, "tutorial/page-" + page + ".md");
 		}		
