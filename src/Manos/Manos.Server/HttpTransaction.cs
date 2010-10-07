@@ -104,8 +104,11 @@ namespace Manos.Server {
 
 		public void Finish ()
 		{
+			//
+			// We mark the connection as finished, and FinishResponse
+			// will be raised once all the writing is done.
+			//
 			connection_finished = true;
-			// FinishResponse ();
 		}
 
 		public void Run ()
@@ -154,7 +157,7 @@ namespace Manos.Server {
 			Response = null;
 
 			if (disconnect) {
-			   	IOStream.Close ();
+			      	IOStream.Close ();
 				return;
 			} else 
 				IOStream.DisableWriting ();
