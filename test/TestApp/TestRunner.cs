@@ -82,7 +82,7 @@ namespace Manos.Tests {
 
 			 string result = reader.ReadToEnd ();
 
-			 if (result != expected)
+			 if (expected != null && result != expected)
 			    throw new Exception (String.Format ("Expected '{0}' for uri {1} got '{2}'", expected, uri, result));
 
 			if (LoadTest) {
