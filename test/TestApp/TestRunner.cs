@@ -48,17 +48,17 @@ namespace Manos.Tests {
 			st.Run ();
 		 }
 
-		 public void RunTest (string uri, string expected)
+		 public void RunTest (string uri, object expected)
 		 {
 			RunTestInternal (uri, uri, "GET", null, expected);
 		 }
 
-		 public void RunTest (string uri, string load_uri, string expected)
+		 public void RunTest (string uri, string load_uri, object expected)
 		 {
 			RunTestInternal (uri, load_uri, "GET", null, expected);
 		 }
 
-		 public void RunTestInternal (string uri, string load_uri, string method, Dictionary<string,string> data, string expected)
+		 public void RunTestInternal (string uri, string load_uri, string method, Dictionary<string,string> data, object expected)
 		 {
 			Console.Write ("RUNNING {0}...", uri);
 
@@ -78,18 +78,32 @@ namespace Manos.Tests {
            
 
 			 var stream = response.GetResponseStream ();
-    			 var reader = new StreamReader (stream);
 
-			 string result = reader.ReadToEnd ();
+			 string expected_str = expected as string;
+			 if (expected_str != null) {
+    			    var reader = new StreamReader (stream);
+			    string result = reader.ReadToEnd ();
 
-			 if (expected != null && result != expected)
-			    throw new Exception (String.Format ("Expected '{0}' for uri {1} got '{2}'", expected, uri, result));
+			    if (result != expected_str)
+			       throw new Exception (String.Format ("Expected '{0}' for uri {1} got '{2}'", expected, uri, result));
+			 }
 
-			if (LoadTest) {
-			   WaitForLoad ();
-			}
+			 byte [] expected_data = expected as byte [];
+			 if (expected_data != null) {
+			      for (int i = 0; i < expected_data.Length; i++) {
+			      	  byte b = (byte) stream.ReadByte ();
+				  if (b != expected_data [i])
+				     throw new Exception (String.Format ("Data does not match at index {0}.", i));
+			      }
+			      if (stream.ReadByte () != -1)
+			      	 throw new Exception ("Data does not match, extra data at end of stream.");
+			 }
 
-			Console.WriteLine ("PASSED");
+			 if (LoadTest) {
+			    WaitForLoad ();
+			 }
+
+			 Console.WriteLine ("PASSED");
 		 }
 
 		 private void BeginLoad (string uri)

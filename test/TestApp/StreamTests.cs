@@ -1,6 +1,7 @@
 
 
 using System;
+using System.IO;
 
 
 namespace Manos.Tests {
@@ -25,7 +26,8 @@ namespace Manos.Tests {
 			TestRunner.RunTest ("/StreamTests/EchoString?the_string=foobar", 
 					   	"/StreamTests/EchoString?the_string=iamtheloaduri", "foobar");
 
-			TestRunner.RunTest ("/StreamTests/SendFile?name=TestRunner.exe", null);
+			byte [] data = File.ReadAllBytes ("TestRunner.exe");
+			TestRunner.RunTest ("/StreamTests/SendFile?name=TestRunner.exe", data);
 	  	  }
 	}
 }
