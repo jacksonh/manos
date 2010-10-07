@@ -11,10 +11,8 @@ using System.Linq.Expressions;
 using Manos.Server;
 using Manos.Routing;
 using Manos.Caching;
-
-#if BUILD_TEMPLATES
 using Manos.Templates;
-#endif
+
 
 namespace Manos {
 
@@ -283,19 +281,11 @@ namespace Manos {
 			AppHost.AddTimeout (timespan, repeat, data, callback);
 		}
 		
-#if BUILD_TEMPLATES
-		public static void RenderTemplate (ManosContext context, string template, object data)
+		public static void RenderTemplate (ManosContext ctx, string template, object data)
 		{
-			MemoryStream stream = new MemoryStream ();
-
-			using (StreamWriter writer = new StreamWriter (stream)) {
-				Manos.Templates.Engine.RenderToStream (template, writer, data);
-				writer.Flush ();
-			}
-
-			context.Response.Write (stream.GetBuffer ());
+			TemplateEngine.RenderToStream (template, ctx.Response.Writer, data);
 		}
-#endif
+
 		protected void StartInternal ()
 		{
 			AddImplicitRoutes ();
