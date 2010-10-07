@@ -17,7 +17,7 @@ namespace Manos.Server {
 
 	public class HttpResponse : IHttpResponse {
 
-	       	private bool metadata_written = true;
+	       	private bool metadata_written;
 
 		public HttpResponse (IHttpTransaction transaction, Encoding encoding)
 		{
