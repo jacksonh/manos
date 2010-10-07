@@ -209,10 +209,14 @@ namespace Manos.Server {
 		
 		private void HandleIOWrite (Loop loop, IOWatcher watcher, int revents)
 		{
-			if (send_file == null)
-                           HandleWrite ();
-			else
-                           HandleSendFile ();
+			// write ready can still be raised after we are done writing.
+			if (send_file == null && write_data == null)
+			   return;
+
+			if (send_file != null)
+			   HandleSendFile ();
+
+                        HandleWrite ();
 		}
 
 		private void HandleRead ()
@@ -263,10 +267,19 @@ namespace Manos.Server {
 			// TODO: Need to handle WOULDBLOCK here.
 			// 
 			
-			Syscall.sendfile (socket.Handle.ToInt32 (), 
-			                  send_file.Handle.ToInt32 (), 
-			                  ref send_file_offset,
-			                  (ulong) (send_file_count - send_file_offset));
+			while (send_file_offset >= send_file_count) {
+			      try {
+			      	  Syscall.sendfile (socket.Handle.ToInt32 (), 
+			          		    send_file.Handle.ToInt32 (), 
+			                  	    ref send_file_offset,
+			                  	    (ulong) (send_file_count - send_file_offset));
+			      } catch (SocketException se) {
+				   if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
+					return;
+				   Close ();
+				   throw se;
+			      }
+			}
 
 			if (send_file_offset >= send_file_count)
 				FinishSendFile ();
@@ -274,11 +287,19 @@ namespace Manos.Server {
 		
 		private void HandleWrite ()
 		{
-			try {
-			    int len = socket.Send (write_data);
-			    AdjustSegments (len, write_data);
-			} catch (Exception e) {
-			    Console.WriteLine (e);
+			while (write_data.Count > 0) {
+			    int len = -1;
+			    try {
+			        len = socket.Send (write_data);
+		            } catch (SocketException se) {
+				if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
+					return;
+				Close ();
+				throw se;
+			    } finally {
+			        if (len != -1)
+			            AdjustSegments (len, write_data);
+			    }
 			}
 
 			if (write_data.Count == 0)
@@ -381,10 +402,10 @@ namespace Manos.Server {
 			
 			send_file.Close ();
 			send_file = null;
-			
+
 			send_file_count = 0;
 			send_file_offset = 0;
-			
+
 			callback ();
 		}
 	}
