@@ -3,14 +3,14 @@ include config.make
 conf=Debug
 SLN=src/Manos.sln
 VERBOSITY=normal
-version=0.0.4
+version=0.0.5
 install_bin_dir = $(prefix)/lib/manos/
-install_data_dir = "$(prefix)/share/manos/"
-install_docs_dir = "$(prefix)/share/manos/docs/"
-install_script_dir = "$(prefix)/bin/"
-install_man_dir = "$(prefix)/share/man/man1/"
-install_pc_dir = "$(prefix)/lib/pkgconfig/"
-distdir = "manos-$(version)"
+install_data_dir = $(prefix)/share/manos/
+install_docs_dir = $(prefix)/share/manos/docs/
+install_script_dir = $(prefix)/bin/
+install_man_dir = $(prefix)/share/man/man1/
+install_pc_dir = $(pkg_config_path)/
+distdir = manos-$(version)
 
 XBUILD_ARGS=/verbosity:$(VERBOSITY) /nologo
 
@@ -64,28 +64,28 @@ update-libraries:
 	cp `pkg-config --variable=Libraries libev-sharp` ./build/.
 
 install-data:
-	test -d "$(install_data_dir)" || mkdir -p "$(install_data_dir)"
+	test -d $(install_data_dir) || install -d $(install_data_dir)
 	cp -rf ./data/* "$(install_data_dir)"
 
 install-docs:
-	test -d "$(install_docs_dir)" || mkdir -p "$(install_docs_dir)"
-	cp -rf ./docs/* "$(install_docs_dir)"
+	test -d $(install_docs_dir) || install -d $(install_docs_dir)
+	cp -rf ./docs/* $(install_docs_dir)
 
 install-bin: all
-	test -d "$(install_bin_dir)" || mkdir -p "$(install_bin_dir)"
-	cp -rf ./build/* "$(install_bin_dir)"
+	test -d $(install_bin_dir) || install -d $(install_bin_dir)
+	cp -rf ./build/* $(install_bin_dir)
 
 install-script:
-	test -d "$(install_script_dir)" || mkdir -p "$(install_script_dir)"
+	test -d $(install_script_dir) || install -d $(install_script_dir)
 	echo "$$MANOS_EXEC_SCRIPT" > $(install_script_dir)manos
-	chmod +x "$(install_script_dir)"manos
+	chmod +x $(install_script_dir)manos
 
 install-man:
-	test -d "$(install_man_dir)" || mkdir -p "$(install_man_dir)"
-	cp -rf ./man/* "$(install_man_dir)"
+	test -d $(install_man_dir) || install -d $(install_man_dir)
+	cp -rf ./man/* $(install_man_dir)
 
 install-pkg-config:
-	test -d "$(install_pc_dir)" || mkdir -p "$(install_pc_dir)"
+	test -d $(install_pc_dir) || install -d $(install_pc_dir)
 	echo "$$MANOS_PC_SCRIPT" > $(install_pc_dir)manos.pc
 
 
@@ -94,14 +94,14 @@ uninstall:
 #	rm -rf "$(installdir)"
 
 dist: clean update-docs
-	rm -rf "$(distdir)"
-	mkdir "$(distdir)"
-	cp -rf ./src/ ./data/ ./man "$(distdir)"
-	cp -rf configure Makefile "$(distdir)"
-	tar cjvf manos-"$(version)".tar.bz2 manos-"$(version)"
+	rm -rf $(distdir)
+	mkdir $(distdir)
+	cp -rf ./src/ ./data/ ./man $(distdir)
+	cp -rf configure Makefile $(distdir)
+	tar cjvf manos-$(version).tar.bz2 manos-$(version)
 
 release: dist
-	cp manos-"$(version)".tar.bz2 release/.
+	cp manos-$(version).tar.bz2 release/.
 	cd release && rpmbuild -ba manos.spec
 
 gem: all
