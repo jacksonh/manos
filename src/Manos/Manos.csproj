@@ -33,7 +33,9 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Mono.Posix" />
-    <Reference Include="libev-sharp" />
+    <Reference Include="libev-sharp, Version=0.0.1.0, Culture=neutral">
+      <Package>libev-sharp</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Manos\DeleteAttribute.cs" />
