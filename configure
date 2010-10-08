@@ -1,83 +1,118 @@
 #!/bin/bash
 prefix=/usr/local
-common_packages=" mono;2.8 libev-sharp;0.0.2"
+prefix_set=false
+pkg_config_path=''
+pkg_config_path_set=false
+common_packages=" mono;2.6; libev-sharp;0.0.2"
 
 usage ()
 {
-	echo "Usage : configure [OPTION]... [--config=CONFIG]"
-	echo
-	echo "Options:"
-	echo "  --prefix=PREFIX         install architecture-independent files in PREFIX"
-	echo "                          [/usr/local]"
-	echo
+        echo "Usage : configure [OPTION]... [--config=CONFIG]"
+        echo
+        echo "Options:"
+        echo "  --prefix=PREFIX         install architecture-independent files in PREFIX"
+        echo "                          [/usr/local]"
+        echo
 }
 check_package ()
 {
-	name=`echo $1 | cut -d\; -f1`
-	version=`echo $1 | cut -d\; -f2`
-	echo -n "Checking for package '$name'.." | tee -a config.log
-	pkg-config --atleast-version=$version $name
-	if [ $? -ne 0 ]; then
-		echo " ERROR: Package named '$name' >= $version not found." | tee -a config.log
-		echo "Try adjusting your PKG_CONFIG_PATH environment variable." | tee -a config.log
-		return 1
-	fi
-	echo " found." | tee -a config.log
+        name=`echo $1 | cut -d\; -f1`
+        version=`echo $1 | cut -d\; -f2`
+        echo -n "Checking for package '$name'.." | tee -a config.log
+        pkg-config --atleast-version=$version $name
+        if [ $? -ne 0 ]; then
+                echo " ERROR: Package named '$name' >= $version not found." | tee -a config.log
+                echo "Try adjusting your PKG_CONFIG_PATH environment variable." | tee -a config.log
+                return 1
+        fi
+        echo " found." | tee -a config.log
 }
 
 check_required_packages ()
 {
-	echo "Looking for required packages" | tee config.log
-	var=required_packages_$config
-	for pkg in $common_packages ${!var}; do
-		check_package $pkg
-		retval=$?
-		[ $retval -ne 0 ] && return $retval
-	done
-	return 0
+        echo "Looking for required packages" | tee config.log
+        var=required_packages_$config
+        for pkg in $common_packages ${!var}; do
+                check_package $pkg
+                retval=$?
+                [ $retval -ne 0 ] && return $retval
+        done
+        return 0
+}
+
+check_pkg_config_path ()
+{
+    if $pkg_config_path_set ; then
+        return 0
+    fi
+
+    if $prefix_set ; then
+        pkg_config_path=$prefix/lib/pkgconfig
+        return 0
+    fi
+
+    pkg_config_path=`pkg-config --variable=pc_path pkg-config |  awk -F":" '{print $1}'`
+    if [[ $pkg_config_path == '' ]]; then
+	pkg_config_path=$prefix/lib/pkgconfig
+    fi
+    return 0;
 }
 
 check_darwin ()
 {
-	# This is hacky convience thing for Mac users that just installed vanialla Mono without setting up env
-	# that don't have PKG_CONFIG_PATH defined. 
-	unamestr=`uname`
-	if [[ "$unamestr" == 'Darwin' && -n "${PKG_CONFIG_PATH-x}" && -d /Library/Frameworks/Mono.framework/ ]]; then
-		echo "adding default Mono installation to PKG_CONFIG_PATH. Override by setting PKG_CONFIG_PATH"
-		export PKG_CONFIG_PATH=/Library/Frameworks/Mono.framework/Versions/Current/lib/pkgconfig/
-	fi	  
+        # This is hacky convience thing for Mac users that just installed vanialla Mono without setting up env
+        # that don't have PKG_CONFIG_PATH defined. 
+        unamestr=`uname`
+        if [[ "$unamestr" == 'Darwin' && -n "${PKG_CONFIG_PATH-x}" && -d /Library/Frameworks/Mono.framework/ ]]; then
+                echo "adding default Mono installation to PKG_CONFIG_PATH. Override by setting PKG_CONFIG_PATH"
+                export PKG_CONFIG_PATH=/Library/Frameworks/Mono.framework/Versions/Current/lib/pkgconfig/
+        fi        
 }
 
 while test x$1 != x; do
-		case $1 in
-		--prefix=*)
-				prefix=`echo $1 | sed 's/--prefix=//'`
-				;;
-		--prefix)
-				shift
-				prefix=$1
-				;;
-		--help)
-			usage
-			exit
-			;;
-		*)
-			echo Unknown argument $1 >&2
-			usage
-			exit 1
-			;;
-		esac
-		shift
+                case $1 in
+                --prefix=*)
+                                prefix=`echo $1 | sed 's/--prefix=//'`
+                                prefix_set=true
+                                ;;
+                --prefix)
+                                shift
+                                prefix=$1
+                                prefix_set=true
+                                ;;
+                --pkg_config_path=*)
+                                pkg_config_path=`echo $1 | sed 's/--pkg_config_path=//'`
+                                pkg_config_path_set=true
+                                ;;
+                --pkg_config_path)
+                                shift
+                                pkg_config_path=$1
+                                pkg_config_path_set=true
+                                ;;
+                --help)
+                        usage
+                        exit
+                        ;;
+                *)
+                        echo Unknown argument $1 >&2
+                        usage
+                        exit 1
+                        ;;
+                esac
+                shift
 done
 
 check_darwin
 check_required_packages
+check_pkg_config_path
 
 [ $? -eq 1 ] && exit 1
 
 echo "prefix=$prefix" > config.make
+echo "pkg_config_path=$pkg_config_path" >> config.make
 
 echo
 echo "$PACKAGE has been configured with "
 echo "        prefix = $prefix"
+echo "        pkg_config_path = $pkg_config_path"
 echo
