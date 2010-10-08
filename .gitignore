@@ -1,6 +1,9 @@
 *~
 bin/
 *.pidb
+*.dll
+*.mdb
+*.exe
 build/
 config.log
 config.make
