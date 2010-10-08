@@ -704,6 +704,28 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
+    <Member MemberName="RenderTemplate">
+      <MemberSignature Language="C#" Value="public static void RenderTemplate (Manos.ManosContext ctx, string template, object data);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="ctx" Type="Manos.ManosContext" />
+        <Parameter Name="template" Type="System.String" />
+        <Parameter Name="data" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="ctx">To be added.</param>
+        <param name="template">To be added.</param>
+        <param name="data">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
     <Member MemberName="Route">
       <MemberSignature Language="C#" Value="public Manos.Routing.RouteHandler Route (Manos.ManosModule module, string[] patterns);" />
       <MemberType>Method</MemberType>
