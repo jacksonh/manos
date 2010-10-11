@@ -21,7 +21,9 @@ namespace Manos.Server {
 				return false;
 			}
 
-			
+			path = null;
+			query = null;
+
 			return TryParseScheme (uri, out scheme, out end) &&
 			       TryParsePath (uri, end, out path, out end) &&
 			       TryParseQuery (uri, end, out query);
