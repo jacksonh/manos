@@ -50,29 +50,8 @@ namespace Manos.Server {
 
 		public void Start ()
 		{
-//			ioloop.AddHandler (Socket.Handle, HandleEvents, IOLoop.EPOLL_READ_EVENTS);
-			
 			iowatcher = new IOWatcher (Socket.Handle, EventTypes.Read, ioloop.EventLoop, HandleIOEvents);
 			iowatcher.Start ();
-		}
-
-		private void HandleEvents (IntPtr fd, EpollEvents events)
-		{
-			while (true) {
-				Socket s = null;
-				try {
-					s = Socket.Accept ();
-				} catch (SocketException se) {
-					if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
-						return;
-					throw se;
-				} catch {
-					throw;
-				}
-
-				IOStream iostream = new IOStream (s, IOLoop);
-				HttpTransaction.BeginTransaction (this, iostream, s, callback);
-			}
 		}
 
 		private void HandleIOEvents (Loop loop, IOWatcher watcher, int revents)

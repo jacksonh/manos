@@ -197,11 +197,6 @@ namespace Manos.Server {
 				throw new Exception ("Attempt to write on a closed socket.");
 		}
 
-		private void HandleEvents (IntPtr fd, EpollEvents events)
-		{
-			
-		}
-
 		private void HandleIORead (Loop loop, IOWatcher watcher, int revents)
 		{
 			HandleRead ();
