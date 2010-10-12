@@ -188,6 +188,7 @@ namespace Manos.Server {
 				return;
 			}
 
+			stream.DisableReading ();
 			Server.IOLoop.QueueTransaction (this);
 		}
 
@@ -219,6 +220,7 @@ namespace Manos.Server {
 					OnMultiPartFormData (data);
 			}
 
+			IOStream.DisableReading ();
 			Server.IOLoop.QueueTransaction (this);
 		}
 

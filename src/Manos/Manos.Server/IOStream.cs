@@ -171,7 +171,7 @@ namespace Manos.Server {
 			write_watcher.Start ();
 		}
 
-		private void DisableReading ()
+		public void DisableReading ()
 		{
 			read_watcher.Stop ();
 		}
@@ -378,8 +378,6 @@ namespace Manos.Server {
 			read_buffer.Write (data, end, data.Length - end);
 			
 			callback (this, read);
-
-			DisableReading ();
 		}
 
 		private void FinishWrite ()
