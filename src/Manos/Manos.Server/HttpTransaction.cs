@@ -212,11 +212,11 @@ namespace Manos.Server {
 
 		private void OnBody (IOStream stream, byte [] data)
 		{
-			if (Request.Method == "POST") {
+			if (Request.Method == "POST" || Request.Method == "PUT") {
 				string ct = Request.Headers ["Content-Type"];
-				if (ct == "application/x-www-form-urlencoded")
+				if (ct != null && ct.StartsWith ("application/x-www-form-urlencoded"))
 					OnWwwFormData (data);
-				else if (ct == "multipart/form-data")
+				else if (ct != null && ct.StartsWith ("multipart/form-data"))
 					OnMultiPartFormData (data);
 			}
 
