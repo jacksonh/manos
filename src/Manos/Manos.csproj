@@ -51,6 +51,7 @@
     <Compile Include="Manos\PutAttribute.cs" />
     <Compile Include="Manos\TraceAttribute.cs" />
     <Compile Include="Manos.Routing\RouteHandler.cs" />
+    <Compile Include="Manos.Server\ByteUtils.cs" />
     <Compile Include="Manos.Server\HttpException.cs" />
     <Compile Include="Manos.Server\HttpHeaders.cs" />
     <Compile Include="Manos.Server\HttpRequest.cs" />

@@ -343,23 +343,7 @@ namespace Manos.Server {
 
 			byte [] data = read_buffer.GetBuffer ();
 
-			int start = 0;
-			start = Array.IndexOf (data, read_delimiter [0], start);
-
-			while (start >= 0) {
-				bool match = true;
-				for (int i = 1; i < read_delimiter.Length; i++) {
-					if (data [start + i] == read_delimiter [i])
-						continue;
-					match = false;
-					break;
-				}
-				if (match)
-					return start + read_delimiter.Length;
-				start = Array.IndexOf (data, read_delimiter [0], start + 1);
-			}
-
-			return -1;
+			return ByteUtils.FindDelimiter (read_delimiter, data);
 		}
 
 		private void FinishRead (int end)
