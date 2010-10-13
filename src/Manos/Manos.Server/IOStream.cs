@@ -346,7 +346,7 @@ namespace Manos.Server {
 			int start = 0;
 			start = Array.IndexOf (data, read_delimiter [0], start);
 
-			while (start > 0) {
+			while (start >= 0) {
 				bool match = true;
 				for (int i = 1; i < read_delimiter.Length; i++) {
 					if (data [start + i] == read_delimiter [i])
