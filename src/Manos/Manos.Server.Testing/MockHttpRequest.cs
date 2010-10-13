@@ -3,6 +3,7 @@ using System;
 
 using Manos;
 using Manos.Server;
+using System.Text;
 using System.Collections.Specialized;
 using Manos.Collections;
 
@@ -18,6 +19,7 @@ namespace Manos.Server.Testing
 		private DataDictionary query_data;
 		private DataDictionary cookies;
 		private HttpHeaders headers;
+		private Encoding encoding;
 
 		private bool http_1_1_supported;
 		
@@ -92,6 +94,14 @@ namespace Manos.Server.Testing
 			}
 		}
 		
+		public Encoding ContentEncoding {
+		       get {
+		       	   if (encoding == null)
+			      encoding = Encoding.Default;
+			   return encoding;
+		       }
+		}
+
 		public bool Http_1_1_Supported {
 			get {
 			    return http_1_1_supported;

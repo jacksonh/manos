@@ -1,6 +1,7 @@
 
 
 using System;
+using System.Text;
 using System.Collections.Specialized;
 
 using Manos.Collections;
@@ -43,6 +44,10 @@ namespace Manos.Server {
 		
 		bool Http_1_1_Supported {
 			get;     
+		}
+
+		Encoding ContentEncoding {
+			get;
 		}
 
 		void SetWwwFormData (DataDictionary data);
