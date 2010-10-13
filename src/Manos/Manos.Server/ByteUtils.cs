@@ -4,11 +4,10 @@ using System;
 
 namespace Manos.Server {
 
-	  public static class ArrayUtils {
+	  public static class ByteUtils {
 
-	  	 public static int FindDelimiter (byte [] delimiter, byte [] data)
+	  	 public static int FindDelimiter (byte [] delimiter, byte [] data, int start)
 		 {
-			int start = 0;
 			start = Array.IndexOf (data, delimiter [0], start);
 
 			while (start >= 0) {

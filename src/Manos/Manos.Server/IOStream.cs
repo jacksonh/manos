@@ -24,6 +24,7 @@ namespace Manos.Server {
 		private MemoryStream read_buffer;
 		private int read_bytes = -1;
 		private byte [] read_delimiter;
+		private int last_delimiter_check = -1;
 		private ReadCallback read_callback;
 
 		private IList<ArraySegment<byte>> write_data;
@@ -343,7 +344,10 @@ namespace Manos.Server {
 
 			byte [] data = read_buffer.GetBuffer ();
 
-			return ByteUtils.FindDelimiter (read_delimiter, data);
+			int start = Math.Max (0, last_delimiter_check - read_delimiter.Length);
+
+			last_delimiter_check = read_bytes;
+			return ByteUtils.FindDelimiter (read_delimiter, data, start);
 		}
 
 		private void FinishRead (int end)
@@ -356,6 +360,7 @@ namespace Manos.Server {
 
 			read_bytes = -1;
 			read_delimiter = null;
+			last_delimiter_check = -1;
 			read_callback = null;
 			read_buffer.Close ();
 			read_buffer = new MemoryStream ();
