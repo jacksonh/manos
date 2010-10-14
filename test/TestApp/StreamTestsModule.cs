@@ -37,7 +37,7 @@ namespace TestApp {
 			byte [] data = Encoding.Default.GetBytes (the_string);
 
 			for (int i = data.Length; i >= 0; --i) {
-			    ctx.Response.Stream.Write (data, i, 1);
+				ctx.Response.Stream.Write (data, i, 1);
 			}
 		}
 
@@ -53,7 +53,7 @@ namespace TestApp {
 			
 			ctx.Response.Stream.Position = start;
 			for (int i = 0; i < amount; i++) {
-			    ctx.Response.Write (the_string);
+				ctx.Response.Write (the_string);
 			}
 		}
 
