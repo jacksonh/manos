@@ -20,7 +20,7 @@ namespace Manos.Server {
 		public static readonly string CONTENT_LENGTH_KEY = "Content-Length";
 		
 		private long? content_length;
-		private NameValueCollection items = new NameValueCollection ();
+		Dictionary<string,string> items = new Dictionary<string,string> ();
 
 		public HttpHeaders ()
 		{
@@ -55,8 +55,7 @@ namespace Manos.Server {
 
 		public bool TryGetValue (string key, out string value)
 		{
-			value = items [NormalizeName (key)];
-			return (value != null);
+			return items.TryGetValue (NormalizeName (key), out value);
 		}
 
 		public void Parse (TextReader reader)
@@ -126,11 +125,17 @@ namespace Manos.Server {
 			
 			name = NormalizeName (name);
 
+			SetNormalizedHeader (name, value);
+		}
+
+		public void SetNormalizedHeader (string name, string value)
+		{
 			if (!IsValidHeaderName (name))
 				throw new ArgumentException (String.Format ("Invalid header '{0}'.", name));
 			
 			if (name == CONTENT_LENGTH_KEY) {
 				SetContentLength (value);
+				return;
 			}
 
 			if (value == null) {

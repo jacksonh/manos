@@ -125,7 +125,7 @@ namespace Manos.Server {
 			Stream.Position = 0;
 			
 			StatusCode =  302;
-			SetHeader ("Location", url);
+			Headers.SetNormalizedHeader ("Location", url);
 			
 			WriteMetaData ();
 		}
@@ -247,7 +247,7 @@ namespace Manos.Server {
 		{
 			Headers.ContentLength = 0;
 
-			SetHeader ("Server", String.Concat ("Manos/", HttpServer.ServerVersion));
+			Headers.SetNormalizedHeader ("Server", String.Concat ("Manos/", HttpServer.ServerVersion));
 		}
 
 		private static string GetStatusDescription (int code)
