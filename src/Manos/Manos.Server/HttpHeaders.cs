@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
+using System.Globalization;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -147,15 +148,15 @@ namespace Manos.Server {
 			
 			StringBuilder res = new StringBuilder (name);
 
-			res [0] = Char.ToUpper (name [0]);
+			res [0] = Char.ToUpper (name [0], CultureInfo.InvariantCulture);
 			
 			char p = name [0];
 			for (int i = 1; i < res.Length; i++) {
 				char c = res [i];
 				if (p == '-' && Char.IsLower (c))
-					res [i] = Char.ToUpper (c);
+					res [i] = Char.ToUpper (c, CultureInfo.InvariantCulture);
 				if (p != '-' && Char.IsUpper (c))
-					res [i] = Char.ToLower (c);
+					res [i] = Char.ToLower (c, CultureInfo.InvariantCulture);
 				p = c;
 			}
 

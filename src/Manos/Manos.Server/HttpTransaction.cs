@@ -215,7 +215,7 @@ namespace Manos.Server {
 			s = e + 1;
 			version = line.Substring (s);
 
-			if (!version.StartsWith ("HTTP/"))
+			if (!version.StartsWith ("HTTP/", StringComparison.InvariantCulture))
 				throw new Exception ("Malformed HTTP request, no version specified.");
 		}
 
@@ -225,7 +225,7 @@ namespace Manos.Server {
 				throw new InvalidOperationException ("Large Request bodies are only allowed with PUT or POST operations.");
 
 			string ct = Request.Headers ["Content-Type"];
-			if (ct == null || !ct.StartsWith ("multipart/form-data")) {
+			if (ct == null || !ct.StartsWith ("multipart/form-data", StringComparison.InvariantCultureIgnoreCase)) {
 				// TODO: Maybe someone wants to post large www-form-urlencoded data?
 				throw new InvalidOperationException ("Large Request bodies are only allowed with multipart form data.");
 			}
@@ -245,9 +245,9 @@ namespace Manos.Server {
 		{
 			if (Request.Method == "POST" || Request.Method == "PUT") {
 				string ct = Request.Headers ["Content-Type"];
-				if (ct != null && ct.StartsWith ("application/x-www-form-urlencoded"))
+				if (ct != null && ct.StartsWith ("application/x-www-form-urlencoded", StringComparison.InvariantCultureIgnoreCase))
 					IOStream.ReadBytes ((int) Request.Headers.ContentLength, OnWwwFormData);
-				else if (ct != null && ct.StartsWith ("multipart/form-data")) {
+				else if (ct != null && ct.StartsWith ("multipart/form-data", StringComparison.InvariantCulture)) {
 				        string boundary = ParseBoundary (ct);
 					if (boundary == null)
 			   		        throw new InvalidOperationException ("Invalid content type boundary.");

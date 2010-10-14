@@ -222,7 +222,7 @@ namespace Manos.Server {
 
 		public static string GetContentDispositionAttribute (string l, string name)
 		{
-			int idx = l.IndexOf (name + "=\"");
+			int idx = l.IndexOf (name + "=\"", StringComparison.InvariantCulture);
 			if (idx < 0)
 				return null;
 			int begin = idx + name.Length + "=\"".Length;
@@ -236,7 +236,7 @@ namespace Manos.Server {
 
 		public string GetContentDispositionAttributeWithEncoding (string l, string name)
 		{
-			int idx = l.IndexOf (name + "=\"");
+			int idx = l.IndexOf (name + "=\"", StringComparison.InvariantCulture);
 			if (idx < 0)
 				return null;
 			int begin = idx + name.Length + "=\"".Length;

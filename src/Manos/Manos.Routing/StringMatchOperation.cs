@@ -29,7 +29,7 @@ namespace Manos.Routing
 	
 		public bool IsMatch (string input, int start, DataDictionary data, out int end)
 		{
-			int i = input.IndexOf (String, start);
+			int i = input.IndexOf (String, start, StringComparison.InvariantCulture);
 
 			if (i != start) {
 				end = start;

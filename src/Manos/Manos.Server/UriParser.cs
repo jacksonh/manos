@@ -31,7 +31,7 @@ namespace Manos.Server {
 
 		public static bool TryParseScheme (string uri, out string scheme, out int end)
 		{
-			end = uri.IndexOf ("://");
+			end = uri.IndexOf ("://", StringComparison.InvariantCulture);
 			if (end == -1) {
 				scheme = "http";
 				end = 0;
