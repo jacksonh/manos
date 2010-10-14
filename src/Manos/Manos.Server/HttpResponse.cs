@@ -247,7 +247,7 @@ namespace Manos.Server {
 		{
 			Headers.ContentLength = 0;
 
-			Headers.SetNormalizedHeader ("Server", String.Concat ("Manos/", HttpServer.ServerVersion));
+			Headers.SetNormalizedHeader ("Server", HttpServer.ServerVersion);
 		}
 
 		private static string GetStatusDescription (int code)
