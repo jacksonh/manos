@@ -68,6 +68,7 @@
       <Type Name="MockManosTarget" Kind="Class" />
     </Namespace>
     <Namespace Name="Manos.Server">
+      <Type Name="ByteUtils" Kind="Class" />
       <Type Name="HttpConnectionCallback" Kind="Delegate" />
       <Type Name="HttpCookie" Kind="Class" />
       <Type Name="HttpException" Kind="Class" />
@@ -81,12 +82,20 @@
       <Type Name="IHttpRequest" Kind="Interface" />
       <Type Name="IHttpResponse" Kind="Interface" />
       <Type Name="IHttpTransaction" Kind="Interface" />
+      <Type Name="IMFDReadCallback" Kind="Delegate" />
+      <Type Name="IMFDStream" Kind="Interface" />
+      <Type Name="InMemoryMFDStream" Kind="Class" />
+      <Type Name="InMemoryUploadedFile" Kind="Class" />
       <Type Name="IOLoop" Kind="Class" />
       <Type Name="IOStream" Kind="Class" />
       <Type Name="IWriteOperation" Kind="Interface" />
+      <Type Name="MultipartFormDataParser" Kind="Class" />
       <Type Name="ReadCallback" Kind="Delegate" />
       <Type Name="RequestDataDictionary" Kind="Class" />
+      <Type Name="TempFileMFDStream" Kind="Class" />
+      <Type Name="TempFileUploadedFile" Kind="Class" />
       <Type Name="Timeout" Kind="Class" />
+      <Type Name="UploadedFile" Kind="Class" />
       <Type Name="UriParser" Kind="Class" />
       <Type Name="WriteBytesOperation" Kind="Class" />
       <Type Name="WriteCallback" Kind="Delegate" />

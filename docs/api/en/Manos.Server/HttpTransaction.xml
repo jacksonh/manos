@@ -180,6 +180,25 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
+    <Member MemberName="ParseBoundary">
+      <MemberSignature Language="C#" Value="public static string ParseBoundary (string ct);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.0.4.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.String</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="ct" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="ct">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
     <Member MemberName="Request">
       <MemberSignature Language="C#" Value="public Manos.Server.IHttpRequest Request { get; }" />
       <MemberType>Property</MemberType>

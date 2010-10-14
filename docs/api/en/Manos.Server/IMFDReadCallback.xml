@@ -1,0 +1,25 @@
+<Type Name="IMFDReadCallback" FullName="Manos.Server.IMFDReadCallback">
+  <TypeSignature Language="C#" Value="public delegate void IMFDReadCallback(byte[] data, int offset, int len);" />
+  <AssemblyInfo>
+    <AssemblyName>Manos</AssemblyName>
+    <AssemblyVersion>0.0.4.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Delegate</BaseTypeName>
+  </Base>
+  <Parameters>
+    <Parameter Name="data" Type="System.Byte[]" />
+    <Parameter Name="offset" Type="System.Int32" />
+    <Parameter Name="len" Type="System.Int32" />
+  </Parameters>
+  <ReturnValue>
+    <ReturnType>System.Void</ReturnType>
+  </ReturnValue>
+  <Docs>
+    <param name="data">To be added.</param>
+    <param name="offset">To be added.</param>
+    <param name="len">To be added.</param>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+</Type>
