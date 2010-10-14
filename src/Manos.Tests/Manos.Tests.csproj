@@ -43,6 +43,7 @@
     <Compile Include="Manos.Routing\StringMatchOperationTest.cs" />
     <Compile Include="Manos.Routing\NopMatchOperationTest.cs" />
     <Compile Include="Manos.Server\HttpHeadersTest.cs" />
+    <Compile Include="Manos.Server\UriParserTest.cs" />
     <Compile Include="Manos\InfiniteRepeatBehaviorTest.cs" />
     <Compile Include="Manos\RepeatBehaviorTest.cs" />
     <Compile Include="Manos\AppHostTest.cs" />
