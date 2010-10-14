@@ -58,7 +58,23 @@ namespace Manos.Tests {
 			RunTestInternal (uri, load_uri, "GET", null, expected);
 		 }
 
-		 public void RunTestInternal (string uri, string load_uri, string method, Dictionary<string,string> data, object expected)
+		 public void RunUploadTest (string uri, string file, object expected)
+		 {
+			Console.WriteLine ("RUNNING UPLOAD {0}.....", uri);
+
+			WebClient client = new WebClient ();
+			byte [] result = client.UploadFile (new Uri (MANOS_SERVER + uri), file);
+
+			byte [] data_expected = expected as byte [];
+			if (data_expected != null) {
+			   if (result.Length != data_expected.Length)
+			      throw new Exception (String.Format ("Upload test failed. Data lengths differed ({0} vs {1})", result.Length, data_expected.Length));
+			}
+
+			Console.WriteLine ("PASSED.");
+		 }
+
+		 public void RunTestInternal (string uri, string load_uri, string method, Dictionary<string,string> data, object expected, bool upload=false)
 		 {
 			Console.Write ("RUNNING {0}...", uri);
 
@@ -72,10 +88,9 @@ namespace Manos.Tests {
 
 			request.Method = method;
 
-			 HttpWebResponse response = (HttpWebResponse) request.GetResponse ();
-			 if (response.StatusCode != HttpStatusCode.OK)
+			HttpWebResponse response = (HttpWebResponse) request.GetResponse ();
+		        if (response.StatusCode != HttpStatusCode.OK)
 			    throw new Exception ("Bad status code for uri " + uri + " " + response.StatusCode + ".");
-           
 
 			 var stream = response.GetResponseStream ();
 

@@ -1,6 +1,7 @@
 
 
 using Manos;
+using Manos.Server;
 
 using System;
 using System.Text;
@@ -59,6 +60,14 @@ namespace TestApp {
 		public void SendFile (IManosContext ctx, string name)
 		{
 			ctx.Response.SendFile (name);
+		}
+
+		public void UploadFile (IManosContext ctx, string name)
+		{
+			UploadedFile file = ctx.Request.Files [name];
+			byte [] data = file.GetData ();
+
+			ctx.Response.Write (data);
 		}
 	}
 }

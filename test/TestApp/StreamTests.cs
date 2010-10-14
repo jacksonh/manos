@@ -28,6 +28,8 @@ namespace Manos.Tests {
 
 			byte [] data = File.ReadAllBytes ("TestRunner.exe");
 			TestRunner.RunTest ("/StreamTests/SendFile?name=TestRunner.exe", data);
+
+			TestRunner.RunUploadTest ("/StreamTests/UploadFile?name=TestRunner.exe", "TestRunner.exe", data);
 	  	  }
 	}
 }
