@@ -32,6 +32,8 @@ namespace Manos.Server
 		private long segment_offset;
 		private int current_segment;
 
+		public static readonly int MIN_BUFFER_SIZE = 24;
+
 		private List<ArraySegment<byte>> segments = new List<ArraySegment<byte>> (10);
 
 		public HttpResponseStream ()
@@ -275,6 +277,11 @@ namespace Manos.Server
 		public override void Write (byte[] buffer, int offset, int count)
 		{
 			if (AtEnd) {
+				if (buffer.Length < MIN_BUFFER_SIZE) {
+					byte [] bigger = new byte [MIN_BUFFER_SIZE];
+					Array.Copy (buffer, offset, bigger, 0, count);
+					buffer = bigger;
+				}
 				segments.Add (new ArraySegment<byte> (buffer, offset, count));
 				current_segment = segments.Count - 1;
 				segment_offset = count;
@@ -282,9 +289,9 @@ namespace Manos.Server
 			}
 
 			if (CurrentSegment.Count - segment_offset > count) {
-			   // There is room to stick this in the current segment.
-			   Array.Copy (buffer, offset, CurrentSegment.Array, segment_offset, count);
-			   return;
+				// There is room to stick this in the current segment.
+				Array.Copy (buffer, offset, CurrentSegment.Array, segment_offset, count);
+				return;
 			}
 
 			int index = current_segment;
