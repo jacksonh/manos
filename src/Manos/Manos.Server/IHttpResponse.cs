@@ -34,11 +34,6 @@ namespace Manos.Server {
 			set;
 		}
 
-		bool WriteStatusLine {
-			get;
-			set;
-		}
-
 		bool WriteHeaders {
 			get;
 			set;

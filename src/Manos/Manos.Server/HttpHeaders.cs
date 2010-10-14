@@ -100,9 +100,8 @@ namespace Manos.Server {
 			}
 		}
 
-		public byte [] Write (ICollection<HttpCookie> cookies, Encoding encoding)
+		public void Write (StringBuilder builder, ICollection<HttpCookie> cookies, Encoding encoding)
 		{
-			StringBuilder builder = new StringBuilder ();
 			foreach (var h in items.Keys) {
 				string header = (string) h;
 				builder.Append (NormalizeName (header));
@@ -114,8 +113,6 @@ namespace Manos.Server {
 				builder.Append (cookie.ToHeaderString ());
 			}
 			builder.Append ("\r\n");
-
-			return encoding.GetBytes (builder.ToString ());
 		}
 
 		public void SetHeader (string name, string value)

@@ -27,7 +27,6 @@ namespace Manos.Server {
 			StatusCode = 200;
 
 			WriteHeaders = true;
-			WriteStatusLine = true;
 
 			Headers = new HttpHeaders ();
 			Stream = new HttpResponseStream ();
@@ -63,11 +62,6 @@ namespace Manos.Server {
 		}
 
 		public int StatusCode {
-			get;
-			set;
-		}
-
-		public bool WriteStatusLine {
 			get;
 			set;
 		}
@@ -135,11 +129,16 @@ namespace Manos.Server {
 			if (metadata_written)
 			   return;
 
+			StringBuilder builder = new StringBuilder ();
+			WriteStatusLine (builder);
+
 			if (WriteHeaders)
-				InsertHeaders ();
-			
-			if (WriteStatusLine)
-				InsertStatusLine ();
+				Headers.Write (builder, Cookies.Values, Encoding);
+
+			byte [] data = Encoding.GetBytes (builder.ToString ());
+
+			Stream.Position = 0;
+			Stream.Insert (data, 0, data.Length);
 
 			metadata_written = true;
 		}
@@ -220,20 +219,13 @@ namespace Manos.Server {
 			return SetCookie (name, value, domain, DateTime.Now + max_age);
 		}
 		
-		private void InsertHeaders ()
+		private void WriteStatusLine (StringBuilder builder)
 		{
-			byte [] data = Headers.Write (Cookies.Values, Encoding);
-			Stream.Position = 0;
-			Stream.Insert (data, 0, data.Length);
-		}
-
-		private void InsertStatusLine ()
-		{
-			string line = String.Format ("HTTP/1.0 {0} {1}\r\n", StatusCode, GetStatusDescription (StatusCode));
-			byte [] data = Encoding.GetBytes (line);
-
-			Stream.Position = 0;
-			Stream.Insert (data, 0, data.Length);
+			builder.Append ("HTTP/1.0 ");
+			builder.Append (StatusCode);
+			builder.Append (" ");
+			builder.Append (GetStatusDescription (StatusCode));
+			builder.Append ("\r\n");
 		}
 
 		private void WriteToBody (byte [] data)
