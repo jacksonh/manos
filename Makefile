@@ -57,7 +57,7 @@ clean:
 	$(XBUILD) $(SLN) /property:Configuration=$(conf) /t:Clean
 	rm -rf build/*
 
-install: update-docs update-libraries install-bin install-data install-docs install-script install-man install-pkg-config
+install: update-libraries install-bin install-data install-docs install-script install-man install-pkg-config
 
 update-libraries:
 	test -d build || mkdir -p build
