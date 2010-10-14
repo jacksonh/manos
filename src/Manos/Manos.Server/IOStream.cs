@@ -358,13 +358,14 @@ namespace Manos.Server {
 
 			Array.Copy (data, 0, read, 0, end); 
 
+			int length = (int) read_buffer.Length;
+
 			read_bytes = -1;
 			read_delimiter = null;
 			last_delimiter_check = -1;
 			read_callback = null;
-			read_buffer.Close ();
 			read_buffer = new MemoryStream ();
-			read_buffer.Write (data, end, data.Length - end);
+			read_buffer.Write (data, end, length - end);
 			
 			callback (this, read);
 		}
