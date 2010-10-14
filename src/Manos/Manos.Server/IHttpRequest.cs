@@ -2,6 +2,7 @@
 
 using System;
 using System.Text;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 
 using Manos.Collections;
@@ -42,6 +43,10 @@ namespace Manos.Server {
 			get;
 		}
 		
+		Dictionary<string,UploadedFile> Files {
+			get;
+		}
+
 		bool Http_1_1_Supported {
 			get;     
 		}

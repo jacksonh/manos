@@ -1,16 +1,16 @@
 
 using System;
+using System.Text;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 
 using Manos;
 using Manos.Server;
-using System.Text;
-using System.Collections.Specialized;
 using Manos.Collections;
+
 
 namespace Manos.Server.Testing
 {
-
-
 	public class MockHttpRequest : IHttpRequest
 	{
 		private DataDictionary data;
@@ -19,6 +19,7 @@ namespace Manos.Server.Testing
 		private DataDictionary query_data;
 		private DataDictionary cookies;
 		private HttpHeaders headers;
+		private Dictionary<string,UploadedFile> uploaded_files;
 		private Encoding encoding;
 
 		private bool http_1_1_supported;
@@ -100,6 +101,14 @@ namespace Manos.Server.Testing
 			      encoding = Encoding.Default;
 			   return encoding;
 		       }
+		}
+
+		public Dictionary<string,UploadedFile> Files {
+			get {
+			    if (uploaded_files == null)
+			       uploaded_files = new Dictionary<string,UploadedFile> ();
+			    return uploaded_files;
+			}
 		}
 
 		public bool Http_1_1_Supported {

@@ -20,6 +20,7 @@ namespace Manos.Server {
 	public class HttpRequest : IHttpRequest {
 		
 		private DataDictionary cookies;
+		private Dictionary<string,UploadedFile> uploaded_files;
 		
 		public HttpRequest (IHttpTransaction transaction, HttpHeaders headers, string method, string resource, bool support_1_1)
 		{
@@ -100,6 +101,14 @@ namespace Manos.Server {
 			}
 		}
 		
+		public Dictionary<string,UploadedFile> Files {
+			get {
+			    if (uploaded_files == null)
+			       uploaded_files = new Dictionary<string,UploadedFile> ();
+			    return uploaded_files;
+			}
+		}
+
 		public Encoding ContentEncoding {
 			get;
 			private set;
@@ -113,6 +122,9 @@ namespace Manos.Server {
 				ContentEncoding = Encoding.ASCII;
 				return;
 			}
+
+			// TODO
+			ContentEncoding = Encoding.ASCII;
 		}
 
 		private void SetPathAndQuery ()

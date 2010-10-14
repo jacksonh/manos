@@ -17,6 +17,8 @@ namespace Manos.Server {
 
 	public class HttpTransaction : IHttpTransaction {
 
+	        private static readonly long MAX_BUFFERED_CONTENT_LENGTH = 2621440; // 2.5MB (Eventually this will be an environment var)
+
 		public static void BeginTransaction (HttpServer server, IOStream stream, Socket socket, HttpConnectionCallback cb)
 		{
 			HttpTransaction transaction = new HttpTransaction (server, stream, socket, cb);
@@ -183,9 +185,16 @@ namespace Manos.Server {
 			Request = new HttpRequest (this, headers, verb, path, Version_1_1_Supported (version));
 			Response = new HttpResponse (this, Encoding.ASCII);
 			
+			
 			if (headers.ContentLength != null && headers.ContentLength > 0) {
-				stream.ReadBytes ((int) headers.ContentLength, OnBody);
-				return;
+			        long cl = (long) headers.ContentLength;
+				if (cl < MAX_BUFFERED_CONTENT_LENGTH) {
+					HandleBody ();
+					return;
+				} else {
+					HandleLargeBody ();
+					return;
+				}
 			}
 
 			stream.DisableReading ();
@@ -210,21 +219,47 @@ namespace Manos.Server {
 				throw new Exception ("Malformed HTTP request, no version specified.");
 		}
 
-		private void OnBody (IOStream stream, byte [] data)
+		private void HandleLargeBody ()
+		{
+			if (Request.Method != "POST" && Request.Method != "PUT")
+				throw new InvalidOperationException ("Large Request bodies are only allowed with PUT or POST operations.");
+
+			string ct = Request.Headers ["Content-Type"];
+			if (ct == null || !ct.StartsWith ("multipart/form-data")) {
+				// TODO: Maybe someone wants to post large www-form-urlencoded data?
+				throw new InvalidOperationException ("Large Request bodies are only allowed with multipart form data.");
+			}
+
+			string boundary = ParseBoundary (ct);
+			IMFDStream stream = new TempFileMFDStream (IOStream);
+
+			MultipartFormDataParser parser = new MultipartFormDataParser (this.Request, boundary, stream, () => {
+				IOStream.DisableReading ();
+				Server.IOLoop.QueueTransaction (this);
+			});
+
+			parser.ParseParts ();
+		}
+
+		private void HandleBody ()
 		{
 			if (Request.Method == "POST" || Request.Method == "PUT") {
 				string ct = Request.Headers ["Content-Type"];
 				if (ct != null && ct.StartsWith ("application/x-www-form-urlencoded"))
-					OnWwwFormData (data);
-				else if (ct != null && ct.StartsWith ("multipart/form-data"))
-					OnMultiPartFormData (data);
-			}
+					IOStream.ReadBytes ((int) Request.Headers.ContentLength, OnWwwFormData);
+				else if (ct != null && ct.StartsWith ("multipart/form-data")) {
+				        string boundary = ParseBoundary (ct);
+					if (boundary == null)
+			   		        throw new InvalidOperationException ("Invalid content type boundary.");
 
-			IOStream.DisableReading ();
-			Server.IOLoop.QueueTransaction (this);
+					IOStream.ReadBytes ((int) Request.Headers.ContentLength, (ios, data) => {
+						OnMultiPartFormData (boundary, data);
+					});
+				}
+			}
 		}
 
-		private void OnWwwFormData (byte [] data)
+		private void OnWwwFormData (IOStream stream, byte [] data)
 		{
 			//
 			// The best I can tell, you can't actually set the content-type of
@@ -235,20 +270,43 @@ namespace Manos.Server {
 
 			string post = Encoding.ASCII.GetString (data);
 
-			// TODO: pass this to the encoder to populate
-			DataDictionary post_data = HttpUtility.ParseUrlEncodedData (post);
-			if (post_data != null)
-				Request.SetWwwFormData (post_data);
+			if (!String.IsNullOrEmpty (post)) {
+				// TODO: pass this to the encoder to populate
+				DataDictionary post_data = HttpUtility.ParseUrlEncodedData (post);
+				if (post_data != null)
+					Request.SetWwwFormData (post_data);
+			}
+
+			IOStream.DisableReading ();
+			Server.IOLoop.QueueTransaction (this);
 		}
 
-		private void OnMultiPartFormData (byte [] data)
+		private void OnMultiPartFormData (string boundary, byte [] data)
 		{
-			throw new NotImplementedException ();
+			IMFDStream stream = new InMemoryMFDStream (data);
+			MultipartFormDataParser parser = new MultipartFormDataParser (this.Request, boundary, stream, () => {
+				IOStream.DisableReading ();
+				Server.IOLoop.QueueTransaction (this);
+			});
+
+			parser.ParseParts ();
 		}
 		
 		private bool Version_1_1_Supported (string version)
 		{
 			return version == "HTTP/1.1";
+		}
+
+		public static string ParseBoundary (string ct)
+		{
+			if (ct == null)
+				return null;
+
+			int start = ct.IndexOf ("boundary=");
+			if (start < 1)
+				return null;
+			
+			return ct.Substring (start + "boundary=".Length);
 		}
 	}
 }

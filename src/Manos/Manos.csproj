@@ -64,6 +64,8 @@
     <Compile Include="Manos.Server\IHttpTransaction.cs" />
     <Compile Include="Manos.Server\IOLoop.cs" />
     <Compile Include="Manos.Server\IOStream.cs" />
+    <Compile Include="Manos.Server\MultipartFormData.cs" />
+    <Compile Include="Manos.Server\UploadedFile.cs" />
     <Compile Include="Manos.Server\UriParser.cs" />
     <Compile Include="Manos\IManosContext.cs" />
     <Compile Include="Manos.Testing\MockManosModule.cs" />
