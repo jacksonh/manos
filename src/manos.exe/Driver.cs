@@ -107,6 +107,7 @@ namespace Manos.Tool
 		private static int Server (IList<string> args)
 		{
 			Driver d = new Driver ();
+
 			
 			try {
 				d.RunServer (args);
@@ -121,7 +122,22 @@ namespace Manos.Tool
 		
 		public void RunServer (IList<string> args)
 		{
+			string port = null;
+			var p = new OptionSet () {
+				{ "p|port=", v => port = v },
+			};
+			args = p.Parse(args);
+
 			ServerCommand cmd = new ServerCommand (Environment, args);
+
+			if (port != null) {
+				int pt;
+				if (!Int32.TryParse (port, out pt))
+					throw new ArgumentException ("Port value is not an integer.");
+				if (pt <= 0)
+					throw new ArgumentOutOfRangeException ("port", "Port must be a positive integer.");
+				cmd.Port = pt;
+			}
 			
 			cmd.Run ();
 		}
