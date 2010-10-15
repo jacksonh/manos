@@ -123,8 +123,11 @@ namespace Manos.Tool
 		public void RunServer (IList<string> args)
 		{
 			string port = null;
+			string user = null;
+
 			var p = new OptionSet () {
 				{ "p|port=", v => port = v },
+				{ "u|user=", v => user = v },
 			};
 			args = p.Parse(args);
 
@@ -138,7 +141,10 @@ namespace Manos.Tool
 					throw new ArgumentOutOfRangeException ("port", "Port must be a positive integer.");
 				cmd.Port = pt;
 			}
-			
+
+			if (user != null)
+				cmd.User = user;
+
 			cmd.Run ();
 		}
 		

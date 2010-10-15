@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using Manos;
 using Manos.Server;
 
+using Mono.Unix.Native;
 
 namespace Manos.Tool
 {
@@ -64,12 +65,21 @@ namespace Manos.Tool
 				port = value;	
 			}
 		}
+
+		public string User {
+			get;
+			set;
+		}
 		
 		public void Run ()
 		{
 			app = LoadLibrary (ApplicationAssembly);
 
 			Console.WriteLine ("Running {0} on port {1}.", app, Port);
+
+			if (User != null)
+				SetServerUser (User);
+
 			AppHost.Port = Port;
 			AppHost.Start (app);
 		}
@@ -125,6 +135,50 @@ namespace Manos.Tool
 			}
 			
 			return res;
+		}
+
+		public void SetServerUser (string user)
+		{
+			if (user == null)
+				throw new ArgumentNullException ("user");
+
+			PlatformID pid = System.Environment.OSVersion.Platform;
+			if (pid != PlatformID.Unix /* && pid != PlatformID.MacOSX */) {
+				// TODO: Not sure if this works on OSX yet.
+
+				//
+				// Throw an exception here, we don't want to silently fail
+				// otherwise people might be unknowingly running as root
+				//
+
+				throw new InvalidOperationException ("User can not be set on Windows platforms.");
+			}
+
+			AppHost.AddTimeout (TimeSpan.Zero, RepeatBehavior.Single, user, DoSetUser);
+		}
+
+		private void DoSetUser (ManosApp app, object user_data)
+		{
+			string user = user_data as string;
+
+			Console.WriteLine ("setting user to: '{0}'", user);
+			
+			if (user == null) {
+				AppHost.Stop ();
+				throw new InvalidOperationException (String.Format ("Attempting to set user to null."));
+			}
+			
+			Passwd pwd = Syscall.getpwnam (user);
+			if (pwd == null) {
+				AppHost.Stop ();
+				throw new InvalidOperationException (String.Format ("Unable to find user '{0}'.", user));
+			}
+
+			int error = Syscall.seteuid (pwd.pw_uid);
+			if (error != 0) {
+				AppHost.Stop ();
+				throw new InvalidOperationException (String.Format ("Unable to switch to user '{0}' error: '{1}'.", user, error));
+			}
 		}
 	}
 }
