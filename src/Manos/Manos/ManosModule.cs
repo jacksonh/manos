@@ -303,12 +303,12 @@ namespace Manos {
 					continue;
 				
 				ParameterInfo [] parameters = meth.GetParameters ();
-				if (IsActionSignature (parameters)) {
+				if (IsActionSignature (meth, parameters)) {
 					AddActionHandler (Routes, meth);
 					continue;	
 				}
 				
-				if (IsParameterizedActionSignature (parameters)) {
+				if (IsParameterizedActionSignature (meth, parameters)) {
 					AddParameterizedActionHandler (Routes, meth);
 					continue;
 				}
@@ -327,23 +327,29 @@ namespace Manos {
 			}
 		}
 
-		private bool IsActionSignature (ParameterInfo [] parameters)
+		private bool IsActionSignature (MethodInfo method, ParameterInfo [] parameters)
 		{
 			if (parameters.Length != 1)
 				return false;
-			
+
+			if (method.DeclaringType.Assembly == typeof (ManosModule).Assembly)
+				return false;
+
 			if (parameters [0].ParameterType != typeof (IManosContext))
 				return false;
 
 			return true;
 		}
 
-		private bool IsParameterizedActionSignature (ParameterInfo [] parameters)
+		private bool IsParameterizedActionSignature (MethodInfo method, ParameterInfo [] parameters)
 		{
 			if (parameters.Length < 1) {
 				return false;
 			}
-			
+
+			if (method.DeclaringType.Assembly == typeof (ManosModule).Assembly)
+				return false;
+
 			if (parameters [0].ParameterType != typeof (IManosContext))
 				return false;
 			
