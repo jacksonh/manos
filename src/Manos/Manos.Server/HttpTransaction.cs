@@ -37,7 +37,8 @@ namespace Manos.Server {
 			ConnectionCallback = callback;
 
 			write_ops = new Queue<IWriteOperation> ();
-			
+
+			stream.OnClose (OnClose);
 			stream.ReadUntil ("\r\n\r\n", OnHeaders);
 		}
 
@@ -165,6 +166,10 @@ namespace Manos.Server {
 				IOStream.DisableWriting ();
 
 			IOStream.ReadUntil ("\r\n\r\n", OnHeaders);
+		}
+
+		private void OnClose (IOStream stream)
+		{
 		}
 
 		private void OnHeaders (IOStream stream, byte [] data)

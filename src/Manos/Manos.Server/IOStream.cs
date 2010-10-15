@@ -13,6 +13,7 @@ using Mono.Unix.Native;
 
 namespace Manos.Server {
 
+	public delegate void CloseCallback (IOStream stream);
 	public delegate void ReadCallback (IOStream stream, byte [] data);
 	public delegate void WriteCallback ();
 
@@ -20,6 +21,8 @@ namespace Manos.Server {
 
 		private Socket socket;
 		private IOLoop ioloop;
+
+		private CloseCallback close_callback;
 
 		private MemoryStream read_buffer;
 		private int read_bytes = -1;
@@ -96,6 +99,11 @@ namespace Manos.Server {
 			get { return socket == null || !socket.Connected; }
 		}
 
+		public void OnClose (CloseCallback callback)
+		{
+			this.close_callback = callback;
+		}
+
 		public void ReadUntil (string delimiter, ReadCallback callback)
 		{
 			CheckCanRead ();
@@ -160,6 +168,9 @@ namespace Manos.Server {
 
 			socket.Close ();
 			socket = null;
+
+			if (close_callback != null)
+				close_callback (this);
 		}
 
 		private void EnableReading ()
@@ -227,11 +238,11 @@ namespace Manos.Server {
 				if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
 					return;
 				Close ();
-				throw se;
+				return;
 			} catch (Exception e) {
 			  	Console.WriteLine (e);
 				Close ();
-				throw;
+				return;
 			}
 
 			if (size == 0) {
