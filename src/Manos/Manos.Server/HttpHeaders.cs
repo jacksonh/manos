@@ -104,7 +104,7 @@ namespace Manos.Server {
 		{
 			foreach (var h in items.Keys) {
 				string header = (string) h;
-				builder.Append (NormalizeName (header));
+				builder.Append (header);
 				builder.Append (": ");
 				builder.Append (items [header]);
 				builder.Append ("\r\n");
