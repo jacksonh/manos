@@ -29,9 +29,7 @@ namespace Manos.Routing
 	
 		public bool IsMatch (string input, int start, DataDictionary data, out int end)
 		{
-			int i = input.IndexOf (String, start, StringComparison.InvariantCulture);
-
-			if (i != start) {
+			if (!StartsWith (input, start, String)) {
 				end = start;
 				return false;
 			}
@@ -40,6 +38,18 @@ namespace Manos.Routing
 			return true;
 		}
 
+		public static bool StartsWith (string input, int start, string str)
+		{
+			if (input.Length < str.Length + start)
+				return false;
 
+			for (int i = 0; i < str.Length; i++) {
+				if (input [start + i] != str [i])
+					return false;
+			}
+
+			return true;
+		}
+		
 	}
 }
