@@ -8,7 +8,7 @@ namespace $APPNAME {
 
 		public $APPNAME ()
 		{
-			Route ("Content/", new StaticContentModule ());
+			Route ("/Content/", new StaticContentModule ());
 		}
 	}
 }
