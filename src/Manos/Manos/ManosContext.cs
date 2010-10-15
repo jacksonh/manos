@@ -13,6 +13,10 @@ namespace Manos {
 			Transaction = transaction;
 		}
 
+		public HttpServer Server {
+			get { return Transaction.Server; }
+		}
+
 		public IHttpTransaction Transaction {
 			get;
 			private set;

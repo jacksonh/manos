@@ -17,6 +17,10 @@ namespace Manos.Server {
 			get;
 		}
 
+		HttpServer Server {
+			get;
+		}
+
 		bool Aborted {
 			get;	
 		}

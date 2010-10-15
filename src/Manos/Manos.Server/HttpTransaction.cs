@@ -19,9 +19,11 @@ namespace Manos.Server {
 
 	        private static readonly long MAX_BUFFERED_CONTENT_LENGTH = 2621440; // 2.5MB (Eventually this will be an environment var)
 
-		public static void BeginTransaction (HttpServer server, IOStream stream, Socket socket, HttpConnectionCallback cb)
+		public static HttpTransaction BeginTransaction (HttpServer server, IOStream stream, Socket socket, HttpConnectionCallback cb)
 		{
 			HttpTransaction transaction = new HttpTransaction (server, stream, socket, cb);
+
+			return transaction;
 		}
 
 		private bool aborted;
@@ -75,7 +77,7 @@ namespace Manos.Server {
 		public bool Aborted {
 			get { return aborted; }	
 		}
-		
+
 		// Force the server to disconnect
 		public bool NoKeepAlive {
 			get;
@@ -161,6 +163,7 @@ namespace Manos.Server {
 
 			if (disconnect) {
 			      	IOStream.Close ();
+				Server.RemoveTransaction (this);
 				return;
 			} else 
 				IOStream.DisableWriting ();
@@ -203,7 +206,7 @@ namespace Manos.Server {
 			}
 
 			stream.DisableReading ();
-			Server.IOLoop.QueueTransaction (this);
+			Server.RunTransaction (this);
 		}
 
 		private void ParseStartLine (string line, out string verb, out string path, out string version)
@@ -240,7 +243,7 @@ namespace Manos.Server {
 
 			MultipartFormDataParser parser = new MultipartFormDataParser (this.Request, boundary, stream, () => {
 				IOStream.DisableReading ();
-				Server.IOLoop.QueueTransaction (this);
+				Server.RunTransaction (this);
 			});
 
 			parser.ParseParts ();
@@ -283,7 +286,7 @@ namespace Manos.Server {
 			}
 
 			IOStream.DisableReading ();
-			Server.IOLoop.QueueTransaction (this);
+			Server.RunTransaction (this);
 		}
 
 		private void OnMultiPartFormData (string boundary, byte [] data)
@@ -291,7 +294,7 @@ namespace Manos.Server {
 			IMFDStream stream = new InMemoryMFDStream (data);
 			MultipartFormDataParser parser = new MultipartFormDataParser (this.Request, boundary, stream, () => {
 				IOStream.DisableReading ();
-				Server.IOLoop.QueueTransaction (this);
+				Server.RunTransaction (this);
 			});
 
 			parser.ParseParts ();

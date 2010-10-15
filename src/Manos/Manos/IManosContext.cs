@@ -7,6 +7,10 @@ namespace Manos
 {
 	public interface IManosContext
 	{
+		HttpServer Server {
+			get;
+		}
+
 		IHttpTransaction Transaction {
 			get;
 		}

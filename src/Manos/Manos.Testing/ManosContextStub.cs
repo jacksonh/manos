@@ -1,5 +1,6 @@
 using System;
 
+using Manos.Server;
 
 namespace Manos.Testing
 {
@@ -8,20 +9,26 @@ namespace Manos.Testing
 		public ManosContextStub ()
 		{
 		}
-		
-		public Server.IHttpTransaction Transaction {
+
+		public HttpServer Server {
 			get {
 				throw new NotImplementedException ();
 			}
 		}
 
-		public Server.IHttpRequest Request {
+		public IHttpTransaction Transaction {
 			get {
 				throw new NotImplementedException ();
 			}
 		}
 
-		public Server.IHttpResponse Response {
+		public IHttpRequest Request {
+			get {
+				throw new NotImplementedException ();
+			}
+		}
+
+		public IHttpResponse Response {
 			get {
 				throw new NotImplementedException ();
 			}

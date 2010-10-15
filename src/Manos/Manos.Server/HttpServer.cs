@@ -24,6 +24,8 @@ namespace Manos.Server {
 		private IOLoop ioloop;
 		private IOWatcher iowatcher;
 
+		private List<HttpTransaction> transactions = new List<HttpTransaction> ();
+
 		public HttpServer (HttpConnectionCallback callback, IOLoop ioloop)
 		{
 			this.callback = callback;
@@ -37,6 +39,10 @@ namespace Manos.Server {
 		public Socket Socket {
 			get;
 			private set;
+		}
+
+		public List<HttpTransaction> Transactions {
+			get { return transactions; }
 		}
 
 		public void Bind (IPEndPoint endpoint)
@@ -54,6 +60,16 @@ namespace Manos.Server {
 			iowatcher.Start ();
 		}
 
+		public void RunTransaction (HttpTransaction trans)
+		{
+			trans.Run ();
+		}
+
+		public void RemoveTransaction (HttpTransaction trans)
+		{
+			transactions.Remove (trans);
+		}
+
 		private void HandleIOEvents (Loop loop, IOWatcher watcher, int revents)
 		{
 			while (true) {
@@ -69,9 +85,11 @@ namespace Manos.Server {
 				}
 
 				IOStream iostream = new IOStream (s, IOLoop);
-				HttpTransaction.BeginTransaction (this, iostream, s, callback);
+				transactions.Add (HttpTransaction.BeginTransaction (this, iostream, s, callback));
 			}
 		}
+
+		
 	}
 }
 

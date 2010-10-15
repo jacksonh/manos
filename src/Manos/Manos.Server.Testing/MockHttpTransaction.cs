@@ -20,6 +20,11 @@ namespace Manos.Server.Testing
 			Response = new HttpResponse (this, Encoding.Default);
 		}
 
+		// TODO: I guess we need a mock server?
+		public HttpServer Server {
+			get { return null; }
+		}
+				
 		public IHttpRequest Request {
 			get;
 			private set;

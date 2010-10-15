@@ -38,17 +38,7 @@ namespace Manos.Server {
 		public Loop EventLoop {
 		       get { return evloop; }
 		}
-		
-		public void QueueTransaction (HttpTransaction trans)
-		{
-			//
-			// Since the switch to libev, it seems best to just run them
-			// for now I'll leave the queueing function call in, so its
-			// easy to experiment later.
 
-			trans.Run ();
-		}
-		
 		public void Start ()
 		{
 			running = true;
