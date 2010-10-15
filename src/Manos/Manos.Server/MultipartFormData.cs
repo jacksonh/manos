@@ -14,11 +14,11 @@ namespace Manos.Server {
 
 	public interface IMFDStream {
 
-		public void ReadUntil (string delimiter, IMFDReadCallback callback);
-		public void ReadBytes (int count, IMFDReadCallback callback);
+		void ReadUntil (string delimiter, IMFDReadCallback callback);
+		void ReadBytes (int count, IMFDReadCallback callback);
 
-		public void BeginFile (string name);
-		public UploadedFile EndFile ();
+		void BeginFile (string name);
+		UploadedFile EndFile ();
 	}
 
 	public class InMemoryMFDStream : IMFDStream {
