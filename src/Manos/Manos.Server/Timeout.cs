@@ -10,7 +10,11 @@ namespace Manos.Server
 		internal IRepeatBehavior repeat;
 		internal object data;
 		internal TimeoutCallback callback;
-		
+
+		public Timeout (TimeSpan span, IRepeatBehavior repeat, object data, TimeoutCallback callback) : this (TimeSpan.Zero, span, repeat,data, callback)
+		{
+		}
+
 		public Timeout (TimeSpan begin, TimeSpan span, IRepeatBehavior repeat, object data, TimeoutCallback callback)
 		{
 			this.begin = begin;
