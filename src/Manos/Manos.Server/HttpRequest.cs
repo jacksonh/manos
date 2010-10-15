@@ -135,10 +135,11 @@ namespace Manos.Server {
 
 			string uri = ResourceUri;
 			string scheme;
+			string host;
 			string path;
 			string query;
 
-			if (!UriParser.TryParse (uri, out scheme, out path, out query)) {
+			if (!UriParser.TryParse (uri, out scheme, out host, out path, out query)) {
 				Transaction.Abort (400, "Invalid resource path. '{0}'", uri);
 				return;
 			}

@@ -22,7 +22,7 @@ namespace Manos.Server.Tests
 			string dummy;
 			string good_uri = "http://manos-de-mono.com/";
 			
-			bool res = UriParser.TryParse (good_uri, out dummy, out dummy, out dummy);
+			bool res = UriParser.TryParse (good_uri, out dummy, out dummy, out dummy, out dummy);
 			Assert.IsTrue (res);
 		}
 
@@ -32,7 +32,7 @@ namespace Manos.Server.Tests
 			string dummy;
 			string good_uri = "http://manos-de-mono.com:8080/";
 			
-			bool res = UriParser.TryParse (good_uri, out dummy, out dummy, out dummy);
+			bool res = UriParser.TryParse (good_uri, out dummy, out dummy, out dummy, out dummy);
 			Assert.IsTrue (res);
 		}
 
@@ -42,7 +42,7 @@ namespace Manos.Server.Tests
 			string dummy;
 			string good_uri = "http://manos-de-mono.com:8080";
 			
-			bool res = UriParser.TryParse (good_uri, out dummy, out dummy, out dummy);
+			bool res = UriParser.TryParse (good_uri, out dummy, out dummy, out dummy, out dummy);
 			Assert.IsTrue (res);
 		}
 
@@ -53,7 +53,7 @@ namespace Manos.Server.Tests
 			string path;
 			string good_uri = "http://www.manos-de-mono.com:8080/";
 			
-			UriParser.TryParse (good_uri, out dummy, out path, out dummy);
+			UriParser.TryParse (good_uri, out dummy, out dummy, out path, out dummy);
 			Assert.AreEqual ("/", path);
 		}
 	}

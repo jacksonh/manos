@@ -8,7 +8,7 @@ namespace Manos.Server {
 
 	public static class UriParser {
 
-		public static bool TryParse (string uri, out string scheme, out string path, out string query)
+		public static bool TryParse (string uri, out string scheme, out string host, out string path, out string query)
 		{
 			int end;
 
@@ -18,13 +18,16 @@ namespace Manos.Server {
 				scheme = null;
 				path = null;
 				query = null;
+				host = null;
 				return false;
 			}
 
 			path = null;
 			query = null;
+			host = null;
 
 			return TryParseScheme (uri, out scheme, out end) &&
+			       TryParseHost (uri, end, out host, out end) &&
 			       TryParsePath (uri, end, out path, out end) &&
 			       TryParseQuery (uri, end, out query);
 		}
@@ -43,12 +46,34 @@ namespace Manos.Server {
 			return true;
 		}
 
+		public static bool TryParseHost (string uri, int start, out string host, out int end)
+		{
+			if (start >= uri.Length) {
+				host = null;
+				end = -1;
+				return false;
+			}
+
+			end = uri.IndexOf ('/', start);
+			if (end == -1) {
+				host = uri.Substring (start);
+				end = uri.Length;
+			} else if (end <= start) {
+				host = null;
+				end = start;
+			} else {
+				host = uri.Substring (start, end - start);
+			}
+
+			return true;
+		}
+		
 		public static bool TryParsePath (string uri, int start, out string path, out int end)
 		{
 			if (start >= uri.Length) {
-				path = null;
-				end = -1;
-				return false;
+				path = "/";
+				end = start;
+				return true;
 			}
 
 			end = uri.IndexOf ('?', start);
