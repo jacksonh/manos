@@ -158,10 +158,9 @@ namespace Manos.Server {
 					disconnect = (dis == "close");
 			}
 
-			Request = null;
-			Response = null;
-
 			if (disconnect) {
+				Request = null;
+				Response = null;
 			      	IOStream.Close ();
 				Server.RemoveTransaction (this);
 				return;
