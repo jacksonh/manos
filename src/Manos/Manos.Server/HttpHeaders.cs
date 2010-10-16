@@ -95,7 +95,7 @@ namespace Manos.Server {
 					value += " " + line.Trim ();
 					line = reader.ReadLine ();
 				}
-				
+
 				SetHeader (key, value);
 			}
 		}
@@ -148,21 +148,32 @@ namespace Manos.Server {
 			if (String.IsNullOrEmpty (name))
 				throw new ArgumentException ("name", "name must be a non-null non-empty string");
 			
-			StringBuilder res = new StringBuilder (name);
+			StringBuilder res = null;
 
-			res [0] = Char.ToUpper (name [0], CultureInfo.InvariantCulture);
+			if (Char.IsLower (name [0])) {
+				res = new StringBuilder (name);
+				res [0] = Char.ToUpper (name [0], CultureInfo.InvariantCulture);
+			}
 			
 			char p = name [0];
-			for (int i = 1; i < res.Length; i++) {
-				char c = res [i];
-				if (p == '-' && Char.IsLower (c))
+			for (int i = 1; i < name.Length; i++) {
+				char c = name [i];
+				if (p == '-' && Char.IsLower (c)) {
+					res = new StringBuilder (name);
 					res [i] = Char.ToUpper (c, CultureInfo.InvariantCulture);
-				if (p != '-' && Char.IsUpper (c))
+				} else if (p != '-' && Char.IsUpper (c)) {
+					res = new StringBuilder (name);
 					res [i] = Char.ToLower (c, CultureInfo.InvariantCulture);
+				}
 				p = c;
 			}
 
-			return res.ToString ();
+			if (res != null) {
+				Console.WriteLine ("USING RES: '{0}'", res.ToString ());
+				return res.ToString ();
+			}
+
+			return name;
 		}
 
 		public bool IsValidHeaderName (string name)
