@@ -10,7 +10,7 @@ namespace Logger {
 		{
 			Route ("/", ctx => ctx.Response.Write ("Hello, World."));
 
-			AppHost.Pipes.Add (new Manos.Util.AccessLogger ("access.log"));
+			AddPipe (new Manos.Util.AccessLogger ("access.log"));
 		}
 	}
 }

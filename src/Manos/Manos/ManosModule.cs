@@ -280,7 +280,12 @@ namespace Manos {
 		{
 			AppHost.AddTimeout (timespan, repeat, data, callback);
 		}
-		
+
+		public static void AddPipe (ManosPipe pipe)
+		{
+			AppHost.Pipes.Add (pipe);
+		}
+
 		public static void RenderTemplate (ManosContext ctx, string template, object data)
 		{
 			TemplateEngine.RenderToStream (template, ctx.Response.Writer, data);
