@@ -37,7 +37,7 @@ namespace Manos.Server {
 		private long send_file_count;
 		private long send_file_offset;
 		
-		private static readonly int DefaultReadChunkSize  = 4096;
+		private static readonly int DefaultReadChunkSize  = 1024;
 
 		private class WriteOperation {
 			public int index;
