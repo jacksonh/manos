@@ -104,7 +104,7 @@ namespace Manos.Tool
 		public void CompileCS ()
 		{
 			var provider = new CSharpCodeProvider ();
-			var options = new CompilerParameters (ReferencedAssemblies, OutputAssembly);
+			var options = new CompilerParameters (ReferencedAssemblies, OutputAssembly, true);
 
 			foreach (string s in ReferencedAssemblies) {
 				Console.WriteLine (s);	
