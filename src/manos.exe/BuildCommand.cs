@@ -148,12 +148,11 @@ namespace Manos.Tool
 			var libs = new List<string> ();
 			
 			AddDefaultReferences (libs);
-			
-			if (!Directory.Exists (Environment.LibDirectory))
-				return libs.ToArray ();
-			
-			foreach (string lib in Directory.GetFiles (Environment.LibDirectory)) {
+
+			foreach (string lib in Directory.GetFiles (Directory.GetCurrentDirectory ())) {
 				if (!lib.EndsWith (".dll", StringComparison.InvariantCultureIgnoreCase))
+					continue;
+				if (Path.GetFileName (lib) == OutputAssembly)
 					continue;
 				libs.Add (lib);
 			}
