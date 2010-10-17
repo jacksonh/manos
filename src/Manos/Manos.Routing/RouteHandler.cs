@@ -210,11 +210,8 @@ namespace Manos.Routing {
 		
 		public bool IsMethodMatch (IHttpRequest request)
 		{
-			if (methods != null) {
-				var meth = methods.Where (m => m == request.Method).FirstOrDefault ();
-				if (meth == null)
-					return false;
-			}
+			if (methods != null)
+				return methods.Contains (request.Method);
 
 			return true;
 		}
