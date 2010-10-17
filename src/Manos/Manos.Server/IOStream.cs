@@ -369,7 +369,7 @@ namespace Manos.Server {
 
 			Array.Copy (data, 0, read, 0, end); 
 
-			int length = (int) read_buffer.Length;
+			int length = (int) read_buffer.Position;
 
 			read_bytes = -1;
 			read_delimiter = null;
