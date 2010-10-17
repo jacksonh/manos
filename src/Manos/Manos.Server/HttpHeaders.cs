@@ -159,19 +159,19 @@ namespace Manos.Server {
 			for (int i = 1; i < name.Length; i++) {
 				char c = name [i];
 				if (p == '-' && Char.IsLower (c)) {
-					res = new StringBuilder (name);
+					if (res == null)
+						res = new StringBuilder (name);
 					res [i] = Char.ToUpper (c, CultureInfo.InvariantCulture);
 				} else if (p != '-' && Char.IsUpper (c)) {
-					res = new StringBuilder (name);
+					if (res == null)
+						res = new StringBuilder (name);
 					res [i] = Char.ToLower (c, CultureInfo.InvariantCulture);
 				}
 				p = c;
 			}
 
-			if (res != null) {
-				Console.WriteLine ("USING RES: '{0}'", res.ToString ());
+			if (res != null)
 				return res.ToString ();
-			}
 
 			return name;
 		}
