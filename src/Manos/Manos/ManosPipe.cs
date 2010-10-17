@@ -12,24 +12,24 @@ namespace Manos
 		{
 		}
 			
-		public void OnPreProcessRequest (ManosApp app, IHttpTransaction transaction)
+		public virtual void OnPreProcessRequest (ManosApp app, IHttpTransaction transaction)
 		{
 		}
 
-		public IManosTarget OnPreProcessTarget (IManosContext ctx)
+		public virtual IManosTarget OnPreProcessTarget (IManosContext ctx)
 		{
 			return null;
 		}
 
-		public void OnPostProcessTarget (IManosContext ctx, IManosTarget target)
+		public virtual void OnPostProcessTarget (IManosContext ctx, IManosTarget target)
 		{
 		}
 
-		public void OnPostProcessRequest (ManosApp app, IHttpTransaction transaction)
+		public virtual void OnPostProcessRequest (ManosApp app, IHttpTransaction transaction)
 		{
 		}
 		
-		public void OnError (IManosContext ctx)
+		public virtual void OnError (IManosContext ctx)
 		{
 		}
 	}
