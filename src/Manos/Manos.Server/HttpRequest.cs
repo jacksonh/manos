@@ -85,6 +85,10 @@ namespace Manos.Server {
 				}
 				return post_data;
 			}
+			set {
+				SetDataDictionary (post_data, value);
+				post_data = value;
+			}
 		}
 
 		public DataDictionary QueryData {
@@ -95,6 +99,10 @@ namespace Manos.Server {
 				}
 				return query_data;
 			}
+			set {
+				SetDataDictionary (query_data, value);
+				query_data = value;
+			}
 		}
 
 		public DataDictionary UriData {
@@ -104,6 +112,10 @@ namespace Manos.Server {
 					Data.Children.Add (uri_data);
 				}
 				return uri_data;
+			}
+			set {
+				SetDataDictionary (uri_data, value);
+				uri_data = value;
 			}
 		}
 		
@@ -161,9 +173,7 @@ namespace Manos.Server {
 			LocalPath = path;
 
 			// TODO: Pass this to the encoder to populate
-			DataDictionary query_data = HttpUtility.ParseUrlEncodedData (query);
-			if (query_data != null)
-				QueryData.Children.Add (query_data);
+			QueryData = HttpUtility.ParseUrlEncodedData (query);
 		}
 
 		private DataDictionary ParseCookies ()
@@ -178,14 +188,17 @@ namespace Manos.Server {
 		
 		public void SetWwwFormData (DataDictionary data)
 		{
-		       if (data == null) {
-			       post_data = null;
-			       if (this.data != null)
-				       this.data.Children.Remove (post_data);
-			       return;
-		       }
-		       PostData.Children.Add (data);
+			PostData = data;
 		}
+
+		private void SetDataDictionary (DataDictionary old, DataDictionary newd)
+		{
+			if (data != null && old != null)
+				data.Children.Remove (old);
+			if (newd != null)
+				Data.Children.Add (newd);
+		}
+
 	}
 }
 
