@@ -192,7 +192,6 @@ namespace Manos.Server {
 			Request = new HttpRequest (this, headers, verb, path, Version_1_1_Supported (version));
 			Response = new HttpResponse (this, Encoding.ASCII);
 			
-			
 			if (headers.ContentLength != null && headers.ContentLength > 0) {
 			        long cl = (long) headers.ContentLength;
 				if (cl < MAX_BUFFERED_CONTENT_LENGTH) {

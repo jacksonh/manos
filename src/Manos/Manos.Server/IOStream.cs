@@ -127,7 +127,7 @@ namespace Manos.Server {
 			read_bytes = num_bytes;
 			read_callback = callback;
 
-			if (read_buffer != null && read_buffer.Length >= num_bytes) {
+			if (read_buffer != null && read_buffer.Position >= num_bytes) {
 				FinishRead (num_bytes);
 				return;
 			}
@@ -257,7 +257,7 @@ namespace Manos.Server {
 			read_buffer.Flush ();
 
 			if (read_bytes != -1) {
-				if (read_buffer.Length >= read_bytes) {
+				if (read_buffer.Position >= read_bytes) {
 					FinishRead (read_bytes);
 				}
 			}
@@ -358,7 +358,7 @@ namespace Manos.Server {
 			int start = Math.Max (0, last_delimiter_check - read_delimiter.Length);
 
 			last_delimiter_check = read_bytes;
-			return ByteUtils.FindDelimiter (read_delimiter, data, start);
+			return ByteUtils.FindDelimiter (read_delimiter, data, start, (int) read_buffer.Position);
 		}
 
 		private void FinishRead (int end)
@@ -375,7 +375,8 @@ namespace Manos.Server {
 			read_delimiter = null;
 			last_delimiter_check = -1;
 			read_callback = null;
-			read_buffer = new MemoryStream ();
+
+			read_buffer.Position = 0;
 			read_buffer.Write (data, end, length - end);
 			
 			callback (this, read);

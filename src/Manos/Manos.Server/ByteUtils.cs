@@ -6,9 +6,9 @@ namespace Manos.Server {
 
 	  public static class ByteUtils {
 
-	  	 public static int FindDelimiter (byte [] delimiter, byte [] data, int start)
+	  	 public static int FindDelimiter (byte [] delimiter, byte [] data, int start, int end)
 		 {
-			start = Array.IndexOf (data, delimiter [0], start);
+			start = Array.IndexOf (data, delimiter [0], start, end - start);
 
 			while (start >= 0) {
 				bool match = true;

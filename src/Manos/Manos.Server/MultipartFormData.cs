@@ -36,7 +36,7 @@ namespace Manos.Server {
 		{
 			byte [] read_delimiter = Encoding.ASCII.GetBytes (delimiter);
 			
-			int count = ByteUtils.FindDelimiter (read_delimiter, buffer, pos);
+			int count = ByteUtils.FindDelimiter (read_delimiter, buffer, pos, buffer.Length);
 			int start = pos;
 
 			pos = count;
