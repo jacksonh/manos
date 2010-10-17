@@ -178,9 +178,9 @@ namespace Manos.Server {
 
 		private DataDictionary ParseCookies ()
 		{
-			string cookie_header = Headers ["Cookie"];
-			
-			if (cookie_header == null)
+			string cookie_header;
+
+			if (!Headers.TryGetValue ("Cookie", out cookie_header))
 				return new DataDictionary ();
 			
 			return HttpCookie.FromHeader (cookie_header);
