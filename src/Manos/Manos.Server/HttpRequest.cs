@@ -18,7 +18,12 @@ using Manos.Collections;
 namespace Manos.Server {
 
 	public class HttpRequest : IHttpRequest {
-		
+
+		private DataDictionary data;
+		private DataDictionary uri_data;
+		private	DataDictionary query_data;
+		private DataDictionary post_data;
+
 		private DataDictionary cookies;
 		private Dictionary<string,UploadedFile> uploaded_files;
 		
@@ -30,15 +35,6 @@ namespace Manos.Server {
 			ResourceUri = resource;
 			Http_1_1_Supported = support_1_1;
 
-			Data = new DataDictionary ();
-			UriData = new DataDictionary ();
-			QueryData = new DataDictionary ();
-			PostData = new DataDictionary ();
-			
-			Data.Children.Add (UriData);
-			Data.Children.Add (QueryData);
-			Data.Children.Add (PostData);
-					
 			SetEncoding ();
 			SetPathAndQuery ();
 		}
@@ -74,23 +70,41 @@ namespace Manos.Server {
 		}
 		
 		public DataDictionary Data {
-			get;
-			private set;
+			get {
+				if (data == null)
+					data = new DataDictionary ();
+				return data;
+			}
 		}
 		
 		public DataDictionary PostData {
-			get;
-			private set;
+			get {
+				if (post_data == null) {
+					post_data = new DataDictionary ();
+					Data.Children.Add (post_data);
+				}
+				return post_data;
+			}
 		}
 
 		public DataDictionary QueryData {
-			get;
-			private set;
+			get {
+				if (query_data == null) {
+					query_data = new DataDictionary ();
+					Data.Children.Add (query_data);
+				}
+				return query_data;
+			}
 		}
 
 		public DataDictionary UriData {
-			get;
-			private set;
+			get {
+				if (uri_data == null) {
+					uri_data = new DataDictionary ();
+					Data.Children.Add (uri_data);
+				}
+				return uri_data;
+			}
 		}
 		
 		public DataDictionary Cookies {
@@ -123,8 +137,8 @@ namespace Manos.Server {
 				return;
 			}
 
-			// TODO
-			ContentEncoding = Encoding.ASCII;
+			// TODO: parse charsets
+			ContentEncoding = Encoding.Default;
 		}
 
 		private void SetPathAndQuery ()
@@ -145,6 +159,7 @@ namespace Manos.Server {
 			}
 
 			LocalPath = path;
+
 			// TODO: Pass this to the encoder to populate
 			DataDictionary query_data = HttpUtility.ParseUrlEncodedData (query);
 			if (query_data != null)
@@ -164,8 +179,10 @@ namespace Manos.Server {
 		public void SetWwwFormData (DataDictionary data)
 		{
 		       if (data == null) {
-		       	  PostData.Clear ();
-			  return;
+			       post_data = null;
+			       if (this.data != null)
+				       this.data.Children.Remove (post_data);
+			       return;
 		       }
 		       PostData.Children.Add (data);
 		}
