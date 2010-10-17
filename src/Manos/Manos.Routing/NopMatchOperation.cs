@@ -13,8 +13,9 @@ namespace Manos.Routing
 		{
 		}
 		
-		public bool IsMatch (string input, int start, DataDictionary data, out int end)
+		public bool IsMatch (string input, int start, out DataDictionary data, out int end)
 		{
+			data = null;
 			end = start;
 			return true;
 		}

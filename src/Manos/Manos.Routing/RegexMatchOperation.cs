@@ -31,16 +31,18 @@ namespace Manos.Routing {
 			}
 		}
 
-		public bool IsMatch (string input, int start, DataDictionary data, out int end)
+		public bool IsMatch (string input, int start, out DataDictionary data, out int end)
 		{
 			Match m = regex.Match (input, start);
 
 			regex.Match (input, start);
 			if (!m.Success || m.Index != start) {
+				data = null;
 				end = start;
 				return false;
 			}
-			
+
+			data = new DataDictionary ();
 			AddUriData (m, data);
 			end = m.Index + m.Length;
 			return true;

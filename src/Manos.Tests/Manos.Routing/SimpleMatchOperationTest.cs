@@ -49,7 +49,7 @@ namespace Manos.Routing.Tests
 			
 			int end;
 			DataDictionary data = new DataDictionary ();
-			bool is_match = simple.IsMatch ("/foo/manos/baz/", 0, data, out end);
+			bool is_match = simple.IsMatch ("/foo/manos/baz/", 0, out data, out end);
 			
 			Assert.IsTrue (is_match);
 		}
@@ -61,7 +61,7 @@ namespace Manos.Routing.Tests
 			
 			int end;
 			DataDictionary data = new DataDictionary ();
-			simple.IsMatch ("/foo/manos/baz/", 0, data, out end);
+			simple.IsMatch ("/foo/manos/baz/", 0, out data, out end);
 			
 			string bar_value = data ["bar"];
 			Assert.AreEqual ("manos", bar_value);
@@ -74,7 +74,7 @@ namespace Manos.Routing.Tests
 			
 			int end;
 			DataDictionary data = new DataDictionary ();
-			simple.IsMatch ("/foo/manos/baz/", 0, data, out end);
+			simple.IsMatch ("/foo/manos/baz/", 0, out data, out end);
 			
 			Assert.AreEqual (15, end);
 		}
@@ -85,9 +85,9 @@ namespace Manos.Routing.Tests
 			var simple = new SimpleMatchOperation ("{foo}/{bar}");
 			
 			int end;
-			DataDictionary data = new DataDictionary ();
+			DataDictionary data;
 			
-			bool is_match = simple.IsMatch ("match1/match2", 0, data, out end);
+			bool is_match = simple.IsMatch ("match1/match2", 0, out data, out end);
 			Assert.IsTrue (is_match);
 		}
 		
@@ -97,9 +97,9 @@ namespace Manos.Routing.Tests
 			var simple = new SimpleMatchOperation ("{foo}/{bar}");
 			
 			int end;
-			DataDictionary data = new DataDictionary ();
+			DataDictionary data;
 			
-			simple.IsMatch ("match1/match2", 0, data, out end);
+			simple.IsMatch ("match1/match2", 0, out data, out end);
 			
 			string match1 = data ["foo"];
 			string match2 = data ["bar"];
@@ -114,8 +114,8 @@ namespace Manos.Routing.Tests
 			var simple = new SimpleMatchOperation ("{foo}/{bar}");
 			
 			int end;
-			DataDictionary data = new DataDictionary ();
-			simple.IsMatch ("manos/mono", 0, data, out end);
+			DataDictionary data;
+			simple.IsMatch ("manos/mono", 0, out data, out end);
 			
 			Assert.AreEqual (10, end);
 		}
@@ -126,9 +126,9 @@ namespace Manos.Routing.Tests
 			var simple = new SimpleMatchOperation ("/foo/{bar}/");
 			
 			int end;
-			DataDictionary data = new DataDictionary ();
+			DataDictionary data;
 			
-			bool is_match = simple.IsMatch ("nope/no/", 0, data, out end);
+			bool is_match = simple.IsMatch ("nope/no/", 0, out data, out end);
 			Assert.IsFalse (is_match);
 		}
 		
@@ -138,10 +138,10 @@ namespace Manos.Routing.Tests
 			var simple = new SimpleMatchOperation ("/foo/{bar}/");
 			
 			int end;
-			DataDictionary data = new DataDictionary ();
+			DataDictionary data;
 			
-			simple.IsMatch ("nope/no/", 0, data, out end);
-			Assert.AreEqual (0, data.Count);
+			simple.IsMatch ("nope/no/", 0, out data, out end);
+			Assert.IsNull (data);
 		}
 		
 		[Test]
@@ -150,9 +150,9 @@ namespace Manos.Routing.Tests
 			var simple = new SimpleMatchOperation ("/{bar}/");
 			
 			int end;
-			DataDictionary data = new DataDictionary ();
+			DataDictionary data;
 			
-			simple.IsMatch ("/yup/more/data/foo/", 0, data, out end);
+			simple.IsMatch ("/yup/more/data/foo/", 0, out data, out end);
 			Assert.AreEqual (5, end);
 		}
 		
@@ -161,9 +161,9 @@ namespace Manos.Routing.Tests
 			var simple = new SimpleMatchOperation ("/foo/{bar}~");
 			
 			int end;
-			DataDictionary data = new DataDictionary ();
+			DataDictionary data;
 			
-			bool is_match = simple.IsMatch ("/foo/barbaz~", 0, data, out end);
+			bool is_match = simple.IsMatch ("/foo/barbaz~", 0, out data, out end);
 			Assert.IsTrue (is_match);
 		}
 	}

@@ -149,7 +149,7 @@ namespace Manos.Tool
 			
 			AddDefaultReferences (libs);
 			
-			if 	(!Directory.Exists (Environment.LibDirectory))
+			if (!Directory.Exists (Environment.LibDirectory))
 				return libs.ToArray ();
 			
 			foreach (string lib in Directory.GetFiles (Environment.LibDirectory)) {

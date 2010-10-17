@@ -21,16 +21,16 @@ namespace Manos.Routing.Tests
 			var data = new DataDictionary ();
 			int end;
 			
-			bool m = op.IsMatch ("foobar", 0, data, out end);
+			bool m = op.IsMatch ("foobar", 0, out data, out end);
 			
 			Assert.IsTrue (m, "a1");
-			Assert.AreEqual (0, data.Count, "a2");
+			Assert.IsNull (data, "a2");
 			Assert.AreEqual (0, end, "a3");
 			
-			m = op.IsMatch ("foobar", 3, data, out end);
+			m = op.IsMatch ("foobar", 3, out data, out end);
 			
 			Assert.IsTrue (m, "a4");
-			Assert.AreEqual (0, data.Count, "a5");
+			Assert.IsNull (data, "a5");
 			Assert.AreEqual (3, end, "a6");
 			
 		}

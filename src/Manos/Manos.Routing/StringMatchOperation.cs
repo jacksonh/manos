@@ -27,13 +27,15 @@ namespace Manos.Routing
 			}
 		}
 	
-		public bool IsMatch (string input, int start, DataDictionary data, out int end)
+		public bool IsMatch (string input, int start, out DataDictionary data, out int end)
 		{
 			if (!StartsWith (input, start, String)) {
+				data = null;
 				end = start;
 				return false;
 			}
-			
+
+			data = null;
 			end = start + String.Length;
 			return true;
 		}

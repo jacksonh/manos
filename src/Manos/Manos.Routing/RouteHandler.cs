@@ -161,14 +161,14 @@ namespace Manos.Routing {
 			DataDictionary uri_data = null;
 			if (HasPatterns) {
 				int end;
-				uri_data = new DataDictionary ();
 				
-				if (!FindPatternMatch (request.LocalPath, uri_start, uri_data, out end)) {
+				if (!FindPatternMatch (request.LocalPath, uri_start, out uri_data, out end)) {
 					return null;
 				}
 
 				if (Target != null) {
-					request.UriData.Children.Add (uri_data);
+					if (uri_data != null)
+						request.UriData.Children.Add (uri_data);
 					return Target;
 				}
 
@@ -187,21 +187,23 @@ namespace Manos.Routing {
 			return null;
 		}
 
-		public bool FindPatternMatch (string input, int start, DataDictionary uri_data, out int end)
+		public bool FindPatternMatch (string input, int start, out DataDictionary uri_data, out int end)
 		{
 			if (match_ops == null) {
+				uri_data = null;
 				end = start;
 				return false;
 			}
 			
 			foreach (IMatchOperation op in match_ops) {
-				if (op.IsMatch (input, start, uri_data, out end)) {
+				if (op.IsMatch (input, start, out uri_data, out end)) {
 					if (Children.Count () > 0 || end == input.Length) {
 						return true;
 					}
 				}
 			}
-			
+
+			uri_data = null;
 			end = start;
 			return false;
 		}

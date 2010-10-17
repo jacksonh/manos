@@ -51,7 +51,7 @@ namespace Manos.Routing.Tests
 			var col = new DataDictionary ();
 			int end;
 
-			bool m = op.IsMatch ("", 0, col, out end);
+			bool m = op.IsMatch ("", 0, out col, out end);
 			
 			Assert.IsTrue (m, "a1");
 			Assert.AreEqual (0, end, "a2");
@@ -66,19 +66,19 @@ namespace Manos.Routing.Tests
 			int end;
 			bool m;
 			
-			m = op.IsMatch ("dog", 0, col, out end);
+			m = op.IsMatch ("dog", 0, out col, out end);
 			Assert.IsTrue (m, "a1");
 			Assert.AreEqual (0, col.Count, "a2");
 			Assert.AreEqual (3, end, "a3");
 			
-			m = op.IsMatch ("log", 0, col, out end);
+			m = op.IsMatch ("log", 0, out col, out end);
 			Assert.IsTrue (m, "a4");
 			Assert.AreEqual (0, col.Count, "a5");
 			Assert.AreEqual (3, end, "a6");
 			
-			m = op.IsMatch ("fox", 0, col, out end);
+			m = op.IsMatch ("fox", 0, out col, out end);
 			Assert.IsFalse (m, "a7");
-			Assert.AreEqual (0, col.Count, "a8");
+			Assert.IsNull (col, "a8");
 			Assert.AreEqual (0, end, "a9");
 		}
 		
@@ -91,16 +91,16 @@ namespace Manos.Routing.Tests
 			int end;
 			bool m;
 			
-			m = op.IsMatch ("-manos-", 0, col, out end);
+			m = op.IsMatch ("-manos-", 0, out col, out end);
 			Assert.IsTrue (m, "a1");
 			Assert.AreEqual (1, col.Count, "a2");
 			Assert.AreEqual ("manos", col ["foo"], "a3");
 			Assert.AreEqual (7, end, "a4");
 			
 			col = new DataDictionary ();
-			m = op.IsMatch ("manos-", 0, col, out end);
+			m = op.IsMatch ("manos-", 0, out col, out end);
 			Assert.IsFalse (m, "a5");
-			Assert.AreEqual (0, col.Count, "a6");
+			Assert.IsNull (col, "a6");
 			Assert.AreEqual (0, end, "a7");
 		}
 	}
