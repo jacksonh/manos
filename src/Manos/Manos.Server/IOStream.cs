@@ -82,12 +82,20 @@ namespace Manos.Server {
 			this.socket = socket;
 			this.ioloop = ioloop;
 
+			TimeOut = TimeSpan.FromMinutes (2);
+			Expires = DateTime.UtcNow + TimeOut;
+
 			ReadChunkSize = DefaultReadChunkSize;
 
 			socket.Blocking = false;
 
 			read_watcher = new IOWatcher (socket.Handle, EventTypes.Read, ioloop.EventLoop, HandleIORead);
 			write_watcher = new IOWatcher (socket.Handle, EventTypes.Write, ioloop.EventLoop, HandleIOWrite);
+		}
+
+		~IOStream ()
+		{
+			Close ();
 		}
 
 		public IOLoop IOLoop {
@@ -109,6 +117,16 @@ namespace Manos.Server {
 		private byte [] ReadChunk {
 			get;
 			set;
+		}
+
+		public DateTime Expires {
+			get;
+			set;
+		}
+
+		public TimeSpan TimeOut {
+			get;
+			private set;
 		}
 
 		public bool IsReading {
@@ -199,11 +217,13 @@ namespace Manos.Server {
 
 		private void EnableReading ()
 		{
+			Expires = DateTime.UtcNow + TimeOut;
 			read_watcher.Start ();
 		}
 
 		private void EnableWriting ()
 		{
+			Expires = DateTime.UtcNow + TimeOut;
 			write_watcher.Start ();
 		}
 

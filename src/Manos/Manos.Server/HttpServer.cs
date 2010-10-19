@@ -27,6 +27,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Net;
+using System.Linq;
 using System.Net.Sockets;
 using System.Collections;
 using System.Collections.Generic;
@@ -54,6 +55,8 @@ namespace Manos.Server {
 		{
 			this.callback = callback;
 			this.ioloop = ioloop;
+
+			AppHost.AddTimeout (TimeSpan.FromMinutes (2), RepeatBehavior.Forever, null, ExpireTransactions);
 		}
 
 		public IOLoop IOLoop {
@@ -113,7 +116,12 @@ namespace Manos.Server {
 			}
 		}
 
-		
+		private void ExpireTransactions (ManosApp app, object data)
+		{
+			DateTime now = DateTime.UtcNow;
+			int count = transactions.Count ();
+			transactions.RemoveAll (t => t.IOStream.Expires <= now);
+		}
 	}
 }
 

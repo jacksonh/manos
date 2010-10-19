@@ -48,13 +48,13 @@ namespace Manos.Server {
 		bool Aborted {
 			get;	
 		}
-		
+
 		void Write (List<ArraySegment<byte>> data);
 
 		void SendFile (string file);
 
 		void Finish ();
-		
+
 		void Abort (int status, string message, params object [] p);
 	}
 }

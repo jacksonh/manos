@@ -46,7 +46,6 @@ namespace Manos.Server {
 		private Loop evloop;
 		private PrepareWatcher prepare_watcher;
 
-
 		public IOLoop ()
 		{
 			evloop = Loop.CreateDefaultLoop (0);
