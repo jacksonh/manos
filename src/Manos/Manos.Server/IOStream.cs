@@ -255,7 +255,11 @@ namespace Manos.Server {
 
 		private void HandleIORead (Loop loop, IOWatcher watcher, int revents)
 		{
-			HandleRead ();
+			try {
+				HandleRead ();
+			} catch (Exception e) {
+				Close ();
+			}
 		}
 		
 		private void HandleIOWrite (Loop loop, IOWatcher watcher, int revents)
