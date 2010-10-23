@@ -26,6 +26,7 @@
 
 using System;
 using System.IO;
+using System.Text;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -284,8 +285,8 @@ namespace Manos.Server
 		public void Insert (byte [] buffer, int offset, int count)
 		{
 			if (AtEnd) {
-			   Write (buffer, offset, count);
-			   return;
+				Write (buffer, offset, count);
+				return;
 			}
 
 			var segment = new ArraySegment<byte> (buffer, offset, count);
@@ -300,13 +301,18 @@ namespace Manos.Server
 
 		public override void Write (byte[] buffer, int offset, int count)
 		{
+			byte [] copy = new byte [buffer.Length];
+			Array.Copy (buffer, offset, copy, offset, count);
+			buffer = copy;
+
 			if (AtEnd) {
 				if (buffer.Length < MIN_BUFFER_SIZE) {
 					byte [] bigger = new byte [MIN_BUFFER_SIZE];
 					Array.Copy (buffer, offset, bigger, 0, count);
 					buffer = bigger;
 				}
-				segments.Add (new ArraySegment<byte> (buffer, offset, count));
+				
+				segments.Add (new ArraySegment<byte> (buffer, offset, count));				
 				current_segment = segments.Count - 1;
 				segment_offset = count;
 				return;

@@ -133,7 +133,7 @@ namespace Manos.Server {
 
 			Headers.ContentLength = fi.Length;
 	
-			WriteMetaData ();
+			WriteMetaData (false);
 			Transaction.Write (Stream.GetBuffers ());
 			Transaction.SendFile (file);
 		}
@@ -145,10 +145,10 @@ namespace Manos.Server {
 			StatusCode =  302;
 			Headers.SetNormalizedHeader ("Location", url);
 			
-			WriteMetaData ();
+			WriteMetaData (false);
 		}
 		
-		public void WriteMetaData ()
+		public void WriteMetaData (bool update_size)
 		{
 			if (metadata_written)
 			   return;
@@ -156,8 +156,11 @@ namespace Manos.Server {
 			StringBuilder builder = new StringBuilder ();
 			WriteStatusLine (builder);
 
-			if (WriteHeaders)
+			if (WriteHeaders) {
+				if (update_size)
+					Headers.ContentLength = Stream.Position;
 				Headers.Write (builder, Cookies.Values, Encoding);
+			}
 
 			byte [] data = Encoding.GetBytes (builder.ToString ());
 
@@ -169,8 +172,8 @@ namespace Manos.Server {
 		
 		public void Finish ()
 		{
-			WriteMetaData ();
-			
+			WriteMetaData (true);
+
 			Transaction.Write (Stream.GetBuffers ());
 			Transaction.Finish ();
 		}
