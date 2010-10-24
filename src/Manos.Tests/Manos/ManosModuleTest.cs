@@ -27,6 +27,7 @@ using System;
 using NUnit.Framework;
 
 using Manos;
+using Manos.Http;
 using Manos.Routing;
 using Manos.Testing;
 using Manos.Server.Testing;
@@ -94,8 +95,9 @@ namespace Manos.Tests
 		[Test]
 		public void TestRouteToTarget ()
 		{
-			string [] methods = new string [] {
-				"GET", "PUT", "POST", "HEAD", "DELETE", "TRACE", "OPTIONS",
+			HttpMethod [] methods = new HttpMethod [] {
+				HttpMethod.HTTP_GET, HttpMethod.HTTP_PUT, HttpMethod.HTTP_POST, HttpMethod.HTTP_HEAD,
+				HttpMethod.HTTP_DELETE, HttpMethod.HTTP_TRACE, HttpMethod.HTTP_OPTIONS,
 			};
 			
 			for (int i = 0; i < methods.Length; i++) {
@@ -133,8 +135,9 @@ namespace Manos.Tests
 		[Test]
 		public void TestRouteToModule ()
 		{
-			string [] methods = new string [] {
-				"GET", "PUT", "POST", "HEAD", "DELETE", "TRACE", "OPTIONS",
+			HttpMethod [] methods = new HttpMethod [] {
+				HttpMethod.HTTP_GET, HttpMethod.HTTP_PUT, HttpMethod.HTTP_POST, HttpMethod.HTTP_HEAD,
+				HttpMethod.HTTP_DELETE, HttpMethod.HTTP_TRACE, HttpMethod.HTTP_OPTIONS,
 			};
 			
 			for (int i = 0; i < methods.Length; i++) {
@@ -154,12 +157,12 @@ namespace Manos.Tests
 		public void TestGetToTarget ()
 		{
 			var m = new MockManosModule ();
-			var req = new MockHttpRequest ("GET", "/Foobar");
+			var req = new MockHttpRequest (HttpMethod.HTTP_GET, "/Foobar");
 			
 			m.Get ("/Foobar", new ManosAction (FakeAction));
 			Assert.AreEqual (new ManosAction (FakeAction), m.Routes.Find (req).Action);
 			
-			req = new MockHttpRequest ("POST", "/Foobar");
+			req = new MockHttpRequest (HttpMethod.HTTP_POST, "/Foobar");
 			Assert.IsNull (m.Routes.Find (req));
 		}
 		
@@ -167,7 +170,7 @@ namespace Manos.Tests
 		public void TestGetToModule ()
 		{
 			var m = new MockManosModule ();
-			var req = new MockHttpRequest ("GET", "/FakeModule/FakeAction");
+			var req = new MockHttpRequest (HttpMethod.HTTP_GET, "/FakeModule/FakeAction");
 			
 			m.Get ("/FakeModule", new FakeModule ());
 			
@@ -176,7 +179,7 @@ namespace Manos.Tests
 			//
 			Assert.AreEqual (new ManosAction (FakeModule.FakeAction), m.Routes.Find (req).Action);
 			
-			req = new MockHttpRequest ("POST", "/FakeModule/FakeAction");
+			req = new MockHttpRequest (HttpMethod.HTTP_POST, "/FakeModule/FakeAction");
 			Assert.IsNull (m.Routes.Find (req));
 		}
 		
@@ -184,12 +187,12 @@ namespace Manos.Tests
 		public void TestPutToTarget ()
 		{
 			var m = new MockManosModule ();
-			var req = new MockHttpRequest ("PUT", "/Foobar");
+			var req = new MockHttpRequest (HttpMethod.HTTP_PUT, "/Foobar");
 			
 			m.Put ("/Foobar", new ManosAction (FakeAction));
 			Assert.AreEqual (new ManosAction (FakeAction), m.Routes.Find (req).Action);
 			
-			req = new MockHttpRequest ("POST", "/Foobar");
+			req = new MockHttpRequest (HttpMethod.HTTP_POST, "/Foobar");
 			Assert.IsNull (m.Routes.Find (req));
 		}
 		
@@ -197,7 +200,7 @@ namespace Manos.Tests
 		public void TestPutToModule ()
 		{
 			var m = new MockManosModule ();
-			var req = new MockHttpRequest ("PUT", "/FakeModule/FakeAction");
+			var req = new MockHttpRequest (HttpMethod.HTTP_PUT, "/FakeModule/FakeAction");
 			
 			m.Put ("/FakeModule", new FakeModule ());
 			
@@ -206,7 +209,7 @@ namespace Manos.Tests
 			//
 			Assert.AreEqual (new ManosAction (FakeModule.FakeAction), m.Routes.Find (req).Action);
 			
-			req = new MockHttpRequest ("POST", "/FakeModule/FakeAction");
+			req = new MockHttpRequest (HttpMethod.HTTP_POST, "/FakeModule/FakeAction");
 			Assert.IsNull (m.Routes.Find (req));
 		}
 		
@@ -214,12 +217,12 @@ namespace Manos.Tests
 		public void TestPostToTarget ()
 		{
 			var m = new MockManosModule ();
-			var req = new MockHttpRequest ("POST", "/Foobar");
+			var req = new MockHttpRequest (HttpMethod.HTTP_POST, "/Foobar");
 			
 			m.Post ("/Foobar", new ManosAction (FakeAction));
 			Assert.AreEqual (new ManosAction (FakeAction), m.Routes.Find (req).Action);
 			
-			req = new MockHttpRequest ("GET", "/Foobar");
+			req = new MockHttpRequest (HttpMethod.HTTP_GET, "/Foobar");
 			Assert.IsNull (m.Routes.Find (req));
 		}
 		
@@ -227,7 +230,7 @@ namespace Manos.Tests
 		public void TestPostToModule ()
 		{
 			var m = new MockManosModule ();
-			var req = new MockHttpRequest ("POST", "/FakeModule/FakeAction");
+			var req = new MockHttpRequest (HttpMethod.HTTP_POST, "/FakeModule/FakeAction");
 			
 			m.Post ("/FakeModule", new FakeModule ());
 			
@@ -236,7 +239,7 @@ namespace Manos.Tests
 			//
 			Assert.AreEqual (new ManosAction (FakeModule.FakeAction), m.Routes.Find (req).Action);
 			
-			req = new MockHttpRequest ("GET", "/FakeModule/FakeAction");
+			req = new MockHttpRequest (HttpMethod.HTTP_GET, "/FakeModule/FakeAction");
 			Assert.IsNull (m.Routes.Find (req));
 		}
 		
@@ -244,12 +247,12 @@ namespace Manos.Tests
 		public void TestDeleteToTarget ()
 		{
 			var m = new MockManosModule ();
-			var req = new MockHttpRequest ("DELETE", "/Foobar");
+			var req = new MockHttpRequest (HttpMethod.HTTP_DELETE, "/Foobar");
 			
 			m.Delete ("/Foobar", new ManosAction (FakeAction));
 			Assert.AreEqual (new ManosAction (FakeAction), m.Routes.Find (req).Action);
 			
-			req = new MockHttpRequest ("GET", "/Foobar");
+			req = new MockHttpRequest (HttpMethod.HTTP_GET, "/Foobar");
 			Assert.IsNull (m.Routes.Find (req));
 		}
 		
@@ -257,7 +260,7 @@ namespace Manos.Tests
 		public void TestDeleteToModule ()
 		{
 			var m = new MockManosModule ();
-			var req = new MockHttpRequest ("DELETE", "/FakeModule/FakeAction");
+			var req = new MockHttpRequest (HttpMethod.HTTP_DELETE, "/FakeModule/FakeAction");
 			
 			m.Delete ("/FakeModule", new FakeModule ());
 			
@@ -266,7 +269,7 @@ namespace Manos.Tests
 			//
 			Assert.AreEqual (new ManosAction (FakeModule.FakeAction), m.Routes.Find (req).Action);
 			
-			req = new MockHttpRequest ("GET", "/FakeModule/FakeAction");
+			req = new MockHttpRequest (HttpMethod.HTTP_GET, "/FakeModule/FakeAction");
 			Assert.IsNull (m.Routes.Find (req));
 		}
 		
@@ -274,12 +277,12 @@ namespace Manos.Tests
 		public void TestHeadToTarget ()
 		{
 			var m = new MockManosModule ();
-			var req = new MockHttpRequest ("HEAD", "/Foobar");
+			var req = new MockHttpRequest (HttpMethod.HTTP_HEAD, "/Foobar");
 			
 			m.Head ("/Foobar", new ManosAction (FakeAction));
 			Assert.AreEqual (new ManosAction (FakeAction), m.Routes.Find (req).Action);
 			
-			req = new MockHttpRequest ("GET", "/Foobar");
+			req = new MockHttpRequest (HttpMethod.HTTP_GET, "/Foobar");
 			Assert.IsNull (m.Routes.Find (req));
 		}
 		
@@ -287,7 +290,7 @@ namespace Manos.Tests
 		public void TestHeadToModule ()
 		{
 			var m = new MockManosModule ();
-			var req = new MockHttpRequest ("HEAD", "/FakeModule/FakeAction");
+			var req = new MockHttpRequest (HttpMethod.HTTP_HEAD, "/FakeModule/FakeAction");
 			
 			m.Head ("/FakeModule", new FakeModule ());
 			
@@ -296,7 +299,7 @@ namespace Manos.Tests
 			//
 			Assert.AreEqual (new ManosAction (FakeModule.FakeAction), m.Routes.Find (req).Action);
 			
-			req = new MockHttpRequest ("GET", "/FakeModule/FakeAction");
+			req = new MockHttpRequest (HttpMethod.HTTP_GET, "/FakeModule/FakeAction");
 			Assert.IsNull (m.Routes.Find (req));
 		}
 		
@@ -304,12 +307,12 @@ namespace Manos.Tests
 		public void TestOptionsToTarget ()
 		{
 			var m = new MockManosModule ();
-			var req = new MockHttpRequest ("OPTIONS", "/Foobar");
+			var req = new MockHttpRequest (HttpMethod.HTTP_OPTIONS, "/Foobar");
 			
 			m.Options ("/Foobar", new ManosAction (FakeAction));
 			Assert.AreEqual (new ManosAction (FakeAction), m.Routes.Find (req).Action);
 			
-			req = new MockHttpRequest ("GET", "/Foobar");
+			req = new MockHttpRequest (HttpMethod.HTTP_GET, "/Foobar");
 			Assert.IsNull (m.Routes.Find (req));
 		}
 		
@@ -317,7 +320,7 @@ namespace Manos.Tests
 		public void TestOptionsToModule ()
 		{
 			var m = new MockManosModule ();
-			var req = new MockHttpRequest ("OPTIONS", "/FakeModule/FakeAction");
+			var req = new MockHttpRequest (HttpMethod.HTTP_OPTIONS, "/FakeModule/FakeAction");
 			
 			m.Options ("/FakeModule", new FakeModule ());
 			
@@ -326,7 +329,7 @@ namespace Manos.Tests
 			//
 			Assert.AreEqual (new ManosAction (FakeModule.FakeAction), m.Routes.Find (req).Action);
 			
-			req = new MockHttpRequest ("GET", "/FakeModule/FakeAction");
+			req = new MockHttpRequest (HttpMethod.HTTP_GET, "/FakeModule/FakeAction");
 			Assert.IsNull (m.Routes.Find (req));
 		}
 		
@@ -334,12 +337,12 @@ namespace Manos.Tests
 		public void TestTraceToTarget ()
 		{
 			var m = new MockManosModule ();
-			var req = new MockHttpRequest ("TRACE", "/Foobar");
+			var req = new MockHttpRequest (HttpMethod.HTTP_TRACE, "/Foobar");
 			
 			m.Trace ("/Foobar", new ManosAction (FakeAction));
 			Assert.AreEqual (new ManosAction (FakeAction), m.Routes.Find (req).Action);
 			
-			req = new MockHttpRequest ("GET", "/Foobar");
+			req = new MockHttpRequest (HttpMethod.HTTP_GET, "/Foobar");
 			Assert.IsNull (m.Routes.Find (req));
 		}
 		
@@ -347,7 +350,7 @@ namespace Manos.Tests
 		public void TestTraceToModule ()
 		{
 			var m = new MockManosModule ();
-			var req = new MockHttpRequest ("TRACE", "/FakeModule/FakeAction");
+			var req = new MockHttpRequest (HttpMethod.HTTP_TRACE, "/FakeModule/FakeAction");
 			
 			m.Trace ("/FakeModule", new FakeModule ());
 			
@@ -356,7 +359,7 @@ namespace Manos.Tests
 			//
 			Assert.AreEqual (new ManosAction (FakeModule.FakeAction), m.Routes.Find (req).Action);
 			
-			req = new MockHttpRequest ("GET", "/FakeModule/FakeAction");
+			req = new MockHttpRequest (HttpMethod.HTTP_GET, "/FakeModule/FakeAction");
 			Assert.IsNull (m.Routes.Find (req));
 		}
 		
@@ -365,7 +368,7 @@ namespace Manos.Tests
 		{
 			var m = new FakeModuleWithInitializedModuleProperty ();
 			
-			var request = new MockHttpRequest ("GET", "/MyModule/FakeAction");
+			var request = new MockHttpRequest (HttpMethod.HTTP_GET, "/MyModule/FakeAction");
 			var r = m.Routes.Find (request);
 			Assert.IsNotNull (r);
 		}
@@ -375,7 +378,7 @@ namespace Manos.Tests
 		{
 			var m = new FakeModuleWithUninitializedModuleProperty ();
 			
-			var request = new MockHttpRequest ("GET", "/MyModule/FakeAction");
+			var request = new MockHttpRequest (HttpMethod.HTTP_GET, "/MyModule/FakeAction");
 			var r = m.Routes.Find (request);
 			Assert.IsNotNull (r);
 		}
@@ -385,7 +388,7 @@ namespace Manos.Tests
 		{
 			var m = new FakeModuleWithUninitializedModulePropertyAndNoPublicSetter ();
 			
-			var request = new MockHttpRequest ("GET", "/MyModule/FakeAction");
+			var request = new MockHttpRequest (HttpMethod.HTTP_GET, "/MyModule/FakeAction");
 			var r = m.Routes.Find (request);
 			Assert.IsNotNull (r);
 		}

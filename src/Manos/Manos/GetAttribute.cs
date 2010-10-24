@@ -27,6 +27,7 @@
 using System;
 using System.Reflection;
 
+using Manos.Http;
 
 namespace Manos {
 
@@ -39,7 +40,7 @@ namespace Manos {
 
 		public GetAttribute (params string [] patterns) : base (patterns)
 		{
-			Methods = new string [] { "GET" };
+			Methods = new HttpMethod [] { HttpMethod.HTTP_GET };
 		}
 	}
 }

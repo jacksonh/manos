@@ -23,40 +23,31 @@
 //
 
 
-using System;
-using System.Reflection;
+namespace Manos.Http {
 
-using Manos.Http;
-
-namespace Manos {
-
-	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-	public abstract class HttpMethodAttribute : Attribute {
-
-		public HttpMethodAttribute ()
-		{
-		}
-
-		public HttpMethodAttribute (string [] patterns)
-		{
-			Patterns = patterns;
-		}
-
-		public string Name {
-			get;
-			set;
-		}
-
-		public HttpMethod [] Methods {
-			get;
-			protected set;
-		}
-
-		public string [] Patterns {
-			get;
-			private set;
-		}
+	enum HState {
+		general
+		, C
+		, CO
+		, CON
+		
+		, matching_connection
+		, matching_proxy_connection
+		, matching_content_length
+		, matching_transfer_encoding
+		, matching_upgrade
+		
+		, connection
+		, content_length
+		, transfer_encoding
+		, upgrade
+		
+		, matching_transfer_encoding_chunked
+		, matching_connection_keep_alive
+		, matching_connection_close
+		
+		, transfer_encoding_chunked
+		, connection_keep_alive
+		, connection_close
 	}
 }
-
-

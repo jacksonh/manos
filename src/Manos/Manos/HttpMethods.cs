@@ -25,20 +25,27 @@
 
 using System;
 
+using Manos.Http;
 
 namespace Manos {
 
 	public static class HttpMethods {
 
-		public static readonly string [] GetMethods = new string [] { "GET" };
-		public static readonly string [] HeadMethods = new string [] { "HEAD" };
-		public static readonly string [] PostMethods = new string [] { "POST" };
-		public static readonly string [] PutMethods = new string [] { "PUT" };
-		public static readonly string [] DeleteMethods = new string [] { "DELETE" };
-		public static readonly string [] TraceMethods = new string [] { "TRACE" };
-		public static readonly string [] OptionsMethods = new string [] { "OPTIONS" };
+		public static readonly HttpMethod [] GetMethods = new HttpMethod [] { HttpMethod.HTTP_GET };
+		public static readonly HttpMethod [] HeadMethods = new HttpMethod [] { HttpMethod.HTTP_HEAD };
+		public static readonly HttpMethod [] PostMethods = new HttpMethod [] { HttpMethod.HTTP_POST };
+		public static readonly HttpMethod [] PutMethods = new HttpMethod [] { HttpMethod.HTTP_PUT };
+		public static readonly HttpMethod [] DeleteMethods = new HttpMethod [] { HttpMethod.HTTP_DELETE };
+		public static readonly HttpMethod [] TraceMethods = new HttpMethod [] { HttpMethod.HTTP_TRACE };
+		public static readonly HttpMethod [] OptionsMethods = new HttpMethod [] { HttpMethod.HTTP_OPTIONS };
 		
-		public static readonly string [] RouteMethods = new string [] { "GET", "PUT", "POST", "HEAD", "DELETE", "TRACE", "OPTIONS" };
+		public static readonly HttpMethod [] RouteMethods = new HttpMethod [] { HttpMethod.HTTP_GET,
+											HttpMethod.HTTP_PUT,
+											HttpMethod.HTTP_POST,
+											HttpMethod.HTTP_HEAD,
+											HttpMethod.HTTP_DELETE,
+											HttpMethod.HTTP_TRACE,
+											HttpMethod.HTTP_OPTIONS };
 
 	}
 }

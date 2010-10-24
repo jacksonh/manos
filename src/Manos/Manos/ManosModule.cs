@@ -32,6 +32,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
+using Manos.Http;
 using Manos.Server;
 using Manos.Routing;
 using Manos.Caching;
@@ -59,7 +60,7 @@ namespace Manos {
 			}
 		}
 		
-		private RouteHandler AddRouteHandler (ManosModule module, string [] patterns, string [] methods)
+		private RouteHandler AddRouteHandler (ManosModule module, string [] patterns, HttpMethod [] methods)
 		{
 			if (module == null)
 				throw new ArgumentNullException ("module");
@@ -74,12 +75,12 @@ namespace Manos {
 			return module.Routes;
 		}
 
-		private RouteHandler AddRouteHandler (ManosAction action, string [] patterns, string [] methods)
+		private RouteHandler AddRouteHandler (ManosAction action, string [] patterns, HttpMethod [] methods)
 		{
 			return AddRouteHandler (new ActionTarget (action), patterns, methods);
 		}
 		
-		private RouteHandler AddRouteHandler (IManosTarget target, string [] patterns, string [] methods)
+		private RouteHandler AddRouteHandler (IManosTarget target, string [] patterns, HttpMethod [] methods)
 		{
 			// TODO: Need to decide if this is a good or bad idea
 			// RemoveImplicitHandlers (action);
@@ -96,7 +97,7 @@ namespace Manos {
 			return res;
 		}
 
-		private RouteHandler AddImplicitRouteHandler (ManosModule module, string [] patterns, string [] methods)
+		private RouteHandler AddImplicitRouteHandler (ManosModule module, string [] patterns, HttpMethod [] methods)
 		{
 			module.Routes.IsImplicit = true;
 			module.Routes.Patterns = patterns;
@@ -105,7 +106,7 @@ namespace Manos {
 			return module.Routes;
 		}
 
-		private RouteHandler AddImplicitRouteHandler (IManosTarget target, string [] patterns, string [] methods)
+		private RouteHandler AddImplicitRouteHandler (IManosTarget target, string [] patterns, HttpMethod [] methods)
 		{
 			RouteHandler res = new RouteHandler (patterns, methods, target) {
 				IsImplicit = true,

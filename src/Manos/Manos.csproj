@@ -50,6 +50,16 @@
     <Compile Include="Manos\PostAttribute.cs" />
     <Compile Include="Manos\PutAttribute.cs" />
     <Compile Include="Manos\TraceAttribute.cs" />
+    <Compile Include="Manos.Http\HState.cs" />
+    <Compile Include="Manos.Http\HttpCallback.cs" />
+    <Compile Include="Manos.Http\HttpDataCallback.cs" />
+    <Compile Include="Manos.Http\HttpErrorCallback.cs" />
+    <Compile Include="Manos.Http\HttpException.cs" />
+    <Compile Include="Manos.Http\HttpMethod.cs" />
+    <Compile Include="Manos.Http\HttpParser.cs" />
+    <Compile Include="Manos.Http\ParserSettings.cs" />
+    <Compile Include="Manos.Http\ParserType.cs" />
+    <Compile Include="Manos.Http\State.cs" />
     <Compile Include="Manos.Routing\RouteHandler.cs" />
     <Compile Include="Manos.Server\ByteUtils.cs" />
     <Compile Include="Manos.Server\HttpException.cs" />
@@ -104,6 +114,7 @@
     <Compile Include="Manos\ManosPipe.cs" />
     <Compile Include="Manos.Server\RequestDataDictionary.cs" />
     <Compile Include="Manos.Collections\DataDictionary.cs" />
+    <Compile Include="Manos.Collections\ByteBuffer.cs" />
     <Compile Include="Manos\RouteAttribute.cs" />
     <Compile Include="Manos\UnsafeString.cs" />
     <Compile Include="Manos.Server\HttpCookie.cs" />

@@ -26,6 +26,7 @@
 using System;
 using System.Reflection;
 
+using Manos.Http;
 
 namespace Manos {
 
@@ -38,7 +39,7 @@ namespace Manos {
 
 		public OptionsAttribute (params string [] patterns) : base (patterns)
 		{
-			Methods = new string [] { "OPTIONS" };
+			Methods = new HttpMethod [] { HttpMethod.HTTP_OPTIONS };
 		}
 	}
 }

@@ -30,10 +30,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
-
-
-using Manos.Server;
 using System.Collections.Specialized;
+
+using Manos.Http;
+using Manos.Server;
 using Manos.Collections;
 
 namespace Manos.Routing {
@@ -41,7 +41,7 @@ namespace Manos.Routing {
 	public class RouteHandler : IEnumerable<RouteHandler> {
 
 		private ObservableCollection<string> patterns;
-		private List<string> methods;
+		private List<HttpMethod> methods;
 
 		private IMatchOperation [] match_ops;
 
@@ -56,32 +56,32 @@ namespace Manos.Routing {
 				throw new InvalidOperationException ("Can not add Children to a RouteHandler that has a Target set.");	
 		}
 
-		public RouteHandler (string pattern, string [] methods) : this (new string [] { pattern }, methods)
+		public RouteHandler (string pattern, HttpMethod [] methods) : this (new string [] { pattern }, methods)
 		{
 		}
 		
-		public RouteHandler (string pattern, string [] methods, IManosTarget target) : this (new string [] { pattern }, methods, target)
+		public RouteHandler (string pattern, HttpMethod [] methods, IManosTarget target) : this (new string [] { pattern }, methods, target)
 		{
 		}
 		
-		public RouteHandler (string pattern, string method) : this (new string [] { pattern }, new string [] { method })
+		public RouteHandler (string pattern, HttpMethod method) : this (new string [] { pattern }, new HttpMethod [] { method })
 		{
 		}
 		
-		public RouteHandler (string pattern, string method, IManosTarget target) : this (new string [] { pattern }, new string [] { method }, target)
+		public RouteHandler (string pattern, HttpMethod method, IManosTarget target) : this (new string [] { pattern }, new HttpMethod [] { method }, target)
 		{
 		}
 		
-		public RouteHandler (string [] patterns, string [] methods) : this (patterns, methods, null)
+		public RouteHandler (string [] patterns, HttpMethod [] methods) : this (patterns, methods, null)
 		{
 		}
 
-		public RouteHandler (string [] patterns, string [] methods, IManosTarget target)
+		public RouteHandler (string [] patterns, HttpMethod [] methods, IManosTarget target)
 		{
 			Target = target;
 
 			Patterns = new List<string> (patterns);
-			this.methods = new List<string> (methods);
+			this.methods = new List<HttpMethod> (methods);
 
 			SetupChildrenCollection ();
 		}
@@ -121,13 +121,13 @@ namespace Manos.Routing {
 			}
 		}
 
-		public IList<string> Methods {
+		public IList<HttpMethod> Methods {
 			get { return methods; }
 			set {
 				if (value == null)
 					methods = null;
 				else
-					methods = new List<string> (value); 
+					methods = new List<HttpMethod> (value); 
 			}
 		}
 

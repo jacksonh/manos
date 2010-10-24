@@ -35,6 +35,7 @@ using System.Collections.Generic;
 
 using Mono.Unix.Native;
 
+using Manos.Http;
 using Manos.Collections;
 
 namespace Manos.Server {
@@ -53,6 +54,11 @@ namespace Manos.Server {
 		private bool aborted;
 		private bool connection_finished;
 
+		private HttpParser parser;
+		private ParserSettings parser_settings;
+
+		private string current_header_field;
+
 		private Queue<IWriteOperation> write_ops;
 		
 		public HttpTransaction (HttpServer server, IOStream stream, Socket socket, HttpConnectionCallback callback)
@@ -65,7 +71,12 @@ namespace Manos.Server {
 			write_ops = new Queue<IWriteOperation> ();
 
 			stream.OnClose (OnClose);
-			stream.ReadUntil ("\r\n\r\n", OnHeaders);
+
+			parser_settings = CreateParserSettings ();
+			parser = new HttpParser ();
+
+			stream.ReadBytes (-1, OnBytesRead);
+			// stream.ReadUntil ("\r\n\r\n", OnHeaders);
 		}
 
 		public HttpServer Server {
@@ -191,14 +202,15 @@ namespace Manos.Server {
 			} else 
 				IOStream.DisableWriting ();
 
-			IOStream.ReadUntil ("\r\n\r\n", OnHeaders);
+			// IOStream.ReadUntil ("\r\n\r\n", OnHeaders);
 		}
 
 		private void OnClose (IOStream stream)
 		{
 		}
 
-		private void OnHeaders (IOStream stream, byte [] data)
+		/*
+		private void OnHeaders (IOStream stream, byte [] data, int offset, int count)
 		{
 			string h = Encoding.ASCII.GetString (data);
 			StringReader reader = new StringReader (h);
@@ -230,6 +242,7 @@ namespace Manos.Server {
 			stream.DisableReading ();
 			Server.RunTransaction (this);
 		}
+		*/
 
 		private void ParseStartLine (string line, out string verb, out string path, out string version)
 		{
@@ -251,6 +264,7 @@ namespace Manos.Server {
 
 		private void HandleLargeBody ()
 		{
+			/*
 			if (Request.Method != "POST" && Request.Method != "PUT")
 				throw new InvalidOperationException ("Large Request bodies are only allowed with PUT or POST operations.");
 
@@ -269,10 +283,12 @@ namespace Manos.Server {
 			});
 
 			parser.ParseParts ();
+			*/
 		}
 
 		private void HandleBody ()
 		{
+			/*
 			if (Request.Method == "POST" || Request.Method == "PUT") {
 				string ct = Request.Headers ["Content-Type"];
 				if (ct != null && ct.StartsWith ("application/x-www-form-urlencoded", StringComparison.InvariantCultureIgnoreCase))
@@ -282,14 +298,133 @@ namespace Manos.Server {
 					if (boundary == null)
 			   		        throw new InvalidOperationException ("Invalid content type boundary.");
 
-					IOStream.ReadBytes ((int) Request.Headers.ContentLength, (ios, data) => {
+					IOStream.ReadBytes ((int) Request.Headers.ContentLength, (ios, data, offset, count) => {
 						OnMultiPartFormData (boundary, data);
 					});
 				}
 			}
+			*/
 		}
 
-		private void OnWwwFormData (IOStream stream, byte [] data)
+		private void OnBytesRead (IOStream stream, byte [] data, int offset, int count)
+		{
+			ByteBuffer bytes = new ByteBuffer (data, offset, count);
+
+			parser.Execute (parser_settings, bytes);
+		}
+
+		private int OnPath (HttpParser parser, ByteBuffer data, int pos, int len)
+		{
+			string str = Encoding.ASCII.GetString (data.Bytes, pos, len);
+
+			Request.LocalPath = str;
+			return 0;
+		}
+
+		private int OnQueryString (HttpParser parser, ByteBuffer data, int pos, int len)
+		{
+			string str = Encoding.ASCII.GetString (data.Bytes, pos, len);
+
+			Request.QueryData = HttpUtility.ParseUrlEncodedData (str);
+
+			return 0;
+		}
+
+		private int OnMessageBegin (HttpParser parser)
+		{
+			Request = new HttpRequest (this);
+
+			return 0;
+		}
+
+		private int OnMessageComplete (HttpParser parser)
+		{
+			OnFinishedReading ();
+			return 0;
+		}
+
+		public int OnHeaderField (HttpParser parser, ByteBuffer data, int pos, int len)
+		{
+			string str = Encoding.ASCII.GetString (data.Bytes, pos, len);
+
+			current_header_field = str;
+			return 0;
+		}
+
+		public int OnHeaderValue (HttpParser parser, ByteBuffer data, int pos, int len)
+		{
+			string str = Encoding.ASCII.GetString (data.Bytes, pos, len);
+
+			if (current_header_field == null)
+				throw new HttpException ("Header Value raised with no header field set.");
+
+			try {
+				Request.Headers.SetHeader (current_header_field, str);
+				current_header_field = null;
+			} catch (Exception e) {
+				Console.WriteLine (e);
+			}
+			
+			return 0;
+		}
+
+		private int OnHeadersComplete (HttpParser parser)
+		{
+			//
+			// TODO: Wait, is this illegal? HTTP book is on the other side of the room...
+			//
+			if (current_header_field != null)
+				throw new HttpException ("Header field with no value.");
+
+			// TODO: Set HTTP version here
+			Request.Method = parser.HttpMethod;
+			return 0;
+		}
+
+		private void OnFinishedReading ()
+		{
+			try {
+				IOStream.DisableReading ();
+				Response = new HttpResponse (this, Encoding.Default);
+
+				Server.RunTransaction (this);
+			} catch (Exception e) {
+				Console.WriteLine ("Exception while running transaction");
+				Console.WriteLine (e);
+			}
+		}
+
+		private ParserSettings CreateParserSettings ()
+		{
+			ParserSettings settings = new ParserSettings ();
+
+			settings.OnError = OnParserError;
+
+			settings.OnPath = OnPath;
+			settings.OnQueryString = OnQueryString;
+
+			settings.OnMessageBegin = OnMessageBegin;
+			settings.OnMessageComplete = OnMessageComplete;
+
+			settings.OnHeaderField = OnHeaderField;
+			settings.OnHeaderValue = OnHeaderValue;
+			settings.OnHeadersComplete = OnHeadersComplete;
+
+			/*
+			
+			settings.OnBody = OnBody;
+			*/
+
+			return settings;
+		}
+
+		private void OnParserError (HttpParser parser, string message, ByteBuffer buffer, int initial_position)
+		{
+			Server.RemoveTransaction (this);
+			IOStream.Close ();
+		}
+
+		private void OnWwwFormData (IOStream stream, byte [] data, int offset, int count)
 		{
 			//
 			// The best I can tell, you can't actually set the content-type of

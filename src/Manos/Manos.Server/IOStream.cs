@@ -38,7 +38,7 @@ using Mono.Unix.Native;
 namespace Manos.Server {
 
 	public delegate void CloseCallback (IOStream stream);
-	public delegate void ReadCallback (IOStream stream, byte [] data);
+	public delegate void ReadCallback (IOStream stream, byte [] data, int offset, int count);
 	public delegate void WriteCallback ();
 
 	public class IOStream {
@@ -169,7 +169,11 @@ namespace Manos.Server {
 			read_bytes = num_bytes;
 			read_callback = callback;
 
-			if (read_buffer != null && read_buffer.Position >= num_bytes) {
+			if (read_buffer != null && num_bytes == -1) {
+				// If there is some queued data immediately call the callback.
+				read_callback (this, read_buffer.GetBuffer (), 0, (int) read_buffer.Position);
+				read_buffer.Position = 0;
+			} else if (read_buffer != null && read_buffer.Position >= num_bytes) {
 				FinishRead (num_bytes);
 				return;
 			}
@@ -229,11 +233,13 @@ namespace Manos.Server {
 
 		public void DisableReading ()
 		{
+			read_callback = null;
 			read_watcher.Stop ();
 		}
 
 		public void DisableWriting ()
 		{
+			write_callback = null;
 			write_watcher.Stop ();
 		}
 
@@ -298,24 +304,31 @@ namespace Manos.Server {
 				return;
 			}
 
-			if (read_buffer == null)
-				read_buffer = new MemoryStream ();
+			if (read_delimiter != null || read_bytes != -1) {
+				if (read_buffer == null)
+					read_buffer = new MemoryStream ();
 
-			read_buffer.Write (ReadChunk, 0, size);
-			read_buffer.Flush ();
+				read_buffer.Write (ReadChunk, 0, size);
+				read_buffer.Flush ();
 
-			if (read_bytes != -1) {
-				if (read_buffer.Position >= read_bytes) {
-					FinishRead (read_bytes);
+				if (read_bytes != -1) {
+					if (read_buffer.Position >= read_bytes) {
+						FinishRead (read_bytes);
+					}
+					return;
+				}
+
+				if (read_delimiter != null) {
+					int delimiter = FindDelimiter ();
+					if (delimiter != -1) {
+						FinishRead (delimiter);
+					}
+					return;
 				}
 			}
 
-			if (read_delimiter != null) {
-				int delimiter = FindDelimiter ();
-				if (delimiter != -1) {
-					FinishRead (delimiter);
-				}
-			}
+			// We are doing an indefinite read
+			read_callback (this, ReadChunk, 0, size);
 		}
 
 		private void HandleSendFile ()
@@ -427,7 +440,7 @@ namespace Manos.Server {
 			read_buffer.Position = 0;
 			read_buffer.Write (data, end, length - end);
 			
-			callback (this, read);
+			callback (this, read, 0, end);
 		}
 
 		private void FinishWrite ()
