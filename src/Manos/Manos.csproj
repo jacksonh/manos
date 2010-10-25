@@ -33,9 +33,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Mono.Posix" />
-    <Reference Include="libev-sharp, Version=0.0.1.0, Culture=neutral">
-      <Package>libev-sharp</Package>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Manos\DeleteAttribute.cs" />
@@ -119,6 +116,16 @@
     <Compile Include="Manos.Template\ITemplateCodegen.cs" />
     <Compile Include="Manos.Template\Expression.cs" />
     <Compile Include="Manos.Template\TemplateFactory.cs" />
+    <Compile Include="Libev\CheckWatcher.cs" />
+    <Compile Include="Libev\EventTypes.cs" />
+    <Compile Include="Libev\IOWatcher.cs" />
+    <Compile Include="Libev\Loop.cs" />
+    <Compile Include="Libev\LoopType.cs" />
+    <Compile Include="Libev\PrepareWatcher.cs" />
+    <Compile Include="Libev\TimerWatcher.cs" />
+    <Compile Include="Libev\UnloopType.cs" />
+    <Compile Include="Libev\UnmanagedWatcherCallback.cs" />
+    <Compile Include="Libev\Watcher.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -129,7 +136,6 @@
     <Folder Include="Manos.Server\" />
     <Folder Include="Manos.Caching\" />
     <Folder Include="Manos.Collections\" />
-    <Folder Include="Manos.Util\" />
     <Folder Include="Manos.Util\" />
   </ItemGroup>
   <ItemGroup>
