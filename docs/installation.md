@@ -15,11 +15,9 @@ Dependencies
 
 Manos's requires Mono 2.8 or higher. Mono is available from <http://mono-project.com/>
 
-Mano's also requires the managed libev library and the libev-sharp wrapper.  Libev should be available in a packages format, libev-sharp needs to be downloaded and compiled from source.
+Mano's also requires the unmanaged libev library. Libev should be available in a packages format from your distro or homebrew for OS X users.
 
 Libev can be found here: <http://software.schmorp.de/pkg/libev.html>
-
-libev-sharp can be found here: <http://github.com/jacksonh/libev-sharp>
 
 Files
 -----
@@ -79,19 +77,6 @@ You should now have a libev.dylib in /opt/local/lib/ to make sure Mono knows whe
     export DYLD_FALLBACK_LIBRARY_PATH=/opt/local/lib
 
 
-### Install libev-sharp
-
-libev-sharp is a managed wrapper around libev.  The best way to install it is to grab it from my github:
-
-    git clone https://jacksonh@github.com/jacksonh/libev-sharp.git
-    cd libev-sharp
-    ./configue
-    make
-    sudo make install
-
-This will install libev-sharp.dll into your /usr/local/lib/libev-sharp directory and will also install a pkg-config file.
-
-
 ### Install Manos
 
 Now that all the dependencies are installed you should be able to build and install Manos.
@@ -102,7 +87,7 @@ Now that all the dependencies are installed you should be able to build and inst
     make
     sudo make install
 
-This will install Manos.dll, manos.exe and libev-sharp.dll into /usr/local/lib/manos. As well as a .pc file and a manos script for invoking manos.exe
+This will install Manos.dll and manos.exe into /usr/local/lib/manos. As well as a .pc file and a manos script for invoking manos.exe
 
 ### Confirm your installation
 
@@ -116,15 +101,7 @@ and navigate to http://localhost:8181/ in your browser.
 ### Trouble Shooting
 
 
-1. If your build fails because libev-sharp isn't found, you can manually copy it into your manos/build/ directory.
-
-    erp:manos jackson$ cp /usr/local/lib/libev-sharp.dll* build/.
-
-Note that you want to cp libev-sharp.dll* not just libev-sharp.dll.  That way you'll get the .mdb debugging file copied over also.
-
-
-
-2.  If you are getting a type load exception, make sure you have the universal libev installed:
+1.  If you are getting a type load exception, make sure you have the universal libev installed:
 
     erp:~ jackson$ cd /opt/local/lib
     
@@ -172,21 +149,6 @@ Verify that you have libev installed:
 
     jackson@erm:~$ ls /usr/lib/libev.so
     /usr/lib/libev.so
-
-### Install libev-sharp
-
-Checkout libev-sharp from github at <http://github.com/jacksonh/libev-sharp/> and build/install it:
-
-    jackson@erm:libev-sharp$ ./configure
-    ...
-    jackson@erm:libev-sharp$ sudo make install
-    ...
-
-Verify your libev-sharp installation:
-
-    jackson@erm:~$ pkg-config --libs libev-sharp
-    -r:/usr/local/lib/libev-sharp/libev-sharp.dll
-
 
 ### Install Manos
 
