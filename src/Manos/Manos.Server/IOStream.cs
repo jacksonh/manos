@@ -326,15 +326,16 @@ namespace Manos.Server {
 			
 			while (send_file_offset < send_file_count) {
 			      try {
-			      	  Syscall.sendfile (socket.Handle.ToInt32 (), 
-			          		    send_file.Handle.ToInt32 (), 
-			                  	    ref send_file_offset,
-			                  	    (ulong) (send_file_count - send_file_offset));
+				      Syscall.sendfile (socket.Handle.ToInt32 (), 
+						      send_file.Handle.ToInt32 (), 
+						      ref send_file_offset,
+						      (ulong) (send_file_count - send_file_offset));
 			      } catch (SocketException se) {
-				   if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
-					return;
-				   Close ();
-				   throw se;
+				      if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
+					      return;
+				      Close ();
+			      } catch (Exception e) {
+				      Close ();
 			      }
 			}
 
@@ -347,15 +348,16 @@ namespace Manos.Server {
 			while (write_data.Count > 0) {
 			    int len = -1;
 			    try {
-			        len = socket.Send (write_data);
+				    len = socket.Send (write_data);
 		            } catch (SocketException se) {
-				if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
-					return;
-				Close ();
-				throw se;
+				    if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
+					    return;
+				    Close ();
+			    } catch (Exception e) {
+				    Close ();
 			    } finally {
-			        if (len != -1)
-			            AdjustSegments (len, write_data);
+				    if (len != -1)
+					    AdjustSegments (len, write_data);
 			    }
 			}
 
