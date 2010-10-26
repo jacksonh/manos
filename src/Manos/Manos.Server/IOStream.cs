@@ -49,7 +49,9 @@ namespace Manos.Server {
 		private CloseCallback close_callback;
 
 		private MemoryStream read_buffer;
+		private int num_bytes_read;
 		private int read_bytes = -1;
+
 		private byte [] read_delimiter;
 		private int last_delimiter_check = -1;
 		private ReadCallback read_callback;
@@ -141,6 +143,13 @@ namespace Manos.Server {
 			get { return socket == null || !socket.Connected; }
 		}
 
+		public void ClearReadBuffer ()
+		{
+			if (read_buffer == null)
+				return;
+			read_buffer.Position = 0;
+		}
+
 		public void OnClose (CloseCallback callback)
 		{
 			this.close_callback = callback;
@@ -160,6 +169,11 @@ namespace Manos.Server {
 			}
 
 			EnableReading ();
+		}
+
+		public void ReadBytes (ReadCallback callback)
+		{
+			ReadBytes (-1, callback);
 		}
 
 		public void ReadBytes (int num_bytes, ReadCallback callback)
@@ -309,21 +323,19 @@ namespace Manos.Server {
 					read_buffer = new MemoryStream ();
 
 				read_buffer.Write (ReadChunk, 0, size);
-				read_buffer.Flush ();
+				num_bytes_read += size;
 
 				if (read_bytes != -1) {
-					if (read_buffer.Position >= read_bytes) {
+					if (num_bytes_read >= read_bytes) {
 						FinishRead (read_bytes);
+						return;
 					}
-					return;
-				}
-
-				if (read_delimiter != null) {
+				} if (read_delimiter != null) {
 					int delimiter = FindDelimiter ();
 					if (delimiter != -1) {
 						FinishRead (delimiter);
+						return;
 					}
-					return;
 				}
 			}
 
@@ -438,7 +450,8 @@ namespace Manos.Server {
 			read_callback = null;
 
 			read_buffer.Position = 0;
-			read_buffer.Write (data, end, length - end);
+			num_bytes_read = length - end;
+			read_buffer.Write (data, end, num_bytes_read);
 			
 			callback (this, read, 0, end);
 		}

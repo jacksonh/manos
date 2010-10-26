@@ -75,8 +75,7 @@ namespace Manos.Server {
 			parser_settings = CreateParserSettings ();
 			parser = new HttpParser ();
 
-			stream.ReadBytes (-1, OnBytesRead);
-			// stream.ReadUntil ("\r\n\r\n", OnHeaders);
+			stream.ReadBytes (OnBytesRead);
 		}
 
 		public HttpServer Server {
@@ -381,6 +380,13 @@ namespace Manos.Server {
 			return 0;
 		}
 
+		public int OnBody (HttpParser parser, ByteBuffer data, int pos, int len)
+		{
+			Console.WriteLine ("ON BODY:  '{0}'", len);
+
+			return 0;
+		}
+
 		private void OnFinishedReading ()
 		{
 			try {
@@ -409,11 +415,8 @@ namespace Manos.Server {
 			settings.OnHeaderField = OnHeaderField;
 			settings.OnHeaderValue = OnHeaderValue;
 			settings.OnHeadersComplete = OnHeadersComplete;
-
-			/*
 			
 			settings.OnBody = OnBody;
-			*/
 
 			return settings;
 		}
