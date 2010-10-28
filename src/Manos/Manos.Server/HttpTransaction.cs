@@ -58,6 +58,7 @@ namespace Manos.Server {
 		private ParserSettings parser_settings;
 
 		private string current_header_field;
+		private IHttpBodyHandler body_handler;
 
 		private Queue<IWriteOperation> write_ops;
 		
@@ -227,16 +228,7 @@ namespace Manos.Server {
 			Request = new HttpRequest (this, headers, verb, path, Version_1_1_Supported (version));
 			Response = new HttpResponse (this, Encoding.ASCII);
 			
-			if (headers.ContentLength != null && headers.ContentLength > 0) {
-			        long cl = (long) headers.ContentLength;
-				if (cl < MAX_BUFFERED_CONTENT_LENGTH) {
-					HandleBody ();
-					return;
-				} else {
-					HandleLargeBody ();
-					return;
-				}
-			}
+			
 
 			stream.DisableReading ();
 			Server.RunTransaction (this);
@@ -289,9 +281,9 @@ namespace Manos.Server {
 		{
 			/*
 			if (Request.Method == "POST" || Request.Method == "PUT") {
-				string ct = Request.Headers ["Content-Type"];
-				if (ct != null && ct.StartsWith ("application/x-www-form-urlencoded", StringComparison.InvariantCultureIgnoreCase))
-					IOStream.ReadBytes ((int) Request.Headers.ContentLength, OnWwwFormData);
+				// string ct = Request.Headers ["Content-Type"];
+				// if (ct != null && ct.StartsWith ("application/x-www-form-urlencoded", StringComparison.InvariantCultureIgnoreCase))
+				// 	IOStream.ReadBytes ((int) Request.Headers.ContentLength, OnWwwFormData);
 				else if (ct != null && ct.StartsWith ("multipart/form-data", StringComparison.InvariantCulture)) {
 				        string boundary = ParseBoundary (ct);
 					if (boundary == null)
@@ -382,13 +374,29 @@ namespace Manos.Server {
 
 		public int OnBody (HttpParser parser, ByteBuffer data, int pos, int len)
 		{
-			Console.WriteLine ("ON BODY:  '{0}'", len);
+			if (body_handler == null)
+				CreateBodyHandler ();
+
+			if (body_handler != null)
+				body_handler.HandleData (this, data, pos, len);
 
 			return 0;
 		}
 
+		private void CreateBodyHandler ()
+		{
+			string ct = Request.Headers ["Content-Type"];
+			if (ct != null && ct.StartsWith ("application/x-www-form-urlencoded", StringComparison.InvariantCultureIgnoreCase)) {
+				body_handler = new HttpFormDataHandler ();
+				return;
+			}
+		}
+
 		private void OnFinishedReading ()
 		{
+			if (body_handler != null)
+				body_handler.Finish (this);
+
 			try {
 				IOStream.DisableReading ();
 				Response = new HttpResponse (this, Encoding.Default);

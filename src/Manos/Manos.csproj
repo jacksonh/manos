@@ -55,8 +55,10 @@
     <Compile Include="Manos.Http\HttpDataCallback.cs" />
     <Compile Include="Manos.Http\HttpErrorCallback.cs" />
     <Compile Include="Manos.Http\HttpException.cs" />
+    <Compile Include="Manos.Http\HttpFormDataHandler.cs" />
     <Compile Include="Manos.Http\HttpMethod.cs" />
     <Compile Include="Manos.Http\HttpParser.cs" />
+    <Compile Include="Manos.Http\IHttpBodyHandler.cs" />
     <Compile Include="Manos.Http\ParserSettings.cs" />
     <Compile Include="Manos.Http\ParserType.cs" />
     <Compile Include="Manos.Http\State.cs" />
