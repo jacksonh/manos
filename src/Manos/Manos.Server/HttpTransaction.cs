@@ -57,7 +57,9 @@ namespace Manos.Server {
 		private HttpParser parser;
 		private ParserSettings parser_settings;
 
-		private string current_header_field;
+		private StringBuilder current_header_field = new StringBuilder ();
+		private StringBuilder current_header_value = new StringBuilder ();
+
 		private IHttpBodyHandler body_handler;
 
 		private Queue<IWriteOperation> write_ops;
@@ -338,7 +340,10 @@ namespace Manos.Server {
 		{
 			string str = Encoding.ASCII.GetString (data.Bytes, pos, len);
 
-			current_header_field = str;
+			if (current_header_value.Length != 0)
+				FinishCurrentHeader ();
+
+			current_header_field.Append (str);
 			return 0;
 		}
 
@@ -346,26 +351,28 @@ namespace Manos.Server {
 		{
 			string str = Encoding.ASCII.GetString (data.Bytes, pos, len);
 
-			if (current_header_field == null)
+			if (current_header_field.Length == 0)
 				throw new HttpException ("Header Value raised with no header field set.");
 
+			current_header_value.Append (str);
+			return 0;
+		}
+
+		private void FinishCurrentHeader ()
+		{
 			try {
-				Request.Headers.SetHeader (current_header_field, str);
-				current_header_field = null;
+				Request.Headers.SetHeader (current_header_field.ToString (), current_header_value.ToString ());
+				current_header_field.Length = 0;
+				current_header_value.Length = 0;
 			} catch (Exception e) {
 				Console.WriteLine (e);
 			}
-			
-			return 0;
 		}
 
 		private int OnHeadersComplete (HttpParser parser)
 		{
-			//
-			// TODO: Wait, is this illegal? HTTP book is on the other side of the room...
-			//
-			if (current_header_field != null)
-				throw new HttpException ("Header field with no value.");
+			if (current_header_field.Length != 0)
+				FinishCurrentHeader ();
 
 			// TODO: Set HTTP version here
 			Request.Method = parser.HttpMethod;
@@ -431,6 +438,7 @@ namespace Manos.Server {
 
 		private void OnParserError (HttpParser parser, string message, ByteBuffer buffer, int initial_position)
 		{
+			Console.WriteLine ("parser error: '{0}'", message);
 			Server.RemoveTransaction (this);
 			IOStream.Close ();
 		}
