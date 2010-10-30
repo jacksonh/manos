@@ -57,6 +57,7 @@ namespace Manos.Server {
 		private HttpParser parser;
 		private ParserSettings parser_settings;
 
+		private StringBuilder query_data = new StringBuilder ();
 		private StringBuilder current_header_field = new StringBuilder ();
 		private StringBuilder current_header_value = new StringBuilder ();
 
@@ -310,7 +311,7 @@ namespace Manos.Server {
 		{
 			string str = Encoding.ASCII.GetString (data.Bytes, pos, len);
 
-			Request.LocalPath = str;
+			Request.LocalPath = Request.LocalPath == null ? str : String.Concat (Request.LocalPath, str);
 			return 0;
 		}
 
@@ -318,8 +319,7 @@ namespace Manos.Server {
 		{
 			string str = Encoding.ASCII.GetString (data.Bytes, pos, len);
 
-			Request.QueryData = HttpUtility.ParseUrlEncodedData (str);
-
+			query_data.Append (str);
 			return 0;
 		}
 
@@ -373,6 +373,11 @@ namespace Manos.Server {
 		{
 			if (current_header_field.Length != 0)
 				FinishCurrentHeader ();
+
+			if (query_data.Length != 0) {
+				Request.QueryData = HttpUtility.ParseUrlEncodedData (query_data.ToString ());
+				query_data.Length = 0;
+			}
 
 			// TODO: Set HTTP version here
 			Request.Method = parser.HttpMethod;
