@@ -2,6 +2,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Net.Sockets;
 
 
 namespace Libev {
@@ -28,6 +29,24 @@ namespace Libev {
 			InitializeUnmanagedWatcher (unmanaged_watcher);
 		}
 
+        
+        public static IntPtr GetHandle(Socket handle) {
+            if (Loop.IsWindows) {
+                return EV_WIN32_HANDLE_TO_FD (handle.Handle, 0);
+            } else
+                return handle.Handle;
+        }
+
+        public static void ReleaseHandle(Socket socket, IntPtr handle)
+        {
+            if (Loop.IsWindows)
+            {
+                EV_WIN32_CLOSE_FD(handle);
+            }
+            else
+                socket.Close();
+        }
+
 		public IntPtr FileHandle {
 			get { return fd; }
 		}
@@ -47,14 +66,21 @@ namespace Libev {
 			// Maybe I should verify the pointers?
 			callback (Loop, this, revents);
 		}
-		
-		[DllImport ("libev")]
+
+        [DllImport ("libev", CallingConvention = CallingConvention.Cdecl)]
 		private static extern void ev_io_start (IntPtr loop, IntPtr watcher);
-		
-		[DllImport ("libev")]
+
+        [DllImport ("libev", CallingConvention = CallingConvention.Cdecl)]
 		private static extern void ev_io_stop (IntPtr loop, IntPtr watcher);
+
+        [DllImport ("libev", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr EV_WIN32_HANDLE_TO_FD (IntPtr handle, int flags);
+
+        [DllImport ("libev", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void EV_WIN32_CLOSE_FD (IntPtr handle);
 	}
 	
+    [UnmanagedFunctionPointer (System.Runtime.InteropServices.CallingConvention.Cdecl)]
 	public delegate void IOWatcherCallback (Loop loop, IOWatcher watcher, int revents);
 	
 	[StructLayout (LayoutKind.Sequential)]

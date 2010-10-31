@@ -44,7 +44,7 @@ namespace Libev {
 			get { return watcher_ptr; }
 		}
 		
-		public void Dispose ()
+		public virtual void Dispose ()
 		{
 			Stop ();
 			
