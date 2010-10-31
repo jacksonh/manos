@@ -33,14 +33,13 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Libev;
-using Mono.Unix.Native;
 
 
 namespace Manos.Server {
 
 	public delegate void HttpConnectionCallback (IHttpTransaction transaction);
 
-	public class HttpServer {
+	public class HttpServer: IDisposable {
 
 		// This gets called on every request so lets just use a hard coded string instead of reflection
 		public static readonly string ServerVersion = "Manos/0.0.4";
@@ -48,6 +47,7 @@ namespace Manos.Server {
 		private HttpConnectionCallback callback;
 		private IOLoop ioloop;
 		private IOWatcher iowatcher;
+        private IntPtr handle;
 
 		private List<HttpTransaction> transactions = new List<HttpTransaction> ();
 
@@ -83,9 +83,15 @@ namespace Manos.Server {
 
 		public void Start ()
 		{
-			iowatcher = new IOWatcher (Socket.Handle, EventTypes.Read, ioloop.EventLoop, HandleIOEvents);
+            handle = IOWatcher.GetHandle (Socket);
+			iowatcher = new IOWatcher (handle, EventTypes.Read, ioloop.EventLoop, HandleIOEvents);
 			iowatcher.Start ();
 		}
+
+        public void Dispose () 
+        {
+            IOWatcher.ReleaseHandle(Socket, handle);
+        }
 
 		public void RunTransaction (HttpTransaction trans)
 		{

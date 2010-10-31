@@ -34,8 +34,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 
 
-using Mono.Unix.Native;
-
 
 namespace Manos.Server {
 

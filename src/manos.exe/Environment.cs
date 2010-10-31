@@ -41,11 +41,16 @@ namespace Manos.Tool
 			WorkingDirectory = Directory.GetCurrentDirectory ();
 			
 			string exe_path = new Uri (typeof (Driver).Assembly.GetName ().CodeBase).LocalPath;
-			ManosDirectory = Path.GetDirectoryName (exe_path);
-			string lib_dir = Path.GetDirectoryName (ManosDirectory);
-			string prefix = Path.GetDirectoryName (lib_dir);
+            if (Libev.Loop.IsWindows) {
+                ManosDirectory = Path.GetDirectoryName(Path.GetDirectoryName(exe_path));
+                DataDirectory = ManosDirectory;
+            } else {
+			    ManosDirectory = Path.GetDirectoryName (exe_path);
+			    string lib_dir = Path.GetDirectoryName (ManosDirectory);
+			    string prefix = Path.GetDirectoryName (lib_dir);
 			
-			DataDirectory = Path.Combine (prefix.ToString (), "share/manos/");
+			    DataDirectory = Path.Combine (prefix.ToString (), "share/manos/");
+            }
 		}
 		
 		public string LibDirectory {

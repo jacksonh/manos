@@ -32,7 +32,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Libev;
-using Mono.Unix.Native;
 
 
 namespace Manos.Server {
@@ -76,6 +75,7 @@ namespace Manos.Server {
 
 		private IOWatcher read_watcher;
 		private IOWatcher write_watcher;
+        private IntPtr handle;
 
 		public IOStream (Socket socket, IOLoop ioloop)
 		{
@@ -89,8 +89,9 @@ namespace Manos.Server {
 
 			socket.Blocking = false;
 
-			read_watcher = new IOWatcher (socket.Handle, EventTypes.Read, ioloop.EventLoop, HandleIORead);
-			write_watcher = new IOWatcher (socket.Handle, EventTypes.Write, ioloop.EventLoop, HandleIOWrite);
+            handle = IOWatcher.GetHandle (socket);
+			read_watcher = new IOWatcher (handle, EventTypes.Read, ioloop.EventLoop, HandleIORead);
+			write_watcher = new IOWatcher (handle, EventTypes.Write, ioloop.EventLoop, HandleIOWrite);
 		}
 
 		~IOStream ()
@@ -208,7 +209,9 @@ namespace Manos.Server {
 			DisableReading ();
 			DisableWriting ();
 
-			socket.Close ();
+            IOWatcher.ReleaseHandle (socket, handle);
+
+            handle = IntPtr.Zero;
 			socket = null;
 
 			if (close_callback != null)
@@ -317,8 +320,63 @@ namespace Manos.Server {
 				}
 			}
 		}
+#if DISABLE_SENDFILE
+        private void HandleSendFile()
+#else 
+        private Action sendFileAction;
 
-		private void HandleSendFile ()
+        private void HandleSendFile ()
+        {
+            if (sendFileAction != null) LoadSendFile ();
+            sendFileAction ();
+        }
+
+        private void LoadSendFile ()
+        {
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT ||
+                Environment.OSVersion.Platform == PlatformID.Win32S ||
+                Environment.OSVersion.Platform == PlatformID.Win32Windows ||
+                Environment.OSVersion.Platform == PlatformID.WinCE ||
+                Environment.OSVersion.Platform == PlatformID.Xbox)            
+                sendFileAction = new Action (SimpleHandleSendFile);
+            else
+                sendFileAction = new Action (PosixHandleSendFile);
+        }
+
+        private void SimpleHandleSendFile ()
+#endif
+        {
+            byte[] data = new byte[4096];
+            while (send_file_offset < send_file_count) {
+                int len = -1;
+                try {
+                    int toRead = (int) (send_file_count > data.Length ? (long) data.Length : send_file_count);
+                    int read = send_file.Read (data, 0, toRead);
+                    if (read <= 0)
+                        break;
+                    len = socket.Send(data, 0, read, SocketFlags.None);
+                    send_file_offset += read;
+                }
+                catch (SocketException se) {
+                    if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
+                        return;
+                    Close();
+                }
+                catch (Exception e) {
+                    Close();
+                }
+                finally {
+                    if (len != -1)
+                        AdjustSegments (len, write_data);
+                }
+            }
+
+            if (write_data.Count == 0)
+                FinishWrite();
+        }
+
+#if !DISABLE_SENDFILE // option to get rid of the Mono.Posix reference all together
+		private void PosixHandleSendFile ()
 		{
 			//
 			// TODO: Need to handle WOULDBLOCK here.
@@ -326,7 +384,7 @@ namespace Manos.Server {
 			
 			while (send_file_offset < send_file_count) {
 			      try {
-				      Syscall.sendfile (socket.Handle.ToInt32 (), 
+				      Mono.Unix.Native.Syscall.sendfile (socket.Handle.ToInt32 (), 
 						      send_file.Handle.ToInt32 (), 
 						      ref send_file_offset,
 						      (ulong) (send_file_count - send_file_offset));
@@ -342,7 +400,7 @@ namespace Manos.Server {
 			if (send_file_offset >= send_file_count)
 				FinishSendFile ();
 		}
-		
+#endif		
 		private void HandleWrite ()
 		{
 			while (write_data.Count > 0) {

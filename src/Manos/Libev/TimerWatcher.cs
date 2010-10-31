@@ -50,14 +50,15 @@ namespace Libev {
 		{
 			callback (Loop, this, revents);
 		}
-		
-		[DllImport ("libev")]
+
+        [DllImport ("libev", CallingConvention = CallingConvention.Cdecl)]
 		private static extern void ev_timer_start (IntPtr loop, IntPtr watcher);
-		
-		[DllImport ("libev")]
+
+        [DllImport ("libev", CallingConvention = CallingConvention.Cdecl)]
 		private static extern void ev_timer_stop (IntPtr loop, IntPtr watcher);
 	}
 	
+    [UnmanagedFunctionPointer (System.Runtime.InteropServices.CallingConvention.Cdecl)]
 	public delegate void TimerWatcherCallback (Loop loop, TimerWatcher watcher, int revents);
 	
 	[StructLayout (LayoutKind.Sequential)]

@@ -162,3 +162,22 @@ Checkout Manos from github at <http://github.com/jacksonh/manos/> and build/inst
 To verify your installation you can use the manos -docs command.  This will create a new server running on
 http://localhost:8181/ you should be able to navigate there in your browser and view the manos documentation.
 
+Installation on Windows
+---------------------
+
+### Install Mono 2.8 (Optional)
+
+Follow the Windows specific instructions on <http://www.mono-project.com/download> to install Mono 2.8.
+This step is optional but you will need the Mono.Posix.dll and PosixHelper.dll when you want to compile
+a single Manos dll for both Windows and Linux/MacOS.
+
+### Install libev
+
+Download the libev package from: http://software.schmorp.de/pkg/libev.html
+Extract it and place it next to the libev in the source dir, so both libev-4.00 and libev are in the same directory.
+
+### Install Manos
+
+Checkout Manos from github at <http://github.com/jacksonh/manos/> and build/install it using Visual Studio.
+
+If you do no have Mono installed you can define DISABLE_SENDFILE to remove the Mono.Posix dependency.
