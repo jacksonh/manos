@@ -46,7 +46,7 @@ namespace Manos.Server {
 		public HttpResponse (IHttpTransaction transaction, Encoding encoding)
 		{
 			Transaction = transaction;
-			Encoding = encoding;
+			HeaderEncoding = encoding;
 
 			StatusCode = 200;
 
@@ -80,9 +80,14 @@ namespace Manos.Server {
 			private set;
 		}
 
-		public Encoding Encoding {
+		public Encoding HeaderEncoding {
 			get;
-			private set;
+			set;
+		}
+
+		public Encoding ContentEncoding {
+			get { return Headers.ContentEncoding; }
+			set { Headers.ContentEncoding = value; }
 		}
 
 		public int StatusCode {
@@ -102,7 +107,7 @@ namespace Manos.Server {
 		
 		public void Write (string str)
 		{
-			byte [] data = Encoding.GetBytes (str);
+			byte [] data = ContentEncoding.GetBytes (str);
 
 			WriteToBody (data);
 		}
@@ -159,10 +164,10 @@ namespace Manos.Server {
 			if (WriteHeaders) {
 				if (update_size)
 					Headers.ContentLength = Stream.Position;
-				Headers.Write (builder, Cookies.Values, Encoding);
+				Headers.Write (builder, Cookies.Values, HeaderEncoding);
 			}
 
-			byte [] data = Encoding.GetBytes (builder.ToString ());
+			byte [] data = HeaderEncoding.GetBytes (builder.ToString ());
 
 			Stream.Position = 0;
 			Stream.Insert (data, 0, data.Length);

@@ -49,8 +49,14 @@ namespace Manos.Server {
 			get;
 		}
 
-		Encoding Encoding {
+		Encoding HeaderEncoding {
 			get;
+			set;
+		}
+
+		Encoding ContentEncoding {
+			get;
+			set;
 		}
 
 		int StatusCode {

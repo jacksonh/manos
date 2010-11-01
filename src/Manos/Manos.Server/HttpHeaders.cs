@@ -44,6 +44,8 @@ namespace Manos.Server {
 		public static readonly string CONTENT_LENGTH_KEY = "Content-Length";
 		
 		private long? content_length;
+		private Encoding encoding;
+
 		Dictionary<string,string> items = new Dictionary<string,string> ();
 
 		public HttpHeaders ()
@@ -65,6 +67,42 @@ namespace Manos.Server {
 			}
 		}
 
+		public Encoding ContentEncoding {
+			get {
+				if (encoding == null)
+					SetEncodingInternal ();
+				return encoding;
+			}
+			set {
+				encoding = value;
+			}
+		}
+
+		private void SetEncodingInternal ()
+		{
+			string content;
+
+			if (!TryGetNormalizedValue ("Content-Type", out content)) {
+				encoding = Encoding.ASCII;
+				return;
+			}
+
+			string charset = HttpHeaders.GetAttribute (content, "; charset=");
+			if (charset == null) {
+				encoding = Encoding.Default;
+				return;
+			}
+
+			try {
+				encoding = Encoding.GetEncoding (charset);
+			} catch (Exception e) {
+				Console.Error.WriteLine ("[non-fatal] Exception while setting encoding:");
+				Console.Error.WriteLine (e);
+
+				encoding = Encoding.Default;
+			}
+		}
+
 		public string this [string name] {
 			get {
 				if (name == null)
@@ -79,7 +117,12 @@ namespace Manos.Server {
 
 		public bool TryGetValue (string key, out string value)
 		{
-			return items.TryGetValue (NormalizeName (key), out value);
+			return TryGetNormalizedValue (NormalizeName (key), out value);
+		}
+
+		public bool TryGetNormalizedValue (string key, out string value)
+		{
+			return items.TryGetValue (key, out value);
 		}
 
 		public void Parse (TextReader reader)
@@ -222,6 +265,31 @@ namespace Manos.Server {
 			if (cl < 0)
 				throw new ArgumentException ("Content-Length must be a positive integer.", "value");
 			ContentLength = cl;
+		}
+
+		/// from mono's System.Web/HttpRequest.cs
+		public static string GetAttribute (string header_value, string attr)
+		{
+			int start = header_value.IndexOf (attr);
+			if (start == -1)
+				return null;
+
+			start += attr.Length;
+			if (start >= header_value.Length)
+				return null;
+
+			char ending = header_value [start];
+			if (ending != '"')
+				ending = ' ';
+
+			int end = header_value.IndexOf (ending, start + 1);
+			if (end == -1) {
+				// Use the full string unless its a unclosed quote
+				// TODO: What about multiline values, can they be broken across lines?
+				return (ending == '"') ? null : header_value.Substring (start);
+			}
+
+			return header_value.Substring (start + 1, end - start - 1);
 		}
 
 		/// from mono's System.Web.Util/HttpEncoder.cs

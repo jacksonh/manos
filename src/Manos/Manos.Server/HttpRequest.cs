@@ -45,7 +45,6 @@ namespace Manos.Server {
 	public class HttpRequest : IHttpRequest {
 
 		private HttpHeaders headers;
-		private Encoding encoding;
 
 		private DataDictionary data;
 		private DataDictionary uri_data;
@@ -103,7 +102,12 @@ namespace Manos.Server {
 			get;
 			set;
 		}
-		
+
+		public Encoding ContentEncoding {
+			get { return Headers.ContentEncoding; }
+			set { Headers.ContentEncoding = value; }
+		}
+
 		public DataDictionary Data {
 			get {
 				if (data == null)
@@ -168,27 +172,6 @@ namespace Manos.Server {
 			       uploaded_files = new Dictionary<string,UploadedFile> ();
 			    return uploaded_files;
 			}
-		}
-
-		public Encoding ContentEncoding {
-			get {
-				if (encoding == null)
-					SetEncodingInternal ();
-				return encoding;
-			}
-		}
-
-		private void SetEncodingInternal ()
-		{
-			string content;
-
-			if (!Headers.TryGetValue ("Content-Type", out content)) {
-				encoding = Encoding.ASCII;
-				return;
-			}
-
-			// TODO: parse charsets
-			encoding = Encoding.Default;
 		}
 
 		private DataDictionary ParseCookies ()
