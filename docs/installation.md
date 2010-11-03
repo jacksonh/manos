@@ -180,4 +180,4 @@ Extract it and place it next to the libev in the source dir, so both libev-4.00 
 
 Checkout Manos from github at <http://github.com/jacksonh/manos/> and build/install it using Visual Studio.
 
-If you do no have Mono installed you can define DISABLE_SENDFILE to remove the Mono.Posix dependency.
+If you do no have Mono installed you can define DISABLE_POSIX to remove the Mono.Posix dependency.

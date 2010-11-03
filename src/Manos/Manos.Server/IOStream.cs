@@ -320,7 +320,7 @@ namespace Manos.Server {
 				}
 			}
 		}
-#if DISABLE_SENDFILE
+#if DISABLE_POSIX
         private void HandleSendFile()
 #else 
         private Action sendFileAction;
@@ -375,7 +375,7 @@ namespace Manos.Server {
                 FinishWrite();
         }
 
-#if !DISABLE_SENDFILE // option to get rid of the Mono.Posix reference all together
+#if !DISABLE_POSIX // option to get rid of the Mono.Posix reference all together
 		private void PosixHandleSendFile ()
 		{
 			//
