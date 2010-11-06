@@ -327,7 +327,7 @@ namespace Manos.Server {
 
         private void HandleSendFile ()
         {
-            if (sendFileAction != null) LoadSendFile ();
+            if (sendFileAction == null) LoadSendFile ();
             sendFileAction ();
         }
 
