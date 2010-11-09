@@ -191,7 +191,7 @@ namespace Manos.Server {
 
 			if (!NoKeepAlive) {
 				string dis;
-				if (Request.Http_1_1_Supported && Request.Headers.TryGetValue ("Connection", out dis))
+				if (Request.MinorVersion > 0 && Request.Headers.TryGetValue ("Connection", out dis))
 					disconnect = (dis == "close");
 			}
 
@@ -290,8 +290,10 @@ namespace Manos.Server {
 				query_data.Length = 0;
 			}
 
-			// TODO: Set HTTP version here
+			Request.MajorVersion = parser.Major;
+			Request.MinorVersion = parser.Minor;
 			Request.Method = parser.HttpMethod;
+
 			return 0;
 		}
 
@@ -373,44 +375,6 @@ namespace Manos.Server {
 			Console.WriteLine ("parser error: '{0}'", message);
 			Server.RemoveTransaction (this);
 			IOStream.Close ();
-		}
-
-		private void OnWwwFormData (IOStream stream, byte [] data, int offset, int count)
-		{
-			//
-			// The best I can tell, you can't actually set the content-type of
-			// the url-encoded form data.  Looking at the source of apache
-			// seems to confirm this.  So for now I wont worry about the
-			// encoding type and I'll just use ASCII.
-			//
-
-			string post = Encoding.ASCII.GetString (data);
-
-			if (!String.IsNullOrEmpty (post)) {
-				// TODO: pass this to the encoder to populate
-				DataDictionary post_data = HttpUtility.ParseUrlEncodedData (post);
-				if (post_data != null)
-					Request.SetWwwFormData (post_data);
-			}
-
-			IOStream.DisableReading ();
-			Server.RunTransaction (this);
-		}
-
-		private void OnMultiPartFormData (string boundary, byte [] data)
-		{
-			IMFDStream stream = new InMemoryMFDStream (data);
-			MultipartFormDataParser parser = new MultipartFormDataParser (this.Request, boundary, stream, () => {
-				IOStream.DisableReading ();
-				Server.RunTransaction (this);
-			});
-
-			parser.ParseParts ();
-		}
-		
-		private bool Version_1_1_Supported (string version)
-		{
-			return version == "HTTP/1.1";
 		}
 
 		public static string ParseBoundary (string ct)

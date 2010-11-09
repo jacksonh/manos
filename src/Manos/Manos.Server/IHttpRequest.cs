@@ -77,8 +77,14 @@ namespace Manos.Server {
 			get;
 		}
 
-		bool Http_1_1_Supported {
-			get;     
+		int MajorVersion {
+			get;
+			set;
+		}
+
+		int MinorVersion {
+			get;
+			set;
 		}
 
 		Encoding ContentEncoding {

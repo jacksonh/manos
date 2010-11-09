@@ -47,8 +47,6 @@ namespace Manos.Server.Testing
 		private HttpHeaders headers;
 		private Dictionary<string,UploadedFile> uploaded_files;
 		private Encoding encoding;
-
-		private bool http_1_1_supported;
 		
 		public MockHttpRequest (HttpMethod method, string local_path)
 		{
@@ -146,13 +144,14 @@ namespace Manos.Server.Testing
 			}
 		}
 
-		public bool Http_1_1_Supported {
-			get {
-			    return http_1_1_supported;
-			}
-			set {
-			    http_1_1_supported = value;
-			}
+		public int MajorVersion {
+			get;
+			set;
+		}
+
+		public int MinorVersion {
+			get;
+			set;
 		}
 
 		public void SetWwwFormData (DataDictionary data)

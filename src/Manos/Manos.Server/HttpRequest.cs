@@ -92,7 +92,12 @@ namespace Manos.Server {
 			set;
 		}
 
-		public bool Http_1_1_Supported {
+		public int MajorVersion {
+			get;
+			set;
+		}
+
+		public int MinorVersion {
 			get;
 			set;
 		}
