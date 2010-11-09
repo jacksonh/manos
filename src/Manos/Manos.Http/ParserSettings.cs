@@ -1,4 +1,10 @@
 //
+// Based on http_parser.java: http://github.com/a2800276/http-parser.java
+// which is based on http_parser: http://github.com/ry/http-parser
+//
+//
+// Copyright 2009,2010 Ryan Dahl <ry@tinyclouds.org>
+// Copyright (C) 2010 Tim Becker 
 // Copyright (C) 2010 Jackson Harper (jackson@manosdemono.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
