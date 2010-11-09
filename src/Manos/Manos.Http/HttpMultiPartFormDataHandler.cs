@@ -91,8 +91,6 @@ namespace Manos.Http {
 			pos = -1;
 			len = str_data.Length;
 
-			Console.WriteLine ("STR DATA for state '{1}' {0}", data.Length, state);
-
 			while (pos < len - 1 && state != State.Finished) {
 
 				byte c = str_data [++pos];
@@ -118,19 +116,8 @@ namespace Manos.Http {
 						// Copy the boundary buffer to the beginning and restart parsing there
 						MemoryStream stream = new MemoryStream ();
 						stream.Write (boundary_buffer.ToArray (), 0, boundary_buffer.Count);
-						Console.WriteLine ("boundary buffer:  ***\n{0}\n****", encoding.GetString (stream.ToArray ()));
 						stream.Write (str_data, pos + 1, str_data.Length - pos - 1);
-						Console.WriteLine ("remaining: ===\n{0}\n====", encoding.GetString (str_data, pos + 1, str_data.Length - pos - 1));
 						str_data = stream.ToArray ();
-
-						Console.WriteLine ("DATA:'{0}'", encoding.GetString (str_data));
-							
-						/*
-						byte [] new_data = new byte [boundary_buffer.Count + str_data.Length - pos - 1];
-						Array.Copy (boundary_buffer.ToArray (), new_data, boundary_buffer.Count);
-						Array.Copy (str_data, pos, new_data, boundary_buffer.Count, str_data.Length - pos);
-						str_data = new_data;
-						*/
 
 						pos = -1;
 						len = str_data.Length;
