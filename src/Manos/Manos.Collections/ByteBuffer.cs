@@ -24,39 +24,57 @@
 
 
 using System;
-using System.Reflection;
 
-using Manos.Http;
+namespace Manos.Collections {
 
-namespace Manos {
+	public class ByteBuffer {
 
-	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-	public abstract class HttpMethodAttribute : Attribute {
+		int length;
+		int position;
 
-		public HttpMethodAttribute ()
+		public byte [] Bytes;
+
+		public ByteBuffer (byte [] bytes, int position, int length)
 		{
+			Bytes = bytes;
+			this.position = position;
+			this.length = length;
 		}
 
-		public HttpMethodAttribute (string [] patterns)
+		public byte CurrentByte {
+			get { return Bytes [position]; }
+		}
+
+		public int Length {
+			get { return length; }
+			set {
+				if (value > Bytes.Length)
+					throw new ArgumentOutOfRangeException ("value", "Can not increase the size of a byte buffer.");
+				if (value < 0)
+					throw new ArgumentOutOfRangeException ("value", "Length must be zero or greater.");
+				length = value;
+			}
+		}
+
+		public int Position {
+			get { return position; }
+			set {
+				if (value > length)
+					throw new ArgumentOutOfRangeException ("value", "Position must be less than the array length.");
+				if (value < 0)
+					throw new ArgumentOutOfRangeException ("value", "Position must be zero or greater.");
+
+				Console.WriteLine ("updating position to: '{0}'", value);
+				position = value;
+			}
+		}
+
+		public byte ReadByte ()
 		{
-			Patterns = patterns;
-		}
-
-		public string Name {
-			get;
-			set;
-		}
-
-		public HttpMethod [] Methods {
-			get;
-			protected set;
-		}
-
-		public string [] Patterns {
-			get;
-			private set;
+			if (position >= length)
+				throw new InvalidOperationException ("Read past end of ByteBuffer.");
+			return Bytes [position++];
 		}
 	}
 }
-
 

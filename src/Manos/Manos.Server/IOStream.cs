@@ -37,7 +37,7 @@ using Libev;
 namespace Manos.Server {
 
 	public delegate void CloseCallback (IOStream stream);
-	public delegate void ReadCallback (IOStream stream, byte [] data);
+	public delegate void ReadCallback (IOStream stream, byte [] data, int offset, int count);
 	public delegate void WriteCallback ();
 
 	public class IOStream {
@@ -48,7 +48,9 @@ namespace Manos.Server {
 		private CloseCallback close_callback;
 
 		private MemoryStream read_buffer;
+		private int num_bytes_read;
 		private int read_bytes = -1;
+
 		private byte [] read_delimiter;
 		private int last_delimiter_check = -1;
 		private ReadCallback read_callback;
@@ -142,6 +144,13 @@ namespace Manos.Server {
 			get { return socket == null || !socket.Connected; }
 		}
 
+		public void ClearReadBuffer ()
+		{
+			if (read_buffer == null)
+				return;
+			read_buffer.Position = 0;
+		}
+
 		public void OnClose (CloseCallback callback)
 		{
 			this.close_callback = callback;
@@ -163,6 +172,11 @@ namespace Manos.Server {
 			EnableReading ();
 		}
 
+		public void ReadBytes (ReadCallback callback)
+		{
+			ReadBytes (-1, callback);
+		}
+
 		public void ReadBytes (int num_bytes, ReadCallback callback)
 		{
 			CheckCanRead ();
@@ -170,7 +184,11 @@ namespace Manos.Server {
 			read_bytes = num_bytes;
 			read_callback = callback;
 
-			if (read_buffer != null && read_buffer.Position >= num_bytes) {
+			if (read_buffer != null && num_bytes == -1) {
+				// If there is some queued data immediately call the callback.
+				read_callback (this, read_buffer.GetBuffer (), 0, (int) read_buffer.Position);
+				read_buffer.Position = 0;
+			} else if (read_buffer != null && read_buffer.Position >= num_bytes) {
 				FinishRead (num_bytes);
 				return;
 			}
@@ -232,11 +250,13 @@ namespace Manos.Server {
 
 		public void DisableReading ()
 		{
+			read_callback = null;
 			read_watcher.Stop ();
 		}
 
 		public void DisableWriting ()
 		{
+			write_callback = null;
 			write_watcher.Stop ();
 		}
 
@@ -301,24 +321,29 @@ namespace Manos.Server {
 				return;
 			}
 
-			if (read_buffer == null)
-				read_buffer = new MemoryStream ();
+			if (read_delimiter != null || read_bytes != -1) {
+				if (read_buffer == null)
+					read_buffer = new MemoryStream ();
 
-			read_buffer.Write (ReadChunk, 0, size);
-			read_buffer.Flush ();
+				read_buffer.Write (ReadChunk, 0, size);
+				num_bytes_read += size;
 
-			if (read_bytes != -1) {
-				if (read_buffer.Position >= read_bytes) {
-					FinishRead (read_bytes);
+				if (read_bytes != -1) {
+					if (num_bytes_read >= read_bytes) {
+						FinishRead (read_bytes);
+						return;
+					}
+				} if (read_delimiter != null) {
+					int delimiter = FindDelimiter ();
+					if (delimiter != -1) {
+						FinishRead (delimiter);
+						return;
+					}
 				}
 			}
 
-			if (read_delimiter != null) {
-				int delimiter = FindDelimiter ();
-				if (delimiter != -1) {
-					FinishRead (delimiter);
-				}
-			}
+			// We are doing an indefinite read
+			read_callback (this, ReadChunk, 0, size);
 		}
 #if DISABLE_POSIX
         private void HandleSendFile()
@@ -485,9 +510,10 @@ namespace Manos.Server {
 			read_callback = null;
 
 			read_buffer.Position = 0;
-			read_buffer.Write (data, end, length - end);
+			num_bytes_read = length - end;
+			read_buffer.Write (data, end, num_bytes_read);
 			
-			callback (this, read);
+			callback (this, read, 0, end);
 		}
 
 		private void FinishWrite ()

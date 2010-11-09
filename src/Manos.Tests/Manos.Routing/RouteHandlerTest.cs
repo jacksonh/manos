@@ -28,6 +28,7 @@ using NUnit.Framework;
 
 using Manos.Routing;
 
+using Manos.Http;
 using Manos.Testing;
 using Manos.Server.Testing;
 using Manos.Routing.Testing;
@@ -53,12 +54,12 @@ namespace Manos.Routing.Tests
 		public void TestStrMatch ()
 		{
 			var target = new MockManosTarget ();
-			var rh = new RouteHandler ("^foo", "GET", target);
-			var request = new MockHttpRequest ("GET", "foo");
+			var rh = new RouteHandler ("^foo", HttpMethod.HTTP_GET, target);
+			var request = new MockHttpRequest (HttpMethod.HTTP_GET, "foo");
 			
 			Assert.AreEqual (target, rh.Find (request), "should-match");
 			
-			request = new MockHttpRequest ("GET", "garbage-foo");
+			request = new MockHttpRequest (HttpMethod.HTTP_GET, "garbage-foo");
 			Assert.IsNull (rh.Find (request), "garbage-input");
 		}
 		
@@ -66,17 +67,17 @@ namespace Manos.Routing.Tests
 		public void TestStrMatchDeep ()
 		{
 			var target = new MockManosTarget ();
-			var rh = new RouteHandler ("foo/", "GET") {
-				new RouteHandler ("bar", "GET", target),
+			var rh = new RouteHandler ("foo/", HttpMethod.HTTP_GET) {
+				new RouteHandler ("bar", HttpMethod.HTTP_GET, target),
 			};
 
-			var request = new MockHttpRequest ("GET", "foo/bar");
+			var request = new MockHttpRequest (HttpMethod.HTTP_GET, "foo/bar");
 			Assert.AreEqual (target, rh.Find (request));
 			
-			request = new MockHttpRequest ("GET", "foo/foo");
+			request = new MockHttpRequest (HttpMethod.HTTP_GET, "foo/foo");
 			Assert.IsNull (rh.Find (request), "repeate-input");
 			
-			request = new MockHttpRequest ("GET", "foo/badbar");
+			request = new MockHttpRequest (HttpMethod.HTTP_GET, "foo/badbar");
 			Assert.IsNull (rh.Find (request), "matched-input");
 		}
 		
@@ -91,15 +92,15 @@ namespace Manos.Routing.Tests
 			//
 			
 			var target = new MockManosTarget ();
-			var rh = new RouteHandler ("^foo", "GET", target);
-			var request = new MockHttpRequest ("GET", "foo");
+			var rh = new RouteHandler ("^foo", HttpMethod.HTTP_GET, target);
+			var request = new MockHttpRequest (HttpMethod.HTTP_GET, "foo");
 
 			Assert.AreEqual (target, rh.Find (request), "sanity-1");
 			
 			rh.Patterns [0] = "baz";
 			Assert.IsNull (rh.Find (request), "sanity-2");
 			
-			request = new MockHttpRequest ("GET", "baz");
+			request = new MockHttpRequest (HttpMethod.HTTP_GET, "baz");
 			Assert.AreEqual (target, rh.Find (request), "changed");
 		}
 		
@@ -107,8 +108,8 @@ namespace Manos.Routing.Tests
 		public void TestSetPatternsNull ()
 		{
 			var target = new MockManosTarget ();
-			var rh = new RouteHandler ("^foo", "GET", target);
-			var request = new MockHttpRequest ("GET", "foo");
+			var rh = new RouteHandler ("^foo", HttpMethod.HTTP_GET, target);
+			var request = new MockHttpRequest (HttpMethod.HTTP_GET, "foo");
 
 			Assert.AreEqual (target, rh.Find (request), "sanity-1");
 			
@@ -120,7 +121,7 @@ namespace Manos.Routing.Tests
 		[Test]
 		public void HasPatternsTest ()
 		{
-			var rh = new RouteHandler ("foo", "GET");
+			var rh = new RouteHandler ("foo", HttpMethod.HTTP_GET);
 			
 			Assert.IsTrue (rh.HasPatterns, "a1");
 			
@@ -137,8 +138,8 @@ namespace Manos.Routing.Tests
 		[Test]
 		public void UriParamsTest ()
 		{
-			var rh = new RouteHandler ("(?<name>.+)", "GET", new ActionTarget (FakeAction));
-			var request = new MockHttpRequest ("GET", "hello");
+			var rh = new RouteHandler ("(?<name>.+)", HttpMethod.HTTP_GET, new ActionTarget (FakeAction));
+			var request = new MockHttpRequest (HttpMethod.HTTP_GET, "hello");
 			
 			Should.NotBeNull (rh.Find (request), "target");
 			
@@ -150,10 +151,10 @@ namespace Manos.Routing.Tests
 		[Test]
 		public void UriParamsTestDeep ()
 		{
-			var rh = new RouteHandler ("(?<animal>.+)/", "GET") {
-				new RouteHandler ("(?<name>.+)", "GET", new ActionTarget (FakeAction)),	                                                         
+			var rh = new RouteHandler ("(?<animal>.+)/", HttpMethod.HTTP_GET) {
+				new RouteHandler ("(?<name>.+)", HttpMethod.HTTP_GET, new ActionTarget (FakeAction)),	                                                         
 			};
-			var request = new MockHttpRequest ("GET", "dog/roxy");
+			var request = new MockHttpRequest (HttpMethod.HTTP_GET, "dog/roxy");
 			
 			Should.NotBeNull (rh.Find (request), "target");
 			
@@ -166,23 +167,23 @@ namespace Manos.Routing.Tests
 		[Test]
 		public void TestNoChildrenOfTarget ()
 		{
-			var rh = new RouteHandler ("foo", "GET", new ActionTarget (FakeAction));
+			var rh = new RouteHandler ("foo", HttpMethod.HTTP_GET, new ActionTarget (FakeAction));
 			
-			Should.Throw<InvalidOperationException> (() => rh.Children.Add (new RouteHandler ("foo", "POST")));
+			Should.Throw<InvalidOperationException> (() => rh.Children.Add (new RouteHandler ("foo", HttpMethod.HTTP_POST)));
 		}
 
 		[Test]
 		public void Find_PartialMatchAtBeginningOfChildlessHandler_ReturnsProperRoute ()
 		{
-			var rh_bad = new RouteHandler ("foo", "GET", new ActionTarget (FakeAction));
-			var rh_good = new RouteHandler ("foobar", "GET", new ActionTarget (FakeAction2));
+			var rh_bad = new RouteHandler ("foo", HttpMethod.HTTP_GET, new ActionTarget (FakeAction));
+			var rh_good = new RouteHandler ("foobar", HttpMethod.HTTP_GET, new ActionTarget (FakeAction2));
 			var rh = new RouteHandler ();
 			
 			rh.Children.Add (rh_bad);
 			rh.Children.Add (rh_good);
 
 			
-			var request = new MockHttpRequest ("GET", "foobar");
+			var request = new MockHttpRequest (HttpMethod.HTTP_GET, "foobar");
 			var res = rh.Find (request);
 			
 			Assert.AreEqual (rh_good.Target, res);
@@ -191,16 +192,16 @@ namespace Manos.Routing.Tests
 		[Test]
 		public void Find_PartialMatchAtBeginningOfHandlerWithChildren_ReturnsProperRoute ()
 		{
-			var rh_bad = new RouteHandler ("foo", "GET");
-			var rh_good = new RouteHandler ("foobar", "GET", new ActionTarget (FakeAction2));
+			var rh_bad = new RouteHandler ("foo", HttpMethod.HTTP_GET);
+			var rh_good = new RouteHandler ("foobar", HttpMethod.HTTP_GET, new ActionTarget (FakeAction2));
 			var rh = new RouteHandler ();
 			
-			rh_bad.Children.Add (new RouteHandler ("blah", "GET", new ActionTarget (FakeAction)));
+			rh_bad.Children.Add (new RouteHandler ("blah", HttpMethod.HTTP_GET, new ActionTarget (FakeAction)));
 			
 			rh.Children.Add (rh_bad);
 			rh.Children.Add (rh_good);
 
-			var request = new MockHttpRequest ("GET", "foobar");
+			var request = new MockHttpRequest (HttpMethod.HTTP_GET, "foobar");
 			var res = rh.Find (request);
 			
 			Assert.AreEqual (rh_good.Target, res);

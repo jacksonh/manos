@@ -29,18 +29,21 @@ using System.Text;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
+using Manos.Http;
 using Manos.Collections;
 
 namespace Manos.Server {
 
 	public interface IHttpRequest {
 		
-		string Method {
-			get;	
+		HttpMethod Method {
+			get;
+			set;
 		}
 		
 		string LocalPath {
 			get;
+			set;
 		}
 
 		DataDictionary Data {
@@ -53,10 +56,12 @@ namespace Manos.Server {
 
 		DataDictionary QueryData {
 			get;
+			set;
 		}
 
 		DataDictionary UriData {
-			get;	
+			get;
+			set;
 		}
 		
 		DataDictionary Cookies {
@@ -65,6 +70,7 @@ namespace Manos.Server {
 
 		HttpHeaders Headers {
 			get;
+			set;
 		}
 		
 		Dictionary<string,UploadedFile> Files {

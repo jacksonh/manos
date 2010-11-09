@@ -36,11 +36,14 @@ using System.Collections.Specialized;
 
 
 
+using Manos.Http;
 using Manos.Collections;
 
 namespace Manos.Server {
 
 	public class HttpRequest : IHttpRequest {
+
+		private HttpHeaders headers;
 
 		private DataDictionary data;
 		private DataDictionary uri_data;
@@ -50,16 +53,17 @@ namespace Manos.Server {
 		private DataDictionary cookies;
 		private Dictionary<string,UploadedFile> uploaded_files;
 		
-		public HttpRequest (IHttpTransaction transaction, HttpHeaders headers, string method, string resource, bool support_1_1)
+		public HttpRequest (IHttpTransaction transaction)
 		{
 			Transaction = transaction;
-			Headers = headers;
-			Method = method;
-			ResourceUri = resource;
-			Http_1_1_Supported = support_1_1;
 
-			SetEncoding ();
-			SetPathAndQuery ();
+			// Headers = headers;
+			// Method = method;
+			// ResourceUri = resource;
+			// Http_1_1_Supported = support_1_1;
+
+			// SetEncoding ();
+			// SetPathAndQuery ();
 		}
 
 		public IHttpTransaction Transaction {
@@ -68,30 +72,41 @@ namespace Manos.Server {
 		}
 
 		public HttpHeaders Headers {
-			get;
-			private set;
+			get {
+				if (headers == null)
+					headers = new HttpHeaders ();
+				return headers;
+			}
+			set {
+				headers = value;
+			}
 		}
 
-		public string Method {
+		public HttpMethod Method {
 			get;
-			private set;
+			set;
 		}
 
 		public string ResourceUri {
 			get;
-			private set;
+			set;
 		}
 
 		public bool Http_1_1_Supported {
 			get;
-			private set;
+			set;
 		}
 
 		public string LocalPath {
 			get;
-			private set;
+			set;
 		}
-		
+
+		public Encoding ContentEncoding {
+			get { return Headers.ContentEncoding; }
+			set { Headers.ContentEncoding = value; }
+		}
+
 		public DataDictionary Data {
 			get {
 				if (data == null)
@@ -156,47 +171,6 @@ namespace Manos.Server {
 			       uploaded_files = new Dictionary<string,UploadedFile> ();
 			    return uploaded_files;
 			}
-		}
-
-		public Encoding ContentEncoding {
-			get;
-			private set;
-		}
-
-		private void SetEncoding ()
-		{
-			string content;
-
-			if (!Headers.TryGetValue ("Content-Type", out content)) {
-				ContentEncoding = Encoding.ASCII;
-				return;
-			}
-
-			// TODO: parse charsets
-			ContentEncoding = Encoding.Default;
-		}
-
-		private void SetPathAndQuery ()
-		{
-			// This is used with the OPTIONS verb
-			if (ResourceUri == "*")
-				return;
-
-			string uri = ResourceUri;
-			string scheme;
-			string host;
-			string path;
-			string query;
-
-			if (!UriParser.TryParse (uri, out scheme, out host, out path, out query)) {
-				Transaction.Abort (400, "Invalid resource path. '{0}'", uri);
-				return;
-			}
-
-			LocalPath = path;
-
-			// TODO: Pass this to the encoder to populate
-			QueryData = HttpUtility.ParseUrlEncodedData (query);
 		}
 
 		private DataDictionary ParseCookies ()

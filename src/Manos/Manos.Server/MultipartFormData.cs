@@ -99,15 +99,15 @@ namespace Manos.Server {
 
 		public void ReadUntil (string delimiter, IMFDReadCallback callback)
 		{
-			iostream.ReadUntil (delimiter, (s, data) => {
-				callback (data, 0, data.Length);
+			iostream.ReadUntil (delimiter, (s, data, offset, count) => {
+				callback (data, offset, count);
 			});
 		}
 
 		public void ReadBytes (int count, IMFDReadCallback callback)
 		{
-			iostream.ReadBytes (count, (s, data) => {
-				callback (data, 0, data.Length);
+			iostream.ReadBytes (count, (s, data, offset, _count) => {
+				callback (data, offset, _count);
 			});
 		}
 
@@ -219,7 +219,7 @@ namespace Manos.Server {
 			} else {
 				UploadedFile uploaded = stream.EndFile ();
 			   
-				uploaded.SetData (data, offset, data_len);
+//				uploaded.SetData (data, offset, data_len);
 				request.Files.Add (filename, uploaded);
 			}
 

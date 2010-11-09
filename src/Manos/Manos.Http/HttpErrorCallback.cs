@@ -22,41 +22,13 @@
 //
 //
 
+using System.IO;
 
-using System;
-using System.Reflection;
+using Manos.Collections;
 
-using Manos.Http;
+namespace Manos.Http {
 
-namespace Manos {
-
-	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-	public abstract class HttpMethodAttribute : Attribute {
-
-		public HttpMethodAttribute ()
-		{
-		}
-
-		public HttpMethodAttribute (string [] patterns)
-		{
-			Patterns = patterns;
-		}
-
-		public string Name {
-			get;
-			set;
-		}
-
-		public HttpMethod [] Methods {
-			get;
-			protected set;
-		}
-
-		public string [] Patterns {
-			get;
-			private set;
-		}
-	}
+	public delegate void HttpErrorCallback (HttpParser parser, string message, ByteBuffer buffer, int initial_position);
 }
 
 

@@ -29,8 +29,10 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 
 using Manos;
+using Manos.Http;
 using Manos.Server;
 using Manos.Collections;
+
 
 
 namespace Manos.Server.Testing
@@ -48,7 +50,7 @@ namespace Manos.Server.Testing
 
 		private bool http_1_1_supported;
 		
-		public MockHttpRequest (string method, string local_path)
+		public MockHttpRequest (HttpMethod method, string local_path)
 		{
 			Method = method;
 			LocalPath = local_path;
@@ -63,15 +65,15 @@ namespace Manos.Server.Testing
 			data.Children.Add (PostData);
 		}
 		
-		public string Method {
+		public HttpMethod Method {
 			get;
-			private set;
+			set;
 		}
 		
 		
 		public string LocalPath {
 			get;
-			private set;
+			set;
 		}
 		
 		public bool Aborted {
@@ -95,11 +97,17 @@ namespace Manos.Server.Testing
 			get {
 				return uri_data;
 			}
+			set {
+				uri_data = value;
+			}
 		}
 		
 		public DataDictionary QueryData {
 			get {
 			    return query_data;
+			}
+			set {
+				query_data = value;
 			}
 		}
 
@@ -116,6 +124,9 @@ namespace Manos.Server.Testing
 			    if (headers == null)
 			       headers = new HttpHeaders ();
 			    return headers;
+			}
+			set {
+				headers = value;
 			}
 		}
 		

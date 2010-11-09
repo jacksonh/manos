@@ -23,40 +23,16 @@
 //
 
 
-using System;
-using System.Reflection;
 
-using Manos.Http;
+using Manos.Collections;
 
-namespace Manos {
+namespace Manos.Server {
 
-	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-	public abstract class HttpMethodAttribute : Attribute {
+	public interface IHttpBodyHandler {
 
-		public HttpMethodAttribute ()
-		{
-		}
+		void HandleData (HttpTransaction transaction, ByteBuffer data, int pos, int len);
 
-		public HttpMethodAttribute (string [] patterns)
-		{
-			Patterns = patterns;
-		}
-
-		public string Name {
-			get;
-			set;
-		}
-
-		public HttpMethod [] Methods {
-			get;
-			protected set;
-		}
-
-		public string [] Patterns {
-			get;
-			private set;
-		}
+		void Finish (HttpTransaction transaction);
 	}
 }
-
 

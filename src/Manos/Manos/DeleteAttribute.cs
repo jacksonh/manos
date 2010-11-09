@@ -26,6 +26,7 @@
 using System;
 using System.Reflection;
 
+using Manos.Http;
 
 namespace Manos {
 
@@ -34,7 +35,7 @@ namespace Manos {
 
 		public DeleteAttribute (params string [] patterns) : base (patterns)
 		{
-			Methods = new string [] { "DELETE" };
+			Methods = new HttpMethod [] { HttpMethod.HTTP_DELETE };
 		}
 	}
 }
