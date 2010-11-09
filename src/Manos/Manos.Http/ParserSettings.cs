@@ -122,6 +122,8 @@ namespace Manos.Http {
 			try {
 				cb (p);
 			} catch (Exception e) {
+				Console.WriteLine (e);
+
 				RaiseOnError (p, e.Message, null, -1);
 				return;
 			}
@@ -135,6 +137,8 @@ namespace Manos.Http {
 			try {
 				cb (p,buf,pos,len);
 			} catch (Exception e) {
+				Console.WriteLine (e);
+
 				RaiseOnError (p, e.Message, buf, pos);
 				return;
 			}
