@@ -219,7 +219,7 @@ namespace Manos.Server {
 			} else {
 				UploadedFile uploaded = stream.EndFile ();
 			   
-				uploaded.SetData (data, offset, data_len);
+//				uploaded.SetData (data, offset, data_len);
 				request.Files.Add (filename, uploaded);
 			}
 

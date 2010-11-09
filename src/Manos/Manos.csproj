@@ -57,6 +57,7 @@
     <Compile Include="Manos.Http\HttpException.cs" />
     <Compile Include="Manos.Http\HttpFormDataHandler.cs" />
     <Compile Include="Manos.Http\HttpMethod.cs" />
+    <Compile Include="Manos.Http\HttpMultiPartFormDataHandler.cs" />
     <Compile Include="Manos.Http\HttpParser.cs" />
     <Compile Include="Manos.Http\IHttpBodyHandler.cs" />
     <Compile Include="Manos.Http\ParserSettings.cs" />

@@ -89,7 +89,9 @@ namespace TestApp {
 		public void UploadFile (IManosContext ctx, string name)
 		{
 			UploadedFile file = ctx.Request.Files [name];
-			byte [] data = file.GetData ();
+			byte [] data = new byte [file.Contents.Length];
+
+			file.Contents.Read (data, 0, data.Length);
 
 			ctx.Response.Write (data);
 		}

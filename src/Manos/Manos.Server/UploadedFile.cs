@@ -26,10 +26,34 @@
 
 using System;
 using System.IO;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Manos.Server {
 
-	  public abstract class UploadedFile {
+	public interface IUploadedFileCreator {
+
+		UploadedFile Create (string name);
+	}
+
+	public class TempFileUploadedFileCreator : IUploadedFileCreator {
+
+		public UploadedFile Create (string name)
+		{
+			string temp_file = Path.GetTempFileName ();
+			return new TempFileUploadedFile (name, temp_file);
+		}
+	}
+
+	public class InMemoryUploadedFileCreator : IUploadedFileCreator {
+
+		public UploadedFile Create (string name)
+		{
+			return new InMemoryUploadedFile (name);
+		}
+	}
+	
+	public abstract class UploadedFile {
 
 	  	 public UploadedFile (string name)
 		 {
@@ -54,16 +78,14 @@ namespace Manos.Server {
 		 	get;
 		 }
 
-		 // TEMP: Eventually this should be streamed to the file
-		 public abstract void SetData (byte [] data, int index, int count);
-
-		 // Probably best to not use this method as it creates a (potentially) huge buffer
-		 public abstract byte [] GetData ();
+		public virtual void Finish ()
+		{
+		}
 	  }
 
 	  public class InMemoryUploadedFile : UploadedFile {
 
-	  	 private byte [] data;
+		  private MemoryStream stream = new MemoryStream ();
 
 	  	 public InMemoryUploadedFile (string name) : base (name)
 		 {
@@ -71,33 +93,26 @@ namespace Manos.Server {
 		 
 		 public override long Length {
 		 	get {
-			    if (data == null)
-			       return 0;
-			    return data.Length;
+				return stream.Length;
 			}
 		 }
 
 		 public override Stream Contents {
 		 	get {
-			    return new MemoryStream (data);
+				return stream;
 			}
 		 }
 
-		 public override void SetData (byte [] src, int index, int count)
-		 {
-			data = new byte [count];
-
-			Array.Copy (src, index, data, 0, count);
-		 }
-
-		 public override byte [] GetData ()
-		 {
-			return data;
-		 }
+		  public override void Finish ()
+		  {
+			  stream.Position = 0;
+		  }
 	  }
 
 	  public class TempFileUploadedFile : UploadedFile {
 
+		  FileStream stream;
+		  
 	  	 public TempFileUploadedFile (string name, string temp_file) : base (name)
 		 {
 			TempFile = temp_file;
@@ -117,20 +132,16 @@ namespace Manos.Server {
 
 		 public override Stream Contents {
 		 	get {
-			    return File.OpenRead (TempFile);
+				if (stream == null)
+					stream = File.OpenWrite (TempFile);
+				return stream;
 			}
 		 }
 
-		 public override void SetData (byte [] data, int index, int count)
+		 public override void Finish ()
 		 {
-			using (var stream = File.OpenWrite (TempFile)) {
-			      stream.Write (data, index, count);
-			}
-		 }
-
-		 public override byte [] GetData ()
-		 {
-			return File.ReadAllBytes (TempFile);
+			 stream.Flush ();
+			 stream.Close ();
 		 }
 	  }
 }

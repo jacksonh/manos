@@ -156,7 +156,7 @@ namespace Manos.Server {
 
 		public void Run ()
 		{
-			ConnectionCallback (this);	
+			ConnectionCallback (this);
 		}
 		
 		private void OnWriteFinished ()
@@ -210,94 +210,6 @@ namespace Manos.Server {
 
 		private void OnClose (IOStream stream)
 		{
-		}
-
-		/*
-		private void OnHeaders (IOStream stream, byte [] data, int offset, int count)
-		{
-			string h = Encoding.ASCII.GetString (data);
-			StringReader reader = new StringReader (h);
-
-			string verb;
-			string path;
-			string version;
-
-			string line = reader.ReadLine ();
-			ParseStartLine (line, out verb, out path, out version);
-			
-			HttpHeaders headers = new HttpHeaders ();
-			headers.Parse (reader);
-
-			Request = new HttpRequest (this, headers, verb, path, Version_1_1_Supported (version));
-			Response = new HttpResponse (this, Encoding.ASCII);
-			
-			
-
-			stream.DisableReading ();
-			Server.RunTransaction (this);
-		}
-		*/
-
-		private void ParseStartLine (string line, out string verb, out string path, out string version)
-		{
-			int s = 0;
-			int e = line.IndexOf (' ');
-
-			verb = line.Substring (s, e);
-
-			s = e + 1;
-			e = line.IndexOf (' ', s);
-			path = line.Substring (s, e - s);
-
-			s = e + 1;
-			version = line.Substring (s);
-
-			if (!version.StartsWith ("HTTP/", StringComparison.InvariantCulture))
-				throw new Exception ("Malformed HTTP request, no version specified.");
-		}
-
-		private void HandleLargeBody ()
-		{
-			/*
-			if (Request.Method != "POST" && Request.Method != "PUT")
-				throw new InvalidOperationException ("Large Request bodies are only allowed with PUT or POST operations.");
-
-			string ct = Request.Headers ["Content-Type"];
-			if (ct == null || !ct.StartsWith ("multipart/form-data", StringComparison.InvariantCultureIgnoreCase)) {
-				// TODO: Maybe someone wants to post large www-form-urlencoded data?
-				throw new InvalidOperationException ("Large Request bodies are only allowed with multipart form data.");
-			}
-
-			string boundary = ParseBoundary (ct);
-			IMFDStream stream = new TempFileMFDStream (IOStream);
-
-			MultipartFormDataParser parser = new MultipartFormDataParser (this.Request, boundary, stream, () => {
-				IOStream.DisableReading ();
-				Server.RunTransaction (this);
-			});
-
-			parser.ParseParts ();
-			*/
-		}
-
-		private void HandleBody ()
-		{
-			/*
-			if (Request.Method == "POST" || Request.Method == "PUT") {
-				// string ct = Request.Headers ["Content-Type"];
-				// if (ct != null && ct.StartsWith ("application/x-www-form-urlencoded", StringComparison.InvariantCultureIgnoreCase))
-				// 	IOStream.ReadBytes ((int) Request.Headers.ContentLength, OnWwwFormData);
-				else if (ct != null && ct.StartsWith ("multipart/form-data", StringComparison.InvariantCulture)) {
-				        string boundary = ParseBoundary (ct);
-					if (boundary == null)
-			   		        throw new InvalidOperationException ("Invalid content type boundary.");
-
-					IOStream.ReadBytes ((int) Request.Headers.ContentLength, (ios, data, offset, count) => {
-						OnMultiPartFormData (boundary, data);
-					});
-				}
-			}
-			*/
 		}
 
 		private void OnBytesRead (IOStream stream, byte [] data, int offset, int count)
@@ -398,10 +310,26 @@ namespace Manos.Server {
 		private void CreateBodyHandler ()
 		{
 			string ct = Request.Headers ["Content-Type"];
+
 			if (ct != null && ct.StartsWith ("application/x-www-form-urlencoded", StringComparison.InvariantCultureIgnoreCase)) {
 				body_handler = new HttpFormDataHandler ();
 				return;
 			}
+
+			if (ct != null && ct.StartsWith ("multipart/form-data", StringComparison.InvariantCultureIgnoreCase)) {
+				string boundary = ParseBoundary (ct);
+				IUploadedFileCreator file_creator = GetFileCreator ();
+
+				body_handler = new HttpMultiPartFormDataHandler (boundary, Request.ContentEncoding, file_creator);
+				return;
+			}
+		}
+
+		private IUploadedFileCreator GetFileCreator ()
+		{
+			if (Request.Headers.ContentLength == null || Request.Headers.ContentLength >= MAX_BUFFERED_CONTENT_LENGTH)
+				return new TempFileUploadedFileCreator ();
+			return new InMemoryUploadedFileCreator ();
 		}
 
 		private void OnFinishedReading ()
