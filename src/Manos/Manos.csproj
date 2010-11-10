@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -52,6 +52,8 @@
     <Compile Include="Manos\TraceAttribute.cs" />
     <Compile Include="Manos.Http\HState.cs" />
     <Compile Include="Manos.Http\HttpCallback.cs" />
+    <Compile Include="Manos.Http\HttpCookie.cs" />
+    <Compile Include="Manos.Http\HttpResponseStream.cs" />
     <Compile Include="Manos.Http\HttpDataCallback.cs" />
     <Compile Include="Manos.Http\HttpErrorCallback.cs" />
     <Compile Include="Manos.Http\HttpException.cs" />
@@ -63,30 +65,28 @@
     <Compile Include="Manos.Http\ParserSettings.cs" />
     <Compile Include="Manos.Http\ParserType.cs" />
     <Compile Include="Manos.Http\State.cs" />
+    <Compile Include="Manos.Http\HttpException.cs" />
+    <Compile Include="Manos.Http\HttpHeaders.cs" />
+    <Compile Include="Manos.Http\HttpRequest.cs" />
+    <Compile Include="Manos.Http\HttpResponse.cs" />
+    <Compile Include="Manos.Http\HttpServer.cs" />
+    <Compile Include="Manos.Http\HttpTransaction.cs" />
+    <Compile Include="Manos.Http\HttpUtility.cs" />
+    <Compile Include="Manos.Http\IHttpRequest.cs" />
+    <Compile Include="Manos.Http\IHttpResponse.cs" />
+    <Compile Include="Manos.Http\IHttpTransaction.cs" />
+    <Compile Include="Manos.Http\UploadedFile.cs" />
     <Compile Include="Manos.Routing\RouteHandler.cs" />
-    <Compile Include="Manos.Server\ByteUtils.cs" />
-    <Compile Include="Manos.Server\HttpException.cs" />
-    <Compile Include="Manos.Server\HttpHeaders.cs" />
-    <Compile Include="Manos.Server\HttpRequest.cs" />
-    <Compile Include="Manos.Server\HttpResponse.cs" />
-    <Compile Include="Manos.Server\HttpServer.cs" />
-    <Compile Include="Manos.Server\HttpTransaction.cs" />
-    <Compile Include="Manos.Server\HttpUtility.cs" />
-    <Compile Include="Manos.Server\IHttpRequest.cs" />
-    <Compile Include="Manos.Server\IHttpResponse.cs" />
-    <Compile Include="Manos.Server\IHttpTransaction.cs" />
-    <Compile Include="Manos.Server\IOLoop.cs" />
-    <Compile Include="Manos.Server\IOStream.cs" />
-    <Compile Include="Manos.Server\MultipartFormData.cs" />
-    <Compile Include="Manos.Server\UploadedFile.cs" />
-    <Compile Include="Manos.Server\UriParser.cs" />
+    <Compile Include="Manos.IO\ByteUtils.cs" />
+    <Compile Include="Manos.IO\IOLoop.cs" />
+    <Compile Include="Manos.IO\IOStream.cs" />
+    <Compile Include="Manos.IO\WriteBytesOperation.cs" />
+    <Compile Include="Manos.IO\WriteFileOperation.cs" />
+    <Compile Include="Manos.IO\IWriteOperation.cs" />
     <Compile Include="Manos\IManosContext.cs" />
     <Compile Include="Manos.Testing\MockManosModule.cs" />
-    <Compile Include="Manos.Server.Testing\MockHttpTransaction.cs" />
-    <Compile Include="Manos.Server.Testing\MockHttpRequest.cs" />
-    <Compile Include="Manos.Server\WriteBytesOperation.cs" />
-    <Compile Include="Manos.Server\WriteFileOperation.cs" />
-    <Compile Include="Manos.Server\IWriteOperation.cs" />
+    <Compile Include="Manos.Http.Testing\MockHttpTransaction.cs" />
+    <Compile Include="Manos.Http.Testing\MockHttpRequest.cs" />
     <Compile Include="Manos.Routing\IMatchOperation.cs" />
     <Compile Include="Manos.Routing\RegexMatchOperation.cs" />
     <Compile Include="Manos.Routing\MatchOperationFactory.cs" />
@@ -99,7 +99,7 @@
     <Compile Include="Manos\InfiniteRepeatBehavior.cs" />
     <Compile Include="Manos\RepeatBehavior.cs" />
     <Compile Include="Manos\TimeoutCallback.cs" />
-    <Compile Include="Manos.Server\Timeout.cs" />
+    <Compile Include="Manos\Timeout.cs" />
     <Compile Include="Manos\AppHost.cs" />
     <Compile Include="Manos.Caching\IManosCache.cs" />
     <Compile Include="Manos.Caching\ManosInProcCache.cs" />
@@ -120,8 +120,6 @@
     <Compile Include="Manos.Collections\ByteBuffer.cs" />
     <Compile Include="Manos\RouteAttribute.cs" />
     <Compile Include="Manos\UnsafeString.cs" />
-    <Compile Include="Manos.Server\HttpCookie.cs" />
-    <Compile Include="Manos.Server\HttpResponseStream.cs" />
     <Compile Include="Manos.Routing\HtmlFormDataTypeConverter.cs" />
     <Compile Include="Manos.Template\TemplateEnvironment.cs" />
     <Compile Include="Manos.Template\TemplateLibrary.cs" />

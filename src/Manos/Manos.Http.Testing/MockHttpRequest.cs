@@ -35,7 +35,7 @@ using Manos.Collections;
 
 
 
-namespace Manos.Server.Testing
+namespace Manos.Http.Testing
 {
 	public class MockHttpRequest : IHttpRequest
 	{

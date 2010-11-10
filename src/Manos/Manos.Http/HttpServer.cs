@@ -34,8 +34,9 @@ using System.Collections.Generic;
 
 using Libev;
 
+using Manos.IO;
 
-namespace Manos.Server {
+namespace Manos.Http {
 
 	public delegate void HttpConnectionCallback (IHttpTransaction transaction);
 

@@ -23,14 +23,76 @@
 //
 
 
-using System;
 
-namespace Manos.Server
-{
-	public class HttpException : Exception
-	{
-		public HttpException (string message) : base (message)
-		{
+using System;
+using System.Text;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+
+using Manos.Http;
+using Manos.Collections;
+
+namespace Manos.Http {
+
+	public interface IHttpRequest {
+		
+		HttpMethod Method {
+			get;
+			set;
 		}
+		
+		string LocalPath {
+			get;
+			set;
+		}
+
+		DataDictionary Data {
+			get;	
+		}
+		
+		DataDictionary PostData {
+			get;
+		}
+
+		DataDictionary QueryData {
+			get;
+			set;
+		}
+
+		DataDictionary UriData {
+			get;
+			set;
+		}
+		
+		DataDictionary Cookies {
+			get;	
+		}
+
+		HttpHeaders Headers {
+			get;
+			set;
+		}
+		
+		Dictionary<string,UploadedFile> Files {
+			get;
+		}
+
+		int MajorVersion {
+			get;
+			set;
+		}
+
+		int MinorVersion {
+			get;
+			set;
+		}
+
+		Encoding ContentEncoding {
+			get;
+		}
+
+		void SetWwwFormData (DataDictionary data);
+		
 	}
 }
+

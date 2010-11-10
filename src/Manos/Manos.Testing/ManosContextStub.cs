@@ -24,7 +24,7 @@
 
 using System;
 
-using Manos.Server;
+using Manos.Http;
 
 namespace Manos.Testing
 {

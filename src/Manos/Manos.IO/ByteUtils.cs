@@ -23,26 +23,32 @@
 //
 
 
+
 using System;
-using NUnit.Framework;
 
-using Manos;
-using Manos.Server;
+namespace Manos.IO {
 
-namespace Manos.Server.Tests
-{
+	  public static class ByteUtils {
 
+	  	 public static int FindDelimiter (byte [] delimiter, byte [] data, int start, int end)
+		 {
+			start = Array.IndexOf (data, delimiter [0], start, end - start);
 
-	[TestFixture()]
-	public class HttpRequestTest
-	{
+			while (start >= 0) {
+				bool match = true;
+				for (int i = 1; i < delimiter.Length; i++) {
+					if (data [start + i] == delimiter [i])
+						continue;
+					match = false;
+					break;
+				}
+				if (match)
+					return start + delimiter.Length;
+				start = Array.IndexOf (data, delimiter [0], start + 1);
+			}
 
-		[Test()]
-		public void TestNoNullQueryData ()
-		{
-			// var r = new HttpRequest (new MockHttpTransaction (), .... );
-			
-			// Should.NotBeNull (r.QueryData);
-		}
-	}
+			return -1;
+		 }
+	  }
 }
+

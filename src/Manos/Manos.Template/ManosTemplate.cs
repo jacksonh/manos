@@ -25,7 +25,7 @@
 using System;
 
 using Manos;
-using Manos.Server;
+using Manos.Http;
 
 
 namespace Manos.Templates

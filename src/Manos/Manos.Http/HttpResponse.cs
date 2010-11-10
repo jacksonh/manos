@@ -36,7 +36,7 @@ using System.Collections.Generic;
 
 
 
-namespace Manos.Server {
+namespace Manos.Http {
 
 	public class HttpResponse : IHttpResponse {
 

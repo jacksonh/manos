@@ -30,7 +30,8 @@ using Manos;
 using Manos.Http;
 using Manos.Routing;
 using Manos.Testing;
-using Manos.Server.Testing;
+using Manos.Http.Testing;
+
 
 using Manos.ShouldExt;
 

@@ -23,80 +23,80 @@
 //
 
 
-
 using System;
-using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-
-using Libev;
 
 
-namespace Manos.Server {
+namespace Manos.Http.Testing
+{
+	public class MockHttpTransaction : IHttpTransaction
+	{
+		private bool aborted;
 
-	public class IOLoop {
-	       
-		private static IOLoop instance = new IOLoop ();
+		public MockHttpTransaction (IHttpRequest request)
+		{
+			if (request == null)
+			   throw new ArgumentNullException ("request");
+
+			Request = request;
+			Response = new HttpResponse (this, Encoding.Default);
+		}
+
+		// TODO: I guess we need a mock server?
+		public HttpServer Server {
+			get { return null; }
+		}
+				
+		public IHttpRequest Request {
+			get;
+			private set;
+		}
+
+		public IHttpResponse Response {
+			get;
+			private set;
+		}
+
+		public bool Aborted {
+			get;
+			private set;
+		}
+
+		public int AbortedStatusCode {
+		       get;
+		       private set;
+		}
+
+		public string AbortedMessage {
+		       get;
+		       private set;
+		}
+
+		public bool Finished {
+		       get;
+		       private set;
+		}
+
+		public void Finish ()
+		{
+			Finished = true;
+		}
 		
-		private bool running;
-
-		private Loop evloop;
-		private PrepareWatcher prepare_watcher;
-
-		public IOLoop ()
+		public void Abort (int status, string message, params object [] p)
 		{
-			evloop = Loop.CreateDefaultLoop (0);
-
-			prepare_watcher = new PrepareWatcher (evloop, HandlePrepareEvent);
-			prepare_watcher.Start ();
+			Aborted = true;
+			AbortedStatusCode = status;
+			AbortedMessage = String.Format (message, p);
 		}
 
-		public static IOLoop Instance {
-			get { return instance; }
-		}
-
-		public Loop EventLoop {
-		       get { return evloop; }
-		}
-
-		public void Start ()
+		public void Write (List<ArraySegment<byte>> data)
 		{
-			running = true;
-			
-			evloop.RunBlocking ();
 		}
 
-		public void Stop ()
+		public void SendFile (string file)
 		{
-			running = false;
-		}
-
-		private void HandlePrepareEvent (Loop loop, PrepareWatcher watcher, int revents)
-		{
-			if (!running) {
-			   loop.Unloop (UnloopType.All);
-			   prepare_watcher.Stop ();
-		        }
-		}
-
-		public void AddTimeout (Timeout timeout)
-		{
-			TimerWatcher t = new TimerWatcher (timeout.begin, timeout.span, evloop, HandleTimeout);
-			t.UserData = timeout;
-			t.Start ();
-		}
-
-		private void HandleTimeout (Loop loop, TimerWatcher timeout, int revents)
-		{
-			Timeout t = (Timeout) timeout.UserData;
-
-			AppHost.RunTimeout (t);
-			if (!t.ShouldContinueToRepeat ())
-			   timeout.Stop ();
 		}
 	}
 }
-

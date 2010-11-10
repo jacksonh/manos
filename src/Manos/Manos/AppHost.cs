@@ -29,7 +29,8 @@ using System.Net;
 using System.Collections;
 using System.Collections.Generic;
 
-using Manos.Server;
+using Manos.IO;
+using Manos.Http;
 using Manos.Caching;
 
 

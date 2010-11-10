@@ -27,7 +27,7 @@
 using System;
 
 
-namespace Manos.Server {
+namespace Manos.IO {
 
 	public class WriteFileOperation : IWriteOperation {
 

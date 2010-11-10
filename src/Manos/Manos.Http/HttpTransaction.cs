@@ -33,11 +33,10 @@ using System.Net.Sockets;
 using System.Collections;
 using System.Collections.Generic;
 
-
-using Manos.Http;
+using Manos.IO;
 using Manos.Collections;
 
-namespace Manos.Server {
+namespace Manos.Http {
 
 	public class HttpTransaction : IHttpTransaction {
 

@@ -35,7 +35,7 @@ using System.Collections.Specialized;
 
 
 
-namespace Manos.Server {
+namespace Manos.Http {
 
 	public class HttpHeaders {
 

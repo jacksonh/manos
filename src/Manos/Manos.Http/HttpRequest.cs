@@ -39,7 +39,7 @@ using System.Collections.Specialized;
 using Manos.Http;
 using Manos.Collections;
 
-namespace Manos.Server {
+namespace Manos.Http {
 
 	public class HttpRequest : IHttpRequest {
 

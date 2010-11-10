@@ -22,48 +22,27 @@
 //
 //
 
+
 using System;
+using NUnit.Framework;
 
+using Manos;
+using Manos.Server;
 
-namespace Manos.Server
+namespace Manos.Http.Tests
 {
-	public class Timeout
+
+
+	[TestFixture()]
+	public class HttpRequestTest
 	{
-		internal TimeSpan begin;
-		internal TimeSpan span;
-		internal IRepeatBehavior repeat;
-		internal object data;
-		internal TimeoutCallback callback;
 
-		public Timeout (TimeSpan span, IRepeatBehavior repeat, object data, TimeoutCallback callback) : this (TimeSpan.Zero, span, repeat,data, callback)
+		[Test()]
+		public void TestNoNullQueryData ()
 		{
-		}
-
-		public Timeout (TimeSpan begin, TimeSpan span, IRepeatBehavior repeat, object data, TimeoutCallback callback)
-		{
-			this.begin = begin;
-			this.span = span;
-			this.repeat = repeat;
-			this.data = data;
-			this.callback = callback;
-		}
-		
-		public void Run (ManosApp app)
-		{
-			try {
-				callback (app, data);
-			} catch (Exception e) {
-				Console.Error.WriteLine ("Exception in timeout callback.");
-				Console.Error.WriteLine (e);
-			}
+			// var r = new HttpRequest (new MockHttpTransaction (), .... );
 			
-			repeat.RepeatPerformed ();
-		}
-		
-		public bool ShouldContinueToRepeat ()
-		{
-			return repeat.ShouldContinueToRepeat ();	
+			// Should.NotBeNull (r.QueryData);
 		}
 	}
 }
-

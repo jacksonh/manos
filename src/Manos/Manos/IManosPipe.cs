@@ -24,7 +24,7 @@
 
 using System;
 
-using Manos.Server;
+using Manos.Http;
 using Manos.Routing;
 
 namespace Manos

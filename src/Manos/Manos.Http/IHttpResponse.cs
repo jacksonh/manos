@@ -25,37 +25,73 @@
 
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
+namespace Manos.Http {
 
-namespace Manos.Server {
+	public interface IHttpResponse {
 
-	public interface IHttpTransaction {
-
-		IHttpRequest Request {
+		IHttpTransaction Transaction {
 			get;
 		}
 
-		IHttpResponse Response {
+		HttpHeaders Headers {
 			get;
 		}
 
-		HttpServer Server {
+		HttpResponseStream Stream {
 			get;
 		}
 
-		bool Aborted {
-			get;	
+		
+		StreamWriter Writer {
+			get;
 		}
 
-		void Write (List<ArraySegment<byte>> data);
+		Encoding HeaderEncoding {
+			get;
+			set;
+		}
+
+		Encoding ContentEncoding {
+			get;
+			set;
+		}
+
+		int StatusCode {
+			get;
+			set;
+		}
+
+		bool WriteHeaders {
+			get;
+			set;
+		}
+
+		void Write (string str);
+		void Write (string str, params object [] prms);
+		
+		void WriteLine (string str);
+		void WriteLine (string str, params object [] prms);
+
+		void Write (byte [] data);
 
 		void SendFile (string file);
 
 		void Finish ();
 
-		void Abort (int status, string message, params object [] p);
+		void SetHeader (string name, string value);
+				
+		void SetCookie (string name, HttpCookie cookie);
+		HttpCookie SetCookie (string name, string value);
+		HttpCookie SetCookie (string name, string value, string domain);
+		HttpCookie SetCookie (string name, string value, DateTime expires);
+		HttpCookie SetCookie (string name, string value, string domain, DateTime expires);
+		HttpCookie SetCookie (string name, string value, TimeSpan max_age);
+		HttpCookie SetCookie (string name, string value, string domain, TimeSpan max_age);
+		
+		void Redirect (string url);
 	}
 }
 

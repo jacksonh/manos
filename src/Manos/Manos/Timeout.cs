@@ -22,77 +22,48 @@
 //
 //
 
-
-
 using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 
-using Manos.Http;
-using Manos.Collections;
 
-namespace Manos.Server {
+namespace Manos
+{
+	public class Timeout
+	{
+		internal TimeSpan begin;
+		internal TimeSpan span;
+		internal IRepeatBehavior repeat;
+		internal object data;
+		internal TimeoutCallback callback;
 
-	public interface IHttpRequest {
-		
-		HttpMethod Method {
-			get;
-			set;
-		}
-		
-		string LocalPath {
-			get;
-			set;
+		public Timeout (TimeSpan span, IRepeatBehavior repeat, object data, TimeoutCallback callback) : this (TimeSpan.Zero, span, repeat,data, callback)
+		{
 		}
 
-		DataDictionary Data {
-			get;	
-		}
-		
-		DataDictionary PostData {
-			get;
-		}
-
-		DataDictionary QueryData {
-			get;
-			set;
-		}
-
-		DataDictionary UriData {
-			get;
-			set;
+		public Timeout (TimeSpan begin, TimeSpan span, IRepeatBehavior repeat, object data, TimeoutCallback callback)
+		{
+			this.begin = begin;
+			this.span = span;
+			this.repeat = repeat;
+			this.data = data;
+			this.callback = callback;
 		}
 		
-		DataDictionary Cookies {
-			get;	
-		}
-
-		HttpHeaders Headers {
-			get;
-			set;
+		public void Run (ManosApp app)
+		{
+			try {
+				callback (app, data);
+			} catch (Exception e) {
+				Console.Error.WriteLine ("Exception in timeout callback.");
+				Console.Error.WriteLine (e);
+			}
+			
+			repeat.RepeatPerformed ();
 		}
 		
-		Dictionary<string,UploadedFile> Files {
-			get;
+		public bool ShouldContinueToRepeat ()
+		{
+			return repeat.ShouldContinueToRepeat ();	
 		}
-
-		int MajorVersion {
-			get;
-			set;
-		}
-
-		int MinorVersion {
-			get;
-			set;
-		}
-
-		Encoding ContentEncoding {
-			get;
-		}
-
-		void SetWwwFormData (DataDictionary data);
-		
 	}
 }
 

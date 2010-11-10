@@ -26,7 +26,7 @@
 
 using Manos.Collections;
 
-namespace Manos.Server {
+namespace Manos.Http {
 
 	public interface IHttpBodyHandler {
 

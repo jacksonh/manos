@@ -34,7 +34,7 @@ using System.Collections.Generic;
 using Libev;
 
 
-namespace Manos.Server {
+namespace Manos.IO {
 
 	public delegate void CloseCallback (IOStream stream);
 	public delegate void ReadCallback (IOStream stream, byte [] data, int offset, int count);

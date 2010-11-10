@@ -28,7 +28,7 @@ using System.IO;
 using Manos.ShouldExt;
 
 
-namespace Manos.Server.Tests
+namespace Manos.Http.Tests
 {
 	[TestFixture()]
 	public class HttpResponseStreamTest

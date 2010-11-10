@@ -29,7 +29,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Manos.Server {
+namespace Manos.Http {
 
 	public interface IUploadedFileCreator {
 

@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Text;
 using Manos.Collections;
 
-namespace Manos.Server
+namespace Manos.Http
 {
 	public class HttpCookie
 	{

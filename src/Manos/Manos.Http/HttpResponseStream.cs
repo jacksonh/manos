@@ -31,7 +31,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Manos.Server
+namespace Manos.Http
 {
 	//
 	// TODO: As a first pass in an attempt to keep this class as simple as 
