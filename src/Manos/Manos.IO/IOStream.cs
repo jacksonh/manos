@@ -64,20 +64,9 @@ namespace Manos.IO {
 		
 		private static readonly int DefaultReadChunkSize  = 1024;
 
-		private class WriteOperation {
-			public int index;
-			public WriteCallback callback;
-
-			public WriteOperation (int index, WriteCallback callback)
-			{
-				this.index = index;
-				this.callback = callback;
-			}
-		}
-
 		private IOWatcher read_watcher;
 		private IOWatcher write_watcher;
-        private IntPtr handle;
+		private IntPtr handle;
 
 		public IOStream (Socket socket, IOLoop ioloop)
 		{
