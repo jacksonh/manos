@@ -25,6 +25,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
@@ -41,6 +42,8 @@ namespace Manos.IO {
 	public delegate void WriteCallback ();
 
 	public class IOStream {
+
+		private static readonly int DefaultReadChunkSize  = 1024;
 
 		private Socket socket;
 		private IOLoop ioloop;
@@ -61,13 +64,15 @@ namespace Manos.IO {
 		private FileStream send_file;
 		private long send_file_count;
 		private long send_file_offset;
-		
-		private static readonly int DefaultReadChunkSize  = 1024;
 
 		private IOWatcher read_watcher;
 		private IOWatcher write_watcher;
 		private IntPtr handle;
 
+		
+		private Queue<IWriteOperation> write_ops = new Queue<IWriteOperation> ();
+
+		
 		public IOStream (Socket socket, IOLoop ioloop)
 		{
 			this.socket = socket;
@@ -80,7 +85,7 @@ namespace Manos.IO {
 
 			socket.Blocking = false;
 
-            handle = IOWatcher.GetHandle (socket);
+			handle = IOWatcher.GetHandle (socket);
 			read_watcher = new IOWatcher (handle, EventTypes.Read, ioloop.EventLoop, HandleIORead);
 			write_watcher = new IOWatcher (handle, EventTypes.Write, ioloop.EventLoop, HandleIOWrite);
 		}
@@ -183,6 +188,16 @@ namespace Manos.IO {
 			}
 			
 			EnableReading ();
+		}
+
+		public void QueueWriteOperation (IWriteOperation op)
+		{
+			// We try to combine the op in case they are both byte buffers
+			// that could be sent as a single scatter/gather operation
+			if (write_ops.Count < 1 || !write_ops.Last ().Combine (op))
+				write_ops.Enqueue (op);
+
+			EnableWriting ();
 		}
 
 		public void Write (IList<ArraySegment<byte>> data, WriteCallback callback)
@@ -513,6 +528,11 @@ namespace Manos.IO {
 			write_callback = null;
 
 			callback ();
+
+			if (write_ops.Count > 0) {
+				IWriteOperation op = write_ops.Dequeue ();
+				op.Write (this);
+			}
 		}
 		
 		private void FinishSendFile ()

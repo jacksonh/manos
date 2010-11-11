@@ -57,7 +57,12 @@ namespace Manos.IO {
 				callback = value;
 			}
 		}
-		
+
+		public bool Combine (IWriteOperation other)
+		{
+			return false;
+		}
+
 		public void Write (IOStream stream)
 		{
 			stream.SendFile (file, callback);

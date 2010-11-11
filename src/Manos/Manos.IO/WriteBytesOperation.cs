@@ -57,7 +57,18 @@ namespace Manos.IO {
 				callback = value;
 			}
 		}
-		
+
+		public bool Combine (IWriteOperation other)
+		{
+			WriteBytesOperation write_op = other as WriteBytesOperation;
+			if (write_op == null)
+				return false;
+			foreach (var op in write_op.Bytes) {
+				Bytes.Add (op);
+			}
+			return true;
+		}
+
 		public void Write (IOStream stream)
 		{
 			stream.Write (bytes, callback);

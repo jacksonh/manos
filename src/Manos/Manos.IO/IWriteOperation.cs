@@ -28,6 +28,12 @@ namespace Manos.IO {
 
 	public interface IWriteOperation {
 
+		WriteCallback Callback {
+			get;
+		}
+
+		bool Combine (IWriteOperation other);
+		
 		void Write (IOStream stream);
 
 	}
