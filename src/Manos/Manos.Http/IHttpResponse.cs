@@ -49,11 +49,6 @@ namespace Manos.Http {
 			get;
 		}
 
-		Encoding HeaderEncoding {
-			get;
-			set;
-		}
-
 		Encoding ContentEncoding {
 			get;
 			set;

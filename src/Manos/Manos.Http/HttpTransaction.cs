@@ -339,7 +339,7 @@ namespace Manos.Http {
 
 			try {
 				IOStream.DisableReading ();
-				Response = new HttpResponse (this, Encoding.Default);
+				Response = new HttpResponse (this);
 
 				Server.RunTransaction (this);
 			} catch (Exception e) {

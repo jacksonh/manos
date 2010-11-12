@@ -42,10 +42,9 @@ namespace Manos.Http {
 
 	       	private bool metadata_written;
 
-		public HttpResponse (IHttpTransaction transaction, Encoding encoding)
+		public HttpResponse (IHttpTransaction transaction)
 		{
 			Transaction = transaction;
-			HeaderEncoding = encoding;
 
 			StatusCode = 200;
 
@@ -77,11 +76,6 @@ namespace Manos.Http {
 		public StreamWriter Writer {
 			get;
 			private set;
-		}
-
-		public Encoding HeaderEncoding {
-			get;
-			set;
 		}
 
 		public Encoding ContentEncoding {
@@ -163,10 +157,10 @@ namespace Manos.Http {
 			if (WriteHeaders) {
 				if (update_size)
 					Headers.ContentLength = Stream.Position;
-				Headers.Write (builder, Cookies.Values, HeaderEncoding);
+				Headers.Write (builder, Cookies.Values, Encoding.ASCII);
 			}
 
-			byte [] data = HeaderEncoding.GetBytes (builder.ToString ());
+			byte [] data = Encoding.ASCII.GetBytes (builder.ToString ());
 
 			Stream.Position = 0;
 			Stream.Insert (data, 0, data.Length);

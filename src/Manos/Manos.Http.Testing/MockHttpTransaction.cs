@@ -41,7 +41,7 @@ namespace Manos.Http.Testing
 			   throw new ArgumentNullException ("request");
 
 			Request = request;
-			Response = new HttpResponse (this, Encoding.Default);
+			Response = new HttpResponse (this);
 		}
 
 		// TODO: I guess we need a mock server?
