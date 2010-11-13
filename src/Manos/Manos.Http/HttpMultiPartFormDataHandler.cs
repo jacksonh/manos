@@ -91,10 +91,11 @@ namespace Manos.Http {
 			byte [] str_data = data.Bytes;
 
 			int begin = pos;
-			pos = pos - 1;
-			len = str_data.Length;
+			int end = begin + str_data.Length;
 
-			while (pos < len - 1 && state != State.Finished) {
+			pos = begin - 1;
+
+			while (pos < end - 1 && state != State.Finished) {
 
 				byte c = str_data [++pos];
 
@@ -119,11 +120,11 @@ namespace Manos.Http {
 						// Copy the boundary buffer to the beginning and restart parsing there
 						MemoryStream stream = new MemoryStream ();
 						stream.Write (boundary_buffer.ToArray (), 0, boundary_buffer.Count);
-						stream.Write (str_data, pos + 1, str_data.Length - pos - 1);
+						stream.Write (str_data, pos + 1, end - pos - 1);
 						str_data = stream.ToArray ();
 
 						pos = -1;
-						len = str_data.Length;
+						end = str_data.Length;
 
 						not_boundary = true;
 						boundary_buffer.Clear ();
