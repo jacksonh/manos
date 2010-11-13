@@ -90,7 +90,8 @@ namespace Manos.Http {
 			// string str_data = encoding.GetString (data.Bytes, pos, len);
 			byte [] str_data = data.Bytes;
 
-			pos = -1;
+			int begin = pos;
+			pos = pos - 1;
 			len = str_data.Length;
 
 			while (pos < len - 1 && state != State.Finished) {
