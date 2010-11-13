@@ -273,7 +273,7 @@ namespace Manos.Http {
 			uploaded_file.Contents.SetLength (uploaded_file.Contents.Position - 2);
 
 			uploaded_file.Finish ();
-			transaction.Request.Files.Add (current_filename, uploaded_file);
+			transaction.Request.Files.Add (current_name, uploaded_file);
 			uploaded_file = null;
 		}
 
