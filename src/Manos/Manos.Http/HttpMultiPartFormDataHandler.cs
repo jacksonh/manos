@@ -91,7 +91,7 @@ namespace Manos.Http {
 			byte [] str_data = data.Bytes;
 
 			int begin = pos;
-			int end = begin + str_data.Length;
+			int end = begin + len;
 
 			pos = begin - 1;
 
