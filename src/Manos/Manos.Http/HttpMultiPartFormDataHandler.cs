@@ -37,6 +37,8 @@ namespace Manos.Http {
 
 		private enum State {
 
+			Error,
+
 			InHeaderKey,
 			InHeaderValue,
 			PostHeader1,
