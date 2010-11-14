@@ -63,8 +63,6 @@ namespace Manos.Collections {
 					throw new ArgumentOutOfRangeException ("value", "Position must be less than the array length.");
 				if (value < 0)
 					throw new ArgumentOutOfRangeException ("value", "Position must be zero or greater.");
-
-				Console.WriteLine ("updating position to: '{0}'", value);
 				position = value;
 			}
 		}
