@@ -41,7 +41,9 @@ namespace Manos.Http.Testing
 			   throw new ArgumentNullException ("request");
 
 			Request = request;
-			Response = new HttpResponse (this);
+
+			// TODO
+			// Response = new MockHttpResponse (this);
 		}
 
 		// TODO: I guess we need a mock server?

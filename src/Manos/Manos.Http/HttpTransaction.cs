@@ -60,8 +60,6 @@ namespace Manos.Http {
 		private StringBuilder current_header_value = new StringBuilder ();
 
 		private IHttpBodyHandler body_handler;
-
-		private Queue<IWriteOperation> write_ops;
 		
 		public HttpTransaction (HttpServer server, IOStream stream, Socket socket, HttpConnectionCallback callback)
 		{
@@ -69,8 +67,6 @@ namespace Manos.Http {
 			IOStream = stream;
 			Socket = socket;
 			ConnectionCallback = callback;
-
-			write_ops = new Queue<IWriteOperation> ();
 
 			stream.OnClose (OnClose);
 
@@ -131,18 +127,6 @@ namespace Manos.Http {
 			aborted = true;
 		}
 
-		public void Write (List<ArraySegment<byte>> data)
-		{
-			write_ops.Enqueue (new WriteBytesOperation (data, OnWriteFinished));
-			PerformNextWrite ();
-		}
-
-		public void SendFile (string file)
-		{
-			write_ops.Enqueue (new WriteFileOperation (file, OnWriteFinished)); 
-			PerformNextWrite ();
-		}
-
 		public void Finish ()
 		{
 			//
@@ -155,33 +139,6 @@ namespace Manos.Http {
 		public void Run ()
 		{
 			ConnectionCallback (this);
-		}
-		
-		private void OnWriteFinished ()
-		{
-			if (PerformNextWrite ())
-				return;
-			
-			if (ConnectionFinished)
-				FinishResponse ();
-		}
-
-		private bool NoWritesQueued {
-			get { return write_ops.Count < 1; }	
-		}
-		
-		private bool PerformNextWrite ()
-		{
-			if (NoWritesQueued)
-				return false;
-			
-			if (IOStream.IsWriting)
-				return true;
-			
-			IWriteOperation op = write_ops.Dequeue ();
-			op.Write (IOStream);
-			
-			return true;
 		}
 		
 		private void FinishResponse ()
@@ -339,7 +296,7 @@ namespace Manos.Http {
 
 			try {
 				IOStream.DisableReading ();
-				Response = new HttpResponse (this);
+				Response = new HttpResponse (this, IOStream);
 
 				Server.RunTransaction (this);
 			} catch (Exception e) {

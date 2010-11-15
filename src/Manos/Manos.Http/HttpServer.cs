@@ -48,7 +48,7 @@ namespace Manos.Http {
 		private HttpConnectionCallback callback;
 		private IOLoop ioloop;
 		private IOWatcher iowatcher;
-        private IntPtr handle;
+		private IntPtr handle;
 
 		private List<HttpTransaction> transactions = new List<HttpTransaction> ();
 

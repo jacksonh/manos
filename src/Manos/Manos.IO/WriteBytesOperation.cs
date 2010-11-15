@@ -24,6 +24,7 @@
 
 
 using System;
+using System.Net.Sockets;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -58,6 +59,11 @@ namespace Manos.IO {
 			}
 		}
 
+		public bool IsComplete {
+			get;
+			private set;
+		}
+
 		public bool Combine (IWriteOperation other)
 		{
 			WriteBytesOperation write_op = other as WriteBytesOperation;
@@ -69,9 +75,34 @@ namespace Manos.IO {
 			return true;
 		}
 
-		public void Write (IOStream stream)
+		public void BeginWrite (IOStream stream)
 		{
-			stream.Write (bytes, callback);
+		}
+
+		public void HandleWrite (IOStream stream)
+		{
+			while (bytes.Count > 0) {
+				int len = -1;
+				try {
+					len = stream.socket.Send (bytes);
+					Console.WriteLine ("wrote:  '{0}'", len);
+				} catch (SocketException se) {
+					if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
+						return;
+					stream.Close ();
+				} catch (Exception e) {
+					stream.Close ();
+				} finally {
+					if (len != -1)
+						IOStream.AdjustSegments (len, bytes);
+				}
+			}
+
+			IsComplete = (bytes.Count == 0);
+		}
+
+		public void EndWrite (IOStream stream)
+		{
 		}
 	}
 }

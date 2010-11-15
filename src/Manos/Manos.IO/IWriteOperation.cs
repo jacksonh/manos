@@ -32,10 +32,15 @@ namespace Manos.IO {
 			get;
 		}
 
+		bool IsComplete {
+			get;
+		}
+
 		bool Combine (IWriteOperation other);
 		
-		void Write (IOStream stream);
-
+		void BeginWrite (IOStream stream);
+		void HandleWrite (IOStream stream);
+		void EndWrite (IOStream stream);
 	}
 
 }

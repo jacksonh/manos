@@ -25,7 +25,8 @@
 
 
 using Manos;
-using Manos.Server;
+using Manos.IO;
+using Manos.Http;
 
 using System;
 using System.Text;

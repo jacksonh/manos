@@ -34,6 +34,7 @@ using System.Net.Sockets;
 using System.Collections;
 using System.Collections.Generic;
 
+using Manos.IO;
 
 
 namespace Manos.Http {
@@ -42,16 +43,17 @@ namespace Manos.Http {
 
 	       	private bool metadata_written;
 
-		public HttpResponse (IHttpTransaction transaction)
+		public HttpResponse (IHttpTransaction transaction, IOStream stream)
 		{
 			Transaction = transaction;
+			IOStream = stream;
 
 			StatusCode = 200;
 
 			WriteHeaders = true;
 
 			Headers = new HttpHeaders ();
-			Stream = new HttpResponseStream ();
+			Stream = new HttpResponseStream (this, IOStream);
 			Writer = new StreamWriter (Stream);
 			Cookies = new Dictionary<string, HttpCookie> ();
 			
@@ -59,6 +61,11 @@ namespace Manos.Http {
 		}
 
 		public IHttpTransaction Transaction {
+			get;
+			private set;
+		}
+
+		public IOStream IOStream {
 			get;
 			private set;
 		}
@@ -127,19 +134,13 @@ namespace Manos.Http {
 		
 		public void SendFile (string file)
 		{
-			FileInfo fi = new FileInfo (file);
-
-			Headers.ContentLength = fi.Length;
-	
-			WriteMetaData (false);
-			Transaction.Write (Stream.GetBuffers ());
-			Transaction.SendFile (file);
+			if (!metadata_written)
+				WriteMetaData (false);
+			Stream.SendFile (file);
 		}
 
 		public void Redirect (string url)
 		{
-			Stream.Position = 0;
-			
 			StatusCode =  302;
 			Headers.SetNormalizedHeader ("Location", url);
 			
@@ -155,25 +156,22 @@ namespace Manos.Http {
 			WriteStatusLine (builder);
 
 			if (WriteHeaders) {
-				if (update_size)
-					Headers.ContentLength = Stream.Position;
+//				if (update_size)
+//					Headers.ContentLength = Stream.Position;
 				Headers.Write (builder, Cookies.Values, Encoding.ASCII);
 			}
 
 			byte [] data = Encoding.ASCII.GetBytes (builder.ToString ());
 
-			Stream.Position = 0;
-			Stream.Insert (data, 0, data.Length);
+			Console.WriteLine ("metadata length:  '{0}'", data.Length);
+			Stream.WriteNoChunk (data, 0, data.Length);
 
 			metadata_written = true;
 		}
 		
 		public void Finish ()
 		{
-			WriteMetaData (true);
-
-			Transaction.Write (Stream.GetBuffers ());
-			Transaction.Finish ();
+			Stream.SendFinalChunk ();
 		}
 
 		public void SetHeader (string name, string value)
@@ -246,7 +244,7 @@ namespace Manos.Http {
 		
 		private void WriteStatusLine (StringBuilder builder)
 		{
-			builder.Append ("HTTP/1.0 ");
+			builder.Append ("HTTP/1.1 ");
 			builder.Append (StatusCode);
 			builder.Append (" ");
 			builder.Append (GetStatusDescription (StatusCode));
@@ -255,16 +253,21 @@ namespace Manos.Http {
 
 		private void WriteToBody (byte [] data)
 		{
+			if (!metadata_written)
+				WriteMetaData (false);
+
+			Console.WriteLine ("writing to body:  '{0}'", data.Length);
 			Stream.Write (data, 0, data.Length);
 
-			Headers.ContentLength += data.Length;
+			// Headers.ContentLength += data.Length;
 		}
 
 		private void SetStandardHeaders ()
 		{
-			Headers.ContentLength = 0;
+//			Headers.ContentLength = 0;
 
 			Headers.SetNormalizedHeader ("Server", HttpServer.ServerVersion);
+			Headers.SetNormalizedHeader ("Transfer-Encoding", "chunked");
 		}
 
 		private static string GetStatusDescription (int code)

@@ -54,7 +54,6 @@
     <Compile Include="Nunit-Extensions\Nunit_Extension_Methods.cs" />
     <Compile Include="Manos.Collections\DataDictionaryTest.cs" />
     <Compile Include="Manos.Http\HttpCookieTest.cs" />
-    <Compile Include="Manos.Http\HttpResponseStreamTest.cs" />
     <Compile Include="Manos.Routing\HtmlFormDataTypeConverterTest.cs" />
   </ItemGroup>
   <ItemGroup>

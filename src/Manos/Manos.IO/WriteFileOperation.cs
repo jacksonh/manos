@@ -25,28 +25,27 @@
 
 
 using System;
-
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
 
 namespace Manos.IO {
 
 	public class WriteFileOperation : IWriteOperation {
 
-		private string file;
 		private WriteCallback callback;
 
-		public WriteFileOperation (string file, WriteCallback callback)
+		private FileStream file;
+		private long file_offset;
+		private long file_length;
+		
+		public WriteFileOperation (FileStream file, WriteCallback callback)
 		{
 			this.file = file;
 			this.callback = callback;
-		}
 
-		public string File {
-			get { return file; }
-			set {
-				if (value == null)
-					throw new ArgumentNullException ("value");
-				file = value;
-			}
+			// TODO: async.  Don't think there is a good reason to do any locking here.
+			file_length = file.Length;
 		}
 
 		public WriteCallback Callback {
@@ -58,14 +57,43 @@ namespace Manos.IO {
 			}
 		}
 
+		public bool IsComplete {
+			get;
+			private set;
+		}
+
+		public void BeginWrite (IOStream stream)
+		{
+		}
+
+		public void HandleWrite (IOStream stream)
+		{
+			while (file_offset < file_length) {
+			      try {
+				      Mono.Unix.Native.Syscall.sendfile (stream.socket.Handle.ToInt32 (), 
+						      file.Handle.ToInt32 (), ref file_offset,
+						      (ulong) (file_length - file_offset));
+				      Console.WriteLine ("written:  '{0}'", file_offset);
+			      } catch (SocketException se) {
+				      if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
+					      return;
+				      stream.Close ();
+			      } catch (Exception e) {
+				      stream.Close ();
+			      }
+			}
+
+			if (file_offset >= file_length)
+				IsComplete = true;
+		}
+
+		public void EndWrite (IOStream stream)
+		{
+		}
+
 		public bool Combine (IWriteOperation other)
 		{
 			return false;
-		}
-
-		public void Write (IOStream stream)
-		{
-			stream.SendFile (file, callback);
 		}
 	}
 }

@@ -45,7 +45,7 @@ namespace Manos.IO {
 
 		private static readonly int DefaultReadChunkSize  = 1024;
 
-		private Socket socket;
+		internal Socket socket;
 		private IOLoop ioloop;
 
 		private CloseCallback close_callback;
@@ -58,7 +58,6 @@ namespace Manos.IO {
 		private int last_delimiter_check = -1;
 		private ReadCallback read_callback;
 
-		private IList<ArraySegment<byte>> write_data;
 		private WriteCallback write_callback;
 
 		private FileStream send_file;
@@ -69,7 +68,7 @@ namespace Manos.IO {
 		private IOWatcher write_watcher;
 		private IntPtr handle;
 
-		
+		private IWriteOperation current_write_op;
 		private Queue<IWriteOperation> write_ops = new Queue<IWriteOperation> ();
 
 		
@@ -197,15 +196,9 @@ namespace Manos.IO {
 			if (write_ops.Count < 1 || !write_ops.Last ().Combine (op))
 				write_ops.Enqueue (op);
 
-			EnableWriting ();
-		}
-
-		public void Write (IList<ArraySegment<byte>> data, WriteCallback callback)
-		{
-			CheckCanWrite ();
-
-			write_data = data;
-			write_callback = callback;
+			Console.WriteLine ("queueing write op:  '{0}'", op);
+			if (current_write_op == null)
+				current_write_op = op;
 
 			EnableWriting ();
 		}
@@ -231,9 +224,12 @@ namespace Manos.IO {
 			DisableReading ();
 			DisableWriting ();
 
-            IOWatcher.ReleaseHandle (socket, handle);
+			IOWatcher.ReleaseHandle (socket, handle);
 
-            handle = IntPtr.Zero;
+			Console.WriteLine ("CLOSING THE SOCKET");
+			Console.WriteLine (Environment.StackTrace);
+
+			handle = IntPtr.Zero;
 			socket = null;
 
 			if (close_callback != null)
@@ -254,8 +250,8 @@ namespace Manos.IO {
 
 		public void DisableReading ()
 		{
-			read_callback = null;
-			read_watcher.Stop ();
+			//		read_callback = null;
+			//		read_watcher.Stop ();
 		}
 
 		public void DisableWriting ()
@@ -291,16 +287,13 @@ namespace Manos.IO {
 		
 		private void HandleIOWrite (Loop loop, IOWatcher watcher, int revents)
 		{
-			// write ready can still be raised after we are done writing.
-			if (send_file == null && write_data == null)
-			   return;
+			if (current_write_op == null)
+				return;
 
-			if (send_file != null) {
-			   HandleSendFile ();
-			   return;
-			}
+			current_write_op.HandleWrite (this);
 
-                        HandleWrite ();
+			if (current_write_op.IsComplete)
+				FinishCurrentWrite ();
 		}
 
 		private void HandleRead ()
@@ -309,6 +302,8 @@ namespace Manos.IO {
 
 			try {
 				size = socket.Receive (ReadChunk);
+				Console.WriteLine ("READ:  '{0}'  socket:  '{1}'", size, (int) socket.Handle);
+				Console.WriteLine (Encoding.Default.GetString (ReadChunk, 0, size));
 			} catch (SocketException se) {
 				if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
 					return;
@@ -349,107 +344,9 @@ namespace Manos.IO {
 			// We are doing an indefinite read
 			read_callback (this, ReadChunk, 0, size);
 		}
-#if DISABLE_POSIX
-        private void HandleSendFile()
-#else 
-        private Action sendFileAction;
 
-        private void HandleSendFile ()
-        {
-            if (sendFileAction == null) LoadSendFile ();
-            sendFileAction ();
-        }
-
-        private void LoadSendFile ()
-        {
-            if (Environment.OSVersion.Platform == PlatformID.Win32NT ||
-                Environment.OSVersion.Platform == PlatformID.Win32S ||
-                Environment.OSVersion.Platform == PlatformID.Win32Windows ||
-                Environment.OSVersion.Platform == PlatformID.WinCE ||
-                Environment.OSVersion.Platform == PlatformID.Xbox)            
-                sendFileAction = new Action (SimpleHandleSendFile);
-            else
-                sendFileAction = new Action (PosixHandleSendFile);
-        }
-
-        private void SimpleHandleSendFile ()
-#endif
-        {
-            byte[] data = new byte[4096];
-            while (send_file_offset < send_file_count) {
-                int len = -1;
-                try {
-                    int toRead = (int) (send_file_count > data.Length ? (long) data.Length : send_file_count);
-                    int read = send_file.Read (data, 0, toRead);
-                    if (read <= 0)
-                        break;
-                    len = socket.Send(data, 0, read, SocketFlags.None);
-                    send_file_offset += read;
-                }
-                catch (SocketException se) {
-                    if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
-                        return;
-                    Close();
-                }
-                catch (Exception e) {
-                    Close();
-                }
-                finally {
-                    if (len != -1)
-                        AdjustSegments (len, write_data);
-                }
-            }
-
-            if (write_data.Count == 0)
-                FinishWrite();
-        }
-
-#if !DISABLE_POSIX // option to get rid of the Mono.Posix reference all together
-		private void PosixHandleSendFile ()
-		{
-			//
-			// TODO: Need to handle WOULDBLOCK here.
-			// 
-			
-			while (send_file_offset < send_file_count) {
-			      try {
-				      Mono.Unix.Native.Syscall.sendfile (socket.Handle.ToInt32 (), 
-						      send_file.Handle.ToInt32 (), 
-						      ref send_file_offset,
-						      (ulong) (send_file_count - send_file_offset));
-			      } catch (SocketException se) {
-				      if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
-					      return;
-				      Close ();
-			      } catch (Exception e) {
-				      Close ();
-			      }
-			}
-
-			if (send_file_offset >= send_file_count)
-				FinishSendFile ();
-		}
-#endif		
 		private void HandleWrite ()
 		{
-			while (write_data.Count > 0) {
-			    int len = -1;
-			    try {
-				    len = socket.Send (write_data);
-		            } catch (SocketException se) {
-				    if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
-					    return;
-				    Close ();
-			    } catch (Exception e) {
-				    Close ();
-			    } finally {
-				    if (len != -1)
-					    AdjustSegments (len, write_data);
-			    }
-			}
-
-			if (write_data.Count == 0)
-				FinishWrite ();
 		}
 
 		/// This could use some tuning, but the basic idea is that we need to remove
@@ -520,18 +417,22 @@ namespace Manos.IO {
 			callback (this, read, 0, end);
 		}
 
-		private void FinishWrite ()
+		private void FinishCurrentWrite ()
 		{
-			WriteCallback callback = write_callback;
+			if (current_write_op == null)
+				return;
 
-			write_data = null;
-			write_callback = null;
+			WriteCallback callback = current_write_op.Callback;
 
-			callback ();
+			current_write_op.EndWrite (this);
+
+			if (callback != null)
+				callback ();
 
 			if (write_ops.Count > 0) {
 				IWriteOperation op = write_ops.Dequeue ();
-				op.Write (this);
+				op.BeginWrite (this);
+				current_write_op = op;
 			}
 		}
 		
