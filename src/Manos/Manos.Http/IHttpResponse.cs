@@ -70,11 +70,16 @@ namespace Manos.Http {
 		void WriteLine (string str);
 		void WriteLine (string str, params object [] prms);
 
+		void End ();
+		void End (string str);
+		void End (byte [] data);
+		void End (string str, params object [] prms);
+
 		void Write (byte [] data);
 
 		void SendFile (string file);
-
-		void Finish ();
+		
+		void Redirect (string url);
 
 		void SetHeader (string name, string value);
 				
@@ -86,7 +91,6 @@ namespace Manos.Http {
 		HttpCookie SetCookie (string name, string value, TimeSpan max_age);
 		HttpCookie SetCookie (string name, string value, string domain, TimeSpan max_age);
 		
-		void Redirect (string url);
 	}
 }
 

@@ -93,11 +93,7 @@ namespace Manos.Http.Testing
 			AbortedMessage = String.Format (message, p);
 		}
 
-		public void Write (List<ArraySegment<byte>> data)
-		{
-		}
-
-		public void SendFile (string file)
+		public void OnResponseFinished ()
 		{
 		}
 	}

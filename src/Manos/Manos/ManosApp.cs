@@ -56,7 +56,7 @@ namespace Manos {
 			if (handler == null) {
 				Console.WriteLine ("no handler found for: '{0}'", ctx.Request.LocalPath);
 				con.Response.StatusCode = 404;
-				con.Response.Finish ();
+				con.Response.End ();
 				return;
 			}
 
@@ -77,8 +77,6 @@ namespace Manos {
 			}
 
 		cleanup:
-			con.Response.Finish ();
-			
 			OnPostProcessRequest (this, con);
 		}
 

@@ -34,20 +34,15 @@ namespace Manos.IO {
 
 		private IList<ArraySegment<byte>> bytes;
 		private WriteCallback callback;
-		
+
+		private static int counter = 0;
+
+		private int index = ++counter;
+
 		public WriteBytesOperation (IList<ArraySegment<byte>> bytes, WriteCallback callback)
 		{
 			this.bytes = bytes;
 			this.callback = callback;
-		}
-
-		public IList<ArraySegment<byte>> Bytes {
-			get { return bytes; }
-			set {
-				if (value == null)
-					throw new ArgumentNullException ("value");
-				bytes = value;
-			}
 		}
 
 		public WriteCallback Callback {
@@ -69,9 +64,13 @@ namespace Manos.IO {
 			WriteBytesOperation write_op = other as WriteBytesOperation;
 			if (write_op == null)
 				return false;
-			foreach (var op in write_op.Bytes) {
-				Bytes.Add (op);
+			foreach (var op in write_op.bytes) {
+				bytes.Add (op);
 			}
+
+			if (other.Callback != null)
+				callback = other.Callback;
+
 			return true;
 		}
 
@@ -85,7 +84,6 @@ namespace Manos.IO {
 				int len = -1;
 				try {
 					len = stream.socket.Send (bytes);
-					Console.WriteLine ("wrote:  '{0}'", len);
 				} catch (SocketException se) {
 					if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
 						return;

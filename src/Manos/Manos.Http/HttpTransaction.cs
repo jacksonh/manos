@@ -127,21 +127,12 @@ namespace Manos.Http {
 			aborted = true;
 		}
 
-		public void Finish ()
-		{
-			//
-			// We mark the connection as finished, and FinishResponse
-			// will be raised once all the writing is done.
-			//
-			connection_finished = true;
-		}
-
 		public void Run ()
 		{
 			ConnectionCallback (this);
 		}
 		
-		private void FinishResponse ()
+		public void OnResponseFinished ()
 		{
 			bool disconnect = true;
 
@@ -160,7 +151,8 @@ namespace Manos.Http {
 			} else 
 				IOStream.DisableWriting ();
 
-			// IOStream.ReadUntil ("\r\n\r\n", OnHeaders);
+			parser = new HttpParser ();
+			IOStream.ReadBytes (OnBytesRead);
 		}
 
 		private void OnClose (IOStream stream)
@@ -170,7 +162,6 @@ namespace Manos.Http {
 		private void OnBytesRead (IOStream stream, byte [] data, int offset, int count)
 		{
 			ByteBuffer bytes = new ByteBuffer (data, offset, count);
-
 			parser.Execute (parser_settings, bytes);
 		}
 
@@ -328,7 +319,6 @@ namespace Manos.Http {
 
 		private void OnParserError (HttpParser parser, string message, ByteBuffer buffer, int initial_position)
 		{
-			Console.WriteLine ("parser error: '{0}'", message);
 			Server.RemoveTransaction (this);
 			IOStream.Close ();
 		}

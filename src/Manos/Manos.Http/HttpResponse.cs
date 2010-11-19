@@ -41,7 +41,7 @@ namespace Manos.Http {
 
 	public class HttpResponse : IHttpResponse {
 
-	       	private bool metadata_written;
+	       	internal bool metadata_written;
 
 		public HttpResponse (IHttpTransaction transaction, IOStream stream)
 		{
@@ -104,7 +104,7 @@ namespace Manos.Http {
 			get;
 			private set;
 		}
-		
+
 		public void Write (string str)
 		{
 			byte [] data = ContentEncoding.GetBytes (str);
@@ -121,7 +121,30 @@ namespace Manos.Http {
 		{
 			Write (String.Format (str, prms));	
 		}
-		
+
+		public void End (string str)
+		{
+			Write (str);
+			End ();
+		}
+
+		public void End (byte [] data)
+		{
+			Write (data);
+			End ();
+		}
+
+		public void End (string str, params object [] prms)
+		{
+			Write (str, prms);
+			End ();
+		}
+
+		public void End ()
+		{
+			Stream.SendFinalChunk (Transaction.OnResponseFinished);
+		}
+
 		public void WriteLine (string str)
 		{
 			Write (str + Environment.NewLine);	
@@ -134,8 +157,6 @@ namespace Manos.Http {
 		
 		public void SendFile (string file)
 		{
-			if (!metadata_written)
-				WriteMetaData (false);
 			Stream.SendFile (file);
 		}
 
@@ -144,34 +165,30 @@ namespace Manos.Http {
 			StatusCode =  302;
 			Headers.SetNormalizedHeader ("Location", url);
 			
-			WriteMetaData (false);
+			WriteMetadata ();
+			End ();
 		}
 		
-		public void WriteMetaData (bool update_size)
+		public void WriteMetadata ()
 		{
 			if (metadata_written)
-			   return;
+				return;
 
 			StringBuilder builder = new StringBuilder ();
 			WriteStatusLine (builder);
 
-			if (WriteHeaders) {
-//				if (update_size)
-//					Headers.ContentLength = Stream.Position;
+			if (WriteHeaders)
 				Headers.Write (builder, Cookies.Values, Encoding.ASCII);
-			}
 
 			byte [] data = Encoding.ASCII.GetBytes (builder.ToString ());
 
-			Console.WriteLine ("metadata length:  '{0}'", data.Length);
-			Stream.WriteNoChunk (data, 0, data.Length);
-
 			metadata_written = true;
+			Stream.WriteNoChunk (data, 0, data.Length);
 		}
 		
 		public void Finish ()
 		{
-			Stream.SendFinalChunk ();
+			
 		}
 
 		public void SetHeader (string name, string value)
@@ -253,13 +270,7 @@ namespace Manos.Http {
 
 		private void WriteToBody (byte [] data)
 		{
-			if (!metadata_written)
-				WriteMetaData (false);
-
-			Console.WriteLine ("writing to body:  '{0}'", data.Length);
 			Stream.Write (data, 0, data.Length);
-
-			// Headers.ContentLength += data.Length;
 		}
 
 		private void SetStandardHeaders ()

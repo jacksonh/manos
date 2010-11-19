@@ -43,7 +43,7 @@ namespace Manos.IO {
 
 	public class IOStream {
 
-		private static readonly int DefaultReadChunkSize  = 1024;
+		private static readonly int DefaultReadChunkSize  = 3072;
 
 		internal Socket socket;
 		private IOLoop ioloop;
@@ -196,7 +196,7 @@ namespace Manos.IO {
 			if (write_ops.Count < 1 || !write_ops.Last ().Combine (op))
 				write_ops.Enqueue (op);
 
-			Console.WriteLine ("queueing write op:  '{0}'", op);
+
 			if (current_write_op == null)
 				current_write_op = op;
 
@@ -225,9 +225,6 @@ namespace Manos.IO {
 			DisableWriting ();
 
 			IOWatcher.ReleaseHandle (socket, handle);
-
-			Console.WriteLine ("CLOSING THE SOCKET");
-			Console.WriteLine (Environment.StackTrace);
 
 			handle = IntPtr.Zero;
 			socket = null;
@@ -262,10 +259,12 @@ namespace Manos.IO {
 
 		private void CheckCanRead ()
 		{
+			/*
 			if (IsReading)
 				throw new Exception ("Attempt to read bytes while we are already performing a read operation.");
 			if (IsClosed)
 				throw new Exception ("Attempt to read on a closed socket.");
+			*/
 		}
 
 		private void CheckCanWrite ()
@@ -278,6 +277,9 @@ namespace Manos.IO {
 
 		private void HandleIORead (Loop loop, IOWatcher watcher, int revents)
 		{
+			if (socket == null)
+				return;
+
 			try {
 				HandleRead ();
 			} catch (Exception e) {
@@ -302,8 +304,6 @@ namespace Manos.IO {
 
 			try {
 				size = socket.Receive (ReadChunk);
-				Console.WriteLine ("READ:  '{0}'  socket:  '{1}'", size, (int) socket.Handle);
-				Console.WriteLine (Encoding.Default.GetString (ReadChunk, 0, size));
 			} catch (SocketException se) {
 				if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
 					return;
@@ -433,7 +433,8 @@ namespace Manos.IO {
 				IWriteOperation op = write_ops.Dequeue ();
 				op.BeginWrite (this);
 				current_write_op = op;
-			}
+			} else
+				current_write_op = null;
 		}
 		
 		private void FinishSendFile ()

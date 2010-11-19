@@ -49,7 +49,7 @@ namespace Manos.Http {
 			get;	
 		}
 
-		void Finish ();
+		void OnResponseFinished ();
 
 		void Abort (int status, string message, params object [] p);
 	}

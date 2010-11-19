@@ -92,7 +92,6 @@ namespace Manos.Http
 			throw new NotSupportedException ("Can not Read from an HttpResponseStream.");
 		}
 		
-		
 		public override long Seek (long offset, SeekOrigin origin)
 		{
 			throw new NotSupportedException ("Can not seek on an HttpResponseStream.");
@@ -115,6 +114,8 @@ namespace Manos.Http
 
 		public void SendFile (string file_name)
 		{
+			EnsureMetadata ();
+
 			FileStream file_stream = new FileStream (file_name, FileMode.Open, FileAccess.Read);
 			WriteFileOperation write_file = new WriteFileOperation (file_stream, null);
 
@@ -125,6 +126,8 @@ namespace Manos.Http
 
 		private void Write (byte [] buffer, int offset, int count, bool chunked)
 		{
+			EnsureMetadata ();
+
 			var bytes = new List<ArraySegment<byte>> ();
 
 			if (chunked)
@@ -138,16 +141,23 @@ namespace Manos.Http
 			IOStream.QueueWriteOperation (write_bytes);
 		}
 
-		public void SendFinalChunk ()
+		public void SendFinalChunk (WriteCallback callback)
 		{
+			EnsureMetadata ();
+
 			var bytes = new List<ArraySegment<byte>> ();
 
 			WriteChunk (bytes, 0, true);
 
-			WriteBytesOperation write_bytes = new WriteBytesOperation (bytes, null);
+			WriteBytesOperation write_bytes = new WriteBytesOperation (bytes, callback);
 			IOStream.QueueWriteOperation (write_bytes);
+		}
 
-			Console.WriteLine ("SENT THE FINAL CHUNK!");
+		private void EnsureMetadata ()
+		{
+			if (Response.metadata_written)
+				return;
+			Response.WriteMetadata ();
 		}
 
 		private void SendChunk (int l, bool last)
@@ -181,7 +191,6 @@ namespace Manos.Http
 				chunk_buffer [i++] = 10;
 			}
 
-			Console.WriteLine ("writing chunk:  '{0}'", i);
 			bytes.Add (new ArraySegment<byte> (chunk_buffer, 0, i));
 		}
 	}
