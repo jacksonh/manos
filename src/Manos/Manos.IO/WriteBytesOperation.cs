@@ -68,6 +68,12 @@ namespace Manos.IO {
 				bytes.Add (op);
 			}
 
+			//
+			// TODO: We need to get a list of all the callbacks and their offsets
+			// then we can raise them properly when their data has been written
+			// this will also require moving the callback invocation into the
+			// WriteOperation
+			//
 			if (other.Callback != null)
 				callback = other.Callback;
 
