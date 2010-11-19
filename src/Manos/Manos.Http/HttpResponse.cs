@@ -43,6 +43,9 @@ namespace Manos.Http {
 
 	       	internal bool metadata_written;
 
+		private StreamWriter writer;
+		private Dictionary<string, HttpCookie> cookies;
+
 		public HttpResponse (IHttpTransaction transaction, IOStream stream)
 		{
 			Transaction = transaction;
@@ -54,8 +57,6 @@ namespace Manos.Http {
 
 			Headers = new HttpHeaders ();
 			Stream = new HttpResponseStream (this, IOStream);
-			Writer = new StreamWriter (Stream);
-			Cookies = new Dictionary<string, HttpCookie> ();
 			
 			SetStandardHeaders ();
 		}
@@ -81,8 +82,11 @@ namespace Manos.Http {
 		}
 
 		public StreamWriter Writer {
-			get;
-			private set;
+			get {
+				if (writer == null)
+					writer = new StreamWriter (Stream);
+				return writer;
+			}
 		}
 
 		public Encoding ContentEncoding {
@@ -101,8 +105,11 @@ namespace Manos.Http {
 		}
 
 		public Dictionary<string,HttpCookie> Cookies {
-			get;
-			private set;
+			get {
+				if (cookies == null)
+					cookies = new Dictionary<string, HttpCookie> ();
+				return cookies;
+			}
 		}
 
 		public void Write (string str)
@@ -178,7 +185,7 @@ namespace Manos.Http {
 			WriteStatusLine (builder);
 
 			if (WriteHeaders)
-				Headers.Write (builder, Cookies.Values, Encoding.ASCII);
+				Headers.Write (builder, cookies == null ? null : Cookies.Values, Encoding.ASCII);
 
 			byte [] data = Encoding.ASCII.GetBytes (builder.ToString ());
 

@@ -85,8 +85,8 @@ namespace Manos.IO {
 			socket.Blocking = false;
 
 			handle = IOWatcher.GetHandle (socket);
-			read_watcher = new IOWatcher (handle, EventTypes.Read, ioloop.EventLoop, HandleIORead);
-			write_watcher = new IOWatcher (handle, EventTypes.Write, ioloop.EventLoop, HandleIOWrite);
+			read_watcher = new IOWatcher (handle, EventTypes.Read | EventTypes.Write, ioloop.EventLoop, HandleIORead);
+			// write_watcher = new IOWatcher (handle, EventTypes.Write, ioloop.EventLoop, HandleIOWrite);
 		}
 
 		~IOStream ()
@@ -242,7 +242,8 @@ namespace Manos.IO {
 		private void EnableWriting ()
 		{
 			Expires = DateTime.UtcNow + TimeOut;
-			write_watcher.Start ();
+			// write_watcher.Start ();
+			read_watcher.Start ();
 		}
 
 		public void DisableReading ()
@@ -253,8 +254,8 @@ namespace Manos.IO {
 
 		public void DisableWriting ()
 		{
-			write_callback = null;
-			write_watcher.Stop ();
+			//	write_callback = null;
+			//	write_watcher.Stop ();
 		}
 
 		private void CheckCanRead ()
@@ -280,10 +281,16 @@ namespace Manos.IO {
 			if (socket == null)
 				return;
 
-			try {
-				HandleRead ();
-			} catch (Exception e) {
-				Close ();
+			if ((((EventTypes) revents) & EventTypes.Read) != 0) {
+				try {
+					HandleRead ();
+				} catch (Exception e) {
+					Close ();
+				}
+			}
+
+			if ((((EventTypes) revents) & EventTypes.Write) != 0) {
+				HandleIOWrite (loop, watcher, revents);
 			}
 		}
 		

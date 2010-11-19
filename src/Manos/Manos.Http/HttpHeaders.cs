@@ -174,8 +174,11 @@ namespace Manos.Http {
 				builder.Append (items [header]);
 				builder.Append ("\r\n");
 			}
-			foreach (HttpCookie cookie in cookies) {
-				builder.Append (cookie.ToHeaderString ());
+
+			if (cookies != null) {
+				foreach (HttpCookie cookie in cookies) {
+					builder.Append (cookie.ToHeaderString ());
+				}
 			}
 			builder.Append ("\r\n");
 		}

@@ -82,6 +82,9 @@ namespace Manos {
 
 		public void OnPreProcessRequest (ManosApp app, IHttpTransaction transaction)
 		{
+			if (AppHost.Pipes == null)
+				return;
+
 			foreach (IManosPipe pipe in AppHost.Pipes) {
 				try {
 					pipe.OnPreProcessRequest (app, transaction);
@@ -98,6 +101,9 @@ namespace Manos {
 
 		public IManosTarget OnPreProcessTarget (IManosContext ctx)
 		{
+			if (AppHost.Pipes == null)
+				return null;
+
 			foreach (IManosPipe pipe in AppHost.Pipes) {
 				try {
 					var found = pipe.OnPreProcessTarget (ctx);
@@ -118,6 +124,9 @@ namespace Manos {
 
 		public void OnPostProcessTarget (IManosContext ctx, IManosTarget target)
 		{
+			if (AppHost.Pipes == null)
+				return;
+
 			foreach (IManosPipe pipe in AppHost.Pipes) {
 				try {
 					pipe.OnPostProcessTarget (ctx, target);
@@ -133,6 +142,9 @@ namespace Manos {
 
 		public void OnPostProcessRequest (ManosApp app, IHttpTransaction transaction)
 		{
+			if (AppHost.Pipes == null)
+				return;
+
 			foreach (IManosPipe pipe in AppHost.Pipes) {
 				try {
 					pipe.OnPostProcessRequest (this, transaction);
@@ -145,6 +157,9 @@ namespace Manos {
 
 		public void OnError (IManosContext ctx)
 		{
+			if (AppHost.Pipes == null)
+				return;
+
 			foreach (IManosPipe pipe in AppHost.Pipes) {
 				try {
 					pipe.OnError (ctx);
