@@ -49,29 +49,14 @@ namespace Manos.IO {
 		private IOLoop ioloop;
 
 		private CloseCallback close_callback;
-
-		private MemoryStream read_buffer;
-		private int num_bytes_read;
-		private int read_bytes = -1;
-
-		private byte [] read_delimiter;
-		private int last_delimiter_check = -1;
 		private ReadCallback read_callback;
 
-		private WriteCallback write_callback;
-
-		private FileStream send_file;
-		private long send_file_count;
-		private long send_file_offset;
-
-		private IOWatcher read_watcher;
-		private IOWatcher write_watcher;
+		private IOWatcher io_watcher;
 		private IntPtr handle;
 
 		private IWriteOperation current_write_op;
 		private Queue<IWriteOperation> write_ops = new Queue<IWriteOperation> ();
 
-		
 		public IOStream (Socket socket, IOLoop ioloop)
 		{
 			this.socket = socket;
@@ -85,8 +70,9 @@ namespace Manos.IO {
 			socket.Blocking = false;
 
 			handle = IOWatcher.GetHandle (socket);
-			read_watcher = new IOWatcher (handle, EventTypes.Read | EventTypes.Write, ioloop.EventLoop, HandleIORead);
-			// write_watcher = new IOWatcher (handle, EventTypes.Write, ioloop.EventLoop, HandleIOWrite);
+			io_watcher = new IOWatcher (handle, EventTypes.Read | EventTypes.Write, ioloop.EventLoop, HandleIOEvent);
+
+			io_watcher.Start ();
 		}
 
 		~IOStream ()
@@ -98,12 +84,9 @@ namespace Manos.IO {
 			get { return ioloop; }
 		}
 
-		public int ReadChunkSize {
+		private int ReadChunkSize {
 			get { return ReadChunk.Length; }
 			set {
-				if (IsReading)
-					throw new Exception ("ReadChunkSize can not be changed while reading.");
-
 				if (ReadChunk != null && value == ReadChunk.Length)
 					return;
 				ReadChunk = new byte [value];
@@ -125,23 +108,8 @@ namespace Manos.IO {
 			private set;
 		}
 
-		public bool IsReading {
-			get { return read_callback != null; }
-		}
-
-		public bool IsWriting {
-			get { return write_callback != null; }
-		}
-
 		public bool IsClosed {
 			get { return socket == null || !socket.Connected; }
-		}
-
-		public void ClearReadBuffer ()
-		{
-			if (read_buffer == null)
-				return;
-			read_buffer.Position = 0;
 		}
 
 		public void OnClose (CloseCallback callback)
@@ -149,71 +117,29 @@ namespace Manos.IO {
 			this.close_callback = callback;
 		}
 
-		public void ReadUntil (string delimiter, ReadCallback callback)
-		{
-			CheckCanRead ();
-
-			read_delimiter = Encoding.ASCII.GetBytes (delimiter);
-			read_callback = callback;
-
-			int di = FindDelimiter ();
-			if (di != -1) {
-				FinishRead (di);
-				return;
-			}
-
-			EnableReading ();
-		}
-
 		public void ReadBytes (ReadCallback callback)
 		{
-			ReadBytes (-1, callback);
-		}
-
-		public void ReadBytes (int num_bytes, ReadCallback callback)
-		{
-			CheckCanRead ();
-
-			read_bytes = num_bytes;
 			read_callback = callback;
 
-			if (read_buffer != null && num_bytes == -1) {
-				// If there is some queued data immediately call the callback.
-				read_callback (this, read_buffer.GetBuffer (), 0, (int) read_buffer.Position);
-				read_buffer.Position = 0;
-			} else if (read_buffer != null && read_buffer.Position >= num_bytes) {
-				FinishRead (num_bytes);
-				return;
-			}
-			
-			EnableReading ();
+			UpdateExpires ();
 		}
 
 		public void QueueWriteOperation (IWriteOperation op)
 		{
+			UpdateExpires ();
+
 			// We try to combine the op in case they are both byte buffers
 			// that could be sent as a single scatter/gather operation
 			if (write_ops.Count < 1 || !write_ops.Last ().Combine (op))
 				write_ops.Enqueue (op);
 
-
 			if (current_write_op == null)
 				current_write_op = op;
-
-			EnableWriting ();
 		}
 
-		public void SendFile (string file, WriteCallback callback)
+		private void UpdateExpires ()
 		{
-			CheckCanRead ();
-			
-			write_callback = callback;
-			
-			send_file = new FileStream (file, FileMode.Open, FileAccess.Read);
-			send_file_offset = 0;
-			send_file_count = send_file.Length;
-
-			EnableWriting ();
+			Expires = DateTime.UtcNow + TimeOut;
 		}
 
 		public void Close ()
@@ -221,8 +147,7 @@ namespace Manos.IO {
 			if (socket == null)
 				return;			
 
-			DisableReading ();
-			DisableWriting ();
+			io_watcher.Stop ();
 
 			IOWatcher.ReleaseHandle (socket, handle);
 
@@ -233,68 +158,23 @@ namespace Manos.IO {
 				close_callback (this);
 		}
 
-		private void EnableReading ()
-		{
-			Expires = DateTime.UtcNow + TimeOut;
-			read_watcher.Start ();
-		}
-
-		private void EnableWriting ()
-		{
-			Expires = DateTime.UtcNow + TimeOut;
-			// write_watcher.Start ();
-			read_watcher.Start ();
-		}
-
-		public void DisableReading ()
-		{
-			//		read_callback = null;
-			//		read_watcher.Stop ();
-		}
-
-		public void DisableWriting ()
-		{
-			//	write_callback = null;
-			//	write_watcher.Stop ();
-		}
-
-		private void CheckCanRead ()
-		{
-			/*
-			if (IsReading)
-				throw new Exception ("Attempt to read bytes while we are already performing a read operation.");
-			if (IsClosed)
-				throw new Exception ("Attempt to read on a closed socket.");
-			*/
-		}
-
-		private void CheckCanWrite ()
-		{
-			if (IsWriting)
-				throw new Exception ("Attempt to write while already performing a write operation.");
-			if (IsClosed)
-				throw new Exception ("Attempt to write on a closed socket.");
-		}
-
-		private void HandleIORead (Loop loop, IOWatcher watcher, int revents)
+		private void HandleIOEvent (Loop loop, IOWatcher watcher, int revents)
 		{
 			if (socket == null)
 				return;
 
+			Expires = DateTime.UtcNow + TimeOut;
+			
 			if ((((EventTypes) revents) & EventTypes.Read) != 0) {
-				try {
-					HandleRead ();
-				} catch (Exception e) {
-					Close ();
-				}
+				HandleRead ();
 			}
 
 			if ((((EventTypes) revents) & EventTypes.Write) != 0) {
-				HandleIOWrite (loop, watcher, revents);
+				HandleWrite ();
 			}
 		}
 		
-		private void HandleIOWrite (Loop loop, IOWatcher watcher, int revents)
+		private void HandleWrite ()
 		{
 			if (current_write_op == null)
 				return;
@@ -327,33 +207,7 @@ namespace Manos.IO {
 				return;
 			}
 
-			if (read_delimiter != null || read_bytes != -1) {
-				if (read_buffer == null)
-					read_buffer = new MemoryStream ();
-
-				read_buffer.Write (ReadChunk, 0, size);
-				num_bytes_read += size;
-
-				if (read_bytes != -1) {
-					if (num_bytes_read >= read_bytes) {
-						FinishRead (read_bytes);
-						return;
-					}
-				} if (read_delimiter != null) {
-					int delimiter = FindDelimiter ();
-					if (delimiter != -1) {
-						FinishRead (delimiter);
-						return;
-					}
-				}
-			}
-
-			// We are doing an indefinite read
 			read_callback (this, ReadChunk, 0, size);
-		}
-
-		private void HandleWrite ()
-		{
 		}
 
 		/// This could use some tuning, but the basic idea is that we need to remove
@@ -389,41 +243,6 @@ namespace Manos.IO {
 			}
 		}
 
-		private int FindDelimiter ()
-		{
-			if (read_buffer == null)
-				return -1;
-
-			byte [] data = read_buffer.GetBuffer ();
-
-			int start = Math.Max (0, last_delimiter_check - read_delimiter.Length);
-
-			last_delimiter_check = read_bytes;
-			return ByteUtils.FindDelimiter (read_delimiter, data, start, (int) read_buffer.Position);
-		}
-
-		private void FinishRead (int end)
-		{
-			ReadCallback callback = read_callback;
-			byte [] data = read_buffer.GetBuffer ();
-			byte [] read = new byte [end];
-
-			Array.Copy (data, 0, read, 0, end); 
-
-			int length = (int) read_buffer.Position;
-
-			read_bytes = -1;
-			read_delimiter = null;
-			last_delimiter_check = -1;
-			read_callback = null;
-
-			read_buffer.Position = 0;
-			num_bytes_read = length - end;
-			read_buffer.Write (data, end, num_bytes_read);
-			
-			callback (this, read, 0, end);
-		}
-
 		private void FinishCurrentWrite ()
 		{
 			if (current_write_op == null)
@@ -442,20 +261,6 @@ namespace Manos.IO {
 				current_write_op = op;
 			} else
 				current_write_op = null;
-		}
-		
-		private void FinishSendFile ()
-		{
-			WriteCallback callback = write_callback;
-			write_callback = null;
-			
-			send_file.Close ();
-			send_file = null;
-
-			send_file_count = 0;
-			send_file_offset = 0;
-
-			callback ();
 		}
 	}
 

@@ -148,8 +148,7 @@ namespace Manos.Http {
 			      	IOStream.Close ();
 				Server.RemoveTransaction (this);
 				return;
-			} else 
-				IOStream.DisableWriting ();
+			}
 
 			parser = new HttpParser ();
 			IOStream.ReadBytes (OnBytesRead);
@@ -286,7 +285,6 @@ namespace Manos.Http {
 				body_handler.Finish (this);
 
 			try {
-				IOStream.DisableReading ();
 				Response = new HttpResponse (this, IOStream);
 
 				Server.RunTransaction (this);
