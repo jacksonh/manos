@@ -82,7 +82,7 @@ namespace Libev {
 
 		protected abstract void StartImpl ();
 		protected abstract void StopImpl ();		
-		protected abstract void UnmanagedCallbackHandler (IntPtr loop, IntPtr watcher, int revents);
+		protected abstract void UnmanagedCallbackHandler (IntPtr loop, IntPtr watcher, EventTypes revents);
 	}
 }
 

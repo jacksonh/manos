@@ -74,7 +74,7 @@ namespace Manos.IO {
 			running = false;
 		}
 
-		private void HandlePrepareEvent (Loop loop, PrepareWatcher watcher, int revents)
+		private void HandlePrepareEvent (Loop loop, PrepareWatcher watcher, EventTypes revents)
 		{
 			if (!running) {
 			   loop.Unloop (UnloopType.All);
@@ -89,7 +89,7 @@ namespace Manos.IO {
 			t.Start ();
 		}
 
-		private void HandleTimeout (Loop loop, TimerWatcher timeout, int revents)
+		private void HandleTimeout (Loop loop, TimerWatcher timeout, EventTypes revents)
 		{
 			Timeout t = (Timeout) timeout.UserData;
 

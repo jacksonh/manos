@@ -31,7 +31,7 @@ namespace Libev {
 			ev_check_stop (Loop.Handle, WatcherPtr);	
 		}
 		
-		protected override void UnmanagedCallbackHandler (IntPtr _loop, IntPtr _watcher, int revents)
+		protected override void UnmanagedCallbackHandler (IntPtr _loop, IntPtr _watcher, EventTypes revents)
 		{
 			// Maybe I should verify the pointers?
 			
@@ -46,7 +46,7 @@ namespace Libev {
 	}
 	
     [UnmanagedFunctionPointer (System.Runtime.InteropServices.CallingConvention.Cdecl)]
-	public delegate void CheckWatcherCallback (Loop loop, CheckWatcher watcher, int revents);
+	public delegate void CheckWatcherCallback (Loop loop, CheckWatcher watcher, EventTypes revents);
 	
 	[StructLayout (LayoutKind.Sequential)]
 	internal struct UnmanagedCheckWatcher {

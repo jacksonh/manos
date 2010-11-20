@@ -32,7 +32,7 @@ namespace Libev {
 			ev_prepare_stop (Loop.Handle, WatcherPtr);	
 		}
 		
-		protected override void UnmanagedCallbackHandler (IntPtr _loop, IntPtr _watcher, int revents)
+		protected override void UnmanagedCallbackHandler (IntPtr _loop, IntPtr _watcher, EventTypes revents)
 		{
 			// Maybe I should verify the pointers?
 			
@@ -47,7 +47,7 @@ namespace Libev {
 	}
 	
     [UnmanagedFunctionPointer (System.Runtime.InteropServices.CallingConvention.Cdecl)] 
-	public delegate void PrepareWatcherCallback (Loop loop, PrepareWatcher watcher, int revents);
+	public delegate void PrepareWatcherCallback (Loop loop, PrepareWatcher watcher, EventTypes revents);
 	
 	[StructLayout (LayoutKind.Sequential)]
 	internal struct UnmanagedPrepareWatcher {

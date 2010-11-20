@@ -104,7 +104,7 @@ namespace Manos.Http {
 			transactions.Remove (trans);
 		}
 
-		private void HandleIOEvents (Loop loop, IOWatcher watcher, int revents)
+		private void HandleIOEvents (Loop loop, IOWatcher watcher, EventTypes revents)
 		{
 			while (true) {
 			      	Socket s = null;

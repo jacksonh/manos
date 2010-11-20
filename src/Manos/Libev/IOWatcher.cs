@@ -61,7 +61,7 @@ namespace Libev {
 			ev_io_stop (Loop.Handle, WatcherPtr);	
 		}
 		
-		protected override void UnmanagedCallbackHandler (IntPtr _loop, IntPtr _watcher, int revents)
+		protected override void UnmanagedCallbackHandler (IntPtr _loop, IntPtr _watcher, EventTypes revents)
 		{
 			// Maybe I should verify the pointers?
 			callback (Loop, this, revents);
@@ -81,7 +81,7 @@ namespace Libev {
 	}
 	
     [UnmanagedFunctionPointer (System.Runtime.InteropServices.CallingConvention.Cdecl)]
-	public delegate void IOWatcherCallback (Loop loop, IOWatcher watcher, int revents);
+	public delegate void IOWatcherCallback (Loop loop, IOWatcher watcher, EventTypes revents);
 	
 	[StructLayout (LayoutKind.Sequential)]
 	internal struct UnmanagedIOWatcher {

@@ -158,18 +158,18 @@ namespace Manos.IO {
 				close_callback (this);
 		}
 
-		private void HandleIOEvent (Loop loop, IOWatcher watcher, int revents)
+		private void HandleIOEvent (Loop loop, IOWatcher watcher, EventTypes revents)
 		{
 			if (socket == null)
 				return;
 
 			Expires = DateTime.UtcNow + TimeOut;
 			
-			if ((((EventTypes) revents) & EventTypes.Read) != 0) {
+			if ((revents & EventTypes.Read) != 0) {
 				HandleRead ();
 			}
 
-			if ((((EventTypes) revents) & EventTypes.Write) != 0) {
+			if ((revents & EventTypes.Write) != 0) {
 				HandleWrite ();
 			}
 		}
