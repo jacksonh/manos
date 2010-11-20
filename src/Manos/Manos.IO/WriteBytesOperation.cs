@@ -65,6 +65,8 @@ namespace Manos.IO {
 			WriteBytesOperation write_op = other as WriteBytesOperation;
 			if (write_op == null)
 				return false;
+
+			int offset = bytes.Count;
 			foreach (var op in write_op.bytes) {
 				bytes.Add (op);
 			}
@@ -73,7 +75,11 @@ namespace Manos.IO {
 				if (callback == null && callbacks == null)
 					callback = write_op.callback;
 				else {
-					callbacks = new List<CallbackInfo> ();
+					if (callbacks == null) {
+						callbacks = new List<CallbackInfo> ();
+						callbacks.Add (new CallbackInfo (offset - 1, callback));
+						callback = null;
+					}
 					callbacks.Add (new CallbackInfo (bytes.Count - 1, write_op.callback));
 				}
 			}
