@@ -84,15 +84,15 @@ namespace Manos.Http {
 
 		public void Start ()
 		{
-            handle = IOWatcher.GetHandle (Socket);
+			handle = IOWatcher.GetHandle (Socket);
 			iowatcher = new IOWatcher (handle, EventTypes.Read, ioloop.EventLoop, HandleIOEvents);
 			iowatcher.Start ();
 		}
 
-        public void Dispose () 
-        {
-            IOWatcher.ReleaseHandle(Socket, handle);
-        }
+		public void Dispose () 
+		{
+			IOWatcher.ReleaseHandle(Socket, handle);
+		}
 
 		public void RunTransaction (HttpTransaction trans)
 		{
