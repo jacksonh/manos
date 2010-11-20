@@ -88,6 +88,8 @@ namespace Manos.IO {
 
 		public void EndWrite (IOStream stream)
 		{
+			if (Callback != null)
+				Callback ();
 		}
 
 		public bool Combine (IWriteOperation other)

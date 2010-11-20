@@ -248,12 +248,7 @@ namespace Manos.IO {
 			if (current_write_op == null)
 				return;
 
-			WriteCallback callback = current_write_op.Callback;
-
 			current_write_op.EndWrite (this);
-
-			if (callback != null)
-				callback ();
 
 			if (write_ops.Count > 0) {
 				IWriteOperation op = write_ops.Dequeue ();

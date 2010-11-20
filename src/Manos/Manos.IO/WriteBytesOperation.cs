@@ -35,23 +35,24 @@ namespace Manos.IO {
 		private IList<ArraySegment<byte>> bytes;
 		private WriteCallback callback;
 
-		private static int counter = 0;
+		private class CallbackInfo {
+			public int Index;
+			public WriteCallback Callback;
 
-		private int index = ++counter;
+			public CallbackInfo (int index, WriteCallback callback)
+			{
+				Index = index;
+				Callback = callback;
+			}
+		}
+
+		private int segments_written;
+		private List<CallbackInfo> callbacks;
 
 		public WriteBytesOperation (IList<ArraySegment<byte>> bytes, WriteCallback callback)
 		{
 			this.bytes = bytes;
 			this.callback = callback;
-		}
-
-		public WriteCallback Callback {
-			get { return callback; }
-			set {
-				if (value == null)
-					throw new ArgumentNullException ("value");
-				callback = value;
-			}
 		}
 
 		public bool IsComplete {
@@ -68,14 +69,14 @@ namespace Manos.IO {
 				bytes.Add (op);
 			}
 
-			//
-			// TODO: We need to get a list of all the callbacks and their offsets
-			// then we can raise them properly when their data has been written
-			// this will also require moving the callback invocation into the
-			// WriteOperation
-			//
-			if (other.Callback != null)
-				callback = other.Callback;
+			if (write_op.callback != null) {
+				if (callback == null && callbacks == null)
+					callback = write_op.callback;
+				else {
+					callbacks = new List<CallbackInfo> ();
+					callbacks.Add (new CallbackInfo (bytes.Count - 1, write_op.callback));
+				}
+			}
 
 			return true;
 		}
@@ -97,16 +98,53 @@ namespace Manos.IO {
 				} catch (Exception e) {
 					stream.Close ();
 				} finally {
-					if (len != -1)
+					if (len != -1) {
+						int num_segments = bytes.Count;
 						IOStream.AdjustSegments (len, bytes);
+						segments_written = num_segments - bytes.Count;
+					}
 				}
 			}
 
+			FireCallbacks ();
 			IsComplete = (bytes.Count == 0);
 		}
 
 		public void EndWrite (IOStream stream)
 		{
+		}
+
+		private void FireCallbacks ()
+		{
+			if (bytes.Count == 0) {
+				FireAllCallbacks ();
+				return;
+			}
+
+			if (callbacks == null)
+				return;
+
+			while (callbacks.Count > 0) {
+				CallbackInfo c = callbacks [0];
+				if (c.Index < segments_written)
+					break;
+				c.Callback ();
+
+				callbacks.RemoveAt (0);
+			}
+		}
+
+		private void FireAllCallbacks ()
+		{
+			if (callback != null) {
+				callback ();
+				return;
+			}
+
+			if (callbacks == null)
+				return;
+
+			callbacks.ForEach (c => c.Callback ());
 		}
 	}
 }

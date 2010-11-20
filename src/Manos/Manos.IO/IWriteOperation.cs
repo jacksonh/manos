@@ -28,10 +28,6 @@ namespace Manos.IO {
 
 	public interface IWriteOperation {
 
-		WriteCallback Callback {
-			get;
-		}
-
 		bool IsComplete {
 			get;
 		}
