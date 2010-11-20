@@ -1,28 +1,22 @@
 Installing Manos
 ================
 
-Currently Manos can only be installed on Linux and OS X. Windows is not supported yet, but might be possible with a little bit of work.
+Currently Manos can be installed on Linux, OS X and Windows.
 
 You should read the whole guide before reading your operating system specific instructions.
-
-Installing Manos on OS X
-
-Installing Manos on Linux
 
 
 Dependencies
 ------------
 
-Manos's requires Mono 2.8 or higher. Mono is available from <http://mono-project.com/>
-
-Mano's also requires the unmanaged libev library. Libev should be available in a packages format from your distro or homebrew for OS X users.
+Manos requires the unmanaged libev library. Libev should be available in a packages format from your distro or homebrew for OS X users. Windows users will have to download and compile libev.
 
 Libev can be found here: <http://software.schmorp.de/pkg/libev.html>
 
 Files
 -----
 
-A properly installed Manos should install the following files:
+A properly installed Manos on OS X and Linux should install the following files:
 
     <prefix>/lib/Manos.dll
     <prefix>/lib/manos.exe
@@ -30,6 +24,13 @@ A properly installed Manos should install the following files:
     <prefix>/bin/manos
     <prefix>/share/manos/docs/<documentation files>
     <prefix>/share/manos/layouts/default/<the default layout files for new apps>
+
+On windows all files will be installed in the same directory:
+
+    <prefix>/Manos.dll
+    <prefix>/manos.exe
+    <prefix>/docs/<documentation files>
+    <prefix>/layouts/default/<the default layout files>
 
 
 Layouts
@@ -162,6 +163,8 @@ Checkout Manos from github at <http://github.com/jacksonh/manos/> and build/inst
 To verify your installation you can use the manos -docs command.  This will create a new server running on
 http://localhost:8181/ you should be able to navigate there in your browser and view the manos documentation.
 
+
+
 Installation on Windows
 ---------------------
 
@@ -181,3 +184,13 @@ Extract it and place it next to the libev in the source dir, so both libev-4.00 
 Checkout Manos from github at <http://github.com/jacksonh/manos/> and build/install it using Visual Studio.
 
 If you do no have Mono installed you can define DISABLE_POSIX to remove the Mono.Posix dependency.
+
+### Copy all files to your install directory
+
+Create a directory for the Manos binary files and copy Manos.dll manos.exe and the entire manos/data/layouts
+directory to your new directory.  Your structure should look something like this:
+
+    C:\Program Files\Manos\manos.exe
+    C:\Program Files\Manos\Manos.dll
+    C:\Program Files\layouts\default\<layout files>
+
