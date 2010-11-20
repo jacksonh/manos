@@ -43,7 +43,8 @@ namespace Manos.IO {
 
 	public class IOStream {
 
-		private static readonly int DefaultReadChunkSize  = 3072;
+		private static int ReadChunkSize = 3072;
+		private static byte [] ReadChunk = new byte [3072];
 
 		internal Socket socket;
 		private IOLoop ioloop;
@@ -65,8 +66,6 @@ namespace Manos.IO {
 			TimeOut = TimeSpan.FromMinutes (2);
 			Expires = DateTime.UtcNow + TimeOut;
 
-			ReadChunkSize = DefaultReadChunkSize;
-
 			socket.Blocking = false;
 
 			handle = IOWatcher.GetHandle (socket);
@@ -82,20 +81,6 @@ namespace Manos.IO {
 
 		public IOLoop IOLoop {
 			get { return ioloop; }
-		}
-
-		private int ReadChunkSize {
-			get { return ReadChunk.Length; }
-			set {
-				if (ReadChunk != null && value == ReadChunk.Length)
-					return;
-				ReadChunk = new byte [value];
-			}
-		}
-
-		private byte [] ReadChunk {
-			get;
-			set;
 		}
 
 		public DateTime Expires {
