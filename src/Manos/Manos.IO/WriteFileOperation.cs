@@ -73,7 +73,6 @@ namespace Manos.IO {
 				      Mono.Unix.Native.Syscall.sendfile (stream.socket.Handle.ToInt32 (), 
 						      file.Handle.ToInt32 (), ref file_offset,
 						      (ulong) (file_length - file_offset));
-				      Console.WriteLine ("written:  '{0}'", file_offset);
 			      } catch (SocketException se) {
 				      if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
 					      return;
