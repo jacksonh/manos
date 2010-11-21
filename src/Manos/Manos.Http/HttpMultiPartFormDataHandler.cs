@@ -262,7 +262,8 @@ namespace Manos.Http {
 			if (form_data.Count == 0)
 				return;
 
-			transaction.Request.PostData.Set (current_name, HttpUtility.UrlDecode (form_data.ToString (), encoding));
+			string data = encoding.GetString (form_data.ToArray ());
+			transaction.Request.PostData.Set (current_name, HttpUtility.UrlDecode (data, encoding));
 			form_data.Clear ();
 		}
 
