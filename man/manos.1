@@ -8,19 +8,26 @@ manos is a developers tool for creating, building and testing Manos
 web applications.
 .SH COMMANDS
 .TP
-.B init name
+.B i|init name
 Initialize a new Manos web application. This command will create a new
 directory with the name of your application and copy all of the
 default application data to the directory.
 .TP
-.B server [-p port]
+.B s|server [-p port]
 This option should be run from your application's root directory. It
 will start hosting your web application at http://localhost:8080/
+.TP
+.B b|build
+Build the Manos app in the current directory. This will attempt the
+following build methods in order: xbuild and .sln files in the current
+directory, make if any Makefiles are in the current directory and
+finally if no build files are available a recursive list of all .cs
+files will be compiled and all .dll files will be referenced.
 .TP
 .B -? | -help
 Display information about manos
 .PP
 .SH COPYRIGHT
-Copyright (C) 2010 Jackson Harper (jackson@novell.com)
+Copyright (C) 2010 Jackson Harper (jackson@manosdemono.com)
 .SH WEB SITE
-Visit: http://github.com/jacksonh/manos for details.
+Visit: http://manosdemono.com for details.
