@@ -29,24 +29,32 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 
+
+// WARNING: This whole file is just a hack so people can develop/debug
+// on windows. Once there is a async API for loading / streaming files
+// we need to use that instead of this file, which blocks to load the
+// entire file and queues it.
+
 namespace Manos.IO {
 
-#if !DISABLE_POSIX
+#if DISABLE_POSIX
 	public class WriteFileOperation : IWriteOperation {
 
 		private WriteCallback callback;
 
+		private byte [] bytes;
+		private int bytes_index;
+
 		private FileStream file;
-		private long file_offset;
-		private long file_length;
+		private int file_length;
 		
 		public WriteFileOperation (FileStream file, WriteCallback callback)
 		{
 			this.file = file;
 			this.callback = callback;
 
-			// TODO: async.  Don't think there is a good reason to do any locking here.
-			file_length = file.Length;
+			file_length = (int) file.Length;
+			ReadFile ();
 		}
 
 		public WriteCallback Callback {
@@ -69,22 +77,23 @@ namespace Manos.IO {
 
 		public void HandleWrite (IOStream stream)
 		{
-			while (file_offset < file_length) {
-			      try {
-				      Mono.Unix.Native.Syscall.sendfile (stream.socket.Handle.ToInt32 (), 
-						      file.Handle.ToInt32 (), ref file_offset,
-						      (ulong) (file_length - file_offset));
-			      } catch (SocketException se) {
-				      if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
-					      return;
-				      stream.Close ();
-			      } catch (Exception e) {
-				      stream.Close ();
-			      }
+			while (bytes_index < file_length) {
+				int len = -1;
+				try {
+					len = stream.socket.Send (bytes, bytes_index, file_length, SocketFlags.None);
+				} catch (SocketException se) {
+					if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
+						return;
+					stream.Close ();
+				} catch (Exception e) {
+					stream.Close ();
+				} finally {
+					if (len != -1)
+						bytes_index += len;
+				}
 			}
 
-			if (file_offset >= file_length)
-				IsComplete = true;
+			IsComplete = (bytes_index == file_length);
 		}
 
 		public void EndWrite (IOStream stream)
@@ -97,7 +106,15 @@ namespace Manos.IO {
 		{
 			return false;
 		}
+
+		private void ReadFile ()
+		{
+			bytes = new byte [file_length];
+
+			file.Read (bytes, 0, bytes.Length);
+		}
 	}
+
 #endif
 }
 
