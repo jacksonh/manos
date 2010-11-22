@@ -56,7 +56,6 @@
     <Compile Include="Manos.Http\HttpResponseStream.cs" />
     <Compile Include="Manos.Http\HttpDataCallback.cs" />
     <Compile Include="Manos.Http\HttpErrorCallback.cs" />
-    <Compile Include="Manos.Http\HttpException.cs" />
     <Compile Include="Manos.Http\HttpFormDataHandler.cs" />
     <Compile Include="Manos.Http\HttpMethod.cs" />
     <Compile Include="Manos.Http\HttpMultiPartFormDataHandler.cs" />
@@ -102,6 +101,8 @@
     <Compile Include="Manos\TimeoutCallback.cs" />
     <Compile Include="Manos\Timeout.cs" />
     <Compile Include="Manos\AppHost.cs" />
+    <Compile Include="Manos.Caching\CacheItemCallback.cs" />
+    <Compile Include="Manos.Caching\CacheOpCallback.cs" />
     <Compile Include="Manos.Caching\IManosCache.cs" />
     <Compile Include="Manos.Caching\ManosInProcCache.cs" />
     <Compile Include="Manos.Testing\ManosContextStub.cs" />

@@ -1,4 +1,5 @@
 *~
+obj
 bin/
 *.pidb
 *.dll
@@ -6,6 +7,6 @@ bin/
 build/
 config.log
 config.make
-
 test-results
 *.userprefs
+TestResult.xml

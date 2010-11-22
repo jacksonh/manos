@@ -44,19 +44,21 @@ namespace Manos.Caching
 		}
 		
 		private Dictionary<string,CacheItem> items = new Dictionary<string, CacheItem> ();
-		
-		private object lock_obj = new object ();
-		
-		public object Get (string key)
+
+		public void Get (string key, CacheItemCallback callback)
 		{
 			CacheItem item;
-			
-			lock (lock_obj) {
-				if (!items.TryGetValue (key, out item))
-					return null;
-			}
-			
-			return item.Item;
+			object res = null;
+
+			if (key == null)
+				throw new ArgumentNullException ("key");
+			if (callback == null)
+				throw new ArgumentNullException ("callback");
+
+			if (items.TryGetValue (key, out item))
+				res = item.Item;
+
+			callback (key, item);
 		}
 
 		public void Set (string key, object value)
@@ -66,50 +68,68 @@ namespace Manos.Caching
 
 		public void Set (string key, object value, TimeSpan expires)
 		{
+			SetInternal (key, value);
+		}
+
+		public void Set (string key, object value, CacheItemCallback callback)
+		{
+			SetInternal (key, value);
+
+			if (callback != null)
+				callback (key, value);
+		}
+
+		public void Set (string key, object value, TimeSpan expires, CacheItemCallback callback)
+		{
 			CacheItem item = SetInternal (key, value);
 			
-			AppHost.AddTimeout (expires, RepeatBehavior.Single, item, HandleExpires);               
+			AppHost.AddTimeout (expires, RepeatBehavior.Single, item, HandleExpires);
+
+			if (callback != null)
+				callback (key, value);
 		}
-		
+
 		public void Remove (string key)
 		{
-			lock (lock_obj) {
-				CacheItem item;
+			Remove (key, null);
+		}
+
+		public void Remove (string key, CacheItemCallback callback)
+		{
+			CacheItem item;
+			object value = null;
 				
-				if (!items.TryGetValue (key, out item))
-					return;
-				
+			if (items.TryGetValue (key, out item)) {
 				item.IsRemoved = true;
 				items.Remove (key);
+				value = item.Item;
 			}
-		}
-		
-		public object this[string key] {
-			get {
-				return Get (key);
-			}
-			set {
-				Set (key, value);
-			}
+
+			if (callback != null)
+				callback (key, value);
 		}
 		
 		public void Clear ()
 		{
-			lock (lock_obj) {
-				items.Clear ();	
-			}
+			items.Clear ();	
+		}
+
+		public void Clear (CacheOpCallback callback)
+		{
+			items.Clear ();
+
+			if (callback != null)
+				callback ();
 		}
 		
 		protected CacheItem SetInternal (string key, object value)
 		{
 			CacheItem item = null;
-			lock (lock_obj) {
-				if (items.TryGetValue (key, out item))
-					item.IsRemoved = true;
+			if (items.TryGetValue (key, out item))
+				item.IsRemoved = true;
 			
-				item = new CacheItem (key, value);
-				items [key] = item;
-			}
+			item = new CacheItem (key, value);
+			items [key] = item;
 			
 			return item;
 		}
@@ -121,9 +141,7 @@ namespace Manos.Caching
 				return;
 			
 			item.IsRemoved = true;
-			lock (lock_obj) {
-				items.Remove (item.Key);
-			}
+			items.Remove (item.Key);
 		}
 	}
 }
