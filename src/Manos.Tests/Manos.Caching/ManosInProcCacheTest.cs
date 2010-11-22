@@ -52,7 +52,7 @@ namespace Manos.Caching.Tests
 		{
 			var cache = new ManosInProcCache ();
 			
-			Should.Throw<ArgumentNullException> (() => cache.Get (null));
+			Should.Throw<ArgumentNullException> (() => cache.Get (null, null));
 		}
 		
 		[Test]
@@ -60,8 +60,9 @@ namespace Manos.Caching.Tests
 		{
 			var cache = new ManosInProcCache ();
 			
-			var item = cache.Get ("foobar");
-			Assert.IsNull (item);
+			cache.Get ("foobar", (name, value) => {
+				Assert.IsNull (value);
+			});
 		}
 		
 		[Test]
@@ -89,8 +90,9 @@ namespace Manos.Caching.Tests
 			
 			cache.Set ("foo", bar);
 			
-			var retrieved = cache.Get ("foo");
-			Assert.AreSame (bar, retrieved);
+			cache.Get ("foo", (name, item) => {
+				Assert.AreSame (bar, item);
+			});
 		}
 		
 		[Test]
@@ -103,8 +105,9 @@ namespace Manos.Caching.Tests
 			cache.Set ("foo", existing);
 			cache.Set ("foo", new_item);
 			
-			var retrieved = cache.Get ("foo");
-			Assert.AreSame (new_item, retrieved);
+			cache.Get ("foo", (name, item) => {
+				Assert.AreSame (new_item, item);
+			});
 		}
 		
 		[Test]
@@ -116,8 +119,9 @@ namespace Manos.Caching.Tests
 			cache.Set ("foo", existing);
 			cache.Set ("foo", null);
 			
-			var retrieved = cache.Get ("foo");
-			Assert.IsNull (retrieved);
+			cache.Get ("foo", (name, item) => {
+				Assert.IsNull (item);
+			});
 		}
 		
 		[Test]
@@ -129,8 +133,9 @@ namespace Manos.Caching.Tests
 			cache.Set ("foo", existing);
 			cache.Clear ();
 			
-			var retrieved = cache.Get ("foo");
-			Assert.IsNull (retrieved);
+			cache.Get ("foo", (name, item) => {
+				Assert.IsNull (item);
+			});
 		}
 		
 		[Test]
@@ -142,8 +147,9 @@ namespace Manos.Caching.Tests
 			ManosInProcCache.CacheItem item = cache.DoSetInternal ("foo", existing);
 			cache.ForceHandleExpires (item);
 			
-			var retrieved = cache.Get ("foo");
-			Assert.IsNull (retrieved);
+			cache.Get ("foo", (name, get_item) => {
+				Assert.IsNull (get_item);
+			});
 		}
 		
 		[Test]
