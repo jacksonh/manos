@@ -58,7 +58,7 @@ namespace Manos.Caching
 			if (items.TryGetValue (key, out item))
 				res = item.Item;
 
-			callback (key, item);
+			callback (key, res);
 		}
 
 		public void Set (string key, object value)
@@ -130,7 +130,7 @@ namespace Manos.Caching
 			
 			item = new CacheItem (key, value);
 			items [key] = item;
-			
+
 			return item;
 		}
 		
