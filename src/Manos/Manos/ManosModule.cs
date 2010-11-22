@@ -308,7 +308,7 @@ namespace Manos {
 
 		public static void AddPipe (ManosPipe pipe)
 		{
-			AppHost.Pipes.Add (pipe);
+			AppHost.AddPipe (pipe);
 		}
 
 		public static void RenderTemplate (ManosContext ctx, string template, object data)

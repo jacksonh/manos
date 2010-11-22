@@ -32,7 +32,7 @@ namespace Logger {
 
 		public Logger ()
 		{
-			Route ("/", ctx => ctx.Response.Write ("Hello, World."));
+			Route ("/", ctx => ctx.Response.End ("Hello, World."));
 
 			AddPipe (new Manos.Util.AccessLogger ("access.log"));
 		}
