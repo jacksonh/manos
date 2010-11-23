@@ -52,7 +52,8 @@ namespace Manos.IO {
 		private CloseCallback close_callback;
 		private ReadCallback read_callback;
 
-		private IOWatcher io_watcher;
+		private IOWatcher read_watcher;
+		private IOWatcher write_watcher;
 		private IntPtr handle;
 
 		private IWriteOperation current_write_op;
@@ -69,9 +70,8 @@ namespace Manos.IO {
 			socket.Blocking = false;
 
 			handle = IOWatcher.GetHandle (socket);
-			io_watcher = new IOWatcher (handle, EventTypes.Read | EventTypes.Write, ioloop.EventLoop, HandleIOEvent);
-
-			io_watcher.Start ();
+			read_watcher = new IOWatcher (handle, EventTypes.Read, ioloop.EventLoop, HandleIOReadEvent);
+			write_watcher = new IOWatcher (handle, EventTypes.Write, ioloop.EventLoop, HandleIOWriteEvent);
 		}
 
 		~IOStream ()
@@ -104,6 +104,8 @@ namespace Manos.IO {
 
 		public void ReadBytes (ReadCallback callback)
 		{
+			EnableReading ();
+
 			read_callback = callback;
 
 			UpdateExpires ();
@@ -111,6 +113,8 @@ namespace Manos.IO {
 
 		public void QueueWriteOperation (IWriteOperation op)
 		{
+			EnableWriting ();
+
 			UpdateExpires ();
 
 			// We try to combine the op in case they are both byte buffers
@@ -120,6 +124,26 @@ namespace Manos.IO {
 
 			if (current_write_op == null)
 				current_write_op = op;
+		}
+
+		public void EnableReading ()
+		{
+			read_watcher.Start ();
+		}
+
+		public void EnableWriting ()
+		{
+			write_watcher.Start ();
+		}
+
+		public void DisableReading ()
+		{
+			read_watcher.Stop ();
+		}
+
+		public void DisableWriting ()
+		{
+			write_watcher.Stop ();
 		}
 
 		private void UpdateExpires ()
@@ -132,7 +156,8 @@ namespace Manos.IO {
 			if (socket == null)
 				return;			
 
-			io_watcher.Stop ();
+			DisableReading ();
+			DisableWriting ();
 
 			IOWatcher.ReleaseHandle (socket, handle);
 
@@ -143,26 +168,34 @@ namespace Manos.IO {
 				close_callback (this);
 		}
 
-		private void HandleIOEvent (Loop loop, IOWatcher watcher, EventTypes revents)
+		private void HandleIOReadEvent (Loop loop, IOWatcher watcher, EventTypes revents)
 		{
+			// Happens after a close
 			if (socket == null)
 				return;
 
 			Expires = DateTime.UtcNow + TimeOut;
-			
-			if ((revents & EventTypes.Read) != 0) {
-				HandleRead ();
-			}
+			HandleRead ();
+		}
 
-			if ((revents & EventTypes.Write) != 0) {
-				HandleWrite ();
-			}
+		
+		private void HandleIOWriteEvent (Loop loop, IOWatcher watcher, EventTypes revents)
+		{
+			// Happens after a close
+			if (socket == null)
+				return;
+
+			Expires = DateTime.UtcNow + TimeOut;
+			HandleWrite ();
 		}
 		
 		private void HandleWrite ()
 		{
-			if (current_write_op == null)
+			if (current_write_op == null) {
+				// Kinda shouldn't happen...
+				DisableWriting ();
 				return;
+			}
 
 			current_write_op.HandleWrite (this);
 
@@ -239,8 +272,11 @@ namespace Manos.IO {
 				IWriteOperation op = write_ops.Dequeue ();
 				op.BeginWrite (this);
 				current_write_op = op;
-			} else
+			} else {
 				current_write_op = null;
+				DisableWriting ();
+			}
+			
 		}
 	}
 
