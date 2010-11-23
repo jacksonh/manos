@@ -149,6 +149,8 @@ namespace Manos.Http {
 
 		public void End ()
 		{
+			if (!metadata_written)
+				WriteMetadata ();
 			Stream.SendFinalChunk (Transaction.OnResponseFinished);
 		}
 
