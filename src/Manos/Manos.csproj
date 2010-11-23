@@ -46,6 +46,7 @@
     <Compile Include="Manos\ManosApp.cs" />
     <Compile Include="Manos\ManosContext.cs" />
     <Compile Include="Manos\ManosModule.cs" />
+    <Compile Include="Manos\ManosMimeTypes.cs" />
     <Compile Include="Manos\OptionsAttribute.cs" />
     <Compile Include="Manos\PostAttribute.cs" />
     <Compile Include="Manos\PutAttribute.cs" />

@@ -34,6 +34,7 @@ namespace $APPNAME {
 				path = path.Substring (1);
 
 			if (File.Exists (path)) {
+				ctx.Response.Headers.SetNormalizedHeader ("Content-Type", ManosMimeTypes.GetMimeType (path));
 				ctx.Response.SendFile (path);
 			} else
 				ctx.Response.StatusCode = 404;
