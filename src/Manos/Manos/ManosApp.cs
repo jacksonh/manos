@@ -60,6 +60,8 @@ namespace Manos {
 				return;
 			}
 
+			con.Response.StatusCode = 200;
+
 			OnPostProcessTarget (ctx, handler);
 			
 			try {
@@ -74,6 +76,8 @@ namespace Manos {
 				// on HttpTransaction, along with an UnhandledException
 				// method/event on ManosModule.
 				//
+
+				con.Response.End ();
 			}
 
 		cleanup:
