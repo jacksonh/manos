@@ -37,6 +37,8 @@ namespace $APPNAME {
 				ctx.Response.SendFile (path);
 			} else
 				ctx.Response.StatusCode = 404;
+
+			ctx.Response.End ();
 		}
 	}
 }
