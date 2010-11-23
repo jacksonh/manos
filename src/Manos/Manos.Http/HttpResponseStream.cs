@@ -38,6 +38,7 @@ namespace Manos.Http
 	public class HttpResponseStream : Stream
 	{
 		private int length;
+		private bool final_chunk_sent;
 
 		public HttpResponseStream (HttpResponse response, IOStream stream)
 		{
@@ -144,6 +145,10 @@ namespace Manos.Http
 		public void SendFinalChunk (WriteCallback callback)
 		{
 			EnsureMetadata ();
+
+			if (final_chunk_sent)
+				return;
+			final_chunk_sent = true;
 
 			var bytes = new List<ArraySegment<byte>> ();
 
