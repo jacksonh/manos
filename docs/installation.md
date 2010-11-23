@@ -165,6 +165,33 @@ http://localhost:8181/ you should be able to navigate there in your browser and 
 
 
 
+Installation on OpenBSD
+-----------------------
+
+### Install prerequisites
+From ports or packages install mono 2.8
+
+From ports or packages install libev
+
+Create a symbolic link from /usr/local/bin/bash to /bin/bash:
+
+    $ ln -s /usr/local/bin/bash /bin/bash
+
+### Install Manos
+Checkout Manos from github at <http://github.com/jacksonh/manos/> and build/install it:
+
+    $ ./configure
+    ...
+    $ su
+    ...
+    $ gmake install
+    ...
+
+To verify your installation you can use the manos -docs command.  This will create a new server running on
+http://localhost:8181/ you should be able to navigate there in your browser and view the manos documentation.
+
+
+
 Installation on Windows
 ---------------------
 
