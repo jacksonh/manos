@@ -37,7 +37,7 @@ namespace Manos.Http
 {
 	public class HttpResponseStream : Stream
 	{
-		private int length;
+		private long length;
 		private bool final_chunk_sent;
 
 		public HttpResponseStream (HttpResponse response, IOStream stream)
@@ -120,6 +120,8 @@ namespace Manos.Http
 			FileStream file_stream = new FileStream (file_name, FileMode.Open, FileAccess.Read);
 			WriteFileOperation write_file = new WriteFileOperation (file_stream, null);
 
+			length += file_stream.Length;
+			
 			SendChunk ((int) file_stream.Length, false);
 			IOStream.QueueWriteOperation (write_file);
 			SendChunk (-1, false);
@@ -133,6 +135,9 @@ namespace Manos.Http
 
 			if (chunked)
 				WriteChunk (bytes, count, false);
+
+			length += (count - offset);
+			
 			bytes.Add (new ArraySegment<byte> (buffer, offset, count));
 			if (chunked)
 				WriteChunk (bytes, -1, false);
@@ -196,6 +201,8 @@ namespace Manos.Http
 				chunk_buffer [i++] = 10;
 			}
 
+			length += i;
+			
 			bytes.Add (new ArraySegment<byte> (chunk_buffer, 0, i));
 		}
 	}
