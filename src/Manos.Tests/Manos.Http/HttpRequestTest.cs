@@ -27,7 +27,6 @@ using System;
 using NUnit.Framework;
 
 using Manos;
-using Manos.Server;
 
 namespace Manos.Http.Tests
 {
