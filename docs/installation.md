@@ -203,7 +203,7 @@ a single Manos dll for both Windows and Linux/MacOS.
 
 ### Install libev
 
-Download the libev package from: http://software.schmorp.de/pkg/libev.html
+Download the libev package from: <http://software.schmorp.de/pkg/libev.html>
 Extract it and place it next to the libev in the source dir, so both libev-4.00 and libev are in the same directory.
 
 ### Install Manos
