@@ -286,7 +286,7 @@ namespace Manos.Http {
 //			Headers.ContentLength = 0;
 
 			Headers.SetNormalizedHeader ("Server", HttpServer.ServerVersion);
-//			Headers.SetNormalizedHeader ("Transfer-Encoding", "chunked");
+			Headers.SetNormalizedHeader ("Transfer-Encoding", "chunked");
 		}
 
 		private static string GetStatusDescription (int code)
