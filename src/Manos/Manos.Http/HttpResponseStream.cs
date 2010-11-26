@@ -45,8 +45,6 @@ namespace Manos.Http
 		{
 			Response = response;
 			IOStream = stream;
-
-			chunk_encode = false;
 		}
 
 		public HttpResponse Response {
