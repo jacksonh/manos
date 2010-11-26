@@ -110,11 +110,8 @@ and sets up hosting for it.
 
 Once the application is running you can check it out by navigating your browser to http://localhost:8080/
 
+---
 
-Moving On
----------
-
-In part two of this tutorial we'll start building our Shorty application.
-
+Continue the tutorial in [part two](./2).
 
 
