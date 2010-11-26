@@ -216,14 +216,8 @@ LinkInfo at the top of our Redirector method.
         return;
     }
 
+---
 
-That's it!
-----------
-Manos still has a long ways to go, but hopefully this tutorial shows off some
-of its potential. Future versions of Manos will be shaped by your comments and
-suggestions, so please don't be afraid to offer advice.
-
-The complete source code for this tutorial is available in the
-examples/Shorty directory.
+Continue the tutorial in [part three](./3).
 
 
