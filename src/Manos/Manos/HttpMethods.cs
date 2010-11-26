@@ -28,7 +28,14 @@ using System;
 using Manos.Http;
 
 namespace Manos {
-
+	
+	/// <summary>
+	/// Static lookups for each of the http verbs, and then an array with all of them.
+	/// </summary>
+	/// <remarks>
+	/// ATT: not sure what the purpose of these are, couldn't one just use enum with the "Flags" attribute? 
+	/// Maybe this is a special performance thing?
+	/// </remarks>
 	public static class HttpMethods {
 
 		public static readonly HttpMethod [] GetMethods = new HttpMethod [] { HttpMethod.HTTP_GET };

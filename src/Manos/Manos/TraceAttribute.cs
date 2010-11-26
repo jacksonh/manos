@@ -29,7 +29,10 @@ using System.Reflection;
 using Manos.Http;
 
 namespace Manos {
-
+	
+	/// <summary>
+	/// Indicates that the decorated method should respond to any specified routes when the TRACE verb is used for the request.
+	/// </summary>
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 	public class TraceAttribute : HttpMethodAttribute {
 

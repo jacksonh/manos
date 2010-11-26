@@ -40,7 +40,10 @@ using Manos.Templates;
 
 
 namespace Manos {
-
+	
+	/// <summary>
+	/// A pre-packaged set of routes/actions that can be registered in the constructor of a ManoApp-derived class.
+	/// </summary>
 	public class ManosModule {
 
 		private RouteHandler routes = new RouteHandler ();
@@ -115,7 +118,7 @@ namespace Manos {
 			Routes.Children.Add (res);
 			return res;
 		}
-
+		
 		public RouteHandler Route (string pattern, ManosModule module)
 		{
 			return AddRouteHandler (module, new string [] { pattern }, HttpMethods.RouteMethods);

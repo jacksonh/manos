@@ -26,7 +26,9 @@ using System;
 
 namespace Manos {
 	
-	
+	/// <summary>
+	/// Indicates that the decorated method should respond to any specified routes, regardless of Http Verb issued.
+	/// </summary>
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 	public class RouteAttribute : HttpMethodAttribute {
 

@@ -36,6 +36,9 @@ using Manos.Caching;
 
 namespace Manos
 {
+	/// <summary>
+	/// The app runner. This is where the magic happens.
+	/// </summary>
 	public static class AppHost
 	{
 		private static ManosApp app;

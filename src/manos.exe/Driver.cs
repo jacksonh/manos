@@ -148,15 +148,22 @@ namespace Manos.Tool
 		{
 			string port = null;
 			string user = null;
-
+			string assembly = null;
+			
 			var p = new OptionSet () {
 				{ "p|port=", v => port = v },
 				{ "u|user=", v => user = v },
+				{ "a|assembly=", v=> assembly = v}
 			};
 			args = p.Parse(args);
 
 			ServerCommand cmd = new ServerCommand (Environment, args);
-
+			
+			if(assembly != null)
+			{
+				cmd.ApplicationAssembly = assembly;
+			}
+			
 			if (port != null) {
 				int pt;
 				if (!Int32.TryParse (port, out pt))
