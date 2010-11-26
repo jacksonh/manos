@@ -33,7 +33,6 @@ using System.Text.RegularExpressions;
 using System.Collections.Specialized;
 
 using Manos.Http;
-using Manos.Server;
 using Manos.Collections;
 
 namespace Manos.Routing {

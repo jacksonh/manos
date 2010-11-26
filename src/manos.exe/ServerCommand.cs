@@ -31,7 +31,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Manos;
-using Manos.Server;
 
 #if !DISABLE_POSIX
 using Mono.Unix.Native;

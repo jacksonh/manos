@@ -28,7 +28,6 @@ using System;
 using System.IO;
 
 using Manos;
-using Manos.Server;
 
 namespace Manos.Templates {
 	

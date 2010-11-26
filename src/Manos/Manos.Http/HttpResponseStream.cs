@@ -38,12 +38,15 @@ namespace Manos.Http
 	public class HttpResponseStream : Stream
 	{
 		private long length;
+		private bool chunk_encode = true;
 		private bool final_chunk_sent;
 
 		public HttpResponseStream (HttpResponse response, IOStream stream)
 		{
 			Response = response;
 			IOStream = stream;
+
+			chunk_encode = false;
 		}
 
 		public HttpResponse Response {
@@ -54,6 +57,15 @@ namespace Manos.Http
 		public IOStream IOStream {
 			get;
 			private set;
+		}
+
+		public bool Chunked {
+			get { return chunk_encode; }
+			set {
+				if (length > 0 && chunk_encode != value)
+					throw new InvalidOperationException ("Chunked can not be changed after a write has been performed.");
+				chunk_encode = value;
+			}
 		}
 
 		public override bool CanRead {
@@ -105,7 +117,7 @@ namespace Manos.Http
 
 		public override void Write (byte[] buffer, int offset, int count)
 		{
-			Write (buffer, offset, count, true);
+			Write (buffer, offset, count, chunk_encode);
 		}
 
 		public void WriteNoChunk (byte [] buffer, int offset, int count)
@@ -121,10 +133,13 @@ namespace Manos.Http
 			WriteFileOperation write_file = new WriteFileOperation (file_stream, null);
 
 			length += file_stream.Length;
-			
-			SendChunk ((int) file_stream.Length, false);
+
+			if (chunk_encode)
+				SendChunk ((int) file_stream.Length, false);
 			IOStream.QueueWriteOperation (write_file);
-			SendChunk (-1, false);
+
+			if (chunk_encode)
+				SendChunk (-1, false);
 		}
 
 		private void Write (byte [] buffer, int offset, int count, bool chunked)
@@ -151,7 +166,7 @@ namespace Manos.Http
 		{
 			EnsureMetadata ();
 
-			if (final_chunk_sent)
+			if (!chunk_encode || final_chunk_sent)
 				return;
 			final_chunk_sent = true;
 
