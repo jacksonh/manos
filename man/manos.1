@@ -13,9 +13,12 @@ Initialize a new Manos web application. This command will create a new
 directory with the name of your application and copy all of the
 default application data to the directory.
 .TP
-.B s|server [-p port]
+.B s|server [-p port] [-a=path_to_dll]
 This option should be run from your application's root directory. It
 will start hosting your web application at http://localhost:8080/
+
+When '-a' is specified with a path to your dll, manos will execute 
+the ManosApp in the referenced assembly.
 .TP
 .B b|build
 Build the Manos app in the current directory. This will attempt the
