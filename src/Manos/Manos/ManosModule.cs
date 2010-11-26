@@ -33,7 +33,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 
 using Manos.Http;
-using Manos.Server;
 using Manos.Routing;
 using Manos.Caching;
 using Manos.Templates;

@@ -27,7 +27,6 @@ using System.Threading;
 
 using NUnit.Framework;
 
-using Manos.Server;
 using Manos.ShouldExt;
 
 namespace Manos.Tests
