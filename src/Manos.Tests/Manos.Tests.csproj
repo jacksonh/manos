@@ -59,7 +59,6 @@
   <ItemGroup>
     <Folder Include="Manos.Routing\" />
     <Folder Include="Manos\" />
-    <Folder Include="Manos.Server\" />
     <Folder Include="Manos.Template\" />
     <Folder Include="Manos.Caching\" />
     <Folder Include="Nunit-Extensions\" />
