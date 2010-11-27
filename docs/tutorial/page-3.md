@@ -131,3 +131,6 @@ To simplify testing output strings we can also use the HtmlCompare utility:
 
 This will compare HTML output ignoring white space between tags.
 
+---
+
+Continue the tutorial in [part four](./4).

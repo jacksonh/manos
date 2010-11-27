@@ -29,7 +29,13 @@ using System;
 using Manos.Http;
 
 namespace Manos {
-
+	
+	/// <summary>
+	/// Relevent information related to the request initiated by an HTTP client.
+	/// </summary>
+	/// <remarks>
+	/// Similar in concept to HttpContext under the ASP.Net stack.
+	/// </remarks>
 	public class ManosContext : IManosContext {
 
 		public ManosContext (IHttpTransaction transaction)
@@ -45,11 +51,17 @@ namespace Manos {
 			get;
 			private set;
 		}
-
+		
+		/// <summary>
+		/// Information related to the request initiated by the client.
+		/// </summary>
 		public IHttpRequest Request {
 			get { return Transaction.Request; }
 		}
-
+		
+		/// <summary>
+		/// Information related to how this server will respond to the client's request.
+		/// </summary>
 		public IHttpResponse Response {
 			get { return Transaction.Response; }
 		}

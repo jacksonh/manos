@@ -31,9 +31,15 @@ using Manos.Http;
 using Manos.Routing;
 
 namespace Manos {
-
+	
+	/// <summary>
+	/// The entry point for your manos app. Derive from this class one time in your manos app and it will get instantiated when the runtime executes.
+	/// </summary>
+	/// <remarks>
+	/// This is similar in concept to the HttpApplication in the ASP.Net stack.
+	/// </remarks>
 	public class ManosApp : ManosModule, IManosPipe {
-
+		
 		public ManosApp ()
 		{
 		}

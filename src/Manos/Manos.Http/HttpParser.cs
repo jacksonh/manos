@@ -457,7 +457,7 @@ namespace Manos.Http {
       
 
 
-				/******************* URL *******************/
+				/*__________________URL__________________*/
 				case State.req_spaces_before_url:
 					if (SPACE == ch)
 						break;

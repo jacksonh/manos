@@ -29,6 +29,15 @@ using System.Text;
 
 namespace Manos
 {
+	/// <summary>
+	/// Since returning non-encoded content to the browser can introduce unwanted 
+	/// Cross-Site Scripting attacks (and other bad things), Manos will encode the
+	/// output automatically, this class allows a developer to specify content that should be returned as is.
+	/// "With great power comes great responsibility."
+	/// </summary>
+	/// <remarks>
+	/// ATT: I think that the summary is right, Jackson, can you confirm?
+	/// </remarks>
 	public class UnsafeString
 	{
 		private string unsafe_value;
