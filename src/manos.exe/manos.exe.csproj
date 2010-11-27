@@ -21,6 +21,7 @@
     <WarningLevel>4</WarningLevel>
     <Commandlineparameters>-data-dir=../../../../../data/</Commandlineparameters>
     <GenerateDocumentation>true</GenerateDocumentation>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
