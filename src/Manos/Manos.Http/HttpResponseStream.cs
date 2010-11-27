@@ -41,6 +41,8 @@ namespace Manos.Http
 		private bool chunk_encode = true;
 		private bool final_chunk_sent;
 
+		private Queue<IWriteOperation> write_ops;
+
 		public HttpResponseStream (HttpResponse response, IOStream stream)
 		{
 			Response = response;
@@ -95,7 +97,6 @@ namespace Manos.Http
 		
 		public override void Flush ()
 		{
-			// NOOP
 		}
 
 		public override int Read (byte[] buffer, int offset, int count)
@@ -118,11 +119,6 @@ namespace Manos.Http
 			Write (buffer, offset, count, chunk_encode);
 		}
 
-		public void WriteNoChunk (byte [] buffer, int offset, int count)
-		{
-			Write (buffer, offset, count, false);
-		}
-
 		public void SendFile (string file_name)
 		{
 			EnsureMetadata ();
@@ -134,7 +130,7 @@ namespace Manos.Http
 
 			if (chunk_encode)
 				SendChunk ((int) file_stream.Length, false);
-			IOStream.QueueWriteOperation (write_file);
+			QueueWriteOperation (write_file);
 
 			if (chunk_encode)
 				SendChunk (-1, false);
@@ -156,8 +152,17 @@ namespace Manos.Http
 				WriteChunk (bytes, -1, false);
 
 			WriteBytesOperation write_bytes = new WriteBytesOperation (bytes, null);
+			QueueWriteOperation (write_bytes);
+		}
 
-			IOStream.QueueWriteOperation (write_bytes);
+		public void End (WriteCallback callback)
+		{
+			if (chunk_encode) {
+				SendFinalChunk (callback);
+				return;
+			}
+
+			SendBufferedOps (callback);
 		}
 
 		public void SendFinalChunk (WriteCallback callback)
@@ -173,14 +178,40 @@ namespace Manos.Http
 			WriteChunk (bytes, 0, true);
 
 			WriteBytesOperation write_bytes = new WriteBytesOperation (bytes, callback);
-			IOStream.QueueWriteOperation (write_bytes);
+			QueueWriteOperation (write_bytes);
+		}
+
+		public void SendBufferedOps (WriteCallback callback)
+		{
+			if (write_ops != null) {
+				IWriteOperation [] ops = write_ops.ToArray ();
+
+				for (int i = 0; i < ops.Length; i++) {
+					IOStream.QueueWriteOperation (ops [i]);
+				}
+			}
+
+			IOStream.QueueWriteOperation (new NopWriteOperation (callback));
 		}
 
 		private void EnsureMetadata ()
 		{
-			if (Response.metadata_written)
+			if (!chunk_encode || Response.metadata_written)
 				return;
 			Response.WriteMetadata ();
+		}
+
+		private void QueueWriteOperation (IWriteOperation op)
+		{
+			if (chunk_encode) {
+				IOStream.QueueWriteOperation (op);
+				return;
+			}
+
+			if (write_ops == null)
+				write_ops = new Queue<IWriteOperation> ();
+
+			write_ops.Enqueue (op);
 		}
 
 		private void SendChunk (int l, bool last)
@@ -190,7 +221,7 @@ namespace Manos.Http
 			WriteChunk (bytes, l, last);
 
 			WriteBytesOperation write_bytes = new WriteBytesOperation (bytes, null);
-			IOStream.QueueWriteOperation (write_bytes);
+			QueueWriteOperation (write_bytes);
 		}
 
 		private void WriteChunk (List<ArraySegment<byte>> bytes, int l, bool last)

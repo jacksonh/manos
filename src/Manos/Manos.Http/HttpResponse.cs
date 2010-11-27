@@ -57,8 +57,7 @@ namespace Manos.Http {
 
 			Headers = new HttpHeaders ();
 			Stream = new HttpResponseStream (this, IOStream);
-			
-			SetStandardHeaders ();
+			Stream.Chunked = (transaction.Request.MajorVersion > 0 && transaction.Request.MinorVersion > 0);
 		}
 
 		public IHttpTransaction Transaction {
@@ -95,6 +94,16 @@ namespace Manos.Http {
 		}
 
 		public int StatusCode {
+			get;
+			set;
+		}
+
+		public int MajorVersion {
+			get;
+			set;
+		}
+
+		public int MinorVersion {
 			get;
 			set;
 		}
@@ -149,8 +158,12 @@ namespace Manos.Http {
 
 		public void End ()
 		{
-			
-			Stream.SendFinalChunk (Transaction.OnResponseFinished);
+			if (!Stream.Chunked) {
+				Headers.ContentLength = Stream.Length;
+				WriteMetadata ();
+			}
+
+			Stream.End (Transaction.OnResponseFinished);
 		}
 
 		public void WriteLine (string str)
@@ -182,6 +195,8 @@ namespace Manos.Http {
 			if (metadata_written)
 				return;
 
+			SetStandardHeaders ();
+			
 			StringBuilder builder = new StringBuilder ();
 			WriteStatusLine (builder);
 
@@ -191,9 +206,14 @@ namespace Manos.Http {
 			byte [] data = Encoding.ASCII.GetBytes (builder.ToString ());
 
 			metadata_written = true;
-			Stream.WriteNoChunk (data, 0, data.Length);
+
+			var bytes = new List<ArraySegment<byte>> ();
+			bytes.Add (new ArraySegment<byte> (data, 0, data.Length));
+			WriteBytesOperation write_bytes = new WriteBytesOperation (bytes, null);
+
+			IOStream.QueueWriteOperation (write_bytes);
 		}
-		
+
 		public void Finish ()
 		{
 			
@@ -269,7 +289,11 @@ namespace Manos.Http {
 		
 		private void WriteStatusLine (StringBuilder builder)
 		{
-			builder.Append ("HTTP/1.1 ");
+			builder.Append ("HTTP/");
+			builder.Append (Transaction.Request.MajorVersion);
+			builder.Append (".");
+			builder.Append (Transaction.Request.MinorVersion);
+			builder.Append (" ");
 			builder.Append (StatusCode);
 			builder.Append (" ");
 			builder.Append (GetStatusDescription (StatusCode));
@@ -286,7 +310,9 @@ namespace Manos.Http {
 //			Headers.ContentLength = 0;
 
 			Headers.SetNormalizedHeader ("Server", HttpServer.ServerVersion);
-			Headers.SetNormalizedHeader ("Transfer-Encoding", "chunked");
+
+			if (Stream.Chunked)
+				Headers.SetNormalizedHeader ("Transfer-Encoding", "chunked");
 		}
 
 		private static string GetStatusDescription (int code)

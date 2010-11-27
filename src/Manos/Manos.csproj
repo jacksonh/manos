@@ -80,6 +80,7 @@
     <Compile Include="Manos.IO\ByteUtils.cs" />
     <Compile Include="Manos.IO\IOLoop.cs" />
     <Compile Include="Manos.IO\IOStream.cs" />
+    <Compile Include="Manos.IO\NopWriteOperation.cs" />
     <Compile Include="Manos.IO\WriteBytesOperation.cs" />
     <Compile Include="Manos.IO\WriteFileOperation.cs" />
     <Compile Include="Manos.IO\WriteFileOperation_NO_SENDFILE.cs" />
