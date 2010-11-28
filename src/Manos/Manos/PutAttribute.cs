@@ -36,7 +36,13 @@ namespace Manos {
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 	public class PutAttribute : HttpMethodAttribute {
-
+		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="patterns">
+		/// A <see cref="System.String[]"/>
+		/// </param>
 		public PutAttribute (params string [] patterns) : base (patterns)
 		{
 			Methods = new HttpMethod [] { HttpMethod.HTTP_PUT };

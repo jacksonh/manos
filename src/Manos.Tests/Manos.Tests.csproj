@@ -19,8 +19,14 @@
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Commandlineparameters>--profile=monocov</Commandlineparameters>
+    <Commandlineparameters>--profile=monocov </Commandlineparameters>
     <NoWarn>1591</NoWarn>
+    <Externalconsole>true</Externalconsole>
+    <EnvironmentVariables>
+      <EnvironmentVariables>
+        <Variable name="DYLD_FALLBACK_LIBRARY_PATH" value="/usr/local/lib" />
+      </EnvironmentVariables>
+    </EnvironmentVariables>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>

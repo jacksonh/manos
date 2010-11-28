@@ -36,11 +36,21 @@ namespace Manos {
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 	public class HeadAttribute : HttpMethodAttribute {
-
+		
+				
+		/// <summary>
+		/// Specifies that the decoraetd method should only be invoked when the http HEAD verb is used.
+		/// </summary>
 		public HeadAttribute ()
 		{
 		}
-
+		
+		/// <summary>
+		/// Specifies that the decorated method should be invoked whenever a HEAD request matches any of the patterns declared)
+		/// </summary>
+		/// <param name="patterns">
+		/// A <see cref="System.String[]"/>
+		/// </param>
 		public HeadAttribute (params string [] patterns) : base (patterns)
 		{
 			Methods = new HttpMethod [] { HttpMethod.HTTP_HEAD };
