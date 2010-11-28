@@ -139,21 +139,20 @@ corresponding data.  If no data is found, the user is given a 404 error.
     public void LinkInfo (Shorty app, IManosContext ctx, string id)
     {
         Cache.Get (id, (name, item) => {
-		LinkData info = item as LinkData;
+            LinkData info = item as LinkData;
 
-		if (info == null) {
-			ctx.Response.StatusCode = 404;
-			ctx.Response.End ();
-			return;
-		}
+            if (info == null) {
+                ctx.Response.StatusCode = 404;
+                return;
+            }
 
-		ctx.Response.End (@"<html>
-                       	<head><title>Welcome to Shorty</title></head>
-                         <body>
-                       	   <a href='{0}'>{0}</a> was clicked {1} times.
-                         </body>
-			</html>", info.Link, info.Clicks);
-	});
+            ctx.Response.End (@"<html>
+              <head><title>Welcome to Shorty</title></head>
+                <body>
+                  <a href='{0}'>{0}</a> was clicked {1} times.
+                </body>
+              </html>", info.Link, info.Clicks);
+        });
     }
 
 
@@ -170,15 +169,15 @@ System.Threading.Interlocked.Increment method.
     public void Redirector (Shorty app, IManosContext ctx, string id)
     {
         Cache.Get (id, (name, item) => {
-		LinkData info = item as LinkData;
-		if (info == null) {
-			ctx.Response.StatusCode = 404;
-			return;
-		}
+            LinkData info = item as LinkData;
+            if (info == null) {
+                ctx.Response.StatusCode = 404;
+                return;
+            }
 
-		++info.Clicks;
-		ctx.Response.Redirect (info.Link);
-	});
+            ++info.Clicks;
+            ctx.Response.Redirect (info.Link);
+        });
     }
 
 Adding a Redirection Cookie
