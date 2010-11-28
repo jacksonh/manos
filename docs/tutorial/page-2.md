@@ -124,8 +124,9 @@ cache and then redirect the user to their LinkInfo page.
     {
         string id = GenerateHash (link, 5);
 
-        Cache [id] = new LinkData (link);
-        ctx.Response.Redirect ("/r/" + id + "~");
+        Cache.Set (id, new LinkData (link), (name, item) => {
+            ctx.Response.Redirect ("/r/" + id + "~");
+        });
     }
 
 
