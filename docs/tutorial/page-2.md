@@ -58,7 +58,7 @@ in this release, we need to write the HTML ourself (or we could use another temp
     [Route ("/", "/Home", "/Index")]
     public void Index (IManosContext ctx)
     {
-        ctx.Response.WriteLine (@"<html>
+        ctx.Response.End (@"<html>
                                    <head><title>Welcome to Shorty</title></head>
                                    <body>
                                     <form method='POST' action='submit-link'>
@@ -145,7 +145,7 @@ corresponding data.  If no data is found, the user is given a 404 error.
 	    return;
 	}
 
-	ctx.Response.WriteLine (@"<html>
+	ctx.Response.End (@"<html>
                                    <head><title>Welcome to Shorty</title></head>
                                    <body>
                                     <a href='{0}'>{0}</a> was clicked {1} times.
@@ -173,12 +173,7 @@ System.Threading.Interlocked.Increment method.
             return;
         }
 
-        //
-        // Because multiple http transactions could be occuring at the
-        // same time, we need to make sure this shared data is incremented
-        // properly
-        //
-        Interlocked.Increment (ref info.Clicks);
+        ++info.Clicks;
 
         ctx.Response.Redirect (info.Link);
     }
