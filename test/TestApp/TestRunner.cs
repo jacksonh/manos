@@ -74,12 +74,14 @@ namespace Manos.Tests {
 
 		public void RunTest (string uri, object expected)
 		{
-			RunTestInternal (uri, uri, "GET", null, expected);
+			RunTestInternal (uri, uri, "GET", null, expected, 1, 0);
+			RunTestInternal (uri, uri, "GET", null, expected, 1, 1);
 		}
 
 		public void RunTest (string uri, string load_uri, object expected)
 		{
-			RunTestInternal (uri, load_uri, "GET", null, expected);
+			RunTestInternal (uri, load_uri, "GET", null, expected, 1, 0);
+			RunTestInternal (uri, load_uri, "GET", null, expected, 1, 1);
 		}
 
 		public void RunUploadTest (string uri, string file, object expected)
@@ -98,9 +100,9 @@ namespace Manos.Tests {
 			Console.WriteLine ("PASSED.");
 		}
 
-		public void RunTestInternal (string uri, string load_uri, string method, Dictionary<string,string> data, object expected, bool upload=false)
+		public void RunTestInternal (string uri, string load_uri, string method, Dictionary<string,string> data, object expected, int major_version, int minor_version, bool upload=false)
 		{
-			Console.Write ("RUNNING {0}...", uri);
+			Console.Write ("RUNNING {0} with HTTP VERSION {1}.{2} ...", uri, major_version, minor_version);
 
 			uri = MANOS_SERVER + uri;
 
@@ -111,6 +113,7 @@ namespace Manos.Tests {
 			var request = (HttpWebRequest) WebRequest.Create (uri);
 
 			request.Method = method;
+			request.ProtocolVersion = new Version (major_version, minor_version);
 
 			HttpWebResponse response = (HttpWebResponse) request.GetResponse ();
 		        if (response.StatusCode != HttpStatusCode.OK)
