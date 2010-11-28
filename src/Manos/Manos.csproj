@@ -148,6 +148,7 @@
     <Compile Include="Libev\UnloopType.cs" />
     <Compile Include="Libev\UnmanagedWatcherCallback.cs" />
     <Compile Include="Libev\Watcher.cs" />
+    <Compile Include="Manos.Http.Testing\MockHttpResponse.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

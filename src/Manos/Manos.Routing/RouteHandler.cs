@@ -102,20 +102,24 @@ namespace Manos.Routing {
 			get { return patterns; }
 			set {
 				if (value == null)
+				{
 					patterns = null;
-				else {
+				}
+				else 
+				{
 					patterns = new ObservableCollection<string> ();
-					
 					//
 					// TODO: ObservableCollection (IList) isn't implemented yet.
 					//
 					foreach (string s in value)
+					{
 						patterns.Add (s);
-					patterns.CollectionChanged += delegate(object sender, NotifyCollectionChangedEventArgs e) {
+					}
+					patterns.CollectionChanged += delegate(object sender, NotifyCollectionChangedEventArgs e) 
+					{
 						UpdateMatchOps ();
 					};
 				}
-				
 				UpdateMatchOps ();
 			}
 		}
