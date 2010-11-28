@@ -105,11 +105,9 @@ All Manos actions must have End called when they are finished.  End is not calle
 Building and Running Manos Apps
 -------------------------------
 
-To test out your application first you'll need to build it. You can build our app using the gmcs compiler.
+To test out your application first you'll need to build it. You can build the app with the manos build command.
 
-    gmcs -target:library -pkg:manos -out:Shorty.dll Shorty.cs StaticContentModule.cs
-
-Note that we are using the gmcs -pkg option. This will add a reference for Manos.dll.
+    manos -build
 
 To run this app all we'll use the manos -server command. This command loads the local compiled manos app
 and sets up hosting for it.
