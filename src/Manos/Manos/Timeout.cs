@@ -33,7 +33,7 @@ namespace Manos
 	/// 
 	/// Timeouts will never run before the specified TimeSpan has ellapsed.
 	/// 
-	/// Use the method <see cref="Manos.IO.IOLoop.AddTimeout"/> to register each Timeout.
+	/// Use the method <see cref="Manos.IO.IOLoop"/> "AddTimeout" method to register each Timeout.
 	/// </summary>
 	public class Timeout
 	{
@@ -77,9 +77,6 @@ namespace Manos
 		/// <summary>
 		/// Inidicates that the IOLoop should retain this timeout, because it will be run again at some point in the future. Infrastructure.
 		/// </summary>
-		/// <returns>
-		/// A <see cref="System.Boolean"/>
-		/// </returns>
 		public bool ShouldContinueToRepeat ()
 		{
 			return repeat.ShouldContinueToRepeat ();	

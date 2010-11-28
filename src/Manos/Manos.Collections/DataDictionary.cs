@@ -31,6 +31,9 @@ using System.Collections.Generic;
 
 namespace Manos.Collections
 {
+	/// <summary>
+	/// A Heirarcical dictionary. Data can live at the "root" level, or in child dictionaries.
+	/// </summary>
 	public class DataDictionary
 	{
 		private Dictionary<string,UnsafeString> dictionary;
@@ -41,11 +44,20 @@ namespace Manos.Collections
 			dictionary = new Dictionary<string, UnsafeString> ();
 		}
 		
+		/// <summary>
+		/// Get or set the value at the specified key.
+		/// </summary>
+		/// <param name="key">
+		/// A <see cref="System.String"/>
+		/// </param>
 		public string this [string key] {
 			get { return GetString (key); }
 			set { Set (key, value); }
 		}
 		
+		/// <summary>
+		/// The number of child dictionaries + the number or keys in the this dictionary.
+		/// </summary>
 		public int Count {
 			get {
 				int sum = 0;
@@ -55,6 +67,9 @@ namespace Manos.Collections
 			}
 		}
 		
+		/// <summary>
+		/// The child dictionaries.
+		/// </summary>
 		public IList<DataDictionary> Children {
 			get {
 				if (children == null)
@@ -63,6 +78,15 @@ namespace Manos.Collections
 			}
 		}
 		
+		/// <summary>
+		/// The "unsafe" version of the value that is stored in this dictionary, or "null" if no value is stored for the specified key.
+		/// </summary>
+		/// <param name="key">
+		/// A <see cref="System.String"/>
+		/// </param>
+		/// <returns>
+		/// A <see cref="UnsafeString"/>
+		/// </returns>
 		public UnsafeString Get (string key)
 		{
 			UnsafeString value = null;
@@ -76,6 +100,14 @@ namespace Manos.Collections
 			return value;
 		}
 		
+		/// <summary>
+		/// Get a "safe" string from the dictionary, or, if the key doesn't exist in the dictionary, null.
+		/// </summary>
+		/// <param name="key">
+		/// </param>
+		/// <returns>
+		/// The "safe" version of the value that is stored in the dictionary.
+		/// </returns>
 		public string GetString (string key)
 		{
 			UnsafeString str = Get (key);
@@ -86,17 +118,38 @@ namespace Manos.Collections
 			return str.SafeValue;
 		}
 	
+		/// <summary>
+		/// Remove all elements from this dictionary, and remove all references to child dictionaries.
+		/// </summary>
 		public void Clear ()
 		{
 			dictionary.Clear ();
 			children = null;
 		}	
 		
+		/// <summary>
+		/// Assign a value into this dictionary with the specified key.
+		/// </summary>
+		/// <param name="key">
+		/// A <see cref="System.String"/>
+		/// </param>
+		/// <param name="value">
+		/// A <see cref="System.String"/>
+		/// </param>
 		public void Set (string key, string value)
 		{
 			dictionary [key] = new UnsafeString (value);
 		}
 		
+		/// <summary>
+		/// Assign a value into this dictionary with the specified key.
+		/// </summary>
+		/// <param name="key">
+		/// A <see cref="System.String"/>
+		/// </param>
+		/// <param name="value">
+		/// A <see cref="UnsafeString"/>
+		/// </param>
 		public void Set (string key, UnsafeString value)
 		{
 			dictionary [key] = value;
