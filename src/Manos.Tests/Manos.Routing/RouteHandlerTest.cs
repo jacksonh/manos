@@ -43,7 +43,45 @@ namespace Manos.Routing.Tests
 	[TestFixture()]
 	public class RouteHandlerTest
 	{
-
+		
+		public class TestApp : ManosApp{
+			public TestApp()
+			{
+				this.Route("/TESTING",new TestModule());	
+			}
+			
+			public class TestModule : ManosModule{
+				
+				public void Route1(IManosContext ctx)
+				{
+					ctx.Response.Write("Route1");
+					ctx.Response.End();
+				}
+				
+				[Get("/Route2a/{age}/{name}")]
+				public void Route2a(TestApp app, IManosContext ctx, String name, int age)
+				{
+					ctx.Response.Write("(R2a) Hello '{0}', you are '{1}'",name, age);
+					ctx.Response.End();
+				}
+				
+				[Get("/Route2b/{name}/{age}")]
+				public void Route2b(TestApp app, IManosContext ctx, String name, int age)
+				{
+					ctx.Response.Write("(R2b) Hello '{0}', you are '{1}'",name, age);
+					ctx.Response.End();
+				}
+				
+				[Get("/Route3/(?<name>.+?)/(?<age>.+?)")]
+				public void Route3(TestApp app, IManosContext ctx, String name, int age)
+				{
+					ctx.Response.Write("'{0}', you are '{1}'",name, age);
+					ctx.Response.End();
+				}
+			}
+			
+		}
+		
 		private static void FakeAction (IManosContext ctx)
 		{
 		}
@@ -51,7 +89,60 @@ namespace Manos.Routing.Tests
 		private static void FakeAction2 (IManosContext ctx)
 		{
 		}
-
+		
+		[Test]
+		public void ImplicitRouteWorksWithModuleOnCustomApp()
+		{
+			var t = new TestApp();
+			var req = new MockHttpRequest(HttpMethod.HTTP_GET,"/TESTING/Route1");
+			var txn = new MockHttpTransaction(req);
+			t.HandleTransaction(t,txn);
+			
+			Assert.AreEqual("Route1",txn.ResponseString);
+			
+			req = new MockHttpRequest(HttpMethod.HTTP_GET, "/TESTING/Route1/");
+			txn = new MockHttpTransaction(req);
+			t.HandleTransaction(t,txn);
+			Assert.AreEqual("Route1",txn.ResponseString);
+		}
+		
+		[Test]
+		public void RouteWorksWithNamedParametersInModuleOnCustomApp()
+		{
+			var t = new TestApp();
+			var req = new MockHttpRequest(HttpMethod.HTTP_GET,"/TESTING/Route2a/29/Andrew");
+			var txn = new MockHttpTransaction(req);
+			t.HandleTransaction(t,txn);
+			
+			Assert.AreEqual("(R2a) Hello 'Andrew', you are '29'",txn.ResponseString);
+			
+			req = new MockHttpRequest(HttpMethod.HTTP_GET,"/TESTING/Route2b/Andrew/29");
+		    txn = new MockHttpTransaction(req);
+			t.HandleTransaction(t,txn);
+			
+			Assert.AreEqual("(R2b) Hello 'Andrew', you are '29'",txn.ResponseString);
+			
+		}
+		
+		[Test]
+		public void RouteWorksWithRegexParamsInModuleOnCustomApp()
+		{
+			var t = new TestApp();
+			var req = new MockHttpRequest(HttpMethod.HTTP_GET,"/TESTING/Route3/Andrew/29");
+			var txn = new MockHttpTransaction(req);
+			t.HandleTransaction(t,txn);
+			
+			Assert.AreEqual("'Andrew', you are '29'",txn.ResponseString);
+			
+			req = new MockHttpRequest(HttpMethod.HTTP_GET,"/TESTING/Route3/Andrew/29/");
+		    txn = new MockHttpTransaction(req);
+			t.HandleTransaction(t,txn);
+			
+			Assert.AreEqual("'Andrew', you are '29'",txn.ResponseString);
+			
+		}
+		
+		
 		[Test()]
 		public void TestStrMatch ()
 		{

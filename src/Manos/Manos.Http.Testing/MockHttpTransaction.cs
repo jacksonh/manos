@@ -42,10 +42,15 @@ namespace Manos.Http.Testing
 
 			Request = request;
 
-			// TODO
-			// Response = new MockHttpResponse (this);
+			Response = new MockHttpResponse (this);
 		}
-
+		
+		public String ResponseString{
+			get{
+				return (Response as MockHttpResponse).ResponseString();
+			}
+		}
+		
 		// TODO: I guess we need a mock server?
 		public HttpServer Server {
 			get { return null; }
