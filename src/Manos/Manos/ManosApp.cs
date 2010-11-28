@@ -46,6 +46,8 @@ namespace Manos {
 
 		public void HandleTransaction (ManosApp app, IHttpTransaction con)
 		{
+			bool end = false;
+
 			if (con == null)
 				throw new ArgumentNullException ("con");
 
@@ -69,7 +71,7 @@ namespace Manos {
 			con.Response.StatusCode = 200;
 
 			OnPostProcessTarget (ctx, handler);
-			
+
 			try {
 				handler.Invoke (app, new ManosContext (con));
 			} catch (Exception e) {
@@ -82,12 +84,17 @@ namespace Manos {
 				// on HttpTransaction, along with an UnhandledException
 				// method/event on ManosModule.
 				//
-
-				con.Response.End ();
+				end = true;
 			}
+
+			if (con.Response.StatusCode == 404)
+				con.Response.End ();
 
 		cleanup:
 			OnPostProcessRequest (this, con);
+
+			if (end)
+				con.Response.End ();
 		}
 
 		public void OnPreProcessRequest (ManosApp app, IHttpTransaction transaction)
