@@ -35,11 +35,20 @@ namespace Manos {
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 	public class TraceAttribute : HttpMethodAttribute {
-
+		
+		/// <summary>
+		/// Specifies that the decoraetd method should only be invoked when the http TRACE verb is used.
+		/// </summary>
 		public TraceAttribute ()
 		{
 		}
-
+		
+		/// <summary>
+		/// Specifies that the decorated method should be invoked whenever a TRACE request matches any of the patterns declared)
+		/// </summary>
+		/// <param name="patterns">
+		/// A <see cref="System.String[]"/>
+		/// </param>
 		public TraceAttribute (params string [] patterns) : base (patterns)
 		{
 			Methods = new HttpMethod [] { HttpMethod.HTTP_TRACE };

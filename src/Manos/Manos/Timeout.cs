@@ -27,6 +27,14 @@ using System;
 
 namespace Manos
 {
+	/// <summary>
+	/// Provides a mechanism for things to happen periodically within a ManosApp. 
+	/// Timeouts are gauranteed to happen at some moment on or after the TimeSpan specified has ellapsed.
+	/// 
+	/// Timeouts will never run before the specified TimeSpan has ellapsed.
+	/// 
+	/// Use the method <see cref="Manos.IO.IOLoop.AddTimeout"/> to register each Timeout.
+	/// </summary>
 	public class Timeout
 	{
 		internal TimeSpan begin;
@@ -48,6 +56,12 @@ namespace Manos
 			this.callback = callback;
 		}
 		
+		/// <summary>
+		/// Causes the action specified in the constructor to be executed. Infrastructure.
+		/// </summary>
+		/// <param name="app">
+		/// A <see cref="ManosApp"/>
+		/// </param>
 		public void Run (ManosApp app)
 		{
 			try {
@@ -60,6 +74,12 @@ namespace Manos
 			repeat.RepeatPerformed ();
 		}
 		
+		/// <summary>
+		/// Inidicates that the IOLoop should retain this timeout, because it will be run again at some point in the future. Infrastructure.
+		/// </summary>
+		/// <returns>
+		/// A <see cref="System.Boolean"/>
+		/// </returns>
 		public bool ShouldContinueToRepeat ()
 		{
 			return repeat.ShouldContinueToRepeat ();	

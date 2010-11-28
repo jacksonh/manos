@@ -31,11 +31,20 @@ namespace Manos {
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 	public class RouteAttribute : HttpMethodAttribute {
-
+		
+		/// <summary>
+		/// Specifies that the decoraetd method should respond to any request that it matches.
+		/// </summary>
 		public RouteAttribute ()
 		{
 		}
-
+		
+		/// <summary>
+		/// Specifies that the decorated method should be invoked whenever a request matches any of the patterns declared)
+		/// </summary>
+		/// <param name="patterns">
+		/// A <see cref="System.String[]"/>
+		/// </param>
 		public RouteAttribute (params string [] patterns) : base (patterns)
 		{
 			Methods = HttpMethods.RouteMethods;

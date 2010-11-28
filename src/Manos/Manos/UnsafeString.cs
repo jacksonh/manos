@@ -49,10 +49,16 @@ namespace Manos
 			this.unsafe_value = str;
 		}
 		
+		/// <summary>
+		/// The original, non-escaped string.
+		/// </summary>
 		public string UnsafeValue {
 			get { return unsafe_value; }	
 		}
 		
+		/// <summary>
+		/// The "safer" version of this string, has some common "unsafe" characters replaced with their HTML Entity counterparts.
+		/// </summary>
 		public string SafeValue {
 			get {
 				if (safe_value == null)
@@ -61,6 +67,9 @@ namespace Manos
 			}
 		}
 		
+		/// <summary>
+		/// Indicates true if the original string value contained "unsafe" content.
+		/// </summary>
 		public bool HasUnsafefData {
 			get {
 				if (safe_value == null)
@@ -69,11 +78,26 @@ namespace Manos
 			}
 		}
 		
+		/// <summary>
+		/// Returns a "safe" version of this string.
+		/// </summary>
+		/// <returns>
+		/// A <see cref="System.String"/>
+		/// </returns>
 		public override string ToString ()
 		{
 			return SafeValue;
 		}
 		
+		/// <summary>
+		/// Implicitly constructs an unsafe string object from a <see cref="System.String"/>.
+		/// </summary>
+		/// <param name="input">
+		/// A <see cref="UnsafeString"/>
+		/// </param>
+		/// <returns>
+		/// A <see cref="System.String"/>
+		/// </returns>
 		public static implicit operator string (UnsafeString input)
 		{
 			if (input == null)
@@ -81,6 +105,15 @@ namespace Manos
 			return input.ToString ();	
 		}
 		
+		/// <summary>
+		/// Substitute common characters that could cause security vulnerabilities with their HTML Entity counterparts. 
+		/// </summary>
+		/// <param name="input">
+		/// The string that has potentially unsafe values.
+		/// </param>
+		/// <returns>
+		/// The input with common "unsafe" characters replaced with their "safe" HTML Entity counterparts.
+		/// </returns>
 		public static string Escape (string input)
 		{
 			bool dummy;
@@ -88,6 +121,18 @@ namespace Manos
 			return Escape (input, out dummy);
 		}
 		
+		/// <summary>
+		/// Substitute common characters that could cause security vulnerabilities with their HTML Entity counterparts. 
+		/// </summary>
+		/// <param name="input">
+		/// The string that has potentially unsafe values.
+		/// </param>
+		/// <param name="has_unsafe_data">
+		/// True if any substitutions take place, false otherwise.
+		/// </param>
+		/// <returns>
+		/// The input with common "unsafe" characters replaced with their "safe" HTML Entity counterparts.
+		/// </returns>
 		public static string Escape (string input, out bool has_unsafe_data)
 		{
 			StringBuilder builder = new StringBuilder ();
