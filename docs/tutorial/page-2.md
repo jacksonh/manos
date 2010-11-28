@@ -160,11 +160,7 @@ corresponding data.  If no data is found, the user is given a 404 error.
 Handling the Redirection
 ------------------------
 
-The only complicated thing in our redirection method is the way that we increment the
-Clicks field. Manos runs HTTP transactions in parallel, so there is a chance
-that another user is redirecting at the exact same time as us. To make sure our
-Clicks field is incremented properly, we can use the
-System.Threading.Interlocked.Increment method.
+When a user goes to the generated link, we want to redirect them to the proper link.
 
     [Route ("/r/{id}")]
     public void Redirector (Shorty app, IManosContext ctx, string id)
