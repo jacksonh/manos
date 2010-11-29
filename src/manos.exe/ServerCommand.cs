@@ -31,9 +31,10 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Manos;
-using Manos.Server;
 
+#if !DISABLE_POSIX
 using Mono.Unix.Native;
+#endif
 
 namespace Manos.Tool
 {
@@ -181,8 +182,12 @@ namespace Manos.Tool
 			AppHost.AddTimeout (TimeSpan.Zero, RepeatBehavior.Single, user, DoSetUser);
 		}
 
+
 		private void DoSetUser (ManosApp app, object user_data)
 		{
+#if DISABLE_POSIX
+			throw new InvalidOperationException ("Attempt to set user on a non-posix build.");
+#else
 			string user = user_data as string;
 
 			Console.WriteLine ("setting user to: '{0}'", user);
@@ -203,6 +208,9 @@ namespace Manos.Tool
 				AppHost.Stop ();
 				throw new InvalidOperationException (String.Format ("Unable to switch to user '{0}' error: '{1}'.", user, error));
 			}
+			
+#endif
 		}
+
 	}
 }

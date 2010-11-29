@@ -25,11 +25,17 @@
 
 using System;
 
-using Manos.Server;
+using Manos.Http;
 using Manos.Routing;
 
 namespace Manos
 {
+	/// <summary>
+	/// ManosPipe provides a mechanism to intercept calls before or after the standard Manos Routing has taking place.
+	/// (For example, Gzip compression module could compress content post process)
+	/// </summary>
+	/// <remarks>
+	/// This is similar in concept to the HttpModule in the ASP.Net stack.</remarks>
 	public class ManosPipe : IManosPipe
 	{
 		public ManosPipe ()

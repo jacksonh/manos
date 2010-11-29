@@ -20,6 +20,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <GenerateDocumentation>true</GenerateDocumentation>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -28,14 +30,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <GenerateDocumentation>true</GenerateDocumentation>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="Mono.Posix" />
-    <Reference Include="libev-sharp, Version=0.0.1.0, Culture=neutral, PublicKeyToken=373d67c17ca6cffc">
+    <Reference Include="Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\opt\mono\lib\libev-sharp\libev-sharp.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Library\Frameworks\Mono.framework\Versions\Current\lib\mono\2.0\Mono.Posix.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -47,34 +50,49 @@
     <Compile Include="Manos\ManosApp.cs" />
     <Compile Include="Manos\ManosContext.cs" />
     <Compile Include="Manos\ManosModule.cs" />
+    <Compile Include="Manos\ManosMimeTypes.cs" />
     <Compile Include="Manos\OptionsAttribute.cs" />
     <Compile Include="Manos\PostAttribute.cs" />
     <Compile Include="Manos\PutAttribute.cs" />
     <Compile Include="Manos\TraceAttribute.cs" />
+    <Compile Include="Manos.Http\HState.cs" />
+    <Compile Include="Manos.Http\HttpCallback.cs" />
+    <Compile Include="Manos.Http\HttpCookie.cs" />
+    <Compile Include="Manos.Http\HttpResponseStream.cs" />
+    <Compile Include="Manos.Http\HttpDataCallback.cs" />
+    <Compile Include="Manos.Http\HttpErrorCallback.cs" />
+    <Compile Include="Manos.Http\HttpFormDataHandler.cs" />
+    <Compile Include="Manos.Http\HttpMethod.cs" />
+    <Compile Include="Manos.Http\HttpMultiPartFormDataHandler.cs" />
+    <Compile Include="Manos.Http\HttpParser.cs" />
+    <Compile Include="Manos.Http\IHttpBodyHandler.cs" />
+    <Compile Include="Manos.Http\ParserSettings.cs" />
+    <Compile Include="Manos.Http\ParserType.cs" />
+    <Compile Include="Manos.Http\State.cs" />
+    <Compile Include="Manos.Http\HttpException.cs" />
+    <Compile Include="Manos.Http\HttpHeaders.cs" />
+    <Compile Include="Manos.Http\HttpRequest.cs" />
+    <Compile Include="Manos.Http\HttpResponse.cs" />
+    <Compile Include="Manos.Http\HttpServer.cs" />
+    <Compile Include="Manos.Http\HttpTransaction.cs" />
+    <Compile Include="Manos.Http\HttpUtility.cs" />
+    <Compile Include="Manos.Http\IHttpRequest.cs" />
+    <Compile Include="Manos.Http\IHttpResponse.cs" />
+    <Compile Include="Manos.Http\IHttpTransaction.cs" />
+    <Compile Include="Manos.Http\UploadedFile.cs" />
     <Compile Include="Manos.Routing\RouteHandler.cs" />
-    <Compile Include="Manos.Server\ByteUtils.cs" />
-    <Compile Include="Manos.Server\HttpException.cs" />
-    <Compile Include="Manos.Server\HttpHeaders.cs" />
-    <Compile Include="Manos.Server\HttpRequest.cs" />
-    <Compile Include="Manos.Server\HttpResponse.cs" />
-    <Compile Include="Manos.Server\HttpServer.cs" />
-    <Compile Include="Manos.Server\HttpTransaction.cs" />
-    <Compile Include="Manos.Server\HttpUtility.cs" />
-    <Compile Include="Manos.Server\IHttpRequest.cs" />
-    <Compile Include="Manos.Server\IHttpResponse.cs" />
-    <Compile Include="Manos.Server\IHttpTransaction.cs" />
-    <Compile Include="Manos.Server\IOLoop.cs" />
-    <Compile Include="Manos.Server\IOStream.cs" />
-    <Compile Include="Manos.Server\MultipartFormData.cs" />
-    <Compile Include="Manos.Server\UploadedFile.cs" />
-    <Compile Include="Manos.Server\UriParser.cs" />
+    <Compile Include="Manos.IO\ByteUtils.cs" />
+    <Compile Include="Manos.IO\IOLoop.cs" />
+    <Compile Include="Manos.IO\IOStream.cs" />
+    <Compile Include="Manos.IO\NopWriteOperation.cs" />
+    <Compile Include="Manos.IO\WriteBytesOperation.cs" />
+    <Compile Include="Manos.IO\WriteFileOperation.cs" />
+    <Compile Include="Manos.IO\WriteFileOperation_NO_SENDFILE.cs" />
+    <Compile Include="Manos.IO\IWriteOperation.cs" />
     <Compile Include="Manos\IManosContext.cs" />
     <Compile Include="Manos.Testing\MockManosModule.cs" />
-    <Compile Include="Manos.Server.Testing\MockHttpTransaction.cs" />
-    <Compile Include="Manos.Server.Testing\MockHttpRequest.cs" />
-    <Compile Include="Manos.Server\WriteBytesOperation.cs" />
-    <Compile Include="Manos.Server\WriteFileOperation.cs" />
-    <Compile Include="Manos.Server\IWriteOperation.cs" />
+    <Compile Include="Manos.Http.Testing\MockHttpTransaction.cs" />
+    <Compile Include="Manos.Http.Testing\MockHttpRequest.cs" />
     <Compile Include="Manos.Routing\IMatchOperation.cs" />
     <Compile Include="Manos.Routing\RegexMatchOperation.cs" />
     <Compile Include="Manos.Routing\MatchOperationFactory.cs" />
@@ -87,8 +105,10 @@
     <Compile Include="Manos\InfiniteRepeatBehavior.cs" />
     <Compile Include="Manos\RepeatBehavior.cs" />
     <Compile Include="Manos\TimeoutCallback.cs" />
-    <Compile Include="Manos.Server\Timeout.cs" />
+    <Compile Include="Manos\Timeout.cs" />
     <Compile Include="Manos\AppHost.cs" />
+    <Compile Include="Manos.Caching\CacheItemCallback.cs" />
+    <Compile Include="Manos.Caching\CacheOpCallback.cs" />
     <Compile Include="Manos.Caching\IManosCache.cs" />
     <Compile Include="Manos.Caching\ManosInProcCache.cs" />
     <Compile Include="Manos.Testing\ManosContextStub.cs" />
@@ -103,12 +123,10 @@
     <Compile Include="Manos.Routing\SimpleMatchOperation.cs" />
     <Compile Include="Manos\IManosPipe.cs" />
     <Compile Include="Manos\ManosPipe.cs" />
-    <Compile Include="Manos.Server\RequestDataDictionary.cs" />
     <Compile Include="Manos.Collections\DataDictionary.cs" />
+    <Compile Include="Manos.Collections\ByteBuffer.cs" />
     <Compile Include="Manos\RouteAttribute.cs" />
     <Compile Include="Manos\UnsafeString.cs" />
-    <Compile Include="Manos.Server\HttpCookie.cs" />
-    <Compile Include="Manos.Server\HttpResponseStream.cs" />
     <Compile Include="Manos.Routing\HtmlFormDataTypeConverter.cs" />
     <Compile Include="Manos.Template\TemplateEnvironment.cs" />
     <Compile Include="Manos.Template\TemplateLibrary.cs" />
@@ -120,6 +138,7 @@
     <Compile Include="Manos.Template\ITemplateCodegen.cs" />
     <Compile Include="Manos.Template\Expression.cs" />
     <Compile Include="Manos.Template\TemplateFactory.cs" />
+<<<<<<< HEAD
     <Compile Include="Manos.Logging\IManosLogger.cs" />
     <Compile Include="Manos.Logging\AbstractManosLogger.cs" />
     <Compile Include="Manos.Logging\ConsoleManosLogger.cs" />
@@ -139,6 +158,22 @@
     <Folder Include="Manos.Logging\" />
   </ItemGroup>
   <ItemGroup>
+=======
+    <Compile Include="Libev\CheckWatcher.cs" />
+    <Compile Include="Libev\EventTypes.cs" />
+    <Compile Include="Libev\IOWatcher.cs" />
+    <Compile Include="Libev\Loop.cs" />
+    <Compile Include="Libev\LoopType.cs" />
+    <Compile Include="Libev\PrepareWatcher.cs" />
+    <Compile Include="Libev\TimerWatcher.cs" />
+    <Compile Include="Libev\UnloopType.cs" />
+    <Compile Include="Libev\UnmanagedWatcherCallback.cs" />
+    <Compile Include="Libev\Watcher.cs" />
+    <Compile Include="Manos.Http.Testing\MockHttpResponse.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+>>>>>>> master
     <None Include="Manos.Template\codegen.cs" />
     <None Include="Manos.Templates.Testing\ManosTemplateStub.cs" />
   </ItemGroup>

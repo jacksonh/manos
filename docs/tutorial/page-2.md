@@ -58,7 +58,7 @@ in this release, we need to write the HTML ourself (or we could use another temp
     [Route ("/", "/Home", "/Index")]
     public void Index (IManosContext ctx)
     {
-        ctx.Response.WriteLine (@"<html>
+        ctx.Response.End (@"<html>
                                    <head><title>Welcome to Shorty</title></head>
                                    <body>
                                     <form method='POST' action='submit-link'>
@@ -124,8 +124,9 @@ cache and then redirect the user to their LinkInfo page.
     {
         string id = GenerateHash (link, 5);
 
-        Cache [id] = new LinkData (link);
-        ctx.Response.Redirect ("/r/" + id + "~");
+        Cache.Set (id, new LinkData (link), (name, item) => {
+            ctx.Response.Redirect ("/r/" + id + "~");
+        });
     }
 
 
@@ -138,49 +139,42 @@ corresponding data.  If no data is found, the user is given a 404 error.
     [Route ("/r/{id}~")]
     public void LinkInfo (Shorty app, IManosContext ctx, string id)
     {
-        LinkData info = Cache [id] as LinkData;
+        Cache.Get (id, (name, item) => {
+            LinkData info = item as LinkData;
 
-        if (info == null) {
-	    ctx.Response.StatusCode = 404;
-	    return;
-	}
+            if (info == null) {
+                ctx.Response.StatusCode = 404;
+                return;
+            }
 
-	ctx.Response.WriteLine (@"<html>
-                                   <head><title>Welcome to Shorty</title></head>
-                                   <body>
-                                    <a href='{0}'>{0}</a> was clicked {1} times.
-                                   </body>
-                                  </html>", info.Link, info.Clicks);
+            ctx.Response.End (@"<html>
+              <head><title>Welcome to Shorty</title></head>
+                <body>
+                  <a href='{0}'>{0}</a> was clicked {1} times.
+                </body>
+              </html>", info.Link, info.Clicks);
+        });
     }
 
 
 Handling the Redirection
 ------------------------
 
-The only complicated thing in our redirection method is the way that we increment the
-Clicks field. Manos runs HTTP transactions in parallel, so there is a chance
-that another user is redirecting at the exact same time as us. To make sure our
-Clicks field is incremented properly, we can use the
-System.Threading.Interlocked.Increment method.
+When a user goes to the generated link, we want to redirect them to the proper link.
 
     [Route ("/r/{id}")]
     public void Redirector (Shorty app, IManosContext ctx, string id)
     {
-        LinkData info = Cache [id] as LinkData;
+        Cache.Get (id, (name, item) => {
+            LinkData info = item as LinkData;
+            if (info == null) {
+                ctx.Response.StatusCode = 404;
+                return;
+            }
 
-        if (info == null) {
-            ctx.Response.StatusCode = 404;
-            return;
-        }
-
-        //
-        // Because multiple http transactions could be occuring at the
-        // same time, we need to make sure this shared data is incremented
-        // properly
-        //
-        Interlocked.Increment (ref info.Clicks);
-
-        ctx.Response.Redirect (info.Link);
+            ++info.Clicks;
+            ctx.Response.Redirect (info.Link);
+        });
     }
 
 Adding a Redirection Cookie
@@ -216,14 +210,8 @@ LinkInfo at the top of our Redirector method.
         return;
     }
 
+---
 
-That's it!
-----------
-Manos still has a long ways to go, but hopefully this tutorial shows off some
-of its potential. Future versions of Manos will be shaped by your comments and
-suggestions, so please don't be afraid to offer advice.
-
-The complete source code for this tutorial is available in the
-examples/Shorty directory.
+Continue the tutorial in [part three](./3).
 
 

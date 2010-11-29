@@ -29,7 +29,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Manos;
-using Manos.Server;
+using Manos.Http;
 using MarkdownSharp;
 
 
@@ -72,6 +72,7 @@ namespace Manos.Tool {
 
 			if (!manuals.TryGetValue (manual, out md_page)) {
 				ctx.Response.StatusCode = 404;
+				ctx.Response.End ();
 				return;
 			}
 
@@ -162,6 +163,8 @@ namespace Manos.Tool {
 					    </div>
 					   </body>
 					  </html>");
+
+			response.End ();
 		}
 
 		private void WriteNavigation (IHttpResponse response)

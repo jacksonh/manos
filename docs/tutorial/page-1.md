@@ -83,7 +83,7 @@ Hello, Manos World
 Routes don't necessarily have to go to modules, we can also route them to actions.  An action is any function that accepts a single IManosContext
 parameter.  So lets create our first action, add this line right above the static content route.
 
-    Get ("/", ctx => ctx.Response.Write ("Hello, Manos World!"));
+    Get ("/", ctx => ctx.Response.End ("Hello, Manos World!"));
 
 What we've done here is created a route using the "/" path.
 
@@ -94,14 +94,20 @@ Routes can be created with simple paths like this or we could create more comple
 routes with regular expressions. Something like Get ("/d.d", ...) would route "/dad" and "/dfd". There is also support for simple pattern matching
 on routes, so things like Get ("/Article/{name}", ...).
 
+Note that we called a method named End to write our data.  End is overloaded with all the same arguments as Write so you don't have to do things like:
+
+    response.Write (<some data>);
+    response.End ();
+
+All Manos actions must have End called when they are finished.  End is not called automatically because many scenarios require the Stream to live longer than the action method.  Think of Actions as a message from the browser saying 'please send me some data', not necessarily a request and response lifecycle.  In comet style applications the response will live much longer than the Action method.
+
+
 Building and Running Manos Apps
 -------------------------------
 
-To test out your application first you'll need to build it. You can build our app using the gmcs compiler.
+To test out your application first you'll need to build it. You can build the app with the manos build command.
 
-    gmcs -target:library -pkg:manos -out:Shorty.dll Shorty.cs StaticContentModule.cs
-
-Note that we are using the gmcs -pkg option. This will add a reference for Manos.dll.
+    manos -build
 
 To run this app all we'll use the manos -server command. This command loads the local compiled manos app
 and sets up hosting for it.
@@ -110,11 +116,8 @@ and sets up hosting for it.
 
 Once the application is running you can check it out by navigating your browser to http://localhost:8080/
 
+---
 
-Moving On
----------
-
-In part two of this tutorial we'll start building our Shorty application.
-
+Continue the tutorial in [part two](./2).
 
 

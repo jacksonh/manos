@@ -25,9 +25,11 @@
 
 
 using Manos;
-using Manos.Server;
+using Manos.IO;
+using Manos.Http;
 
 using System;
+using System.Linq;
 using System.Text;
 
 
@@ -37,17 +39,17 @@ namespace TestApp {
 
 		public void EchoLocalPath (IManosContext ctx)
 		{
-			ctx.Response.Write (ctx.Request.LocalPath);
+			ctx.Response.End (ctx.Request.LocalPath);
 		}
 
 		public void EchoInt (IManosContext ctx, int the_int)
 		{
-			ctx.Response.Write (the_int.ToString ());
+			ctx.Response.End (the_int.ToString ());
 		}
 
 		public void EchoString (IManosContext ctx, string the_string)
 		{
-			ctx.Response.Write (the_string);
+			ctx.Response.End (the_string);
 		}
 
 		public void ReverseString (IManosContext ctx, string the_string)
@@ -63,6 +65,8 @@ namespace TestApp {
 			for (int i = data.Length; i >= 0; --i) {
 				ctx.Response.Stream.Write (data, i, 1);
 			}
+
+			ctx.Response.End ();
 		}
 
 		public void MultiplyString (IManosContext ctx, string the_string, int amount)
@@ -79,19 +83,25 @@ namespace TestApp {
 			for (int i = 0; i < amount; i++) {
 				ctx.Response.Write (the_string);
 			}
+
+			ctx.Response.End ();
 		}
 
 		public void SendFile (IManosContext ctx, string name)
 		{
 			ctx.Response.SendFile (name);
+
+			ctx.Response.End ();
 		}
 
 		public void UploadFile (IManosContext ctx, string name)
 		{
-			UploadedFile file = ctx.Request.Files [name];
-			byte [] data = file.GetData ();
+			UploadedFile file = ctx.Request.Files.Values.First ();
+			byte [] data = new byte [file.Contents.Length];
 
-			ctx.Response.Write (data);
+			file.Contents.Read (data, 0, data.Length);
+
+			ctx.Response.End (data);
 		}
 	}
 }

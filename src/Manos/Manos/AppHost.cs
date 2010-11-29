@@ -29,12 +29,16 @@ using System.Net;
 using System.Collections;
 using System.Collections.Generic;
 
-using Manos.Server;
+using Manos.IO;
+using Manos.Http;
 using Manos.Caching;
 
 
 namespace Manos
 {
+	/// <summary>
+	/// The app runner. This is where the magic happens.
+	/// </summary>
 	public static class AppHost
 	{
 		private static ManosApp app;
@@ -44,8 +48,9 @@ namespace Manos
 		private static IPAddress ip_address = IPAddress.Parse ("0.0.0.0");
 		
 		private static HttpServer server;
-		private static IManosCache cache = new ManosInProcCache ();
-		private static List<IManosPipe> pipes = new List<IManosPipe> ();
+		private static IManosCache cache;
+		private static List<IManosPipe> pipes;
+
 		private static IOLoop ioloop = IOLoop.Instance;
 		
 		public static ManosApp App {
@@ -57,7 +62,11 @@ namespace Manos
 		}
 		
 		public static IManosCache Cache {
-			get { return cache; }	
+			get {
+				if (cache == null)
+					cache = new ManosInProcCache ();
+				return cache;
+			}
 		}
 		
 		public static IOLoop IOLoop {
@@ -65,7 +74,7 @@ namespace Manos
 		}
 		
 		public static IList<IManosPipe> Pipes {
-			get { return pipes; }	
+			get { return pipes; }
 		}
 		
 		public static IPAddress IPAddress {
@@ -117,7 +126,14 @@ namespace Manos
 		{
 			app.HandleTransaction (app, con);
 		}
-		
+
+		public static void AddPipe (IManosPipe pipe)
+		{
+			if (pipes == null)
+				pipes = new List<IManosPipe> ();
+			pipes.Add (pipe);
+		}
+
 		public static void AddTimeout (TimeSpan timespan, IRepeatBehavior repeat, object data, TimeoutCallback callback)
 		{
 			AddTimeout (timespan, timespan, repeat, data, callback);

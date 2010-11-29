@@ -32,14 +32,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-using Manos.Server;
+using Manos.Http;
 using Manos.Routing;
 using Manos.Caching;
 using Manos.Templates;
 
 
 namespace Manos {
-
+	
+	/// <summary>
+	/// A pre-packaged set of routes/actions that can be registered in the constructor of a ManoApp-derived class.
+	/// </summary>
 	public class ManosModule {
 
 		private RouteHandler routes = new RouteHandler ();
@@ -59,7 +62,7 @@ namespace Manos {
 			}
 		}
 		
-		private RouteHandler AddRouteHandler (ManosModule module, string [] patterns, string [] methods)
+		private RouteHandler AddRouteHandler (ManosModule module, string [] patterns, HttpMethod [] methods)
 		{
 			if (module == null)
 				throw new ArgumentNullException ("module");
@@ -74,12 +77,12 @@ namespace Manos {
 			return module.Routes;
 		}
 
-		private RouteHandler AddRouteHandler (ManosAction action, string [] patterns, string [] methods)
+		private RouteHandler AddRouteHandler (ManosAction action, string [] patterns, HttpMethod [] methods)
 		{
 			return AddRouteHandler (new ActionTarget (action), patterns, methods);
 		}
 		
-		private RouteHandler AddRouteHandler (IManosTarget target, string [] patterns, string [] methods)
+		private RouteHandler AddRouteHandler (IManosTarget target, string [] patterns, HttpMethod [] methods)
 		{
 			// TODO: Need to decide if this is a good or bad idea
 			// RemoveImplicitHandlers (action);
@@ -96,7 +99,7 @@ namespace Manos {
 			return res;
 		}
 
-		private RouteHandler AddImplicitRouteHandler (ManosModule module, string [] patterns, string [] methods)
+		private RouteHandler AddImplicitRouteHandler (ManosModule module, string [] patterns, HttpMethod [] methods)
 		{
 			module.Routes.IsImplicit = true;
 			module.Routes.Patterns = patterns;
@@ -105,7 +108,7 @@ namespace Manos {
 			return module.Routes;
 		}
 
-		private RouteHandler AddImplicitRouteHandler (IManosTarget target, string [] patterns, string [] methods)
+		private RouteHandler AddImplicitRouteHandler (IManosTarget target, string [] patterns, HttpMethod [] methods)
 		{
 			RouteHandler res = new RouteHandler (patterns, methods, target) {
 				IsImplicit = true,
@@ -114,7 +117,7 @@ namespace Manos {
 			Routes.Children.Add (res);
 			return res;
 		}
-
+		
 		public RouteHandler Route (string pattern, ManosModule module)
 		{
 			return AddRouteHandler (module, new string [] { pattern }, HttpMethods.RouteMethods);
@@ -307,7 +310,7 @@ namespace Manos {
 
 		public static void AddPipe (ManosPipe pipe)
 		{
-			AppHost.Pipes.Add (pipe);
+			AppHost.AddPipe (pipe);
 		}
 
 		public static void RenderTemplate (ManosContext ctx, string template, object data)

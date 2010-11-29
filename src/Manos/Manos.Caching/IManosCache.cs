@@ -29,19 +29,19 @@ namespace Manos.Caching
 {
 	public interface IManosCache
 	{
-		object Get (string key);
+		void Get (string key, CacheItemCallback callback);
 		
 		void Set (string key, object obj);
 		void Set (string key, object value, TimeSpan expires);
+
+		void Set (string key, object obj, CacheItemCallback callback);
+		void Set (string key, object value, TimeSpan expires, CacheItemCallback callback);
 		
 		void Remove (string key);
-		
-		object this [string key] {
-			get;
-			set;
-		}
+		void Remove (string key, CacheItemCallback callback);
 		
 		void Clear ();
+		void Clear (CacheOpCallback callback);
 	}
 }
 

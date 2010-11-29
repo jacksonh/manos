@@ -27,11 +27,17 @@
 
 using System;
 
-using Manos.Server;
+using Manos.Http;
 using Manos.Routing;
 
 namespace Manos {
-
+	
+	/// <summary>
+	/// The entry point for your manos app. Derive from this class one time in your manos app and it will get instantiated when the runtime executes.
+	/// </summary>
+	/// <remarks>
+	/// This is similar in concept to the HttpApplication in the ASP.Net stack.
+	/// </remarks>
 	public class ManosApp : ManosModule, IManosPipe {
 		IManosLogger Log;
 
@@ -42,6 +48,8 @@ namespace Manos {
 
 		public void HandleTransaction (ManosApp app, IHttpTransaction con)
 		{
+			bool end = false;
+
 			if (con == null)
 				throw new ArgumentNullException ("con");
 
@@ -56,13 +64,16 @@ namespace Manos {
 				handler = Routes.Find (con.Request);
 			
 			if (handler == null) {
+				Console.WriteLine ("no handler found for: '{0}'", ctx.Request.LocalPath);
 				con.Response.StatusCode = 404;
-				con.Response.Finish ();
+				con.Response.End ();
 				return;
 			}
 
+			con.Response.StatusCode = 200;
+
 			OnPostProcessTarget (ctx, handler);
-			
+
 			try {
 				handler.Invoke (app, new ManosContext (con));
 			} catch (Exception e) {
@@ -75,16 +86,24 @@ namespace Manos {
 				// on HttpTransaction, along with an UnhandledException
 				// method/event on ManosModule.
 				//
+				end = true;
 			}
 
+			if (con.Response.StatusCode == 404)
+				con.Response.End ();
+
 		cleanup:
-			con.Response.Finish ();
-			
 			OnPostProcessRequest (this, con);
+
+			if (end)
+				con.Response.End ();
 		}
 
 		public void OnPreProcessRequest (ManosApp app, IHttpTransaction transaction)
 		{
+			if (AppHost.Pipes == null)
+				return;
+
 			foreach (IManosPipe pipe in AppHost.Pipes) {
 				try {
 					pipe.OnPreProcessRequest (app, transaction);
@@ -101,6 +120,9 @@ namespace Manos {
 
 		public IManosTarget OnPreProcessTarget (IManosContext ctx)
 		{
+			if (AppHost.Pipes == null)
+				return null;
+
 			foreach (IManosPipe pipe in AppHost.Pipes) {
 				try {
 					var found = pipe.OnPreProcessTarget (ctx);
@@ -121,6 +143,9 @@ namespace Manos {
 
 		public void OnPostProcessTarget (IManosContext ctx, IManosTarget target)
 		{
+			if (AppHost.Pipes == null)
+				return;
+
 			foreach (IManosPipe pipe in AppHost.Pipes) {
 				try {
 					pipe.OnPostProcessTarget (ctx, target);
@@ -136,6 +161,9 @@ namespace Manos {
 
 		public void OnPostProcessRequest (ManosApp app, IHttpTransaction transaction)
 		{
+			if (AppHost.Pipes == null)
+				return;
+
 			foreach (IManosPipe pipe in AppHost.Pipes) {
 				try {
 					pipe.OnPostProcessRequest (this, transaction);
@@ -148,6 +176,9 @@ namespace Manos {
 
 		public void OnError (IManosContext ctx)
 		{
+			if (AppHost.Pipes == null)
+				return;
+
 			foreach (IManosPipe pipe in AppHost.Pipes) {
 				try {
 					pipe.OnError (ctx);

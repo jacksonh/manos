@@ -3,7 +3,7 @@ include config.make
 conf=Debug
 SLN=src/Manos.sln
 VERBOSITY=normal
-version=0.0.4
+version=0.0.9
 install_bin_dir = $(prefix)/lib/manos/
 install_data_dir = $(prefix)/share/manos/
 install_docs_dir = $(prefix)/share/manos/docs/
@@ -35,7 +35,7 @@ define MANOS_PC_SCRIPT
 Name: Manos
 Description: Manos
 Version: $(version)
-Libraries: $(install_bin_dir)Manos.dll $(install_bin_dir)Manos.dll.mdb $(install_bin_dir)libev-sharp.dll $(install_bin_dir)libev-sharp.dll.mdb
+Libraries: $(install_bin_dir)Manos.dll $(install_bin_dir)Manos.dll.mdb 
 
 Requires: 
 Libs: -r:$(install_bin_dir)Manos.dll
@@ -57,11 +57,7 @@ clean:
 	$(XBUILD) $(SLN) /property:Configuration=$(conf) /t:Clean
 	rm -rf build/*
 
-install: update-libraries install-bin install-data install-docs install-script install-man install-pkg-config
-
-update-libraries:
-	test -d build || mkdir -p build
-	cp `pkg-config --variable=Libraries libev-sharp` ./build/.
+install: install-bin install-data install-docs install-script install-man install-pkg-config
 
 install-data:
 	test -d $(install_data_dir) || install -d $(install_data_dir)

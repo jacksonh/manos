@@ -26,6 +26,7 @@
 using System;
 using System.Reflection;
 
+using Manos.Http;
 
 namespace Manos {
 
@@ -46,7 +47,7 @@ namespace Manos {
 			set;
 		}
 
-		public string [] Methods {
+		public HttpMethod [] Methods {
 			get;
 			protected set;
 		}

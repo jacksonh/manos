@@ -33,4 +33,4 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle ("Manos.dll")]
 
-[assembly: AssemblyVersion ("0.0.4")]
+[assembly: AssemblyVersion ("0.0.9")]

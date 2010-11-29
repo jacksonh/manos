@@ -27,19 +27,33 @@
 using System;
 using System.Reflection;
 
+using Manos.Http;
 
 namespace Manos {
-
+	
+	/// <summary>
+	/// Indicates that the decorated method should respond to any specified routes when the GET verb is used for the request.
+	/// </summary>
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 	public class GetAttribute : HttpMethodAttribute {
-
+		
+				
+		/// <summary>
+		/// Specifies that the decoraetd method should only be invoked when the http GET verb is used.
+		/// </summary>
 		public GetAttribute ()
 		{
 		}
-
+		
+		/// <summary>
+		/// Specifies that the decorated method should be invoked whenever a GET request matches any of the patterns declared)
+		/// </summary>
+		/// <param name="patterns">
+		/// A <see cref="System.String[]"/>
+		/// </param>
 		public GetAttribute (params string [] patterns) : base (patterns)
 		{
-			Methods = new string [] { "GET" };
+			Methods = new HttpMethod [] { HttpMethod.HTTP_GET };
 		}
 	}
 }

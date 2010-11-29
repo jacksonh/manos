@@ -28,7 +28,6 @@ using Manos.Collections;
 
 using System;
 using System.Text;
-using System.Threading;
 using System.Security.Cryptography;
 
 
@@ -44,7 +43,7 @@ namespace Shorty {
 		[Route ("/", "/Home", "/Index")]
 		public void Index (IManosContext ctx)
 		{
-			ctx.Response.WriteLine (@"<html>
+			ctx.Response.End (@"<html>
                                    <head><title>Welcome to Shorty</title></head>
                                    <body>
                                     <form method='POST' action='submit-link'>
@@ -64,26 +63,30 @@ namespace Shorty {
 			if (show_info)
 				ctx.Response.SetCookie ("show_info", "true");
 
-			Cache [id] = new LinkData (link);
-			ctx.Response.Redirect ("/r/" + id + "~");
+			Cache.Set (id, new LinkData (link), (name, item) => {
+				ctx.Response.Redirect ("/r/" + id + "~");
+			});
 		}
 
 		[Route ("/r/{id}~")]
 		public void LinkInfo (IManosContext ctx, Shorty app, string id)
 		{
-			LinkData info = Cache [id] as LinkData;
+			Cache.Get (id, (name, item) => {
+				LinkData info = item as LinkData;
 
-			if (info == null) {
-				ctx.Response.StatusCode = 404;
-				return;
-			}
+				if (info == null) {
+					ctx.Response.StatusCode = 404;
+					ctx.Response.End ();
+					return;
+				}
 
-			ctx.Response.WriteLine (@"<html>
-                                     <head><title>Welcome to Shorty</title></head>
-                                     <body>
-                                      <a href='{0}'>{0}</a> was clicked {1} times.
-                                     </body>
-				    </html>", info.Link, info.Clicks);
+				ctx.Response.End (@"<html>
+                                     	<head><title>Welcome to Shorty</title></head>
+                                     	<body>
+                                     	 <a href='{0}'>{0}</a> was clicked {1} times.
+                                    	 </body>
+				   	 </html>", info.Link, info.Clicks);
+			});
 		}
 
 		[Route ("/r/{id}")]
@@ -94,20 +97,16 @@ namespace Shorty {
 				return;
 			}
 
-			LinkData info = Cache [id] as LinkData;
-			if (info == null) {
-				ctx.Response.StatusCode = 404;
-				return;
-			}
+			Cache.Get (id, (name, item) => {
+				LinkData info = item as LinkData;
+				if (info == null) {
+					ctx.Response.StatusCode = 404;
+					return;
+				}
 
-			//
-			// Because multiple http transactions could be occuring at the
-			// same time, we need to make sure this shared data is incremented
-			// properly
-			//
-			Interlocked.Increment (ref info.Clicks);
-
-			ctx.Response.Redirect (info.Link);
+				++info.Clicks;
+				ctx.Response.Redirect (info.Link);
+			});
 		}
 
 		private static string GenerateHash (string str, int length)
