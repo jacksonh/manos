@@ -28,6 +28,7 @@ using System.IO;
 using System.Text;
 using System.Net;
 using System.Linq;
+using System.Reflection;
 using System.Net.Sockets;
 using System.Collections;
 using System.Collections.Generic;
@@ -43,7 +44,7 @@ namespace Manos.Http {
 	public class HttpServer: IDisposable {
 
 		// This gets called on every request so lets just use a hard coded string instead of reflection
-		public static readonly string ServerVersion = "Manos/0.0.9";
+		public static readonly string ServerVersion;
 
 		private HttpConnectionCallback callback;
 		private IOLoop ioloop;
@@ -52,10 +53,17 @@ namespace Manos.Http {
 
 		private List<HttpTransaction> transactions = new List<HttpTransaction> ();
 
+		static HttpServer ()
+		{
+			Version v = Assembly.GetExecutingAssembly ().GetName ().Version;
+			ServerVersion = "Manos/" + v.ToString ();
+		}
+
 		public HttpServer (HttpConnectionCallback callback, IOLoop ioloop)
 		{
 			this.callback = callback;
 			this.ioloop = ioloop;
+
 
 			AppHost.AddTimeout (TimeSpan.FromMinutes (2), RepeatBehavior.Forever, null, ExpireTransactions);
 		}
