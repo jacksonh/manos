@@ -138,27 +138,11 @@
     <Compile Include="Manos.Template\ITemplateCodegen.cs" />
     <Compile Include="Manos.Template\Expression.cs" />
     <Compile Include="Manos.Template\TemplateFactory.cs" />
-<<<<<<< HEAD
     <Compile Include="Manos.Logging\IManosLogger.cs" />
     <Compile Include="Manos.Logging\AbstractManosLogger.cs" />
     <Compile Include="Manos.Logging\ConsoleManosLogger.cs" />
     <Compile Include="Manos.Logging\NullManosLogger.cs" />
     <Compile Include="Manos.Logging\ManosLogManager.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Manos.Testing\" />
-    <Folder Include="Manos.Server.Testing\" />
-    <Folder Include="Assembly\" />
-    <Folder Include="Manos.Templates.Testing\" />
-    <Folder Include="Manos.Server\" />
-    <Folder Include="Manos.Caching\" />
-    <Folder Include="Manos.Collections\" />
-    <Folder Include="Manos.Util\" />
-    <Folder Include="Manos.Logging\" />
-  </ItemGroup>
-  <ItemGroup>
-=======
     <Compile Include="Libev\CheckWatcher.cs" />
     <Compile Include="Libev\EventTypes.cs" />
     <Compile Include="Libev\IOWatcher.cs" />
@@ -173,7 +157,17 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
->>>>>>> master
+    <Folder Include="Manos.Testing\" />
+    <Folder Include="Manos.Server.Testing\" />
+    <Folder Include="Assembly\" />
+    <Folder Include="Manos.Templates.Testing\" />
+    <Folder Include="Manos.Server\" />
+    <Folder Include="Manos.Caching\" />
+    <Folder Include="Manos.Collections\" />
+    <Folder Include="Manos.Util\" />
+    <Folder Include="Manos.Logging\" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="Manos.Template\codegen.cs" />
     <None Include="Manos.Templates.Testing\ManosTemplateStub.cs" />
   </ItemGroup>
