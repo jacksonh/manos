@@ -54,7 +54,7 @@ namespace Manos
 		{
 			if(threshold >= 3)
 			{
-				WriteString ("FATAL", message, args);
+				WriteString ("ERROR", message, args);
 			}
 		}
 		
@@ -63,7 +63,7 @@ namespace Manos
 		{
 			if(threshold >= 2)
 			{
-				WriteString ("FATAL", message, args);
+				WriteString ("WARN", message, args);
 			}
 		}
 		
@@ -72,7 +72,7 @@ namespace Manos
 		{
 			if(threshold >= 1)
 			{
-				WriteString ("FATAL", message, args);
+				WriteString ("INFO", message, args);
 			}
 		}
 		
@@ -81,7 +81,7 @@ namespace Manos
 		{
 			if(threshold >= 0)
 			{
-				WriteString ("FATAL", message, args);
+				WriteString ("DEBUG", message, args);
 			}
 		}
 		
@@ -90,7 +90,7 @@ namespace Manos
 		{
 			if(threshold >= 5)
 			{
-				WriteString ("FATAL", "{0} - {1}", ex.Message, ex.StackTrace);
+				WriteString ("EXCEPTION", "{0} - {1}", ex.Message, ex.StackTrace);
 			}
 		}
 		#endregion
