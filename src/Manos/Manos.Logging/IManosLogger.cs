@@ -34,7 +34,7 @@ namespace Manos
 		void Info (string message, params object[] args);
 		void Debug (string message, params object[] args);
 		
-		void Exception (string message, Exception ex);
+		void Exception (Exception ex);
 	}
 }
 

@@ -86,11 +86,11 @@ namespace Manos
 		}
 		
 		
-		void IManosLogger.Exception (string message, Exception ex)
+		void IManosLogger.Exception (Exception ex)
 		{
 			if(threshold >= 5)
 			{
-				WriteString ("FATAL", "{0} - {1}", message, ex.Message, ex.StackTrace);
+				WriteString ("FATAL", "{0} - {1}", ex.Message, ex.StackTrace);
 			}
 		}
 		#endregion
