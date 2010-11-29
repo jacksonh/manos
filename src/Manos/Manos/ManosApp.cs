@@ -33,9 +33,11 @@ using Manos.Routing;
 namespace Manos {
 
 	public class ManosApp : ManosModule, IManosPipe {
+		IManosLogger Log;
 
 		public ManosApp ()
 		{
+			Log = ManosLogManager.GetLogger ("ManosApp");
 		}
 
 		public void HandleTransaction (ManosApp app, IHttpTransaction con)
@@ -64,8 +66,8 @@ namespace Manos {
 			try {
 				handler.Invoke (app, new ManosContext (con));
 			} catch (Exception e) {
-				Console.Error.WriteLine ("Exception in transaction handler:");
-				Console.Error.WriteLine (e);
+				Log.Error ("Exception in transaction handler:");
+				Log.Exception (e);
 				con.Response.StatusCode = 500;
 				//
 				// TODO: Maybe the cleanest thing to do is
@@ -91,8 +93,8 @@ namespace Manos {
 						return;
 					
 				} catch (Exception e) {
-					Console.Error.WriteLine ("Exception in {0}::OnPreProcessRequest.", pipe);
-					Console.Error.WriteLine (e);
+					Log.Error ("Exception in {0}::OnPreProcessRequest.", pipe);
+					Log.Exception (e);
 				}
 			}
 		}
@@ -109,8 +111,8 @@ namespace Manos {
 					if (ctx.Transaction.Aborted)
 						return null;
 				} catch (Exception e) {
-					Console.Error.WriteLine ("Exception in {0}::OnPreProcessTarget.", pipe);
-					Console.Error.WriteLine (e);
+					Log.Error ("Exception in {0}::OnPreProcessTarget.", pipe);
+					Log.Exception (e);
 				}
 			}
 			
@@ -126,8 +128,8 @@ namespace Manos {
 					if (ctx.Transaction.Aborted)
 						return;
 				} catch (Exception e) {
-					Console.Error.WriteLine ("Exception in {0}::OnPostProcessTarget.", pipe);
-					Console.Error.WriteLine (e);
+					Log.Error ("Exception in {0}::OnPostProcessTarget.", pipe);
+					Log.Exception (e);
 				}
 			}
 		}
@@ -138,8 +140,8 @@ namespace Manos {
 				try {
 					pipe.OnPostProcessRequest (this, transaction);
 				} catch (Exception e) {
-					Console.Error.WriteLine ("Exception in {0}::OnPostProcessRequest.", pipe);
-					Console.Error.WriteLine (e);
+					Log.Error ("Exception in {0}::OnPostProcessRequest.", pipe);
+					Log.Exception (e);
 				}
 			}
 		}
@@ -150,8 +152,8 @@ namespace Manos {
 				try {
 					pipe.OnError (ctx);
 				} catch (Exception e) {
-					Console.Error.WriteLine ("Exception in {0}::OnError", pipe);
-					Console.Error.WriteLine (e);
+					Log.Error ("Exception in {0}::OnError", pipe);
+					Log.Exception (e);
 				}
 			}
 		}
