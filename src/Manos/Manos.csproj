@@ -157,17 +157,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="Manos.Testing\" />
-    <Folder Include="Manos.Server.Testing\" />
-    <Folder Include="Assembly\" />
-    <Folder Include="Manos.Templates.Testing\" />
-    <Folder Include="Manos.Server\" />
-    <Folder Include="Manos.Caching\" />
-    <Folder Include="Manos.Collections\" />
-    <Folder Include="Manos.Util\" />
-    <Folder Include="Manos.Logging\" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Manos.Template\codegen.cs" />
     <None Include="Manos.Templates.Testing\ManosTemplateStub.cs" />
   </ItemGroup>
