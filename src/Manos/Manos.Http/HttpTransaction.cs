@@ -281,8 +281,10 @@ namespace Manos.Http {
 
 		private void OnFinishedReading ()
 		{
-			if (body_handler != null)
+			if (body_handler != null) {
 				body_handler.Finish (this);
+				body_handler = null;
+			}
 
 			try {
 				Response = new HttpResponse (this, IOStream);
