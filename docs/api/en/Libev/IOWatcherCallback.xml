@@ -1,0 +1,30 @@
+<Type Name="IOWatcherCallback" FullName="Libev.IOWatcherCallback">
+  <TypeSignature Language="C#" Value="public delegate void IOWatcherCallback(Loop loop, IOWatcher watcher, EventTypes revents);" />
+  <AssemblyInfo>
+    <AssemblyName>Manos</AssemblyName>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Delegate</BaseTypeName>
+  </Base>
+  <Attributes>
+    <Attribute>
+      <AttributeName>System.Runtime.InteropServices.UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.Cdecl)</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Parameters>
+    <Parameter Name="loop" Type="Libev.Loop" />
+    <Parameter Name="watcher" Type="Libev.IOWatcher" />
+    <Parameter Name="revents" Type="Libev.EventTypes" />
+  </Parameters>
+  <ReturnValue>
+    <ReturnType>System.Void</ReturnType>
+  </ReturnValue>
+  <Docs>
+    <param name="loop">To be added.</param>
+    <param name="watcher">To be added.</param>
+    <param name="revents">To be added.</param>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+</Type>

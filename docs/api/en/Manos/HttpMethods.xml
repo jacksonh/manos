@@ -3,6 +3,7 @@
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
     <AssemblyVersion>0.0.4.0</AssemblyVersion>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -14,13 +15,14 @@
   </Docs>
   <Members>
     <Member MemberName="DeleteMethods">
-      <MemberSignature Language="C#" Value="public static readonly string[] DeleteMethods;" />
+      <MemberSignature Language="C#" Value="public static readonly Manos.Http.HttpMethod[] DeleteMethods;" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>System.String[]</ReturnType>
+        <ReturnType>Manos.Http.HttpMethod[]</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>To be added.</summary>
@@ -28,13 +30,14 @@
       </Docs>
     </Member>
     <Member MemberName="GetMethods">
-      <MemberSignature Language="C#" Value="public static readonly string[] GetMethods;" />
+      <MemberSignature Language="C#" Value="public static readonly Manos.Http.HttpMethod[] GetMethods;" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>System.String[]</ReturnType>
+        <ReturnType>Manos.Http.HttpMethod[]</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>To be added.</summary>
@@ -42,13 +45,14 @@
       </Docs>
     </Member>
     <Member MemberName="HeadMethods">
-      <MemberSignature Language="C#" Value="public static readonly string[] HeadMethods;" />
+      <MemberSignature Language="C#" Value="public static readonly Manos.Http.HttpMethod[] HeadMethods;" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>System.String[]</ReturnType>
+        <ReturnType>Manos.Http.HttpMethod[]</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>To be added.</summary>
@@ -56,13 +60,14 @@
       </Docs>
     </Member>
     <Member MemberName="OptionsMethods">
-      <MemberSignature Language="C#" Value="public static readonly string[] OptionsMethods;" />
+      <MemberSignature Language="C#" Value="public static readonly Manos.Http.HttpMethod[] OptionsMethods;" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>System.String[]</ReturnType>
+        <ReturnType>Manos.Http.HttpMethod[]</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>To be added.</summary>
@@ -70,13 +75,14 @@
       </Docs>
     </Member>
     <Member MemberName="PostMethods">
-      <MemberSignature Language="C#" Value="public static readonly string[] PostMethods;" />
+      <MemberSignature Language="C#" Value="public static readonly Manos.Http.HttpMethod[] PostMethods;" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>System.String[]</ReturnType>
+        <ReturnType>Manos.Http.HttpMethod[]</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>To be added.</summary>
@@ -84,13 +90,14 @@
       </Docs>
     </Member>
     <Member MemberName="PutMethods">
-      <MemberSignature Language="C#" Value="public static readonly string[] PutMethods;" />
+      <MemberSignature Language="C#" Value="public static readonly Manos.Http.HttpMethod[] PutMethods;" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>System.String[]</ReturnType>
+        <ReturnType>Manos.Http.HttpMethod[]</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>To be added.</summary>
@@ -98,13 +105,14 @@
       </Docs>
     </Member>
     <Member MemberName="RouteMethods">
-      <MemberSignature Language="C#" Value="public static readonly string[] RouteMethods;" />
+      <MemberSignature Language="C#" Value="public static readonly Manos.Http.HttpMethod[] RouteMethods;" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>System.String[]</ReturnType>
+        <ReturnType>Manos.Http.HttpMethod[]</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>To be added.</summary>
@@ -112,13 +120,14 @@
       </Docs>
     </Member>
     <Member MemberName="TraceMethods">
-      <MemberSignature Language="C#" Value="public static readonly string[] TraceMethods;" />
+      <MemberSignature Language="C#" Value="public static readonly Manos.Http.HttpMethod[] TraceMethods;" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>System.String[]</ReturnType>
+        <ReturnType>Manos.Http.HttpMethod[]</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>To be added.</summary>

@@ -1,0 +1,86 @@
+<Type Name="CheckWatcher" FullName="Libev.CheckWatcher">
+  <TypeSignature Language="C#" Value="public class CheckWatcher : Libev.Watcher" />
+  <AssemblyInfo>
+    <AssemblyName>Manos</AssemblyName>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Libev.Watcher</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public CheckWatcher (Libev.Loop loop, Libev.CheckWatcherCallback callback);" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters>
+        <Parameter Name="loop" Type="Libev.Loop" />
+        <Parameter Name="callback" Type="Libev.CheckWatcherCallback" />
+      </Parameters>
+      <Docs>
+        <param name="loop">To be added.</param>
+        <param name="callback">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="StartImpl">
+      <MemberSignature Language="C#" Value="protected override void StartImpl ();" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="StopImpl">
+      <MemberSignature Language="C#" Value="protected override void StopImpl ();" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="UnmanagedCallbackHandler">
+      <MemberSignature Language="C#" Value="protected override void UnmanagedCallbackHandler (IntPtr _loop, IntPtr _watcher, Libev.EventTypes revents);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="_loop" Type="System.IntPtr" />
+        <Parameter Name="_watcher" Type="System.IntPtr" />
+        <Parameter Name="revents" Type="Libev.EventTypes" />
+      </Parameters>
+      <Docs>
+        <param name="_loop">To be added.</param>
+        <param name="_watcher">To be added.</param>
+        <param name="revents">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

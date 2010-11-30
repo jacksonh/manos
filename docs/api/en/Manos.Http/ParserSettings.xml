@@ -1,0 +1,429 @@
+<Type Name="ParserSettings" FullName="Manos.Http.ParserSettings">
+  <TypeSignature Language="C#" Value="public class ParserSettings" />
+  <AssemblyInfo>
+    <AssemblyName>Manos</AssemblyName>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Object</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public ParserSettings ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnBody">
+      <MemberSignature Language="C#" Value="public Manos.Http.HttpDataCallback OnBody;" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Http.HttpDataCallback</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnError">
+      <MemberSignature Language="C#" Value="public Manos.Http.HttpErrorCallback OnError;" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Http.HttpErrorCallback</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnFragment">
+      <MemberSignature Language="C#" Value="public Manos.Http.HttpDataCallback OnFragment;" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Http.HttpDataCallback</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnHeaderField">
+      <MemberSignature Language="C#" Value="public Manos.Http.HttpDataCallback OnHeaderField;" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Http.HttpDataCallback</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnHeadersComplete">
+      <MemberSignature Language="C#" Value="public Manos.Http.HttpCallback OnHeadersComplete;" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Http.HttpCallback</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnHeaderValue">
+      <MemberSignature Language="C#" Value="public Manos.Http.HttpDataCallback OnHeaderValue;" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Http.HttpDataCallback</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnMessageBegin">
+      <MemberSignature Language="C#" Value="public Manos.Http.HttpCallback OnMessageBegin;" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Http.HttpCallback</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnMessageComplete">
+      <MemberSignature Language="C#" Value="public Manos.Http.HttpCallback OnMessageComplete;" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Http.HttpCallback</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnPath">
+      <MemberSignature Language="C#" Value="public Manos.Http.HttpDataCallback OnPath;" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Http.HttpDataCallback</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnQueryString">
+      <MemberSignature Language="C#" Value="public Manos.Http.HttpDataCallback OnQueryString;" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Http.HttpDataCallback</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnUrl">
+      <MemberSignature Language="C#" Value="public Manos.Http.HttpDataCallback OnUrl;" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Http.HttpDataCallback</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="RaiseOnBody">
+      <MemberSignature Language="C#" Value="public void RaiseOnBody (Manos.Http.HttpParser p, Manos.Collections.ByteBuffer buf, int pos, int len);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="p" Type="Manos.Http.HttpParser" />
+        <Parameter Name="buf" Type="Manos.Collections.ByteBuffer" />
+        <Parameter Name="pos" Type="System.Int32" />
+        <Parameter Name="len" Type="System.Int32" />
+      </Parameters>
+      <Docs>
+        <param name="p">To be added.</param>
+        <param name="buf">To be added.</param>
+        <param name="pos">To be added.</param>
+        <param name="len">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="RaiseOnError">
+      <MemberSignature Language="C#" Value="public void RaiseOnError (Manos.Http.HttpParser p, string message, Manos.Collections.ByteBuffer buf, int ini_pos);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="p" Type="Manos.Http.HttpParser" />
+        <Parameter Name="message" Type="System.String" />
+        <Parameter Name="buf" Type="Manos.Collections.ByteBuffer" />
+        <Parameter Name="ini_pos" Type="System.Int32" />
+      </Parameters>
+      <Docs>
+        <param name="p">To be added.</param>
+        <param name="message">To be added.</param>
+        <param name="buf">To be added.</param>
+        <param name="ini_pos">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="RaiseOnFragment">
+      <MemberSignature Language="C#" Value="public void RaiseOnFragment (Manos.Http.HttpParser p, Manos.Collections.ByteBuffer buf, int pos, int len);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="p" Type="Manos.Http.HttpParser" />
+        <Parameter Name="buf" Type="Manos.Collections.ByteBuffer" />
+        <Parameter Name="pos" Type="System.Int32" />
+        <Parameter Name="len" Type="System.Int32" />
+      </Parameters>
+      <Docs>
+        <param name="p">To be added.</param>
+        <param name="buf">To be added.</param>
+        <param name="pos">To be added.</param>
+        <param name="len">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="RaiseOnHeaderField">
+      <MemberSignature Language="C#" Value="public void RaiseOnHeaderField (Manos.Http.HttpParser p, Manos.Collections.ByteBuffer buf, int pos, int len);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="p" Type="Manos.Http.HttpParser" />
+        <Parameter Name="buf" Type="Manos.Collections.ByteBuffer" />
+        <Parameter Name="pos" Type="System.Int32" />
+        <Parameter Name="len" Type="System.Int32" />
+      </Parameters>
+      <Docs>
+        <param name="p">To be added.</param>
+        <param name="buf">To be added.</param>
+        <param name="pos">To be added.</param>
+        <param name="len">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="RaiseOnHeadersComplete">
+      <MemberSignature Language="C#" Value="public void RaiseOnHeadersComplete (Manos.Http.HttpParser p);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="p" Type="Manos.Http.HttpParser" />
+      </Parameters>
+      <Docs>
+        <param name="p">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="RaiseOnHeaderValue">
+      <MemberSignature Language="C#" Value="public void RaiseOnHeaderValue (Manos.Http.HttpParser p, Manos.Collections.ByteBuffer buf, int pos, int len);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="p" Type="Manos.Http.HttpParser" />
+        <Parameter Name="buf" Type="Manos.Collections.ByteBuffer" />
+        <Parameter Name="pos" Type="System.Int32" />
+        <Parameter Name="len" Type="System.Int32" />
+      </Parameters>
+      <Docs>
+        <param name="p">To be added.</param>
+        <param name="buf">To be added.</param>
+        <param name="pos">To be added.</param>
+        <param name="len">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="RaiseOnMessageBegin">
+      <MemberSignature Language="C#" Value="public void RaiseOnMessageBegin (Manos.Http.HttpParser p);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="p" Type="Manos.Http.HttpParser" />
+      </Parameters>
+      <Docs>
+        <param name="p">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="RaiseOnMessageComplete">
+      <MemberSignature Language="C#" Value="public void RaiseOnMessageComplete (Manos.Http.HttpParser p);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="p" Type="Manos.Http.HttpParser" />
+      </Parameters>
+      <Docs>
+        <param name="p">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="RaiseOnPath">
+      <MemberSignature Language="C#" Value="public void RaiseOnPath (Manos.Http.HttpParser p, Manos.Collections.ByteBuffer buf, int pos, int len);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="p" Type="Manos.Http.HttpParser" />
+        <Parameter Name="buf" Type="Manos.Collections.ByteBuffer" />
+        <Parameter Name="pos" Type="System.Int32" />
+        <Parameter Name="len" Type="System.Int32" />
+      </Parameters>
+      <Docs>
+        <param name="p">To be added.</param>
+        <param name="buf">To be added.</param>
+        <param name="pos">To be added.</param>
+        <param name="len">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="RaiseOnQueryString">
+      <MemberSignature Language="C#" Value="public void RaiseOnQueryString (Manos.Http.HttpParser p, Manos.Collections.ByteBuffer buf, int pos, int len);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="p" Type="Manos.Http.HttpParser" />
+        <Parameter Name="buf" Type="Manos.Collections.ByteBuffer" />
+        <Parameter Name="pos" Type="System.Int32" />
+        <Parameter Name="len" Type="System.Int32" />
+      </Parameters>
+      <Docs>
+        <param name="p">To be added.</param>
+        <param name="buf">To be added.</param>
+        <param name="pos">To be added.</param>
+        <param name="len">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="RaiseOnUrl">
+      <MemberSignature Language="C#" Value="public void RaiseOnUrl (Manos.Http.HttpParser p, Manos.Collections.ByteBuffer buf, int pos, int len);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="p" Type="Manos.Http.HttpParser" />
+        <Parameter Name="buf" Type="Manos.Collections.ByteBuffer" />
+        <Parameter Name="pos" Type="System.Int32" />
+        <Parameter Name="len" Type="System.Int32" />
+      </Parameters>
+      <Docs>
+        <param name="p">To be added.</param>
+        <param name="buf">To be added.</param>
+        <param name="pos">To be added.</param>
+        <param name="len">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

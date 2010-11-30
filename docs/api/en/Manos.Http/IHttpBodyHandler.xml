@@ -1,0 +1,56 @@
+<Type Name="IHttpBodyHandler" FullName="Manos.Http.IHttpBodyHandler">
+  <TypeSignature Language="C#" Value="public interface IHttpBodyHandler" />
+  <AssemblyInfo>
+    <AssemblyName>Manos</AssemblyName>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="Finish">
+      <MemberSignature Language="C#" Value="public void Finish (Manos.Http.HttpTransaction transaction);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="transaction" Type="Manos.Http.HttpTransaction" />
+      </Parameters>
+      <Docs>
+        <param name="transaction">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="HandleData">
+      <MemberSignature Language="C#" Value="public void HandleData (Manos.Http.HttpTransaction transaction, Manos.Collections.ByteBuffer data, int pos, int len);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="transaction" Type="Manos.Http.HttpTransaction" />
+        <Parameter Name="data" Type="Manos.Collections.ByteBuffer" />
+        <Parameter Name="pos" Type="System.Int32" />
+        <Parameter Name="len" Type="System.Int32" />
+      </Parameters>
+      <Docs>
+        <param name="transaction">To be added.</param>
+        <param name="data">To be added.</param>
+        <param name="pos">To be added.</param>
+        <param name="len">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

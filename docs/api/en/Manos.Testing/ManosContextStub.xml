@@ -3,6 +3,7 @@
   <AssemblyInfo>
     <AssemblyName>Manos</AssemblyName>
     <AssemblyVersion>0.0.4.0</AssemblyVersion>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -22,6 +23,7 @@
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
       </AssemblyInfo>
       <Parameters />
       <Docs>
@@ -30,13 +32,14 @@
       </Docs>
     </Member>
     <Member MemberName="Request">
-      <MemberSignature Language="C#" Value="public Manos.Server.IHttpRequest Request { get; }" />
+      <MemberSignature Language="C#" Value="public Manos.Http.IHttpRequest Request { get; }" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>Manos.Server.IHttpRequest</ReturnType>
+        <ReturnType>Manos.Http.IHttpRequest</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>To be added.</summary>
@@ -45,13 +48,29 @@
       </Docs>
     </Member>
     <Member MemberName="Response">
-      <MemberSignature Language="C#" Value="public Manos.Server.IHttpResponse Response { get; }" />
+      <MemberSignature Language="C#" Value="public Manos.Http.IHttpResponse Response { get; }" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>Manos.Server.IHttpResponse</ReturnType>
+        <ReturnType>Manos.Http.IHttpResponse</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Server">
+      <MemberSignature Language="C#" Value="public Manos.Http.HttpServer Server { get; }" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Manos.Http.HttpServer</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>To be added.</summary>
@@ -60,13 +79,14 @@
       </Docs>
     </Member>
     <Member MemberName="Transaction">
-      <MemberSignature Language="C#" Value="public Manos.Server.IHttpTransaction Transaction { get; }" />
+      <MemberSignature Language="C#" Value="public Manos.Http.IHttpTransaction Transaction { get; }" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>Manos.Server.IHttpTransaction</ReturnType>
+        <ReturnType>Manos.Http.IHttpTransaction</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>To be added.</summary>

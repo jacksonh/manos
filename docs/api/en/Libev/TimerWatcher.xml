@@ -1,0 +1,109 @@
+<Type Name="TimerWatcher" FullName="Libev.TimerWatcher">
+  <TypeSignature Language="C#" Value="public class TimerWatcher : Libev.Watcher" />
+  <AssemblyInfo>
+    <AssemblyName>Manos</AssemblyName>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Libev.Watcher</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public TimerWatcher (TimeSpan repeat, Libev.Loop loop, Libev.TimerWatcherCallback callback);" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters>
+        <Parameter Name="repeat" Type="System.TimeSpan" />
+        <Parameter Name="loop" Type="Libev.Loop" />
+        <Parameter Name="callback" Type="Libev.TimerWatcherCallback" />
+      </Parameters>
+      <Docs>
+        <param name="repeat">To be added.</param>
+        <param name="loop">To be added.</param>
+        <param name="callback">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public TimerWatcher (TimeSpan after, TimeSpan repeat, Libev.Loop loop, Libev.TimerWatcherCallback callback);" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters>
+        <Parameter Name="after" Type="System.TimeSpan" />
+        <Parameter Name="repeat" Type="System.TimeSpan" />
+        <Parameter Name="loop" Type="Libev.Loop" />
+        <Parameter Name="callback" Type="Libev.TimerWatcherCallback" />
+      </Parameters>
+      <Docs>
+        <param name="after">To be added.</param>
+        <param name="repeat">To be added.</param>
+        <param name="loop">To be added.</param>
+        <param name="callback">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="StartImpl">
+      <MemberSignature Language="C#" Value="protected override void StartImpl ();" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="StopImpl">
+      <MemberSignature Language="C#" Value="protected override void StopImpl ();" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="UnmanagedCallbackHandler">
+      <MemberSignature Language="C#" Value="protected override void UnmanagedCallbackHandler (IntPtr loop, IntPtr watcher, Libev.EventTypes revents);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="loop" Type="System.IntPtr" />
+        <Parameter Name="watcher" Type="System.IntPtr" />
+        <Parameter Name="revents" Type="Libev.EventTypes" />
+      </Parameters>
+      <Docs>
+        <param name="loop">To be added.</param>
+        <param name="watcher">To be added.</param>
+        <param name="revents">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

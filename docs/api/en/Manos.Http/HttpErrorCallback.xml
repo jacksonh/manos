@@ -1,0 +1,27 @@
+<Type Name="HttpErrorCallback" FullName="Manos.Http.HttpErrorCallback">
+  <TypeSignature Language="C#" Value="public delegate void HttpErrorCallback(HttpParser parser, string message, ByteBuffer buffer, int initial_position);" />
+  <AssemblyInfo>
+    <AssemblyName>Manos</AssemblyName>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Delegate</BaseTypeName>
+  </Base>
+  <Parameters>
+    <Parameter Name="parser" Type="Manos.Http.HttpParser" />
+    <Parameter Name="message" Type="System.String" />
+    <Parameter Name="buffer" Type="Manos.Collections.ByteBuffer" />
+    <Parameter Name="initial_position" Type="System.Int32" />
+  </Parameters>
+  <ReturnValue>
+    <ReturnType>System.Void</ReturnType>
+  </ReturnValue>
+  <Docs>
+    <param name="parser">To be added.</param>
+    <param name="message">To be added.</param>
+    <param name="buffer">To be added.</param>
+    <param name="initial_position">To be added.</param>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+</Type>

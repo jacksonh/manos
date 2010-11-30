@@ -1,0 +1,23 @@
+<Type Name="CacheItemCallback" FullName="Manos.Caching.CacheItemCallback">
+  <TypeSignature Language="C#" Value="public delegate void CacheItemCallback(string name, object item);" />
+  <AssemblyInfo>
+    <AssemblyName>Manos</AssemblyName>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Delegate</BaseTypeName>
+  </Base>
+  <Parameters>
+    <Parameter Name="name" Type="System.String" />
+    <Parameter Name="item" Type="System.Object" />
+  </Parameters>
+  <ReturnValue>
+    <ReturnType>System.Void</ReturnType>
+  </ReturnValue>
+  <Docs>
+    <param name="name">To be added.</param>
+    <param name="item">To be added.</param>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+</Type>
