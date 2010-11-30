@@ -168,6 +168,7 @@ namespace Manos.Http {
 		{
 			string str = Encoding.ASCII.GetString (data.Bytes, pos, len);
 
+			str = HttpUtility.UrlDecode (str, Encoding.ASCII);
 			Request.LocalPath = Request.LocalPath == null ? str : String.Concat (Request.LocalPath, str);
 			return 0;
 		}
