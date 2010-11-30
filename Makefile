@@ -92,7 +92,7 @@ uninstall:
 dist: clean update-docs
 	rm -rf $(distdir)
 	mkdir $(distdir)
-	cp -rf ./src/ ./data/ ./man $(distdir)
+	cp -rf ./src/ ./data/ ./man ./docs $(distdir)
 	cp -rf configure Makefile $(distdir)
 	tar cjvf manos-$(version).tar.bz2 manos-$(version)
 
