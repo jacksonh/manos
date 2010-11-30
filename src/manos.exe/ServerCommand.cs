@@ -109,7 +109,7 @@ namespace Manos.Tool
 			AppHost.Start (app);
 		}
 		
-		public ManosApp LoadLibrary (string library)
+		public virtual ManosApp LoadLibrary (string library)
 		{
 			Assembly a = Assembly.LoadFrom (library);
 

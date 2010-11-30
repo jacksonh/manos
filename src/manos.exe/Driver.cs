@@ -53,6 +53,7 @@ namespace Manos.Tool
 				{ "h|?|help", v => help = v != null },
 				{ "init|i", v => command = Init },
 				{ "server|s", v => command = Server },
+				{ "hackapp|a", v => command = HackAppServer},
 				{ "docs|d", v => command = Docs },
 				{ "build|b", v => command = Build },
 			};
@@ -177,6 +178,31 @@ namespace Manos.Tool
 				cmd.User = user;
 
 			cmd.Run ();
+		}
+		
+		private static int HackAppServer (IList<string> args)
+		{
+			Driver d = new Driver ();
+			try {
+				d.RunHackAppServer (args);
+			} catch (Exception e) {
+				Console.WriteLine ("error while serving application:");
+				Console.WriteLine (e);
+				return 1;
+			}
+			
+			return 0;
+		}
+		
+		public void RunHackAppServer (IList<string> args)
+		{
+			var cmd = new RunHackAppServerCommand (Environment);
+			
+			// Set a default port. 8043
+			cmd.Port = 8043;
+			
+			cmd.Run();
+			
 		}
 		
 		private static int Docs (IList<string> args)

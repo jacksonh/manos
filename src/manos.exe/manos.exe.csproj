@@ -47,11 +47,16 @@
     <Compile Include="DocsModule.cs" />
     <Compile Include="Markdown.cs" />
     <Compile Include="BuildCommand.cs" />
+    <Compile Include="RunHackAppServerCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Manos\Manos.csproj">
       <Project>{2548B25A-2E1F-4E21-BC43-7E39B1F6F23F}</Project>
       <Name>Manos</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Manos.HackApp\Manos.HackApp.csproj">
+      <Project>{4F926A5B-F35B-440E-8FCC-EDC6BA77EEB7}</Project>
+      <Name>Manos.HackApp</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
