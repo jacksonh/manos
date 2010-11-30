@@ -10,6 +10,7 @@ install_docs_dir = $(prefix)/share/manos/docs/
 install_script_dir = $(prefix)/bin/
 install_man_dir = $(prefix)/share/man/man1/
 install_pc_dir = $(pkg_config_path)/
+archivedir = build/archive
 distdir = manos-$(version)
 
 XBUILD_ARGS=/verbosity:$(VERBOSITY) /nologo
@@ -90,9 +91,12 @@ uninstall:
 #	rm -rf "$(installdir)"
 
 dist: clean update-docs
+	rm -rf $(archivedir)
+	mkdir $(archivedir)
+	git archive master | tar -x -C $(archivedir)
 	rm -rf $(distdir)
 	mkdir $(distdir)
-	cp -rf ./src/ ./data/ ./man ./docs $(distdir)
+	cp -rf $(archivedir)/src/ $(archivedir)/data/ $(archivedir)/man $(archivedir)/docs $(distdir)
 	cp -rf configure Makefile $(distdir)
 	tar cjvf manos-$(version).tar.bz2 manos-$(version)
 
