@@ -48,14 +48,14 @@ all:
 	$(XBUILD) $(SLN) /property:Configuration=$(conf)
 
 run-tests: all
-	$(NUNIT_CONSOLE) build/Manos.Tests.dll
+	$(NUNIT_CONSOLE) lib/manos/Manos.Tests.dll
 
 update-docs: all
-	mdoc update -o ./docs/api/en ./build/Manos.dll
+	mdoc update -o ./docs/api/en ./lib/manos/Manos.dll
 
 clean:
 	$(XBUILD) $(SLN) /property:Configuration=$(conf) /t:Clean
-	rm -rf build/*
+	rm -rf lib/manos/*
 
 install: install-bin install-data install-docs install-script install-man install-pkg-config
 
@@ -69,7 +69,7 @@ install-docs:
 
 install-bin: all
 	test -d $(install_bin_dir) || install -d $(install_bin_dir)
-	cp -rf ./build/* $(install_bin_dir)
+	cp -rf ./lib/manos/* $(install_bin_dir)
 
 install-script:
 	test -d $(install_script_dir) || install -d $(install_script_dir)
@@ -101,5 +101,5 @@ release: dist
 	cd release && rpmbuild -ba manos.spec
 
 gem: all
-	cp release/manos.gemspec build/.
+	cp release/manos.gemspec lib/manos/.
 	cd build && gem build manos.gemspec
