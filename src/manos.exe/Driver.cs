@@ -149,11 +149,13 @@ namespace Manos.Tool
 			string port = null;
 			string user = null;
 			string assembly = null;
+			string ipaddress = null;
 			
 			var p = new OptionSet () {
 				{ "p|port=", v => port = v },
 				{ "u|user=", v => user = v },
-				{ "a|assembly=", v=> assembly = v}
+				{ "a|assembly=", v=> assembly = v},
+				{ "l|listen=", v => ipaddress = v }
 			};
 			args = p.Parse(args);
 
@@ -175,6 +177,9 @@ namespace Manos.Tool
 
 			if (user != null)
 				cmd.User = user;
+
+			if (ipaddress != null)
+				cmd.IPAddress = ipaddress;
 
 			cmd.Run ();
 		}
