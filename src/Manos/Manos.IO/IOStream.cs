@@ -123,7 +123,7 @@ namespace Manos.IO {
 				write_ops.Enqueue (op);
 
 			if (current_write_op == null)
-				current_write_op = op;
+				current_write_op = write_ops.Dequeue ();
 		}
 
 		public void EnableReading ()
