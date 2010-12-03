@@ -88,6 +88,8 @@ namespace Manos.Http {
 
 		private void FinishPair (HttpTransaction transaction)
 		{
+			if (key_buffer.Length == 0 && value_buffer.Length == 0)
+				return;
 			if (key_buffer.Length == 0 || value_buffer.Length == 0)
 				throw new HttpException ("zero length www-form data.");
 
