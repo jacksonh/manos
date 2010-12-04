@@ -150,8 +150,6 @@ namespace Manos.Http {
 				Server.RemoveTransaction (this);
 				return;
 			}
-
-			Request.Read ();
 		}
 	}
 }

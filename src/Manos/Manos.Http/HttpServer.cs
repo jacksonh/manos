@@ -121,9 +121,13 @@ namespace Manos.Http {
 				} catch (SocketException se) {
 					if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
 						return;
-					throw se;
-				} catch {
-					throw;
+					Console.WriteLine ("Socket exception in Accept handler");
+					Console.WriteLine (se);
+					return;
+				} catch (Exception e) {
+					Console.WriteLine ("Exception in Accept handler");
+					Console.WriteLine (e);
+					return;
 				}
 
 				IOStream iostream = new IOStream (s, IOLoop);

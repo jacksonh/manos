@@ -88,8 +88,10 @@ namespace Manos.Http {
 
 		private void FinishPair (HttpRequest request)
 		{
-			if (key_buffer.Length == 0 || value_buffer.Length == 0)
-				throw new HttpException ("zero length www-form data.");
+			if (value_buffer.Length == 0)
+				return;
+			if (key_buffer.Length == 0)
+				throw new HttpException ("zero length key in www-form data.");
 
 			Encoding e =  request.ContentEncoding;
 			request.PostData.Set (HttpUtility.UrlDecode (key_buffer.ToString (), e),

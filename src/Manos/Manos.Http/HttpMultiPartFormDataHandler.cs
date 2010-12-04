@@ -272,10 +272,12 @@ namespace Manos.Http {
 				return;
 
 			// Chop off the \r\n that gets appended before the boundary marker
-			uploaded_file.Contents.SetLength (uploaded_file.Contents.Position - 2);
-
+			uploaded_file.Contents.SetLength (uploaded_file.Contents.Position - 2);				
 			uploaded_file.Finish ();
-			request.Files.Add (current_name, uploaded_file);
+
+			if (uploaded_file.Length > 0)
+				request.Files.Add (current_name, uploaded_file);
+
 			uploaded_file = null;
 		}
 

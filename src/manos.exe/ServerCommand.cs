@@ -95,6 +95,11 @@ namespace Manos.Tool
 			get;
 			set;
 		}
+
+		public string IPAddress {
+			get;
+			set;
+		}
 		
 		public void Run ()
 		{
@@ -104,6 +109,8 @@ namespace Manos.Tool
 
 			if (User != null)
 				SetServerUser (User);
+			if (IPAddress != null)
+				AppHost.IPAddress = System.Net.IPAddress.Parse (IPAddress);
 
 			AppHost.Port = Port;
 			AppHost.Start (app);

@@ -4,6 +4,7 @@
     <AssemblyName>Manos</AssemblyName>
     <AssemblyVersion>0.0.4.0</AssemblyVersion>
     <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <AssemblyVersion>0.1.1.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Attribute</BaseTypeName>
@@ -25,6 +26,7 @@
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
         <AssemblyVersion>0.1.0.0</AssemblyVersion>
+        <AssemblyVersion>0.1.1.0</AssemblyVersion>
       </AssemblyInfo>
       <Parameters />
       <Docs>
@@ -38,6 +40,7 @@
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
         <AssemblyVersion>0.1.0.0</AssemblyVersion>
+        <AssemblyVersion>0.1.1.0</AssemblyVersion>
       </AssemblyInfo>
       <Parameters>
         <Parameter Name="patterns" Type="System.String[]" />
@@ -54,6 +57,7 @@
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
         <AssemblyVersion>0.1.0.0</AssemblyVersion>
+        <AssemblyVersion>0.1.1.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Http.HttpMethod[]</ReturnType>
@@ -70,6 +74,7 @@
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
         <AssemblyVersion>0.1.0.0</AssemblyVersion>
+        <AssemblyVersion>0.1.1.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -86,6 +91,7 @@
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
         <AssemblyVersion>0.1.0.0</AssemblyVersion>
+        <AssemblyVersion>0.1.1.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String[]</ReturnType>

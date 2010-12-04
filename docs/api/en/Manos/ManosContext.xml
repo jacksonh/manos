@@ -4,6 +4,7 @@
     <AssemblyName>Manos</AssemblyName>
     <AssemblyVersion>0.0.4.0</AssemblyVersion>
     <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <AssemblyVersion>0.1.1.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -23,6 +24,7 @@
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.1.0.0</AssemblyVersion>
+        <AssemblyVersion>0.1.1.0</AssemblyVersion>
       </AssemblyInfo>
       <Parameters>
         <Parameter Name="transaction" Type="Manos.Http.IHttpTransaction" />
@@ -54,6 +56,7 @@
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
         <AssemblyVersion>0.1.0.0</AssemblyVersion>
+        <AssemblyVersion>0.1.1.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Http.IHttpRequest</ReturnType>
@@ -70,6 +73,7 @@
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
         <AssemblyVersion>0.1.0.0</AssemblyVersion>
+        <AssemblyVersion>0.1.1.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Http.IHttpResponse</ReturnType>
@@ -85,6 +89,7 @@
       <MemberType>Property</MemberType>
       <AssemblyInfo>
         <AssemblyVersion>0.1.0.0</AssemblyVersion>
+        <AssemblyVersion>0.1.1.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Http.HttpServer</ReturnType>
@@ -101,6 +106,7 @@
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
         <AssemblyVersion>0.1.0.0</AssemblyVersion>
+        <AssemblyVersion>0.1.1.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Manos.Http.IHttpTransaction</ReturnType>
