@@ -49,6 +49,7 @@ namespace Manos.Http {
 			get;	
 		}
 
+		void OnRequestReady ();
 		void OnResponseFinished ();
 
 		void Abort (int status, string message, params object [] p);

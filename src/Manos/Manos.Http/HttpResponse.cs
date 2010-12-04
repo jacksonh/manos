@@ -46,6 +46,10 @@ namespace Manos.Http {
 		private StreamWriter writer;
 		private Dictionary<string, HttpCookie> cookies;
 
+		public HttpResponse ()
+		{
+		}
+
 		public HttpResponse (IHttpTransaction transaction, IOStream stream)
 		{
 			Transaction = transaction;
@@ -73,6 +77,11 @@ namespace Manos.Http {
 		public HttpHeaders Headers {
 			get;
 			private set;
+		}
+
+		public byte [] Body {
+			get;
+			set;
 		}
 
 		public HttpResponseStream Stream {

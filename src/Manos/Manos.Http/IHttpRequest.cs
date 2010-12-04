@@ -91,6 +91,7 @@ namespace Manos.Http {
 			get;
 		}
 
+		void Read ();
 		void SetWwwFormData (DataDictionary data);
 		
 	}

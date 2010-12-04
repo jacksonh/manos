@@ -40,9 +40,9 @@ namespace Manos.Http {
 		private StringBuilder key_buffer = new StringBuilder ();
 		private StringBuilder value_buffer = new StringBuilder ();
 		
-		public void HandleData (HttpTransaction transaction, ByteBuffer data, int pos, int len)
+		public void HandleData (HttpRequest request, ByteBuffer data, int pos, int len)
 		{
-			string str_data = transaction.Request.ContentEncoding.GetString (data.Bytes, pos, len);
+			string str_data = request.ContentEncoding.GetString (data.Bytes, pos, len);
 
 			str_data = HttpUtility.HtmlDecode (str_data);
 
@@ -55,7 +55,7 @@ namespace Manos.Http {
 				if (c == '&') {
 					if (state == State.InKey)
 						throw new InvalidOperationException ("& symbol can not be used in key data.");
-					FinishPair (transaction);
+					FinishPair (request);
 					state = State.InKey;
 					continue;
 				}
@@ -78,21 +78,21 @@ namespace Manos.Http {
 			}
 		}
 
-		public void Finish (HttpTransaction transaction)
+		public void Finish (HttpRequest request)
 		{
 			if (state == State.InKey)
 				throw new HttpException ("Malformed POST data, key found without value.");
 
-			FinishPair (transaction);
+			FinishPair (request);
 		}
 
-		private void FinishPair (HttpTransaction transaction)
+		private void FinishPair (HttpRequest request)
 		{
 			if (key_buffer.Length == 0 || value_buffer.Length == 0)
 				throw new HttpException ("zero length www-form data.");
 
-			Encoding e =  transaction.Request.ContentEncoding;
-			transaction.Request.PostData.Set (HttpUtility.UrlDecode (key_buffer.ToString (), e),
+			Encoding e =  request.ContentEncoding;
+			request.PostData.Set (HttpUtility.UrlDecode (key_buffer.ToString (), e),
 					HttpUtility.UrlDecode (value_buffer.ToString (), e));
 
 			key_buffer.Clear ();

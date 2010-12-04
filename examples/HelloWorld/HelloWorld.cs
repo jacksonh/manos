@@ -24,7 +24,7 @@
 
 
 using Manos;
-using Manos.Utilities;
+using Manos.Http;
 
 using System;
 using System.IO;
@@ -80,6 +80,14 @@ namespace HelloWorld {
 				ctx.Response.End ();
 			});
 
+			Get ("/google", ctx => {
+				HttpRequest r = new HttpRequest ();
+				r.Get ("www.google.com", response => {
+					ctx.Response.Write (response.Body);
+					ctx.Response.End ();
+				});
+			});
+			
 			Post ("/upload", ctx => {
 				ctx.Response.End ("handled upload!");
 			});

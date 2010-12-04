@@ -30,9 +30,9 @@ namespace Manos.Http {
 
 	public interface IHttpBodyHandler {
 
-		void HandleData (HttpTransaction transaction, ByteBuffer data, int pos, int len);
+		void HandleData (HttpRequest request, ByteBuffer data, int pos, int len);
 
-		void Finish (HttpTransaction transaction);
+		void Finish (HttpRequest request);
 	}
 }
 

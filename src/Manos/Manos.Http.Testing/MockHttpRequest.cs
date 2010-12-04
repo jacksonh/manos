@@ -153,9 +153,14 @@ namespace Manos.Http.Testing
 			set;
 		}
 
+		public void Read ()
+		{
+		}
+
 		public void SetWwwFormData (DataDictionary data)
 		{
 			PostData.Children.Add (data);
 		}
+		
 	}
 }

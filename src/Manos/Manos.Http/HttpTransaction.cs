@@ -40,8 +40,6 @@ namespace Manos.Http {
 
 	public class HttpTransaction : IHttpTransaction {
 
-	        private static readonly long MAX_BUFFERED_CONTENT_LENGTH = 2621440; // 2.5MB (Eventually this will be an environment var)
-
 		public static HttpTransaction BeginTransaction (HttpServer server, IOStream stream, Socket socket, HttpConnectionCallback cb)
 		{
 			HttpTransaction transaction = new HttpTransaction (server, stream, socket, cb);
@@ -55,11 +53,6 @@ namespace Manos.Http {
 		private HttpParser parser;
 		private ParserSettings parser_settings;
 
-		private StringBuilder query_data = new StringBuilder ();
-		private StringBuilder current_header_field = new StringBuilder ();
-		private StringBuilder current_header_value = new StringBuilder ();
-
-		private IHttpBodyHandler body_handler;
 		
 		public HttpTransaction (HttpServer server, IOStream stream, Socket socket, HttpConnectionCallback callback)
 		{
@@ -68,12 +61,8 @@ namespace Manos.Http {
 			Socket = socket;
 			ConnectionCallback = callback;
 
-			stream.OnClose (OnClose);
-
-			parser_settings = CreateParserSettings ();
-			parser = new HttpParser ();
-
-			stream.ReadBytes (OnBytesRead);
+			Request = new HttpRequest (this, stream);
+			Request.Read ();
 		}
 
 		public HttpServer Server {
@@ -131,7 +120,19 @@ namespace Manos.Http {
 		{
 			ConnectionCallback (this);
 		}
-		
+
+		public void OnRequestReady ()
+		{
+			try {
+				Response = new HttpResponse (this, IOStream);
+
+				Server.RunTransaction (this);
+			} catch (Exception e) {
+				Console.WriteLine ("Exception while running transaction");
+				Console.WriteLine (e);
+			}
+		}
+
 		public void OnResponseFinished ()
 		{
 			bool disconnect = true;
@@ -150,190 +151,7 @@ namespace Manos.Http {
 				return;
 			}
 
-			parser = new HttpParser ();
-			IOStream.ReadBytes (OnBytesRead);
-		}
-
-		private void OnClose (IOStream stream)
-		{
-		}
-
-		private void OnBytesRead (IOStream stream, byte [] data, int offset, int count)
-		{
-			ByteBuffer bytes = new ByteBuffer (data, offset, count);
-			parser.Execute (parser_settings, bytes);
-		}
-
-		private int OnPath (HttpParser parser, ByteBuffer data, int pos, int len)
-		{
-			string str = Encoding.ASCII.GetString (data.Bytes, pos, len);
-
-			str = HttpUtility.UrlDecode (str, Encoding.ASCII);
-			Request.LocalPath = Request.LocalPath == null ? str : String.Concat (Request.LocalPath, str);
-			return 0;
-		}
-
-		private int OnQueryString (HttpParser parser, ByteBuffer data, int pos, int len)
-		{
-			string str = Encoding.ASCII.GetString (data.Bytes, pos, len);
-
-			query_data.Append (str);
-			return 0;
-		}
-
-		private int OnMessageBegin (HttpParser parser)
-		{
-			Request = new HttpRequest (this);
-
-			return 0;
-		}
-
-		private int OnMessageComplete (HttpParser parser)
-		{
-			OnFinishedReading ();
-			return 0;
-		}
-
-		public int OnHeaderField (HttpParser parser, ByteBuffer data, int pos, int len)
-		{
-			string str = Encoding.ASCII.GetString (data.Bytes, pos, len);
-
-			if (current_header_value.Length != 0)
-				FinishCurrentHeader ();
-
-			current_header_field.Append (str);
-			return 0;
-		}
-
-		public int OnHeaderValue (HttpParser parser, ByteBuffer data, int pos, int len)
-		{
-			string str = Encoding.ASCII.GetString (data.Bytes, pos, len);
-
-			if (current_header_field.Length == 0)
-				throw new HttpException ("Header Value raised with no header field set.");
-
-			current_header_value.Append (str);
-			return 0;
-		}
-
-		private void FinishCurrentHeader ()
-		{
-			try {
-				Request.Headers.SetHeader (current_header_field.ToString (), current_header_value.ToString ());
-				current_header_field.Length = 0;
-				current_header_value.Length = 0;
-			} catch (Exception e) {
-				Console.WriteLine (e);
-			}
-		}
-
-		private int OnHeadersComplete (HttpParser parser)
-		{
-			if (current_header_field.Length != 0)
-				FinishCurrentHeader ();
-
-			if (query_data.Length != 0) {
-				Request.QueryData = HttpUtility.ParseUrlEncodedData (query_data.ToString ());
-				query_data.Length = 0;
-			}
-
-			Request.MajorVersion = parser.Major;
-			Request.MinorVersion = parser.Minor;
-			Request.Method = parser.HttpMethod;
-
-			return 0;
-		}
-
-		public int OnBody (HttpParser parser, ByteBuffer data, int pos, int len)
-		{
-			if (body_handler == null)
-				CreateBodyHandler ();
-
-			if (body_handler != null)
-				body_handler.HandleData (this, data, pos, len);
-
-			return 0;
-		}
-
-		private void CreateBodyHandler ()
-		{
-			string ct = Request.Headers ["Content-Type"];
-
-			if (ct != null && ct.StartsWith ("application/x-www-form-urlencoded", StringComparison.InvariantCultureIgnoreCase)) {
-				body_handler = new HttpFormDataHandler ();
-				return;
-			}
-
-			if (ct != null && ct.StartsWith ("multipart/form-data", StringComparison.InvariantCultureIgnoreCase)) {
-				string boundary = ParseBoundary (ct);
-				IUploadedFileCreator file_creator = GetFileCreator ();
-
-				body_handler = new HttpMultiPartFormDataHandler (boundary, Request.ContentEncoding, file_creator);
-				return;
-			}
-		}
-
-		private IUploadedFileCreator GetFileCreator ()
-		{
-			if (Request.Headers.ContentLength == null || Request.Headers.ContentLength >= MAX_BUFFERED_CONTENT_LENGTH)
-				return new TempFileUploadedFileCreator ();
-			return new InMemoryUploadedFileCreator ();
-		}
-
-		private void OnFinishedReading ()
-		{
-			if (body_handler != null) {
-				body_handler.Finish (this);
-				body_handler = null;
-			}
-
-			try {
-				Response = new HttpResponse (this, IOStream);
-
-				Server.RunTransaction (this);
-			} catch (Exception e) {
-				Console.WriteLine ("Exception while running transaction");
-				Console.WriteLine (e);
-			}
-		}
-
-		private ParserSettings CreateParserSettings ()
-		{
-			ParserSettings settings = new ParserSettings ();
-
-			settings.OnError = OnParserError;
-
-			settings.OnPath = OnPath;
-			settings.OnQueryString = OnQueryString;
-
-			settings.OnMessageBegin = OnMessageBegin;
-			settings.OnMessageComplete = OnMessageComplete;
-
-			settings.OnHeaderField = OnHeaderField;
-			settings.OnHeaderValue = OnHeaderValue;
-			settings.OnHeadersComplete = OnHeadersComplete;
-			
-			settings.OnBody = OnBody;
-
-			return settings;
-		}
-
-		private void OnParserError (HttpParser parser, string message, ByteBuffer buffer, int initial_position)
-		{
-			Server.RemoveTransaction (this);
-			IOStream.Close ();
-		}
-
-		public static string ParseBoundary (string ct)
-		{
-			if (ct == null)
-				return null;
-
-			int start = ct.IndexOf ("boundary=");
-			if (start < 1)
-				return null;
-			
-			return ct.Substring (start + "boundary=".Length);
+			Request.Read ();
 		}
 	}
 }
