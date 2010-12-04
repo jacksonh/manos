@@ -1,6 +1,6 @@
 <Overview>
   <Assemblies>
-    <Assembly Name="Manos" Version="0.1.0.0">
+    <Assembly Name="Manos" Version="0.1.1.0">
       <Attributes>
         <Attribute>
           <AttributeName>System.Reflection.AssemblyTitle("Manos.dll")</AttributeName>

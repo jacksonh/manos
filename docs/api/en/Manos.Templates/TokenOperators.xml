@@ -4,6 +4,7 @@
     <AssemblyName>Manos</AssemblyName>
     <AssemblyVersion>0.0.4.0</AssemblyVersion>
     <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <AssemblyVersion>0.1.1.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -20,6 +21,7 @@
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
         <AssemblyVersion>0.1.0.0</AssemblyVersion>
+        <AssemblyVersion>0.1.1.0</AssemblyVersion>
       </AssemblyInfo>
       <Parameters>
         <Parameter Name="env" Type="Manos.Templates.TemplateEnvironment" />
@@ -36,6 +38,7 @@
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
         <AssemblyVersion>0.1.0.0</AssemblyVersion>
+        <AssemblyVersion>0.1.1.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Collections.Generic.Dictionary&lt;System.String,Manos.Templates.TokenType&gt;</ReturnType>
@@ -52,6 +55,7 @@
       <AssemblyInfo>
         <AssemblyVersion>0.0.4.0</AssemblyVersion>
         <AssemblyVersion>0.1.0.0</AssemblyVersion>
+        <AssemblyVersion>0.1.1.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Collections.Generic.Dictionary&lt;System.Int32,Manos.Templates.TokenType&gt;</ReturnType>
