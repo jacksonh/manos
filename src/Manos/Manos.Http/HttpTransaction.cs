@@ -161,7 +161,18 @@ namespace Manos.Http {
 		private void OnBytesRead (IOStream stream, byte [] data, int offset, int count)
 		{
 			ByteBuffer bytes = new ByteBuffer (data, offset, count);
-			parser.Execute (parser_settings, bytes);
+
+			try {
+				parser.Execute (parser_settings, bytes);
+			} catch (Exception e) {
+				Console.WriteLine ("HTTP Parsing Exception:");
+				Console.WriteLine (e);
+				Console.WriteLine ();
+
+				Console.WriteLine ("Parsing data:");
+				Console.WriteLine (Encoding.Default.GetString (data, offset, count));
+				Console.WriteLine ("Please report this exception at http://groups.google.com/group/manos-de-mono");
+			}
 		}
 
 		private int OnPath (HttpParser parser, ByteBuffer data, int pos, int len)
