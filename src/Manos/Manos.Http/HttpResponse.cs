@@ -218,7 +218,7 @@ namespace Manos.Http {
 
 			var bytes = new List<ArraySegment<byte>> ();
 			bytes.Add (new ArraySegment<byte> (data, 0, data.Length));
-			WriteBytesOperation write_bytes = new WriteBytesOperation (bytes, null);
+			var write_bytes = new SendBytesOperation (bytes, null);
 
 			IOStream.QueueWriteOperation (write_bytes);
 		}

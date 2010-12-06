@@ -123,8 +123,8 @@ namespace Manos.Http
 		{
 			EnsureMetadata ();
 
-			FileStream file_stream = new FileStream (file_name, FileMode.Open, FileAccess.Read);
-			WriteFileOperation write_file = new WriteFileOperation (file_stream, null);
+			var file_stream = new FileStream (file_name, FileMode.Open, FileAccess.Read);
+			var write_file = new SendFileOperation (file_stream, null);
 
 			length += file_stream.Length;
 
@@ -151,7 +151,7 @@ namespace Manos.Http
 			if (chunked)
 				WriteChunk (bytes, -1, false);
 
-			WriteBytesOperation write_bytes = new WriteBytesOperation (bytes, null);
+			var write_bytes = new SendBytesOperation (bytes, null);
 			QueueWriteOperation (write_bytes);
 		}
 
@@ -177,7 +177,7 @@ namespace Manos.Http
 
 			WriteChunk (bytes, 0, true);
 
-			WriteBytesOperation write_bytes = new WriteBytesOperation (bytes, callback);
+			var write_bytes = new SendBytesOperation (bytes, callback);
 			QueueWriteOperation (write_bytes);
 		}
 
@@ -220,7 +220,7 @@ namespace Manos.Http
 
 			WriteChunk (bytes, l, last);
 
-			WriteBytesOperation write_bytes = new WriteBytesOperation (bytes, null);
+			var write_bytes = new SendBytesOperation (bytes, null);
 			QueueWriteOperation (write_bytes);
 		}
 

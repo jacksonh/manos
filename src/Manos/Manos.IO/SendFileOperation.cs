@@ -32,7 +32,7 @@ using System.Net.Sockets;
 namespace Manos.IO {
 
 #if !DISABLE_POSIX
-	public class WriteFileOperation : IWriteOperation {
+	public class SendFileOperation : IWriteOperation {
 
 		private WriteCallback callback;
 
@@ -40,7 +40,7 @@ namespace Manos.IO {
 		private long file_offset;
 		private long file_length;
 		
-		public WriteFileOperation (FileStream file, WriteCallback callback)
+		public SendFileOperation (FileStream file, WriteCallback callback)
 		{
 			this.file = file;
 			this.callback = callback;
