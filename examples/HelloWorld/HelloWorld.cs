@@ -81,11 +81,23 @@ namespace HelloWorld {
 			});
 
 			Get ("/google", ctx => {
+				/*
 				HttpRequest r = new HttpRequest ();
 				r.Get ("www.google.com", response => {
 					ctx.Response.Write (response.Body);
 					ctx.Response.End ();
 				});
+				*/
+				var ss = new Manos.IO.SocketStream (AppHost.IOLoop);
+
+				ss.Connect (8124);
+				ss.Connected += delegate (object stream, EventArgs args) {
+					Console.WriteLine ("connected");
+					ss.Write (new byte [] { 0xA, 0xB, 0xB, 0xA }, () => {
+						Console.WriteLine ("Performed Write.");
+					});
+				};
+				
 			});
 			
 			Post ("/upload", ctx => {

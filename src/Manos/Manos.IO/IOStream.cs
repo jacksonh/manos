@@ -59,6 +59,10 @@ namespace Manos.IO {
 		private IWriteOperation current_write_op;
 		private Queue<IWriteOperation> write_ops = new Queue<IWriteOperation> ();
 
+		public IOStream (IOLoop ioloop) : this (null, ioloop)
+		{
+		}
+
 		public IOStream (Socket socket, IOLoop ioloop)
 		{
 			this.socket = socket;
@@ -66,12 +70,11 @@ namespace Manos.IO {
 
 			TimeOut = TimeSpan.FromMinutes (2);
 			Expires = DateTime.UtcNow + TimeOut;
-
-			socket.Blocking = false;
-
-			handle = IOWatcher.GetHandle (socket);
-			read_watcher = new IOWatcher (handle, EventTypes.Read, ioloop.EventLoop, HandleIOReadEvent);
-			write_watcher = new IOWatcher (handle, EventTypes.Write, ioloop.EventLoop, HandleIOWriteEvent);
+			
+			if (socket != null) {
+				socket.Blocking = false;
+				SetHandle (IOWatcher.GetHandle (socket));
+			}
 		}
 
 		~IOStream ()
@@ -95,6 +98,16 @@ namespace Manos.IO {
 
 		public bool IsClosed {
 			get { return socket == null || !socket.Connected; }
+		}
+
+		public void SetHandle (IntPtr handle)
+		{
+			if (this.handle != IntPtr.Zero && this.handle != handle)
+				Close ();
+
+			this.handle = handle;
+			read_watcher = new IOWatcher (handle, EventTypes.Read, ioloop.EventLoop, HandleIOReadEvent);
+			write_watcher = new IOWatcher (handle, EventTypes.Write, ioloop.EventLoop, HandleIOWriteEvent);
 		}
 
 		public void OnClose (CloseCallback callback)
@@ -182,7 +195,7 @@ namespace Manos.IO {
 		private void HandleIOWriteEvent (Loop loop, IOWatcher watcher, EventTypes revents)
 		{
 			// Happens after a close
-			if (socket == null)
+			if (handle == IntPtr.Zero)
 				return;
 
 			Expires = DateTime.UtcNow + TimeOut;

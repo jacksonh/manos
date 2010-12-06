@@ -89,6 +89,7 @@
     <Compile Include="Manos.IO\SendBytesOperation.cs" />
     <Compile Include="Manos.IO\SendFileOperation.cs" />
     <Compile Include="Manos.IO\SendFileOperation_NO_SENDFILE.cs" />
+    <Compile Include="Manos.IO\SocketStream.cs" />
     <Compile Include="Manos.IO\IWriteOperation.cs" />
     <Compile Include="Manos\IManosContext.cs" />
     <Compile Include="Manos.Testing\MockManosModule.cs" />
