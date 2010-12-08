@@ -8,7 +8,7 @@
     <ProjectGuid>{482384E3-EB97-4A8E-9ED9-EACC31350B5E}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>manostool</RootNamespace>
-    <AssemblyName>manos</AssemblyName>
+    <AssemblyName>manostool</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

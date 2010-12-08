@@ -904,7 +904,7 @@ namespace Manos.Http {
 
 					c = upper(ch);
 
-					if (c < A || Z < c) {
+					if (c == 0) {
 						settings.RaiseOnError(this, "invalid char in header", data, p_err);
 					};
 

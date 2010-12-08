@@ -181,13 +181,21 @@ namespace Manos.IO {
 				close_callback (this);
 		}
 
+		public event EventHandler ReadEvent;
+
 		private void HandleIOReadEvent (Loop loop, IOWatcher watcher, EventTypes revents)
 		{
+			Expires = DateTime.UtcNow + TimeOut;
+
+			if (ReadEvent) {
+				ReadEvent (this, EventArgs.Empty);
+				return;
+			}
+
 			// Happens after a close
 			if (socket == null)
 				return;
-
-			Expires = DateTime.UtcNow + TimeOut;
+			
 			HandleRead ();
 		}
 

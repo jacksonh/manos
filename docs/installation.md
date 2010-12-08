@@ -77,6 +77,34 @@ You should now have a libev.dylib in /opt/local/lib/ to make sure Mono knows whe
 
     export DYLD_FALLBACK_LIBRARY_PATH=/opt/local/lib
 
+### HomeBrew
+
+Home brew by default installs the 64-bit version. We need to edit the libev formula
+
+    Run "brew edit libev" 
+
+Add
+    
+    ENV["CFLAGS"] = '-arch i386 -arch x86_64'
+
+before
+    
+    system "./configure", "--disable-debug", 
+                          "--disable-dependency-tracking", 
+                          "--prefix=#{prefix}", 
+                          "--enable-shared", 
+                          "--mandir=#{man}" 
+    system "make install" 
+
+Take from [google group](http://groups.google.com/group/manos-de-mono/browse_thread/thread/cc5328e3abc30fa7)
+    
+
+The key part of this is that we are installing the universal build of libev. If you leave that part out you could get a 64bit version and Mono won't be able to load it.
+
+You should now have a libev.dylib in /opt/local/lib/ to make sure Mono knows where to find that library, update your DYLD_FALLBACK_LIBRARY_PATH.
+
+    export DYLD_FALLBACK_LIBRARY_PATH=/opt/local/lib
+
 
 ### Install Manos
 

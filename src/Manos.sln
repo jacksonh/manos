@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manos", "Manos\Manos.csproj", "{2548B25A-2E1F-4E21-BC43-7E39B1F6F23F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "manos.exe", "manos.exe\manos.exe.csproj", "{482384E3-EB97-4A8E-9ED9-EACC31350B5E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "manostool", "manostool\manostool.csproj", "{482384E3-EB97-4A8E-9ED9-EACC31350B5E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manos.Tests", "Manos.Tests\Manos.Tests.csproj", "{259D5EAD-0DCB-44A5-8323-6AE16A16B101}"
 EndProject
