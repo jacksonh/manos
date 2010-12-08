@@ -78,7 +78,8 @@ namespace Manos.Http {
 			IOStream.Close ();
 			
 			// Technically the IOStream should call our Close method, but lets be sure
-			gc_handle.Free ();
+			if (gc_handle.IsAllocated)
+				gc_handle.Free ();
 		}
 
 		public HttpServer Server {
