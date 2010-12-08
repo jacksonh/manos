@@ -149,7 +149,8 @@ namespace Manos.Http {
 			      	IOStream.Close ();
 				Server.RemoveTransaction (this);
 				return;
-			}
+			} else
+				Request.Read ();
 		}
 	}
 }
