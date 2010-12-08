@@ -187,11 +187,6 @@ namespace Manos.IO {
 		{
 			Expires = DateTime.UtcNow + TimeOut;
 
-			if (ReadEvent) {
-				ReadEvent (this, EventArgs.Empty);
-				return;
-			}
-
 			// Happens after a close
 			if (socket == null)
 				return;
@@ -210,7 +205,7 @@ namespace Manos.IO {
 			HandleWrite ();
 		}
 		
-		private void HandleWrite ()
+		protected virtual void HandleWrite ()
 		{
 			if (current_write_op == null) {
 				// Kinda shouldn't happen...
@@ -224,7 +219,7 @@ namespace Manos.IO {
 				FinishCurrentWrite ();
 		}
 
-		private void HandleRead ()
+		protected virtual void HandleRead ()
 		{
 			int size;
 

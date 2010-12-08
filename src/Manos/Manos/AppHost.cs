@@ -110,10 +110,8 @@ namespace Manos
 			server = new HttpServer (HandleTransaction, ioloop);
 			
 			IPEndPoint endpoint = new IPEndPoint (IPAddress, port);
-			
-			Server.Bind (endpoint);
-			
-			server.Start ();
+			server.Listen (endpoint);
+
 			ioloop.Start ();
 		}
 		

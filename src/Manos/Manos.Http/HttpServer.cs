@@ -48,8 +48,7 @@ namespace Manos.Http {
 
 		private HttpConnectionCallback callback;
 		private IOLoop ioloop;
-		private IOWatcher iowatcher;
-		private IntPtr handle;
+		SocketStream socket;
 
 		private List<HttpTransaction> transactions = new List<HttpTransaction> ();
 
@@ -64,7 +63,6 @@ namespace Manos.Http {
 			this.callback = callback;
 			this.ioloop = ioloop;
 
-
 			AppHost.AddTimeout (TimeSpan.FromMinutes (2), RepeatBehavior.Forever, null, ExpireTransactions);
 		}
 
@@ -72,34 +70,24 @@ namespace Manos.Http {
 			get { return ioloop; }
 		}
 
-		public Socket Socket {
-			get;
-			private set;
-		}
-
 		public List<HttpTransaction> Transactions {
 			get { return transactions; }
 		}
 
-		public void Bind (IPEndPoint endpoint)
+		public void Listen (IPEndPoint endpoint)
 		{
-			Socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			Socket.SetSocketOption (SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-			Socket.Blocking = false;
-			Socket.Bind (endpoint);
-			Socket.Listen (128);
-		}
+			SocketStream socket = new SocketStream (ioloop);
 
-		public void Start ()
-		{
-			handle = IOWatcher.GetHandle (Socket);
-			iowatcher = new IOWatcher (handle, EventTypes.Read, ioloop.EventLoop, HandleIOEvents);
-			iowatcher.Start ();
+			socket.Listen (endpoint);
+			socket.ConnectionAccepted += ConnectionAccepted;
 		}
 
 		public void Dispose () 
 		{
-			IOWatcher.ReleaseHandle(Socket, handle);
+			if (socket != null) {
+				socket.Dispose ();
+				socket = null;
+			}
 		}
 
 		public void RunTransaction (HttpTransaction trans)
@@ -112,27 +100,10 @@ namespace Manos.Http {
 			transactions.Remove (trans);
 		}
 
-		private void HandleIOEvents (Loop loop, IOWatcher watcher, EventTypes revents)
+		private void ConnectionAccepted (object sender, ConnectionAcceptedEventArgs args)
 		{
-			while (true) {
-			      	Socket s = null;
-				try {
-					s = Socket.Accept ();
-				} catch (SocketException se) {
-					if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
-						return;
-					Console.WriteLine ("Socket exception in Accept handler");
-					Console.WriteLine (se);
-					return;
-				} catch (Exception e) {
-					Console.WriteLine ("Exception in Accept handler");
-					Console.WriteLine (e);
-					return;
-				}
-
-				IOStream iostream = new IOStream (s, IOLoop);
-				transactions.Add (HttpTransaction.BeginTransaction (this, iostream, s, callback));
-			}
+			var t = HttpTransaction.BeginTransaction (this, args.Stream, args.Stream.socket, callback);
+			transactions.Add (t);
 		}
 
 		private void ExpireTransactions (ManosApp app, object data)
