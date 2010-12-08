@@ -43,10 +43,10 @@ namespace Manos.Http
 
 		private Queue<IWriteOperation> write_ops;
 
-		public HttpResponseStream (HttpResponse response, IOStream stream)
+		public HttpResponseStream (HttpResponse response, SocketStream stream)
 		{
 			Response = response;
-			IOStream = stream;
+			SocketStream = stream;
 		}
 
 		public HttpResponse Response {
@@ -54,7 +54,7 @@ namespace Manos.Http
 			private set;
 		}
 
-		public IOStream IOStream {
+		public SocketStream SocketStream {
 			get;
 			private set;
 		}
@@ -187,11 +187,11 @@ namespace Manos.Http
 				IWriteOperation [] ops = write_ops.ToArray ();
 
 				for (int i = 0; i < ops.Length; i++) {
-					IOStream.QueueWriteOperation (ops [i]);
+					SocketStream.QueueWriteOperation (ops [i]);
 				}
 			}
 
-			IOStream.QueueWriteOperation (new NopWriteOperation (callback));
+			SocketStream.QueueWriteOperation (new NopWriteOperation (callback));
 		}
 
 		private void EnsureMetadata ()
@@ -204,7 +204,7 @@ namespace Manos.Http
 		private void QueueWriteOperation (IWriteOperation op)
 		{
 			if (chunk_encode) {
-				IOStream.QueueWriteOperation (op);
+				SocketStream.QueueWriteOperation (op);
 				return;
 			}
 

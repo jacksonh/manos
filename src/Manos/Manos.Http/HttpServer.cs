@@ -89,7 +89,7 @@ namespace Manos.Http {
 
 		private void ConnectionAccepted (object sender, ConnectionAcceptedEventArgs args)
 		{
-			var t = HttpTransaction.BeginTransaction (this, args.Stream, args.Stream.socket, callback);
+			var t = HttpTransaction.BeginTransaction (this, args.Stream, callback);
 		}
 	}
 }

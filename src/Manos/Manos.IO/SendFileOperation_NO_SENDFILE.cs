@@ -77,16 +77,18 @@ namespace Manos.IO {
 
 		public void HandleWrite (IOStream stream)
 		{
+			SocketStream sstream = (SocketStream) stream;
+
 			while (bytes_index < file_length) {
 				int len = -1;
 				try {
-					len = stream.socket.Send (bytes, bytes_index, file_length, SocketFlags.None);
+					len = sstream.socket.Send (bytes, bytes_index, file_length, SocketFlags.None);
 				} catch (SocketException se) {
 					if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
 						return;
-					stream.Close ();
+					sstream.Close ();
 				} catch (Exception e) {
-					stream.Close ();
+					sstream.Close ();
 				} finally {
 					if (len != -1)
 						bytes_index += len;

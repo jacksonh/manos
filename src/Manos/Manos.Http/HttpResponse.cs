@@ -50,17 +50,17 @@ namespace Manos.Http {
 		{
 		}
 
-		public HttpResponse (IHttpTransaction transaction, IOStream stream)
+		public HttpResponse (IHttpTransaction transaction, SocketStream stream)
 		{
 			Transaction = transaction;
-			IOStream = stream;
+			SocketStream = stream;
 
 			StatusCode = 200;
 
 			WriteHeaders = true;
 
 			Headers = new HttpHeaders ();
-			Stream = new HttpResponseStream (this, IOStream);
+			Stream = new HttpResponseStream (this, stream);
 			Stream.Chunked = (transaction.Request.MajorVersion > 0 && transaction.Request.MinorVersion > 0);
 		}
 
@@ -69,7 +69,7 @@ namespace Manos.Http {
 			private set;
 		}
 
-		public IOStream IOStream {
+		public SocketStream SocketStream {
 			get;
 			private set;
 		}
@@ -220,7 +220,7 @@ namespace Manos.Http {
 			bytes.Add (new ArraySegment<byte> (data, 0, data.Length));
 			var write_bytes = new SendBytesOperation (bytes, null);
 
-			IOStream.QueueWriteOperation (write_bytes);
+			SocketStream.QueueWriteOperation (write_bytes);
 		}
 
 		public void Finish ()

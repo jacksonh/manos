@@ -41,9 +41,9 @@ namespace Manos.Http {
 
 	public class HttpTransaction : IHttpTransaction, IDisposable {
 
-		public static HttpTransaction BeginTransaction (HttpServer server, IOStream stream, Socket socket, HttpConnectionCallback cb)
+		public static HttpTransaction BeginTransaction (HttpServer server, SocketStream stream, HttpConnectionCallback cb)
 		{
-			HttpTransaction transaction = new HttpTransaction (server, stream, socket, cb);
+			HttpTransaction transaction = new HttpTransaction (server, stream, cb);
 
 			return transaction;
 		}
@@ -56,16 +56,16 @@ namespace Manos.Http {
 		private ParserSettings parser_settings;
 
 		
-		public HttpTransaction (HttpServer server, IOStream stream, Socket socket, HttpConnectionCallback callback)
+		public HttpTransaction (HttpServer server, SocketStream stream, HttpConnectionCallback callback)
 		{
 			Server = server;
-			IOStream = stream;
-			Socket = socket;
+			Stream = stream;
+
 			ConnectionCallback = callback;
 
 			gc_handle = GCHandle.Alloc (this);
 
-			IOStream.Closed += delegate (object sender, EventArgs args) {
+			Stream.Closed += delegate (object sender, EventArgs args) {
 				Close ();
 			};
 
@@ -75,7 +75,7 @@ namespace Manos.Http {
 
 		public void Dispose ()
 		{
-			IOStream.Close ();
+			Stream.Close ();
 			
 			// Technically the IOStream should call our Close method, but lets be sure
 			if (gc_handle.IsAllocated)
@@ -87,12 +87,7 @@ namespace Manos.Http {
 			private set;
 		}
 
-		public IOStream IOStream {
-			get;
-			private set;
-		}
-
-		public Socket Socket {
+		public SocketStream Stream {
 			get;
 			private set;
 		}
@@ -147,7 +142,7 @@ namespace Manos.Http {
 		public void OnRequestReady ()
 		{
 			try {
-				Response = new HttpResponse (this, IOStream);
+				Response = new HttpResponse (this, Stream);
 
 				Server.RunTransaction (this);
 			} catch (Exception e) {
@@ -169,7 +164,7 @@ namespace Manos.Http {
 			if (disconnect) {
 				Request = null;
 				Response = null;
-			      	IOStream.Close ();
+			      	Stream.Close ();
 				return;
 			} else
 				Request.Read ();

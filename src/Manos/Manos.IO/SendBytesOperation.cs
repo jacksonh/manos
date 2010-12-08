@@ -93,16 +93,18 @@ namespace Manos.IO {
 
 		public void HandleWrite (IOStream stream)
 		{
+			SocketStream sstream = (SocketStream) stream;
+			
 			while (bytes.Count > 0) {
 				int len = -1;
 				try {
-					len = stream.socket.Send (bytes);
+					len = sstream.socket.Send (bytes);
 				} catch (SocketException se) {
 					if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
 						return;
-					stream.Close ();
+					sstream.Close ();
 				} catch (Exception e) {
-					stream.Close ();
+					sstream.Close ();
 				} finally {
 					if (len != -1) {
 						int num_segments = bytes.Count;
