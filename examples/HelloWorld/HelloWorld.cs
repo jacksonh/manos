@@ -36,7 +36,7 @@ namespace HelloWorld {
 
 		public HelloWorld ()
 		{
-			Route ("/", ctx => ctx.Response.Write ("Hello, World"));
+			Route ("/", ctx => ctx.Response.End ("Hello, World"));
 
 			Route ("/shutdown", ctx => System.Environment.Exit (0));
 
