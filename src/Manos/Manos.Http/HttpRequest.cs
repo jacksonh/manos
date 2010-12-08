@@ -73,8 +73,6 @@ namespace Manos.Http {
 			Transaction = transaction;
 			IOStream = stream;
 
-			stream.OnClose (OnClose);
-
 			parser_settings = CreateParserSettings ();
 		}
 
@@ -234,12 +232,6 @@ namespace Manos.Http {
 				data.Children.Remove (old);
 			if (newd != null)
 				Data.Children.Add (newd);
-		}
-
-
-		
-		private void OnClose (IOStream stream)
-		{
 		}
 
 		private void OnBytesRead (IOStream stream, byte [] data, int offset, int count)

@@ -36,19 +36,9 @@ namespace HelloWorld {
 
 		public HelloWorld ()
 		{
-			Route ("/", ctx => ctx.Response.End ("Hello, World"));
+			Route ("/", ctx => ctx.Response.Write ("Hello, World"));
 
 			Route ("/shutdown", ctx => System.Environment.Exit (0));
-
-			Route ("/transactions", ctx => {
-				ctx.Response.Write ("Number of transactions: '{0}'", ctx.Server.Transactions.Count);
-
-				foreach (var t in ctx.Server.Transactions) {
-					ctx.Response.WriteLine ("{0}", t.Request.LocalPath);
-				}
-
-				ctx.Response.End ();
-			});
 
 			Route ("/timeout", ctx => {
 				ctx.Response.WriteLine ("Hello");

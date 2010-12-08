@@ -32,13 +32,14 @@ using System.Net;
 using System.Net.Sockets;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 using Manos.IO;
 using Manos.Collections;
 
 namespace Manos.Http {
 
-	public class HttpTransaction : IHttpTransaction {
+	public class HttpTransaction : IHttpTransaction, IDisposable {
 
 		public static HttpTransaction BeginTransaction (HttpServer server, IOStream stream, Socket socket, HttpConnectionCallback cb)
 		{
@@ -50,6 +51,7 @@ namespace Manos.Http {
 		private bool aborted;
 		private bool connection_finished;
 
+		private GCHandle gc_handle;
 		private HttpParser parser;
 		private ParserSettings parser_settings;
 
@@ -61,8 +63,22 @@ namespace Manos.Http {
 			Socket = socket;
 			ConnectionCallback = callback;
 
+			gc_handle = GCHandle.Alloc (this);
+
+			IOStream.Closed += delegate (object sender, EventArgs args) {
+				Close ();
+			};
+
 			Request = new HttpRequest (this, stream);
 			Request.Read ();
+		}
+
+		public void Dispose ()
+		{
+			IOStream.Close ();
+			
+			// Technically the IOStream should call our Close method, but lets be sure
+			gc_handle.Free ();
 		}
 
 		public HttpServer Server {
@@ -116,6 +132,12 @@ namespace Manos.Http {
 			aborted = true;
 		}
 
+		public void Close ()
+		{
+			if (gc_handle.IsAllocated)
+				gc_handle.Free ();
+		}
+
 		public void Run ()
 		{
 			ConnectionCallback (this);
@@ -147,11 +169,11 @@ namespace Manos.Http {
 				Request = null;
 				Response = null;
 			      	IOStream.Close ();
-				Server.RemoveTransaction (this);
 				return;
 			} else
 				Request.Read ();
 		}
+
 	}
 }
 

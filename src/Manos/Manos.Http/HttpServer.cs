@@ -50,8 +50,6 @@ namespace Manos.Http {
 		private IOLoop ioloop;
 		SocketStream socket;
 
-		private List<HttpTransaction> transactions = new List<HttpTransaction> ();
-
 		static HttpServer ()
 		{
 			Version v = Assembly.GetExecutingAssembly ().GetName ().Version;
@@ -62,16 +60,10 @@ namespace Manos.Http {
 		{
 			this.callback = callback;
 			this.ioloop = ioloop;
-
-			AppHost.AddTimeout (TimeSpan.FromMinutes (2), RepeatBehavior.Forever, null, ExpireTransactions);
 		}
 
 		public IOLoop IOLoop {
 			get { return ioloop; }
-		}
-
-		public List<HttpTransaction> Transactions {
-			get { return transactions; }
 		}
 
 		public void Listen (IPEndPoint endpoint)
@@ -95,22 +87,9 @@ namespace Manos.Http {
 			trans.Run ();
 		}
 
-		public void RemoveTransaction (HttpTransaction trans)
-		{
-			transactions.Remove (trans);
-		}
-
 		private void ConnectionAccepted (object sender, ConnectionAcceptedEventArgs args)
 		{
 			var t = HttpTransaction.BeginTransaction (this, args.Stream, args.Stream.socket, callback);
-			transactions.Add (t);
-		}
-
-		private void ExpireTransactions (ManosApp app, object data)
-		{
-			DateTime now = DateTime.UtcNow;
-			int count = transactions.Count ();
-			transactions.RemoveAll (t => t.IOStream.Expires <= now);
 		}
 	}
 }

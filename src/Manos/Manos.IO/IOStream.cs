@@ -37,7 +37,6 @@ using Libev;
 
 namespace Manos.IO {
 
-	public delegate void CloseCallback (IOStream stream);
 	public delegate void ReadCallback (IOStream stream, byte [] data, int offset, int count);
 	public delegate void WriteCallback ();
 
@@ -49,11 +48,11 @@ namespace Manos.IO {
 		internal Socket socket;
 		private IOLoop ioloop;
 
-		private CloseCallback close_callback;
 		private ReadCallback read_callback;
 
 		private IOWatcher read_watcher;
 		private IOWatcher write_watcher;
+		private TimerWatcher timeout_watcher;
 		private IntPtr handle;
 
 		private IWriteOperation current_write_op;
@@ -68,7 +67,7 @@ namespace Manos.IO {
 			this.socket = socket;
 			this.ioloop = ioloop;
 
-			TimeOut = TimeSpan.FromMinutes (2);
+			TimeOut = TimeSpan.FromMinutes (1);
 			Expires = DateTime.UtcNow + TimeOut;
 			
 			if (socket != null) {
@@ -108,11 +107,9 @@ namespace Manos.IO {
 			this.handle = handle;
 			read_watcher = new IOWatcher (handle, EventTypes.Read, ioloop.EventLoop, HandleIOReadEvent);
 			write_watcher = new IOWatcher (handle, EventTypes.Write, ioloop.EventLoop, HandleIOWriteEvent);
-		}
+			timeout_watcher = new TimerWatcher (TimeOut, TimeOut, ioloop.EventLoop, HandleTimeoutEvent);
 
-		public void OnClose (CloseCallback callback)
-		{
-			this.close_callback = callback;
+			timeout_watcher.Start ();
 		}
 
 		public void ReadBytes (ReadCallback callback)
@@ -174,11 +171,15 @@ namespace Manos.IO {
 
 			IOWatcher.ReleaseHandle (socket, handle);
 
+			read_watcher.Dispose ();
+			write_watcher.Dispose ();
+			timeout_watcher.Dispose ();
+
 			handle = IntPtr.Zero;
 			socket = null;
 
-			if (close_callback != null)
-				close_callback (this);
+			if (Closed != null)
+				Closed (this, EventArgs.Empty);
 		}
 
 		public event EventHandler ReadEvent;
@@ -204,7 +205,16 @@ namespace Manos.IO {
 			Expires = DateTime.UtcNow + TimeOut;
 			HandleWrite ();
 		}
-		
+
+		private void HandleTimeoutEvent (Loop loop, TimerWatcher watcher, EventTypes revents)
+		{
+			if (Expires <= DateTime.UtcNow) {
+				if (TimedOut != null)
+					TimedOut (this, EventArgs.Empty);
+				Close ();
+			}
+		}
+
 		protected virtual void HandleWrite ()
 		{
 			if (current_write_op == null) {
@@ -294,6 +304,10 @@ namespace Manos.IO {
 			}
 			
 		}
+
+		public event EventHandler Error;
+		public event EventHandler Closed;
+		public event EventHandler TimedOut;
 	}
 
 }
