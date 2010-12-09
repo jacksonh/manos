@@ -71,7 +71,7 @@ namespace Manos.Http {
 		public HttpRequest (IHttpTransaction transaction, SocketStream stream)
 		{
 			Transaction = transaction;
-			Stream = stream;
+			Socket = stream;
 
 			parser_settings = CreateParserSettings ();
 		}
@@ -81,7 +81,7 @@ namespace Manos.Http {
 			private set;
 		}
 
-		public SocketStream Stream {
+		public SocketStream Socket {
 			get;
 			private set;
 		}
@@ -218,7 +218,7 @@ namespace Manos.Http {
 		public void Read ()
 		{
 			Reset ();
-			Stream.ReadBytes (OnBytesRead);
+			Socket.ReadBytes (OnBytesRead);
 		}
 
 		public void SetWwwFormData (DataDictionary data)
@@ -237,6 +237,7 @@ namespace Manos.Http {
 		private void OnBytesRead (IOStream stream, byte [] data, int offset, int count)
 		{
 			ByteBuffer bytes = new ByteBuffer (data, offset, count);
+
 			parser.Execute (parser_settings, bytes);
 		}
 
@@ -389,7 +390,7 @@ namespace Manos.Http {
 		private void OnParserError (HttpParser parser, string message, ByteBuffer buffer, int initial_position)
 		{
 			Transaction.Abort (-1, "HttpParser error: {0}", message);
-			Stream.Close ();
+			Socket.Close ();
 		}
 
 		public static string ParseBoundary (string ct)

@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 
 using Manos;
+using Manos.IO;
 using Manos.Http;
 using Manos.Collections;
 
@@ -149,6 +150,11 @@ namespace Manos.Http.Testing
 		}
 
 		public int MinorVersion {
+			get;
+			set;
+		}
+
+		public SocketStream Socket {
 			get;
 			set;
 		}

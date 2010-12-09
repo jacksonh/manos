@@ -29,6 +29,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
+using Manos.IO;
 using Manos.Http;
 using Manos.Collections;
 
@@ -88,6 +89,10 @@ namespace Manos.Http {
 		}
 
 		Encoding ContentEncoding {
+			get;
+		}
+
+		SocketStream Socket {
 			get;
 		}
 

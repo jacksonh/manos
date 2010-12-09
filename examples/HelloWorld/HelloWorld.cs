@@ -40,6 +40,13 @@ namespace HelloWorld {
 
 			Route ("/shutdown", ctx => System.Environment.Exit (0));
 
+			Route ("/info", ctx => {
+				ctx.Response.Write ("Host: {0}", ctx.Request.Headers ["Host"]);
+				ctx.Response.Write ("Remote Address: {0}", ctx.Request.Socket.Address);
+				ctx.Response.Write ("Referer: '{0}'", ctx.Request.Headers ["Referer"]);
+				ctx.Response.End ();
+			});
+
 			Route ("/timeout", ctx => {
 				ctx.Response.WriteLine ("Hello");
 				AddTimeout (TimeSpan.FromSeconds (2), (app, data) => {
@@ -60,6 +67,7 @@ namespace HelloWorld {
 
 			Get ("/upload", ctx => {
 				ctx.Response.Write ("<html><head></head><body>");
+				ctx.Response.Write ("<a href='/info'>a link</a>");
 				ctx.Response.Write ("<form method=\"POST\" enctype=\"multipart/form-data\">");
 				ctx.Response.Write ("<input type=\"text\" name=\"some_name\"><br>");
 				ctx.Response.Write ("<input type=\"file\" name=\"the_file\" >");
