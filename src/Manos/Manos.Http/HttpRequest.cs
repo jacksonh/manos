@@ -30,6 +30,7 @@ using System.IO;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
+using System.Globalization;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -41,39 +42,40 @@ using Manos.Collections;
 
 namespace Manos.Http {
 
-	public class HttpRequest : IHttpRequest {
+	public class HttpRequest : HttpEntity, IHttpRequest {
 		
-	        private static readonly long MAX_BUFFERED_CONTENT_LENGTH = 2621440; // 2.5MB (Eventually this will be an environment var)
-
-		private HttpParser parser;
-		private ParserSettings parser_settings;
-
 		private StringBuilder query_data_builder = new StringBuilder ();
-		private StringBuilder current_header_field = new StringBuilder ();
-		private StringBuilder current_header_value = new StringBuilder ();
 
-		private IHttpBodyHandler body_handler;
-		
-		private HttpHeaders headers;
-
-		private DataDictionary data;
 		private DataDictionary uri_data;
 		private	DataDictionary query_data;
-		private DataDictionary post_data;
 
-		private DataDictionary cookies;
-		private Dictionary<string,UploadedFile> uploaded_files;
-
-		public HttpRequest ()
+		public HttpRequest (string address)
 		{
+			Uri uri = null;
+
+			if (!Uri.TryCreate (address, UriKind.Absolute, out uri))
+				throw new Exception ("Invalid URI: '" + address + "'.");
+
+			RemoteAddress = uri.Host;
+			RemotePort = uri.Port;
+			Path = uri.AbsolutePath;
+
+			Method = HttpMethod.HTTP_GET;
+			MajorVersion = 1;
+			MinorVersion = 1;
+		}
+
+		public HttpRequest (string remote_address, int port) : this (remote_address)
+		{
+			RemotePort = port;
 		}
 
 		public HttpRequest (IHttpTransaction transaction, SocketStream stream)
 		{
 			Transaction = transaction;
 			Socket = stream;
-
-			parser_settings = CreateParserSettings ();
+			RemoteAddress = stream.Address;
+			RemotePort = stream.Port;
 		}
 
 		public IHttpTransaction Transaction {
@@ -81,67 +83,19 @@ namespace Manos.Http {
 			private set;
 		}
 
-		public SocketStream Socket {
-			get;
-			private set;
-		}
-
-		public HttpHeaders Headers {
-			get {
-				if (headers == null)
-					headers = new HttpHeaders ();
-				return headers;
-			}
-			set {
-				headers = value;
-			}
-		}
-
-		public HttpMethod Method {
+		public string RemoteAddress {
 			get;
 			set;
 		}
 
-		public int MajorVersion {
+		public int RemotePort {
 			get;
 			set;
 		}
 
-		public int MinorVersion {
+		public string Path {
 			get;
 			set;
-		}
-
-		public string LocalPath {
-			get;
-			set;
-		}
-
-		public Encoding ContentEncoding {
-			get { return Headers.ContentEncoding; }
-			set { Headers.ContentEncoding = value; }
-		}
-
-		public DataDictionary Data {
-			get {
-				if (data == null)
-					data = new DataDictionary ();
-				return data;
-			}
-		}
-		
-		public DataDictionary PostData {
-			get {
-				if (post_data == null) {
-					post_data = new DataDictionary ();
-					Data.Children.Add (post_data);
-				}
-				return post_data;
-			}
-			set {
-				SetDataDictionary (post_data, value);
-				post_data = value;
-			}
 		}
 
 		public DataDictionary QueryData {
@@ -171,54 +125,15 @@ namespace Manos.Http {
 				uri_data = value;
 			}
 		}
-		
-		public DataDictionary Cookies {
-			get {
-				if (cookies == null)
-					cookies = ParseCookies ();
-				return cookies;
-			}
-		}
-		
-		public Dictionary<string,UploadedFile> Files {
-			get {
-			    if (uploaded_files == null)
-			       uploaded_files = new Dictionary<string,UploadedFile> ();
-			    return uploaded_files;
-			}
-		}
 
-		private DataDictionary ParseCookies ()
+		public override void Reset ()
 		{
-			string cookie_header;
+			Path = null;
 
-			if (!Headers.TryGetValue ("Cookie", out cookie_header))
-				return new DataDictionary ();
-			
-			return HttpCookie.FromHeader (cookie_header);
-		}
-
-		public void Reset ()
-		{
-			LocalPath = null;
-			ContentEncoding = null;
-
-			headers = null;
-			data = null;
 			uri_data = null;
 			query_data = null;
-			post_data = null;
 
-			cookies = null;
-			uploaded_files = null;
-
-			parser = new HttpParser ();
-		}
-
-		public void Read ()
-		{
-			Reset ();
-			Socket.ReadBytes (OnBytesRead);
+			base.Reset ();
 		}
 
 		public void SetWwwFormData (DataDictionary data)
@@ -226,27 +141,12 @@ namespace Manos.Http {
 			PostData = data;
 		}
 
-		private void SetDataDictionary (DataDictionary old, DataDictionary newd)
-		{
-			if (data != null && old != null)
-				data.Children.Remove (old);
-			if (newd != null)
-				Data.Children.Add (newd);
-		}
-
-		private void OnBytesRead (IOStream stream, byte [] data, int offset, int count)
-		{
-			ByteBuffer bytes = new ByteBuffer (data, offset, count);
-
-			parser.Execute (parser_settings, bytes);
-		}
-
 		private int OnPath (HttpParser parser, ByteBuffer data, int pos, int len)
 		{
 			string str = Encoding.ASCII.GetString (data.Bytes, pos, len);
 
 			str = HttpUtility.UrlDecode (str, Encoding.ASCII);
-			LocalPath = LocalPath == null ? str : String.Concat (LocalPath, str);
+			Path = Path == null ? str : String.Concat (Path, str);
 			return 0;
 		}
 
@@ -258,200 +158,64 @@ namespace Manos.Http {
 			return 0;
 		}
 
-		private int OnMessageBegin (HttpParser parser)
+		protected override void OnFinishedReading (HttpParser parser)
 		{
-
-			return 0;
-		}
-
-		private int OnMessageComplete (HttpParser parser)
-		{
-			OnFinishedReading ();
-			return 0;
-		}
-
-		public int OnHeaderField (HttpParser parser, ByteBuffer data, int pos, int len)
-		{
-			string str = Encoding.ASCII.GetString (data.Bytes, pos, len);
-
-			if (current_header_value.Length != 0)
-				FinishCurrentHeader ();
-
-			current_header_field.Append (str);
-			return 0;
-		}
-
-		public int OnHeaderValue (HttpParser parser, ByteBuffer data, int pos, int len)
-		{
-			string str = Encoding.ASCII.GetString (data.Bytes, pos, len);
-
-			if (current_header_field.Length == 0)
-				throw new HttpException ("Header Value raised with no header field set.");
-
-			current_header_value.Append (str);
-			return 0;
-		}
-
-		private void FinishCurrentHeader ()
-		{
-			try {
-				Headers.SetHeader (current_header_field.ToString (), current_header_value.ToString ());
-				current_header_field.Length = 0;
-				current_header_value.Length = 0;
-			} catch (Exception e) {
-				Console.WriteLine (e);
-			}
-		}
-
-		private int OnHeadersComplete (HttpParser parser)
-		{
-			if (current_header_field.Length != 0)
-				FinishCurrentHeader ();
-
-			if (query_data_builder.Length != 0) {
-				QueryData = HttpUtility.ParseUrlEncodedData (query_data_builder.ToString ());
-				query_data_builder.Length = 0;
-			}
+			base.OnFinishedReading (parser);
 
 			MajorVersion = parser.Major;
 			MinorVersion = parser.Minor;
 			Method = parser.HttpMethod;
 
-			return 0;
-		}
-
-		public int OnBody (HttpParser parser, ByteBuffer data, int pos, int len)
-		{
-			if (body_handler == null)
-				CreateBodyHandler ();
-
-			if (body_handler != null)
-				body_handler.HandleData (this, data, pos, len);
-
-			return 0;
-		}
-
-		private void CreateBodyHandler ()
-		{
-			string ct = Headers ["Content-Type"];
-
-			if (ct != null && ct.StartsWith ("application/x-www-form-urlencoded", StringComparison.InvariantCultureIgnoreCase)) {
-				body_handler = new HttpFormDataHandler ();
-				return;
-			}
-
-			if (ct != null && ct.StartsWith ("multipart/form-data", StringComparison.InvariantCultureIgnoreCase)) {
-				string boundary = ParseBoundary (ct);
-				IUploadedFileCreator file_creator = GetFileCreator ();
-
-				body_handler = new HttpMultiPartFormDataHandler (boundary, ContentEncoding, file_creator);
-				return;
-			}
-		}
-
-		private IUploadedFileCreator GetFileCreator ()
-		{
-			if (Headers.ContentLength == null || Headers.ContentLength >= MAX_BUFFERED_CONTENT_LENGTH)
-				return new TempFileUploadedFileCreator ();
-			return new InMemoryUploadedFileCreator ();
-		}
-
-		private void OnFinishedReading ()
-		{
-			if (body_handler != null) {
-				body_handler.Finish (this);
-				body_handler = null;
-			}
-
+			Console.WriteLine ("A REQUEST IS READY!");
 			Transaction.OnRequestReady ();
 		}
 
-		private ParserSettings CreateParserSettings ()
+		public override ParserSettings CreateParserSettings ()
 		{
 			ParserSettings settings = new ParserSettings ();
-
-			settings.OnError = OnParserError;
 
 			settings.OnPath = OnPath;
 			settings.OnQueryString = OnQueryString;
 
-			settings.OnMessageBegin = OnMessageBegin;
-			settings.OnMessageComplete = OnMessageComplete;
-
-			settings.OnHeaderField = OnHeaderField;
-			settings.OnHeaderValue = OnHeaderValue;
-			settings.OnHeadersComplete = OnHeadersComplete;
-			
-			settings.OnBody = OnBody;
-
 			return settings;
 		}
 
-		private void OnParserError (HttpParser parser, string message, ByteBuffer buffer, int initial_position)
+		public void Execute ()
 		{
-			Transaction.Abort (-1, "HttpParser error: {0}", message);
-			Socket.Close ();
+			Socket = new SocketStream (AppHost.IOLoop);
+			Socket.Connect (RemoteAddress, RemotePort);
+
+			Socket.Connected += delegate {
+				Stream = new HttpStream (this, Socket);
+
+				Stream.WriteMetadata (() => {
+					HttpResponse response = new HttpResponse (Socket);
+
+					if (BodyData != null)
+						BodyData (this);
+					if (Connected != null)
+						Connected (response);
+				});
+			};
 		}
 
-		public static string ParseBoundary (string ct)
+		public override void WriteMetadata (StringBuilder builder)
 		{
-			if (ct == null)
-				return null;
+			Headers.SetNormalizedHeader ("Transfer-Encoding", "chunked");
 
-			int start = ct.IndexOf ("boundary=");
-			if (start < 1)
-				return null;
-			
-			return ct.Substring (start + "boundary=".Length);
+			builder.Append (Encoding.ASCII.GetString (HttpMethodBytes.GetBytes (Method)));
+			builder.Append (" ");
+			builder.Append (Path);
+			builder.Append (" HTTP/");
+			builder.Append (MajorVersion.ToString (CultureInfo.InvariantCulture));
+			builder.Append (".");
+			builder.Append (MinorVersion.ToString (CultureInfo.InvariantCulture));
+			builder.Append ("\r\n");
+			Headers.Write (builder, null, Encoding.ASCII);
 		}
 
-		/*
-		
-		private HttpResponseCallback callback;
-		
-		public void Get (string url, HttpResponseCallback callback)
-		{
-			this.callback = callback;
-			
-			Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			socket.SetSocketOption (SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-			socket.Blocking = false;
-			socket.Connect (url, 80);
-
-			IntPtr handle = IOWatcher.GetHandle (socket);
-			IOWatcher iowatcher = new IOWatcher (handle, EventTypes.Write, AppHost.IOLoop.EventLoop, (l, w, r) => {
-				DoGet (socket, url);
-				w.Stop ();
-			});
-			iowatcher.Start ();
-		}
-
-		public void DoGet (Socket socket, string url)
-		{
-			Console.WriteLine ("doing the get");
-			SocketStream iostream = new SocketStream (socket, AppHost.IOLoop);
-
-			byte [] bytes = Encoding.ASCII.GetBytes ("GET " + url + "\r\n\r\n");
-			var data = new List<ArraySegment<byte>> ();
-			data.Add (new ArraySegment<byte> (bytes));
-
-			WriteBytesOperation write_bytes = new WriteBytesOperation (data, () => {
-				Console.WriteLine ("the bytes have been writen");
-				iostream.ReadBytes (OnBytesRead);
-			});
-			iostream.QueueWriteOperation (write_bytes);
-		}
-
-		private void OnBytesRead (IOStream stream, byte [] data, int offset, int count)
-		{
-			HttpResponse response = new HttpResponse ();
-			response.Body = data;
-
-			callback (response);
-			stream.DisableReading ();
-		}
-
-		*/
+		public event Action<IHttpResponse> Connected;
+		public event Action<IHttpRequest> BodyData;
 	}
 }
 

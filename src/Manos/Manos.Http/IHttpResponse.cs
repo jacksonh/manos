@@ -40,7 +40,7 @@ namespace Manos.Http {
 			get;
 		}
 
-		HttpResponseStream Stream {
+		HttpStream Stream {
 			get;
 		}
 
@@ -73,9 +73,11 @@ namespace Manos.Http {
 		void End ();
 		void End (string str);
 		void End (byte [] data);
+		void End (byte [] data, int offset, int length);
 		void End (string str, params object [] prms);
 
 		void Write (byte [] data);
+		void Write (byte [] data, int offset, int length);
 
 		void SendFile (string file);
 		
@@ -90,7 +92,12 @@ namespace Manos.Http {
 		HttpCookie SetCookie (string name, string value, string domain, DateTime expires);
 		HttpCookie SetCookie (string name, string value, TimeSpan max_age);
 		HttpCookie SetCookie (string name, string value, string domain, TimeSpan max_age);
-		
+
+		void Read ();
+
+		event Action<IHttpResponse> Completed;
+		event Action<byte [], int, int> BodyData;
+
 	}
 }
 

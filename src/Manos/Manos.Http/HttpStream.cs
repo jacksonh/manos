@@ -35,21 +35,22 @@ using Manos.IO;
 
 namespace Manos.Http
 {
-	public class HttpResponseStream : Stream
+	public class HttpStream : Stream
 	{
 		private long length;
 		private bool chunk_encode = true;
+		private bool metadata_written;
 		private bool final_chunk_sent;
 
 		private Queue<IWriteOperation> write_ops;
 
-		public HttpResponseStream (HttpResponse response, SocketStream stream)
+		public HttpStream (HttpEntity entity, SocketStream stream)
 		{
-			Response = response;
+			HttpEntity = entity;
 			SocketStream = stream;
 		}
 
-		public HttpResponse Response {
+		public HttpEntity HttpEntity {
 			get;
 			private set;
 		}
@@ -101,17 +102,17 @@ namespace Manos.Http
 
 		public override int Read (byte[] buffer, int offset, int count)
 		{
-			throw new NotSupportedException ("Can not Read from an HttpResponseStream.");
+			throw new NotSupportedException ("Can not Read from an HttpStream.");
 		}
 		
 		public override long Seek (long offset, SeekOrigin origin)
 		{
-			throw new NotSupportedException ("Can not seek on an HttpResponseStream.");
+			throw new NotSupportedException ("Can not seek on an HttpStream.");
 		}
 
 		public override void SetLength (long value)
 		{
-			throw new NotSupportedException ("Can not set the length of an HttpResponseStream.");
+			throw new NotSupportedException ("Can not set the length of an HttpStream.");
 		}
 
 		public override void Write (byte[] buffer, int offset, int count)
@@ -155,6 +156,11 @@ namespace Manos.Http
 			QueueWriteOperation (write_bytes);
 		}
 
+		public void End ()
+		{
+			End (null);
+		}
+
 		public void End (WriteCallback callback)
 		{
 			if (chunk_encode) {
@@ -194,11 +200,28 @@ namespace Manos.Http
 			SocketStream.QueueWriteOperation (new NopWriteOperation (callback));
 		}
 
-		private void EnsureMetadata ()
+		public void WriteMetadata (WriteCallback callback)
 		{
-			if (!chunk_encode || Response.metadata_written)
+			StringBuilder builder = new StringBuilder ();
+			HttpEntity.WriteMetadata (builder);
+			
+			byte [] data = Encoding.ASCII.GetBytes (builder.ToString ());
+
+			metadata_written = true;
+
+			var bytes = new List<ArraySegment<byte>> ();
+			bytes.Add (new ArraySegment<byte> (data, 0, data.Length));
+			var write_bytes = new SendBytesOperation (bytes, callback);
+
+			SocketStream.QueueWriteOperation (write_bytes);
+		}
+
+		public void EnsureMetadata ()
+		{
+			if (!chunk_encode || metadata_written)
 				return;
-			Response.WriteMetadata ();
+
+			WriteMetadata (null);
 		}
 
 		private void QueueWriteOperation (IWriteOperation op)

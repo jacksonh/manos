@@ -49,7 +49,6 @@ namespace Manos.Http {
 		}
 
 		private bool aborted;
-		private bool connection_finished;
 
 		private GCHandle gc_handle;
 		private HttpParser parser;
@@ -115,12 +114,6 @@ namespace Manos.Http {
 		public bool NoKeepAlive {
 			get;
 			set;
-		}
-
-		public bool ConnectionFinished {
-			get {
-				return connection_finished;
-			}
 		}
 		
 		public void Abort (int status, string message, params object [] p)

@@ -30,61 +30,39 @@ using System;
 using System.IO;
 using System.Text;
 using System.Net;
-using System.Net.Sockets;
 using System.Collections;
 using System.Collections.Generic;
 
 using Manos.IO;
+using Manos.Collections;
 
 
 namespace Manos.Http {
 
-	public class HttpResponse : IHttpResponse {
-
-	       	internal bool metadata_written;
+	public class HttpResponse : HttpEntity, IHttpResponse {
 
 		private StreamWriter writer;
 		private Dictionary<string, HttpCookie> cookies;
 
-		public HttpResponse ()
+		public HttpResponse (SocketStream stream)
 		{
+			Socket = stream;
 		}
 
 		public HttpResponse (IHttpTransaction transaction, SocketStream stream)
 		{
 			Transaction = transaction;
-			SocketStream = stream;
+			Socket = stream;
 
 			StatusCode = 200;
 
 			WriteHeaders = true;
 
-			Headers = new HttpHeaders ();
-			Stream = new HttpResponseStream (this, stream);
+			Stream = new HttpStream (this, stream);
 			Stream.Chunked = (transaction.Request.MajorVersion > 0 && transaction.Request.MinorVersion > 0);
 		}
 
 		public IHttpTransaction Transaction {
-			get;
-			private set;
-		}
-
-		public SocketStream SocketStream {
-			get;
-			private set;
-		}
-
-		public HttpHeaders Headers {
-			get;
-			private set;
-		}
-
-		public byte [] Body {
-			get;
-			set;
-		}
-
-		public HttpResponseStream Stream {
 			get;
 			private set;
 		}
@@ -95,11 +73,6 @@ namespace Manos.Http {
 					writer = new StreamWriter (Stream);
 				return writer;
 			}
-		}
-
-		public Encoding ContentEncoding {
-			get { return Headers.ContentEncoding; }
-			set { Headers.ContentEncoding = value; }
 		}
 
 		public int StatusCode {
@@ -130,102 +103,23 @@ namespace Manos.Http {
 			}
 		}
 
-		public void Write (string str)
-		{
-			byte [] data = ContentEncoding.GetBytes (str);
-
-			WriteToBody (data);
-		}
-
-		public void Write (byte [] data)
-		{
-			WriteToBody (data);
-		}
-
-		public void Write (string str, params object [] prms)
-		{
-			Write (String.Format (str, prms));	
-		}
-
-		public void End (string str)
-		{
-			Write (str);
-			End ();
-		}
-
-		public void End (byte [] data)
-		{
-			Write (data);
-			End ();
-		}
-
-		public void End (string str, params object [] prms)
-		{
-			Write (str, prms);
-			End ();
-		}
-
-		public void End ()
-		{
-			if (!Stream.Chunked) {
-				Headers.ContentLength = Stream.Length;
-				WriteMetadata ();
-			}
-
-			Stream.End (Transaction.OnResponseFinished);
-		}
-
-		public void WriteLine (string str)
-		{
-			Write (str + Environment.NewLine);	
-		}
-		
-		public void WriteLine (string str, params object [] prms)
-		{
-			WriteLine (String.Format (str, prms));	
-		}
-		
-		public void SendFile (string file)
-		{
-			Stream.SendFile (file);
-		}
-
 		public void Redirect (string url)
 		{
 			StatusCode =  302;
 			Headers.SetNormalizedHeader ("Location", url);
 			
-			WriteMetadata ();
+//			WriteMetadata ();
 			End ();
 		}
 		
-		public void WriteMetadata ()
+		public override void WriteMetadata (StringBuilder builder)
 		{
-			if (metadata_written)
-				return;
-
 			SetStandardHeaders ();
 			
-			StringBuilder builder = new StringBuilder ();
 			WriteStatusLine (builder);
 
 			if (WriteHeaders)
 				Headers.Write (builder, cookies == null ? null : Cookies.Values, Encoding.ASCII);
-
-			byte [] data = Encoding.ASCII.GetBytes (builder.ToString ());
-
-			metadata_written = true;
-
-			var bytes = new List<ArraySegment<byte>> ();
-			bytes.Add (new ArraySegment<byte> (data, 0, data.Length));
-			var write_bytes = new SendBytesOperation (bytes, null);
-
-			SocketStream.QueueWriteOperation (write_bytes);
-		}
-
-		public void Finish ()
-		{
-			
 		}
 
 		public void SetHeader (string name, string value)
@@ -295,7 +189,53 @@ namespace Manos.Http {
 		{
 			return SetCookie (name, value, domain, DateTime.Now + max_age);
 		}
-		
+
+		public override int OnBody (HttpParser parser, ByteBuffer data, int pos, int len)
+		{
+			if (BodyData != null)
+				BodyData (data.Bytes, pos, len);
+			else
+				return base.OnBody (parser, data, pos, len);
+			return 0;
+		}
+
+		public override void End ()
+		{
+			if (!Stream.Chunked)
+				Headers.ContentLength = Stream.Length;
+
+			Stream.End (Transaction.OnResponseFinished);
+		}
+
+		protected override void OnFinishedReading (HttpParser parser)
+		{
+			base.OnFinishedReading (parser);
+
+			if (Completed != null)
+				Completed (this);
+		}
+
+		public override ParserSettings CreateParserSettings ()
+		{
+			ParserSettings settings = new ParserSettings ();
+
+			settings.OnBody = OnBody;
+
+			return settings;
+		}
+
+		public static string ParseBoundary (string ct)
+		{
+			if (ct == null)
+				return null;
+
+			int start = ct.IndexOf ("boundary=");
+			if (start < 1)
+				return null;
+			
+			return ct.Substring (start + "boundary=".Length);
+		}
+
 		private void WriteStatusLine (StringBuilder builder)
 		{
 			builder.Append ("HTTP/");
@@ -307,11 +247,6 @@ namespace Manos.Http {
 			builder.Append (" ");
 			builder.Append (GetStatusDescription (StatusCode));
 			builder.Append ("\r\n");
-		}
-
-		private void WriteToBody (byte [] data)
-		{
-			Stream.Write (data, 0, data.Length);
 		}
 
 		private void SetStandardHeaders ()
@@ -376,6 +311,9 @@ namespace Manos.Http {
 			}
 			return "";
 		}
+
+		public event Action<IHttpResponse> Completed;
+		public event Action<byte [], int, int> BodyData;
 	}
 
 }

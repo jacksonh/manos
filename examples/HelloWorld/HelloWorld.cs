@@ -28,6 +28,7 @@ using Manos.Http;
 
 using System;
 using System.IO;
+using System.Text;
 
 
 namespace HelloWorld {
@@ -78,26 +79,44 @@ namespace HelloWorld {
 				ctx.Response.End ();
 			});
 
-			Get ("/google", ctx => {
-				/*
-				HttpRequest r = new HttpRequest ();
-				r.Get ("www.google.com", response => {
-					ctx.Response.Write (response.Body);
-					ctx.Response.End ();
-				});
-				*/
-				var ss = new Manos.IO.SocketStream (AppHost.IOLoop);
-
-				ss.Connect (8124);
-				ss.Connected += delegate (object stream, EventArgs args) {
-					Console.WriteLine ("connected");
-					ss.Write (new byte [] { 0xA, 0xB, 0xB, 0xA }, () => {
-						Console.WriteLine ("Performed Write.");
-					});
-				};
-				
+			Put ("/put", ctx => {
+				ctx.Response.End ("this is some stuff '{0}'", ctx.Request.Data ["foobar"]);
 			});
-			
+
+			Get ("/request", ctx => {
+
+				var r = new HttpRequest ("http://127.0.0.1:8080/put");
+
+				r.Method = HttpMethod.HTTP_PUT;
+				r.Headers.SetNormalizedHeader ("Content-Type", "application/x-www-form-urlencoded");
+
+				r.BodyData += delegate {
+					r.Write ("foobar=value");
+					r.End ();
+				};
+
+				r.Connected += (response) => {
+					response.BodyData += (data, offset, length) => {
+						ctx.Response.Write (data, offset, length);
+					};
+
+					response.Completed += delegate {
+						ctx.Response.End ();
+					};
+					response.Read ();
+				};
+				r.Execute ();
+			});
+
+			int count = 0;
+			Get ("/request_loop", ctx => {
+
+				if (++count == 3) {
+					ctx.Response.End ("Got this page three times!");
+					return;
+				}
+			});
+
 			Post ("/upload", ctx => {
 				ctx.Response.End ("handled upload!");
 			});

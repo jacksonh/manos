@@ -84,7 +84,7 @@ namespace Manos.Http {
 			state = State.InBoundary;
 		}
 		
-		public void HandleData (HttpRequest request, ByteBuffer data, int pos, int len)
+		public void HandleData (HttpEntity entity, ByteBuffer data, int pos, int len)
 		{
 			// string str_data = encoding.GetString (data.Bytes, pos, len);
 			byte [] str_data = data.Bytes;
@@ -105,8 +105,8 @@ namespace Manos.Http {
 						boundary_buffer.Clear ();
 
 						// Flush any data
-						FinishFormData (request);
-						FinishFileData (request);
+						FinishFormData (entity);
+						FinishFileData (entity);
 
 						state = State.PostBoundary1;
 						index = 0;
@@ -190,7 +190,7 @@ namespace Manos.Http {
 					break;
 
 				case State.PostHeader2:
-					HandleHeader (request);
+					HandleHeader (entity);
 					header_key.Clear ();
 					header_value.Clear ();
 					state = State.InHeaderKey;
@@ -238,7 +238,7 @@ namespace Manos.Http {
 			return res;
 		}
 
-		private void HandleHeader (HttpRequest request)
+		private void HandleHeader (HttpEntity entity)
 		{
 			string key = encoding.GetString (header_key.ToArray ());
 			string value = encoding.GetString (header_value.ToArray ());
@@ -250,23 +250,23 @@ namespace Manos.Http {
 
 		}
 
-		public void Finish (HttpRequest request)
+		public void Finish (HttpEntity entity)
 		{
-			FinishFormData (request);
-			FinishFileData (request);
+			FinishFormData (entity);
+			FinishFileData (entity);
 		}
 
-		private void FinishFormData (HttpRequest request)
+		private void FinishFormData (HttpEntity entity)
 		{
 			if (form_data.Count == 0)
 				return;
 
 			string data = encoding.GetString (form_data.ToArray ());
-			request.PostData.Set (current_name, HttpUtility.UrlDecode (data, encoding));
+			entity.PostData.Set (current_name, HttpUtility.UrlDecode (data, encoding));
 			form_data.Clear ();
 		}
 
-		private void FinishFileData (HttpRequest request)
+		private void FinishFileData (HttpEntity entity)
 		{
 			if (uploaded_file == null)
 				return;
@@ -276,7 +276,7 @@ namespace Manos.Http {
 			uploaded_file.Finish ();
 
 			if (uploaded_file.Length > 0)
-				request.Files.Add (current_name, uploaded_file);
+				entity.Files.Add (current_name, uploaded_file);
 
 			uploaded_file = null;
 		}

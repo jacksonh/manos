@@ -42,7 +42,7 @@ namespace Manos.Http {
 			set;
 		}
 		
-		string LocalPath {
+		string Path {
 			get;
 			set;
 		}
@@ -98,6 +98,8 @@ namespace Manos.Http {
 
 		void Read ();
 		void SetWwwFormData (DataDictionary data);
+
+		
 		
 	}
 }

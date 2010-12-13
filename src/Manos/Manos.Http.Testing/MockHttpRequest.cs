@@ -48,10 +48,10 @@ namespace Manos.Http.Testing
 		private Dictionary<string,UploadedFile> uploaded_files;
 		private Encoding encoding;
 		
-		public MockHttpRequest (HttpMethod method, string local_path)
+		public MockHttpRequest (HttpMethod method, string path)
 		{
 			Method = method;
-			LocalPath = local_path;
+			Path = path;
 
 			data = new DataDictionary ();
 			uri_data = new DataDictionary ();
@@ -69,7 +69,7 @@ namespace Manos.Http.Testing
 		}
 		
 		
-		public string LocalPath {
+		public string Path {
 			get;
 			set;
 		}
