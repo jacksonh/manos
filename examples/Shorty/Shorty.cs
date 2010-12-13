@@ -44,7 +44,7 @@ namespace Shorty {
 		public void Index (IManosContext ctx)
 		{
 			ctx.Response.End (@"<html>
-                                   <head><title>Welcome to Shorty</title></head>
+                                   <head><title>" + ManosConfig.Get ("shorty.title") + @"</title></head>
                                    <body>
                                     <form method='POST' action='submit-link'>
                                      <input type='text' name='link' /><br />
