@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -27,6 +27,7 @@
         <Variable name="DYLD_FALLBACK_LIBRARY_PATH" value="/usr/local/lib" />
       </EnvironmentVariables>
     </EnvironmentVariables>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -34,11 +35,12 @@
     <OutputPath>..\..\build\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework" />
     <Reference Include="System">
     </Reference>
-    <Reference Include="nunit.framework, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
@@ -63,14 +65,7 @@
     <Compile Include="Manos.Http\HttpCookieTest.cs" />
     <Compile Include="Manos.Routing\HtmlFormDataTypeConverterTest.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Manos.Routing\" />
-    <Folder Include="Manos\" />
-    <Folder Include="Manos.Template\" />
-    <Folder Include="Manos.Caching\" />
-    <Folder Include="Nunit-Extensions\" />
-    <Folder Include="Manos.Collections\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Manos\Manos.csproj">
       <Project>{2548B25A-2E1F-4E21-BC43-7E39B1F6F23F}</Project>

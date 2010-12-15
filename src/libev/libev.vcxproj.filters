@@ -30,10 +30,10 @@
     <ClInclude Include="libev.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\libev-4.00\ev.h">
+    <ClInclude Include="config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="config.h">
+    <ClInclude Include="..\libev-4.00\ev.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
