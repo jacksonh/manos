@@ -36,6 +36,7 @@ using Manos.Http;
 using Manos.Routing;
 using Manos.Caching;
 using Manos.Templates;
+using Manos.Logging;
 
 
 namespace Manos {
@@ -61,7 +62,13 @@ namespace Manos {
 				return AppHost.Cache;	
 			}
 		}
-		
+
+		public IManosLogger Log {
+			get {
+				return AppHost.Log;
+			}
+		}
+
 		private RouteHandler AddRouteHandler (ManosModule module, string [] patterns, HttpMethod [] methods)
 		{
 			if (module == null)
