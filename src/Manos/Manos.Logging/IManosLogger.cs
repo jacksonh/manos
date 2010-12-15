@@ -24,7 +24,7 @@
 
 using System;
 
-namespace Manos
+namespace Manos.Logging
 {
 	public interface IManosLogger
 	{

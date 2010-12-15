@@ -32,7 +32,7 @@ using System.Collections.Generic;
 using Manos.IO;
 using Manos.Http;
 using Manos.Caching;
-
+using Manos.Logging;
 
 namespace Manos
 {
@@ -49,6 +49,7 @@ namespace Manos
 		
 		private static HttpServer server;
 		private static IManosCache cache;
+		private static IManosLogger log;
 		private static List<IManosPipe> pipes;
 
 		private static IOLoop ioloop = IOLoop.Instance;
@@ -68,7 +69,15 @@ namespace Manos
 				return cache;
 			}
 		}
-		
+
+		public static IManosLogger Log {
+			get {
+				if (log == null)
+					log = new Manos.Logging.ManosConsoleLogger ("manos", 4);
+				return log;
+			}
+		}
+
 		public static IOLoop IOLoop {
 			get { return ioloop; }	
 		}
