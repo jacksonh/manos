@@ -88,6 +88,8 @@
     <Compile Include="Manos.IO\WriteFileOperation_NO_SENDFILE.cs" />
     <Compile Include="Manos.IO\IWriteOperation.cs" />
     <Compile Include="Manos\IManosContext.cs" />
+    <Compile Include="Manos.Logging\IManosLogger.cs" />
+    <Compile Include="Manos.Logging\ManosConsoleLogger.cs" />
     <Compile Include="Manos.Testing\MockManosModule.cs" />
     <Compile Include="Manos.Http.Testing\MockHttpTransaction.cs" />
     <Compile Include="Manos.Http.Testing\MockHttpRequest.cs" />
