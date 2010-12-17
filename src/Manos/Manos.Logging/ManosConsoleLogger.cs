@@ -31,37 +31,41 @@ namespace Manos.Logging
 {
 	public class ManosConsoleLogger : IManosLogger {
 
-		private int threshold;
-		private string name;		
+		private string name;
+		private LogLevel level;
 
-		public ManosConsoleLogger (string name, int threshold)
+		public LogLevel Level {
+			get { return level; }
+		}
+
+		public ManosConsoleLogger (string name, LogLevel level)
 		{
 			this.name = name;
-			this.threshold = threshold;
+			this.level = level;
 		}
 		
 		public void Critical (string message, params object[] args)
 		{
-			if (threshold >= 4)
-				WriteString ("FATAL", message, args);
+			if (level >= LogLevel.Critical)
+				WriteString ("CRITICAL", message, args);
 		}
 		
 		public void Error (string message, params object[] args)
 		{
-			if (threshold >= 3)
+			if (level >= LogLevel.Error)
 				WriteString ("ERROR", message, args);
 		}
 
 		public void Info (string message, params object[] args)
 		{
-			if (threshold >= 1)
+			if (level >= LogLevel.Info)
 				WriteString ("INFO", message, args);
 		}
 		
 		
 		public void Debug (string message, params object[] args)
 		{
-			if (threshold >= 0)
+			if (level >= LogLevel.Debug)
 				WriteString ("DEBUG", message, args);
 		}
 		

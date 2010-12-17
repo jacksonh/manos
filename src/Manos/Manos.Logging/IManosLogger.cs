@@ -28,6 +28,10 @@ namespace Manos.Logging
 {
 	public interface IManosLogger
 	{
+		LogLevel Level {
+			get;
+		}
+
 		/// <summary>
 		///  An error that can not be recovered from has occurred.  The application is
 		///  now in a volatile state or has crashed.

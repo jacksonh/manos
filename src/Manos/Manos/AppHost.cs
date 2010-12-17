@@ -73,7 +73,7 @@ namespace Manos
 		public static IManosLogger Log {
 			get {
 				if (log == null)
-					log = new Manos.Logging.ManosConsoleLogger ("manos", 4);
+					log = new Manos.Logging.ManosConsoleLogger ("manos", LogLevel.Debug);
 				return log;
 			}
 		}

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -92,6 +92,7 @@
     <Compile Include="Manos\IManosContext.cs" />
     <Compile Include="Manos.Logging\IManosLogger.cs" />
     <Compile Include="Manos.Logging\ManosConsoleLogger.cs" />
+    <Compile Include="Manos.Logging\LogLevel.cs" />
     <Compile Include="Manos.Testing\MockManosModule.cs" />
     <Compile Include="Manos.Http.Testing\MockHttpTransaction.cs" />
     <Compile Include="Manos.Http.Testing\MockHttpRequest.cs" />
