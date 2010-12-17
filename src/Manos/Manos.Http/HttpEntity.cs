@@ -115,7 +115,11 @@ namespace Manos.Http {
 			set;
 		}
 
-		
+		public bool StreamBody {
+			get;
+			set;
+		}
+
 		public Encoding ContentEncoding {
 			get { return Headers.ContentEncoding; }
 			set { Headers.ContentEncoding = value; }
@@ -200,7 +204,6 @@ namespace Manos.Http {
 
 		private int OnMessageComplete (HttpParser parser)
 		{
-			Console.WriteLine ("MESSAGE COMPLETE");
 			OnFinishedReading (parser);
 			return 0;
 		}
@@ -252,8 +255,14 @@ namespace Manos.Http {
 			return 0;
 		}
 
-		public virtual int OnBody (HttpParser parser, ByteBuffer data, int pos, int len)
+		public int OnBody (HttpParser parser, ByteBuffer data, int pos, int len)
 		{
+			if (StreamBody) {
+				if (BodyData != null)
+					BodyData (data.Bytes, pos, len);
+				return 0;
+			}
+
 			if (body_handler == null)
 				CreateBodyHandler ();
 
@@ -266,14 +275,19 @@ namespace Manos.Http {
 		
 		private void CreateBodyHandler ()
 		{
-			string ct = Headers ["Content-Type"];
+			string ct;
 
-			if (ct != null && ct.StartsWith ("application/x-www-form-urlencoded", StringComparison.InvariantCultureIgnoreCase)) {
+			if (!Headers.TryGetValue ("Content-Type", out ct)) {
 				body_handler = new HttpFormDataHandler ();
 				return;
 			}
 
-			if (ct != null && ct.StartsWith ("multipart/form-data", StringComparison.InvariantCultureIgnoreCase)) {
+			if (ct.StartsWith ("application/x-www-form-urlencoded", StringComparison.InvariantCultureIgnoreCase)) {
+				body_handler = new HttpFormDataHandler ();
+				return;
+			}
+
+			if (ct.StartsWith ("multipart/form-data", StringComparison.InvariantCultureIgnoreCase)) {
 				string boundary = ParseBoundary (ct);
 				IUploadedFileCreator file_creator = GetFileCreator ();
 
@@ -313,7 +327,6 @@ namespace Manos.Http {
 
 		public void Read ()
 		{
-			Console.WriteLine ("READING");
 			Reset ();
 			Socket.ReadBytes (OnBytesRead);
 		}
@@ -322,7 +335,8 @@ namespace Manos.Http {
 		{
 			ByteBuffer bytes = new ByteBuffer (data, offset, count);
 
-			Console.WriteLine ("READ:\n{0}\n", Encoding.Default.GetString (data, offset, count));
+			Console.WriteLine ("{0} READ:", this);
+			Console.WriteLine (Encoding.Default.GetString (data, offset, count));
 			try {
 				parser.Execute (parser_settings, bytes);
 			} catch (Exception e) {
@@ -429,7 +443,8 @@ namespace Manos.Http {
 		public abstract ParserSettings CreateParserSettings ();
 
 		public event Action<IHttpResponse> Connected;
-		public event Action<IHttpRequest> BodyData;
+		public event Action<byte [], int, int> BodyData;
+
 		public event Action<string> Error; // TODO: Proper error object of some sort
 	}
 

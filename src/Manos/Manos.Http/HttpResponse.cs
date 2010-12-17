@@ -47,6 +47,7 @@ namespace Manos.Http {
 		public HttpResponse (SocketStream stream)
 		{
 			Socket = stream;
+			Stream = new HttpStream (this, stream);
 		}
 
 		public HttpResponse (IHttpTransaction transaction, SocketStream stream)
@@ -190,15 +191,6 @@ namespace Manos.Http {
 			return SetCookie (name, value, domain, DateTime.Now + max_age);
 		}
 
-		public override int OnBody (HttpParser parser, ByteBuffer data, int pos, int len)
-		{
-			if (BodyData != null)
-				BodyData (data.Bytes, pos, len);
-			else
-				return base.OnBody (parser, data, pos, len);
-			return 0;
-		}
-
 		public override void End ()
 		{
 			if (!Stream.Chunked)
@@ -313,7 +305,6 @@ namespace Manos.Http {
 		}
 
 		public event Action<IHttpResponse> Completed;
-		public event Action<byte [], int, int> BodyData;
 	}
 
 }

@@ -191,8 +191,6 @@ namespace Manos.Http {
 				Stream.WriteMetadata (() => {
 					HttpResponse response = new HttpResponse (Socket);
 
-					if (BodyData != null)
-						BodyData (this);
 					if (Connected != null)
 						Connected (response);
 				});
@@ -215,7 +213,6 @@ namespace Manos.Http {
 		}
 
 		public event Action<IHttpResponse> Connected;
-		public event Action<IHttpRequest> BodyData;
 	}
 }
 

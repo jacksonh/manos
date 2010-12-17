@@ -69,9 +69,10 @@ namespace HelloWorld {
 			Get ("/upload", ctx => {
 				ctx.Response.Write ("<html><head></head><body>");
 				ctx.Response.Write ("<a href='/info'>a link</a>");
-				ctx.Response.Write ("<form method=\"POST\" enctype=\"multipart/form-data\">");
+				ctx.Response.Write ("<form method=\"POST\">");
 				ctx.Response.Write ("<input type=\"text\" name=\"some_name\"><br>");
 				ctx.Response.Write ("<input type=\"file\" name=\"the_file\" >");
+				ctx.Response.Write ("<input type=\"file\" name=\"the_other_file\" >");
 				ctx.Response.Write ("<input type=\"submit\">");
 				ctx.Response.Write ("</form>");
 				ctx.Response.Write ("</body></html>");
@@ -90,12 +91,9 @@ namespace HelloWorld {
 				r.Method = HttpMethod.HTTP_PUT;
 				r.Headers.SetNormalizedHeader ("Content-Type", "application/x-www-form-urlencoded");
 
-				r.BodyData += delegate {
-					r.Write ("foobar=value");
-					r.End ();
-				};
-
 				r.Connected += (response) => {
+					r.End ("foobar=value");
+
 					response.BodyData += (data, offset, length) => {
 						ctx.Response.Write (data, offset, length);
 					};
