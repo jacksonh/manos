@@ -33,6 +33,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 using Libev;
+using Libeio;
 
 
 namespace Manos.IO {
@@ -44,11 +45,15 @@ namespace Manos.IO {
 		private bool running;
 
 		private Loop evloop;
+		private Libeio.Libeio eio;
 		private PrepareWatcher prepare_watcher;
 
 		public IOLoop ()
 		{
 			evloop = Loop.CreateDefaultLoop (0);
+			eio = new Libeio.Libeio ();
+
+			eio.Initialize (evloop);
 
 			prepare_watcher = new PrepareWatcher (evloop, HandlePrepareEvent);
 			prepare_watcher.Start ();
@@ -60,6 +65,10 @@ namespace Manos.IO {
 
 		public Loop EventLoop {
 		       get { return evloop; }
+		}
+
+		public Libeio.Libeio Eio {
+			get { return eio; }
 		}
 
 		public void Start ()

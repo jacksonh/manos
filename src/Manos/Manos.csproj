@@ -141,8 +141,11 @@
     <Compile Include="Manos.Template\ITemplateCodegen.cs" />
     <Compile Include="Manos.Template\Expression.cs" />
     <Compile Include="Manos.Template\TemplateFactory.cs" />
+    <Compile Include="Libeio\Libeio.cs" />
+    <Compile Include="Libev\AsyncWatcher.cs" />
     <Compile Include="Libev\CheckWatcher.cs" />
     <Compile Include="Libev\EventTypes.cs" />
+    <Compile Include="Libev\IdleWatcher.cs" />
     <Compile Include="Libev\IOWatcher.cs" />
     <Compile Include="Libev\Loop.cs" />
     <Compile Include="Libev\LoopType.cs" />
