@@ -37,6 +37,7 @@ namespace Libeio {
 		
 		public void Initialize (Loop loop)
 		{
+/*
 			idle_watcher = new IdleWatcher (loop, OnIdle);
 			want_poll_watcher = new AsyncWatcher (loop, OnWantPoll);
 			done_poll_watcher = new AsyncWatcher (loop, OnDonePoll);
@@ -44,6 +45,7 @@ namespace Libeio {
 			idle_watcher.Start ();
 			want_poll_watcher.Start ();
 			done_poll_watcher.Start ();
+*/
 		}
 
 		public void Dispose ()
