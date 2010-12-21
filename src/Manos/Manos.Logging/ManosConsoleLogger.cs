@@ -72,7 +72,7 @@ namespace Manos.Logging
 		private void WriteString (string level, string message, params object[] args)
 		{
 			string fmt = String.Format (message, args);
-			Console.WriteLine (String.Format("{0} [{1}] {2} - {3}", DateTime.Now.ToString("'HH':'mm':'ss.fffffff"), level, name, fmt));
+			Console.WriteLine (String.Format("{0} [{1}] {2} - {3}", DateTime.Now.ToString("HH':'mm':'ss'.'fffffff"), level, name, fmt));
 		}
 	}
 }
