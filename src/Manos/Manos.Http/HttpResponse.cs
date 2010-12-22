@@ -34,6 +34,7 @@ using System.Net.Sockets;
 using System.Collections;
 using System.Collections.Generic;
 
+using Libev;
 using Manos.IO;
 
 
@@ -44,6 +45,7 @@ namespace Manos.Http {
 	       	internal bool metadata_written;
 
 		private StreamWriter writer;
+		private AsyncWatcher end_watcher;
 		private Dictionary<string, HttpCookie> cookies;
 
 		public HttpResponse (IHttpTransaction transaction, IOStream stream)
@@ -58,6 +60,9 @@ namespace Manos.Http {
 			Headers = new HttpHeaders ();
 			Stream = new HttpResponseStream (this, IOStream);
 			Stream.Chunked = (transaction.Request.MajorVersion > 0 && transaction.Request.MinorVersion > 0);
+
+			end_watcher = new AsyncWatcher (IOLoop.Instance.EventLoop, OnEnd);
+			end_watcher.Start ();
 		}
 
 		public IHttpTransaction Transaction {
@@ -157,6 +162,11 @@ namespace Manos.Http {
 		}
 
 		public void End ()
+		{
+			end_watcher.Send ();
+		}
+
+		private void OnEnd (Loop loop, AsyncWatcher watcher, EventTypes revents)
 		{
 			if (!Stream.Chunked) {
 				Headers.ContentLength = Stream.Length;
