@@ -65,6 +65,14 @@ namespace Manos.Http {
 			end_watcher.Start ();
 		}
 
+		~HttpResponse ()
+		{
+			if (end_watcher != null) {
+				end_watcher.Dispose ();
+				end_watcher = null;
+			}
+		}
+
 		public IHttpTransaction Transaction {
 			get;
 			private set;
