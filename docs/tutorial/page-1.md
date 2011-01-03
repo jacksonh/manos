@@ -118,6 +118,6 @@ Once the application is running you can check it out by navigating your browser 
 
 ---
 
-Continue the tutorial in [part two](./2).
+Continue the tutorial in [part two](./page-2.md).
 
 
