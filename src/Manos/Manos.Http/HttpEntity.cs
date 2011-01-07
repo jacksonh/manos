@@ -351,8 +351,6 @@ namespace Manos.Http {
 		{
 			ByteBuffer bytes = new ByteBuffer (data, offset, count);
 
-			Console.WriteLine ("{0} READ:", this);
-			Console.WriteLine (Encoding.Default.GetString (data, offset, count));
 			try {
 				parser.Execute (parser_settings, bytes);
 			} catch (Exception e) {

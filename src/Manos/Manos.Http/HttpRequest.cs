@@ -166,7 +166,6 @@ namespace Manos.Http {
 			MinorVersion = parser.Minor;
 			Method = parser.HttpMethod;
 
-			Console.WriteLine ("A REQUEST IS READY!");
 			Transaction.OnRequestReady ();
 		}
 
