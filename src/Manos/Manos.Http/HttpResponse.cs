@@ -43,7 +43,6 @@ namespace Manos.Http {
 	public class HttpResponse : HttpEntity, IHttpResponse {
 
 		private StreamWriter writer;
-		private AsyncWatcher end_watcher;
 		private Dictionary<string, HttpCookie> cookies;
 
 		public HttpResponse (SocketStream stream)
@@ -63,17 +62,6 @@ namespace Manos.Http {
 
 			Stream = new HttpStream (this, stream);
 			Stream.Chunked = (transaction.Request.MajorVersion > 0 && transaction.Request.MinorVersion > 0);
-
-			end_watcher = new AsyncWatcher (IOLoop.Instance.EventLoop, OnEnd);
-			end_watcher.Start ();
-		}
-
-		~HttpResponse ()
-		{
-			if (end_watcher != null) {
-				end_watcher.Dispose ();
-				end_watcher = null;
-			}
 		}
 
 		public IHttpTransaction Transaction {
@@ -117,74 +105,6 @@ namespace Manos.Http {
 			}
 		}
 
-<<<<<<< HEAD
-		public void Write (string str)
-		{
-			byte [] data = ContentEncoding.GetBytes (str);
-
-			WriteToBody (data);
-		}
-
-		public void Write (byte [] data)
-		{
-			WriteToBody (data);
-		}
-
-		public void Write (string str, params object [] prms)
-		{
-			Write (String.Format (str, prms));	
-		}
-
-		public void End (string str)
-		{
-			Write (str);
-			End ();
-		}
-
-		public void End (byte [] data)
-		{
-			Write (data);
-			End ();
-		}
-
-		public void End (string str, params object [] prms)
-		{
-			Write (str, prms);
-			End ();
-		}
-
-		public void End ()
-		{
-			end_watcher.Send ();
-		}
-
-		private void OnEnd (Loop loop, AsyncWatcher watcher, EventTypes revents)
-		{
-			if (!Stream.Chunked) {
-				Headers.ContentLength = Stream.Length;
-				WriteMetadata ();
-			}
-
-			Stream.End (Transaction.OnResponseFinished);
-		}
-
-		public void WriteLine (string str)
-		{
-			Write (str + Environment.NewLine);	
-		}
-		
-		public void WriteLine (string str, params object [] prms)
-		{
-			WriteLine (String.Format (str, prms));	
-		}
-		
-		public void SendFile (string file)
-		{
-			Stream.SendFile (file);
-		}
-
-=======
->>>>>>> http-2way
 		public void Redirect (string url)
 		{
 			StatusCode =  302;

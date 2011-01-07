@@ -64,6 +64,22 @@ namespace Manos.Http {
 
 		private IHttpBodyHandler body_handler;
 
+		private AsyncWatcher end_watcher;
+
+		public HttpEntity ()
+		{
+			end_watcher = new AsyncWatcher (IOLoop.Instance.EventLoop, OnEnd);
+			end_watcher.Start ();
+		}
+
+		~HttpEntity ()
+		{
+			if (end_watcher != null) {
+				end_watcher.Dispose ();
+				end_watcher = null;
+			}
+		}
+		
 		public SocketStream Socket {
 			get;
 			protected set;
@@ -414,8 +430,15 @@ namespace Manos.Http {
 
 		public virtual void End ()
 		{
-			if (!Stream.Chunked)
+			end_watcher.Send ();
+		}
+
+		private void OnEnd (Loop loop, AsyncWatcher watcher, EventTypes revents)
+		{
+			if (!Stream.Chunked) {
 				Headers.ContentLength = Stream.Length;
+			}
+
 			Stream.End (null);
 		}
 
