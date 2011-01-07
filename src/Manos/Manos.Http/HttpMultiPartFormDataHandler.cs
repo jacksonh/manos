@@ -208,7 +208,8 @@ namespace Manos.Http {
 					if (CheckStartingBoundary (str_data, pos))
 						break;;
 
-					uploaded_file.Contents.WriteByte (c);
+					if (uploaded_file != null)
+						uploaded_file.Contents.WriteByte (c);
 					break;
 				default:
 					throw new Exception (String.Format ("Unhandled state: {0}", state));
