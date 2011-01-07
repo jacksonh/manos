@@ -99,6 +99,11 @@ namespace Manos.IO {
 			timeout_watcher.Start ();
 		}
 
+		public void DisableTimeout ()
+		{
+			timeout_watcher.Stop ();
+		}
+
 		public void ReadBytes (ReadCallback callback)
 		{
 			EnableReading ();

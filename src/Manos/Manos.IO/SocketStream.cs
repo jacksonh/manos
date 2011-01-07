@@ -152,6 +152,7 @@ namespace Manos.IO {
 
 			SetHandle (IOWatcher.GetHandle (socket));
 
+			DisableTimeout ();
 			EnableReading ();
 			state = SocketState.AcceptingConnections;
 		}
