@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 
 using Manos;
+using Manos.IO;
 using Manos.Http;
 using Manos.Collections;
 
@@ -47,10 +48,10 @@ namespace Manos.Http.Testing
 		private Dictionary<string,UploadedFile> uploaded_files;
 		private Encoding encoding;
 		
-		public MockHttpRequest (HttpMethod method, string local_path)
+		public MockHttpRequest (HttpMethod method, string path)
 		{
 			Method = method;
-			LocalPath = local_path;
+			Path = path;
 
 			data = new DataDictionary ();
 			uri_data = new DataDictionary ();
@@ -68,7 +69,7 @@ namespace Manos.Http.Testing
 		}
 		
 		
-		public string LocalPath {
+		public string Path {
 			get;
 			set;
 		}
@@ -153,9 +154,19 @@ namespace Manos.Http.Testing
 			set;
 		}
 
+		public SocketStream Socket {
+			get;
+			set;
+		}
+
+		public void Read ()
+		{
+		}
+
 		public void SetWwwFormData (DataDictionary data)
 		{
 			PostData.Children.Add (data);
 		}
+		
 	}
 }

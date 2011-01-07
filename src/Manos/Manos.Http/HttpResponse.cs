@@ -30,35 +30,38 @@ using System;
 using System.IO;
 using System.Text;
 using System.Net;
-using System.Net.Sockets;
 using System.Collections;
 using System.Collections.Generic;
 
 using Libev;
 using Manos.IO;
+using Manos.Collections;
 
 
 namespace Manos.Http {
 
-	public class HttpResponse : IHttpResponse {
-
-	       	internal bool metadata_written;
+	public class HttpResponse : HttpEntity, IHttpResponse {
 
 		private StreamWriter writer;
 		private AsyncWatcher end_watcher;
 		private Dictionary<string, HttpCookie> cookies;
 
-		public HttpResponse (IHttpTransaction transaction, IOStream stream)
+		public HttpResponse (SocketStream stream)
+		{
+			Socket = stream;
+			Stream = new HttpStream (this, stream);
+		}
+
+		public HttpResponse (IHttpTransaction transaction, SocketStream stream)
 		{
 			Transaction = transaction;
-			IOStream = stream;
+			Socket = stream;
 
 			StatusCode = 200;
 
 			WriteHeaders = true;
 
-			Headers = new HttpHeaders ();
-			Stream = new HttpResponseStream (this, IOStream);
+			Stream = new HttpStream (this, stream);
 			Stream.Chunked = (transaction.Request.MajorVersion > 0 && transaction.Request.MinorVersion > 0);
 
 			end_watcher = new AsyncWatcher (IOLoop.Instance.EventLoop, OnEnd);
@@ -78,32 +81,12 @@ namespace Manos.Http {
 			private set;
 		}
 
-		public IOStream IOStream {
-			get;
-			private set;
-		}
-
-		public HttpHeaders Headers {
-			get;
-			private set;
-		}
-
-		public HttpResponseStream Stream {
-			get;
-			private set;
-		}
-
 		public StreamWriter Writer {
 			get {
 				if (writer == null)
 					writer = new StreamWriter (Stream);
 				return writer;
 			}
-		}
-
-		public Encoding ContentEncoding {
-			get { return Headers.ContentEncoding; }
-			set { Headers.ContentEncoding = value; }
 		}
 
 		public int StatusCode {
@@ -134,6 +117,7 @@ namespace Manos.Http {
 			}
 		}
 
+<<<<<<< HEAD
 		public void Write (string str)
 		{
 			byte [] data = ContentEncoding.GetBytes (str);
@@ -199,42 +183,25 @@ namespace Manos.Http {
 			Stream.SendFile (file);
 		}
 
+=======
+>>>>>>> http-2way
 		public void Redirect (string url)
 		{
 			StatusCode =  302;
 			Headers.SetNormalizedHeader ("Location", url);
 			
-			WriteMetadata ();
+//			WriteMetadata ();
 			End ();
 		}
 		
-		public void WriteMetadata ()
+		public override void WriteMetadata (StringBuilder builder)
 		{
-			if (metadata_written)
-				return;
-
 			SetStandardHeaders ();
 			
-			StringBuilder builder = new StringBuilder ();
 			WriteStatusLine (builder);
 
 			if (WriteHeaders)
 				Headers.Write (builder, cookies == null ? null : Cookies.Values, Encoding.ASCII);
-
-			byte [] data = Encoding.ASCII.GetBytes (builder.ToString ());
-
-			metadata_written = true;
-
-			var bytes = new List<ArraySegment<byte>> ();
-			bytes.Add (new ArraySegment<byte> (data, 0, data.Length));
-			WriteBytesOperation write_bytes = new WriteBytesOperation (bytes, null);
-
-			IOStream.QueueWriteOperation (write_bytes);
-		}
-
-		public void Finish ()
-		{
-			
 		}
 
 		public void SetHeader (string name, string value)
@@ -304,7 +271,44 @@ namespace Manos.Http {
 		{
 			return SetCookie (name, value, domain, DateTime.Now + max_age);
 		}
-		
+
+		public override void End ()
+		{
+			if (!Stream.Chunked)
+				Headers.ContentLength = Stream.Length;
+
+			Stream.End (Transaction.OnResponseFinished);
+		}
+
+		protected override void OnFinishedReading (HttpParser parser)
+		{
+			base.OnFinishedReading (parser);
+
+			if (Completed != null)
+				Completed (this);
+		}
+
+		public override ParserSettings CreateParserSettings ()
+		{
+			ParserSettings settings = new ParserSettings ();
+
+			settings.OnBody = OnBody;
+
+			return settings;
+		}
+
+		public static string ParseBoundary (string ct)
+		{
+			if (ct == null)
+				return null;
+
+			int start = ct.IndexOf ("boundary=");
+			if (start < 1)
+				return null;
+			
+			return ct.Substring (start + "boundary=".Length);
+		}
+
 		private void WriteStatusLine (StringBuilder builder)
 		{
 			builder.Append ("HTTP/");
@@ -316,11 +320,6 @@ namespace Manos.Http {
 			builder.Append (" ");
 			builder.Append (GetStatusDescription (StatusCode));
 			builder.Append ("\r\n");
-		}
-
-		private void WriteToBody (byte [] data)
-		{
-			Stream.Write (data, 0, data.Length);
 		}
 
 		private void SetStandardHeaders ()
@@ -385,6 +384,8 @@ namespace Manos.Http {
 			}
 			return "";
 		}
+
+		public event Action<IHttpResponse> Completed;
 	}
 
 }

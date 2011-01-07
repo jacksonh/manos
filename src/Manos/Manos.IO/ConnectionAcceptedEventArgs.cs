@@ -23,36 +23,28 @@
 //
 
 
-
 using System;
+using System.Net;
+using System.Net.Sockets;
 using System.Collections;
 using System.Collections.Generic;
 
+using Libev;
 
-namespace Manos.Http {
 
-	public interface IHttpTransaction {
+namespace Manos.IO {
 
-		IHttpRequest Request {
+	public class ConnectionAcceptedEventArgs : EventArgs {
+
+		public ConnectionAcceptedEventArgs (SocketStream stream)
+		{
+			Stream = stream;
+		}
+
+		public SocketStream Stream {
 			get;
+			private set;
 		}
-
-		IHttpResponse Response {
-			get;
-		}
-
-		HttpServer Server {
-			get;
-		}
-
-		bool Aborted {
-			get;	
-		}
-
-		void OnRequestReady ();
-		void OnResponseFinished ();
-
-		void Abort (int status, string message, params object [] p);
 	}
 }
 

@@ -35,26 +35,27 @@ using Manos.IO;
 
 namespace Manos.Http
 {
-	public class HttpResponseStream : Stream
+	public class HttpStream : Stream
 	{
 		private long length;
 		private bool chunk_encode = true;
+		private bool metadata_written;
 		private bool final_chunk_sent;
 
 		private Queue<IWriteOperation> write_ops;
 
-		public HttpResponseStream (HttpResponse response, IOStream stream)
+		public HttpStream (HttpEntity entity, SocketStream stream)
 		{
-			Response = response;
-			IOStream = stream;
+			HttpEntity = entity;
+			SocketStream = stream;
 		}
 
-		public HttpResponse Response {
+		public HttpEntity HttpEntity {
 			get;
 			private set;
 		}
 
-		public IOStream IOStream {
+		public SocketStream SocketStream {
 			get;
 			private set;
 		}
@@ -101,17 +102,17 @@ namespace Manos.Http
 
 		public override int Read (byte[] buffer, int offset, int count)
 		{
-			throw new NotSupportedException ("Can not Read from an HttpResponseStream.");
+			throw new NotSupportedException ("Can not Read from an HttpStream.");
 		}
 		
 		public override long Seek (long offset, SeekOrigin origin)
 		{
-			throw new NotSupportedException ("Can not seek on an HttpResponseStream.");
+			throw new NotSupportedException ("Can not seek on an HttpStream.");
 		}
 
 		public override void SetLength (long value)
 		{
-			throw new NotSupportedException ("Can not set the length of an HttpResponseStream.");
+			throw new NotSupportedException ("Can not set the length of an HttpStream.");
 		}
 
 		public override void Write (byte[] buffer, int offset, int count)
@@ -123,8 +124,8 @@ namespace Manos.Http
 		{
 			EnsureMetadata ();
 
-			FileStream file_stream = new FileStream (file_name, FileMode.Open, FileAccess.Read);
-			WriteFileOperation write_file = new WriteFileOperation (file_stream, null);
+			var file_stream = new FileStream (file_name, FileMode.Open, FileAccess.Read);
+			var write_file = new SendFileOperation (file_stream, null);
 
 			length += file_stream.Length;
 
@@ -151,8 +152,13 @@ namespace Manos.Http
 			if (chunked)
 				WriteChunk (bytes, -1, false);
 
-			WriteBytesOperation write_bytes = new WriteBytesOperation (bytes, null);
+			var write_bytes = new SendBytesOperation (bytes, null);
 			QueueWriteOperation (write_bytes);
+		}
+
+		public void End ()
+		{
+			End (null);
 		}
 
 		public void End (WriteCallback callback)
@@ -177,7 +183,7 @@ namespace Manos.Http
 
 			WriteChunk (bytes, 0, true);
 
-			WriteBytesOperation write_bytes = new WriteBytesOperation (bytes, callback);
+			var write_bytes = new SendBytesOperation (bytes, callback);
 			QueueWriteOperation (write_bytes);
 		}
 
@@ -187,24 +193,41 @@ namespace Manos.Http
 				IWriteOperation [] ops = write_ops.ToArray ();
 
 				for (int i = 0; i < ops.Length; i++) {
-					IOStream.QueueWriteOperation (ops [i]);
+					SocketStream.QueueWriteOperation (ops [i]);
 				}
 			}
 
-			IOStream.QueueWriteOperation (new NopWriteOperation (callback));
+			SocketStream.QueueWriteOperation (new NopWriteOperation (callback));
 		}
 
-		private void EnsureMetadata ()
+		public void WriteMetadata (WriteCallback callback)
 		{
-			if (!chunk_encode || Response.metadata_written)
+			StringBuilder builder = new StringBuilder ();
+			HttpEntity.WriteMetadata (builder);
+			
+			byte [] data = Encoding.ASCII.GetBytes (builder.ToString ());
+
+			metadata_written = true;
+
+			var bytes = new List<ArraySegment<byte>> ();
+			bytes.Add (new ArraySegment<byte> (data, 0, data.Length));
+			var write_bytes = new SendBytesOperation (bytes, callback);
+
+			SocketStream.QueueWriteOperation (write_bytes);
+		}
+
+		public void EnsureMetadata ()
+		{
+			if (!chunk_encode || metadata_written)
 				return;
-			Response.WriteMetadata ();
+
+			WriteMetadata (null);
 		}
 
 		private void QueueWriteOperation (IWriteOperation op)
 		{
 			if (chunk_encode) {
-				IOStream.QueueWriteOperation (op);
+				SocketStream.QueueWriteOperation (op);
 				return;
 			}
 
@@ -220,7 +243,7 @@ namespace Manos.Http
 
 			WriteChunk (bytes, l, last);
 
-			WriteBytesOperation write_bytes = new WriteBytesOperation (bytes, null);
+			var write_bytes = new SendBytesOperation (bytes, null);
 			QueueWriteOperation (write_bytes);
 		}
 

@@ -28,7 +28,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Net;
-using System.Net.Sockets;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -37,41 +36,31 @@ using Libev;
 
 namespace Manos.IO {
 
-	public delegate void CloseCallback (IOStream stream);
 	public delegate void ReadCallback (IOStream stream, byte [] data, int offset, int count);
 	public delegate void WriteCallback ();
 
-	public class IOStream {
+	public abstract class IOStream {
 
-		private static int ReadChunkSize = 3072;
-		private static byte [] ReadChunk = new byte [3072];
+		protected static int ReadChunkSize = 3072;
+		protected static byte [] ReadChunk = new byte [3072];
 
-		internal Socket socket;
+		protected ReadCallback read_callback;
+
 		private IOLoop ioloop;
-
-		private CloseCallback close_callback;
-		private ReadCallback read_callback;
-
 		private IOWatcher read_watcher;
 		private IOWatcher write_watcher;
+		private TimerWatcher timeout_watcher;
 		private IntPtr handle;
 
 		private IWriteOperation current_write_op;
 		private Queue<IWriteOperation> write_ops = new Queue<IWriteOperation> ();
 
-		public IOStream (Socket socket, IOLoop ioloop)
+		public IOStream (IOLoop ioloop)
 		{
-			this.socket = socket;
 			this.ioloop = ioloop;
 
-			TimeOut = TimeSpan.FromMinutes (2);
+			TimeOut = TimeSpan.FromMinutes (1);
 			Expires = DateTime.UtcNow + TimeOut;
-
-			socket.Blocking = false;
-
-			handle = IOWatcher.GetHandle (socket);
-			read_watcher = new IOWatcher (handle, EventTypes.Read, ioloop.EventLoop, HandleIOReadEvent);
-			write_watcher = new IOWatcher (handle, EventTypes.Write, ioloop.EventLoop, HandleIOWriteEvent);
 		}
 
 		~IOStream ()
@@ -81,6 +70,10 @@ namespace Manos.IO {
 
 		public IOLoop IOLoop {
 			get { return ioloop; }
+		}
+
+		public IntPtr Handle {
+			get { return handle; }
 		}
 
 		public DateTime Expires {
@@ -93,13 +86,17 @@ namespace Manos.IO {
 			private set;
 		}
 
-		public bool IsClosed {
-			get { return socket == null || !socket.Connected; }
-		}
-
-		public void OnClose (CloseCallback callback)
+		public void SetHandle (IntPtr handle)
 		{
-			this.close_callback = callback;
+			if (this.handle != IntPtr.Zero && this.handle != handle)
+				Close ();
+
+			this.handle = handle;
+			read_watcher = new IOWatcher (handle, EventTypes.Read, ioloop.EventLoop, HandleIOReadEvent);
+			write_watcher = new IOWatcher (handle, EventTypes.Write, ioloop.EventLoop, HandleIOWriteEvent);
+			timeout_watcher = new TimerWatcher (TimeOut, TimeOut, ioloop.EventLoop, HandleTimeoutEvent);
+
+			timeout_watcher.Start ();
 		}
 
 		public void ReadBytes (ReadCallback callback)
@@ -151,30 +148,32 @@ namespace Manos.IO {
 			Expires = DateTime.UtcNow + TimeOut;
 		}
 
-		public void Close ()
+		public virtual void Close ()
 		{			
-			if (socket == null)
+			if (handle == IntPtr.Zero)
 				return;			
 
 			DisableReading ();
 			DisableWriting ();
 
-			IOWatcher.ReleaseHandle (socket, handle);
+			read_watcher.Dispose ();
+			write_watcher.Dispose ();
+			timeout_watcher.Dispose ();
 
 			handle = IntPtr.Zero;
-			socket = null;
 
-			if (close_callback != null)
-				close_callback (this);
+			if (Closed != null)
+				Closed (this, EventArgs.Empty);
 		}
 
 		private void HandleIOReadEvent (Loop loop, IOWatcher watcher, EventTypes revents)
 		{
-			// Happens after a close
-			if (socket == null)
-				return;
-
 			Expires = DateTime.UtcNow + TimeOut;
+
+			// Happens after a close
+			if (handle == IntPtr.Zero)
+				return;
+			
 			HandleRead ();
 		}
 
@@ -182,14 +181,23 @@ namespace Manos.IO {
 		private void HandleIOWriteEvent (Loop loop, IOWatcher watcher, EventTypes revents)
 		{
 			// Happens after a close
-			if (socket == null)
+			if (handle == IntPtr.Zero)
 				return;
 
 			Expires = DateTime.UtcNow + TimeOut;
 			HandleWrite ();
 		}
-		
-		private void HandleWrite ()
+
+		private void HandleTimeoutEvent (Loop loop, TimerWatcher watcher, EventTypes revents)
+		{
+			if (Expires <= DateTime.UtcNow) {
+				if (TimedOut != null)
+					TimedOut (this, EventArgs.Empty);
+				Close ();
+			}
+		}
+
+		protected virtual void HandleWrite ()
 		{
 			if (current_write_op == null) {
 				// Kinda shouldn't happen...
@@ -201,31 +209,6 @@ namespace Manos.IO {
 
 			if (current_write_op.IsComplete)
 				FinishCurrentWrite ();
-		}
-
-		private void HandleRead ()
-		{
-			int size;
-
-			try {
-				size = socket.Receive (ReadChunk);
-			} catch (SocketException se) {
-				if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
-					return;
-				Close ();
-				return;
-			} catch (Exception e) {
-			  	Console.WriteLine (e);
-				Close ();
-				return;
-			}
-
-			if (size == 0) {
-				Close ();
-				return;
-			}
-
-			read_callback (this, ReadChunk, 0, size);
 		}
 
 		/// This could use some tuning, but the basic idea is that we need to remove
@@ -278,6 +261,12 @@ namespace Manos.IO {
 			}
 			
 		}
+
+		protected abstract void HandleRead ();
+
+		public event EventHandler Error;
+		public event EventHandler Closed;
+		public event EventHandler TimedOut;
 	}
 
 }

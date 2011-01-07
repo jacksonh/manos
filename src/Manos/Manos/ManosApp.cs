@@ -63,7 +63,7 @@ namespace Manos {
 				handler = Routes.Find (con.Request);
 			
 			if (handler == null) {
-				Console.WriteLine ("no handler found for: '{0}'", ctx.Request.LocalPath);
+				Console.WriteLine ("no handler found for: '{0}'", ctx.Request.Path);
 				con.Response.StatusCode = 404;
 				con.Response.End ();
 				return;

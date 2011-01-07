@@ -18,7 +18,7 @@ namespace Manos.Http.Testing
 
 		public HttpHeaders Headers { get; set; }
 
-		public HttpResponseStream Stream {
+		public HttpStream Stream {
 			get {
 				throw new NotImplementedException ();
 			}
@@ -83,12 +83,27 @@ namespace Manos.Http.Testing
 			throw new NotImplementedException();
 		}
 
+		public void Write (byte [] data, int offset, int length)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public void End (byte [] data, int offset, int length)
+		{
+			throw new NotImplementedException ();
+		}
+
 		public void SendFile (string file)
 		{
 			throw new NotImplementedException ();
 		}
 
 		public void Redirect (string url)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public void Read ()
 		{
 			throw new NotImplementedException ();
 		}
@@ -125,6 +140,9 @@ namespace Manos.Http.Testing
 		{
 			throw new NotImplementedException ();
 		}
+
+		public event Action<IHttpResponse> Completed;
+		public event Action<byte [], int, int> BodyData;
 	}
 }
 

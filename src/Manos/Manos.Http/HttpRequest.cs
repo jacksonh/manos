@@ -30,40 +30,52 @@ using System.IO;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
+using System.Globalization;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
 
-
-using Manos.Http;
+using Libev;
+using Manos.IO;
 using Manos.Collections;
 
 namespace Manos.Http {
 
-	public class HttpRequest : IHttpRequest {
+	public class HttpRequest : HttpEntity, IHttpRequest {
+		
+		private StringBuilder query_data_builder = new StringBuilder ();
 
-		private HttpHeaders headers;
-
-		private DataDictionary data;
 		private DataDictionary uri_data;
 		private	DataDictionary query_data;
-		private DataDictionary post_data;
 
-		private DataDictionary cookies;
-		private Dictionary<string,UploadedFile> uploaded_files;
-		
-		public HttpRequest (IHttpTransaction transaction)
+		public HttpRequest (string address)
+		{
+			Uri uri = null;
+
+			if (!Uri.TryCreate (address, UriKind.Absolute, out uri))
+				throw new Exception ("Invalid URI: '" + address + "'.");
+
+			RemoteAddress = uri.Host;
+			RemotePort = uri.Port;
+			Path = uri.AbsolutePath;
+
+			Method = HttpMethod.HTTP_GET;
+			MajorVersion = 1;
+			MinorVersion = 1;
+		}
+
+		public HttpRequest (string remote_address, int port) : this (remote_address)
+		{
+			RemotePort = port;
+		}
+
+		public HttpRequest (IHttpTransaction transaction, SocketStream stream)
 		{
 			Transaction = transaction;
-
-			// Headers = headers;
-			// Method = method;
-			// ResourceUri = resource;
-			// Http_1_1_Supported = support_1_1;
-
-			// SetEncoding ();
-			// SetPathAndQuery ();
+			Socket = stream;
+			RemoteAddress = stream.Address;
+			RemotePort = stream.Port;
 		}
 
 		public IHttpTransaction Transaction {
@@ -71,67 +83,19 @@ namespace Manos.Http {
 			private set;
 		}
 
-		public HttpHeaders Headers {
-			get {
-				if (headers == null)
-					headers = new HttpHeaders ();
-				return headers;
-			}
-			set {
-				headers = value;
-			}
-		}
-
-		public HttpMethod Method {
+		public string RemoteAddress {
 			get;
 			set;
 		}
 
-		public string ResourceUri {
+		public int RemotePort {
 			get;
 			set;
 		}
 
-		public int MajorVersion {
+		public string Path {
 			get;
 			set;
-		}
-
-		public int MinorVersion {
-			get;
-			set;
-		}
-
-		public string LocalPath {
-			get;
-			set;
-		}
-
-		public Encoding ContentEncoding {
-			get { return Headers.ContentEncoding; }
-			set { Headers.ContentEncoding = value; }
-		}
-
-		public DataDictionary Data {
-			get {
-				if (data == null)
-					data = new DataDictionary ();
-				return data;
-			}
-		}
-		
-		public DataDictionary PostData {
-			get {
-				if (post_data == null) {
-					post_data = new DataDictionary ();
-					Data.Children.Add (post_data);
-				}
-				return post_data;
-			}
-			set {
-				SetDataDictionary (post_data, value);
-				post_data = value;
-			}
 		}
 
 		public DataDictionary QueryData {
@@ -161,46 +125,94 @@ namespace Manos.Http {
 				uri_data = value;
 			}
 		}
-		
-		public DataDictionary Cookies {
-			get {
-				if (cookies == null)
-					cookies = ParseCookies ();
-				return cookies;
-			}
-		}
-		
-		public Dictionary<string,UploadedFile> Files {
-			get {
-			    if (uploaded_files == null)
-			       uploaded_files = new Dictionary<string,UploadedFile> ();
-			    return uploaded_files;
-			}
-		}
 
-		private DataDictionary ParseCookies ()
+		public override void Reset ()
 		{
-			string cookie_header;
+			Path = null;
 
-			if (!Headers.TryGetValue ("Cookie", out cookie_header))
-				return new DataDictionary ();
-			
-			return HttpCookie.FromHeader (cookie_header);
+			uri_data = null;
+			query_data = null;
+
+			base.Reset ();
 		}
-		
+
 		public void SetWwwFormData (DataDictionary data)
 		{
 			PostData = data;
 		}
 
-		private void SetDataDictionary (DataDictionary old, DataDictionary newd)
+		private int OnPath (HttpParser parser, ByteBuffer data, int pos, int len)
 		{
-			if (data != null && old != null)
-				data.Children.Remove (old);
-			if (newd != null)
-				Data.Children.Add (newd);
+			string str = Encoding.ASCII.GetString (data.Bytes, pos, len);
+
+			str = HttpUtility.UrlDecode (str, Encoding.ASCII);
+			Path = Path == null ? str : String.Concat (Path, str);
+			return 0;
 		}
 
+		private int OnQueryString (HttpParser parser, ByteBuffer data, int pos, int len)
+		{
+			string str = Encoding.ASCII.GetString (data.Bytes, pos, len);
+
+			query_data_builder.Append (str);
+			return 0;
+		}
+
+		protected override void OnFinishedReading (HttpParser parser)
+		{
+			base.OnFinishedReading (parser);
+
+			MajorVersion = parser.Major;
+			MinorVersion = parser.Minor;
+			Method = parser.HttpMethod;
+
+			Console.WriteLine ("A REQUEST IS READY!");
+			Transaction.OnRequestReady ();
+		}
+
+		public override ParserSettings CreateParserSettings ()
+		{
+			ParserSettings settings = new ParserSettings ();
+
+			settings.OnPath = OnPath;
+			settings.OnQueryString = OnQueryString;
+
+			return settings;
+		}
+
+		public void Execute ()
+		{
+			Socket = new SocketStream (AppHost.IOLoop);
+			Socket.Connect (RemoteAddress, RemotePort);
+
+			Socket.Connected += delegate {
+				Stream = new HttpStream (this, Socket);
+
+				Stream.WriteMetadata (() => {
+					HttpResponse response = new HttpResponse (Socket);
+
+					if (Connected != null)
+						Connected (response);
+				});
+			};
+		}
+
+		public override void WriteMetadata (StringBuilder builder)
+		{
+			Headers.SetNormalizedHeader ("Transfer-Encoding", "chunked");
+
+			builder.Append (Encoding.ASCII.GetString (HttpMethodBytes.GetBytes (Method)));
+			builder.Append (" ");
+			builder.Append (Path);
+			builder.Append (" HTTP/");
+			builder.Append (MajorVersion.ToString (CultureInfo.InvariantCulture));
+			builder.Append (".");
+			builder.Append (MinorVersion.ToString (CultureInfo.InvariantCulture));
+			builder.Append ("\r\n");
+			Headers.Write (builder, null, Encoding.ASCII);
+		}
+
+		public event Action<IHttpResponse> Connected;
 	}
 }
 

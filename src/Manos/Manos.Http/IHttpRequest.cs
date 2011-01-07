@@ -29,6 +29,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
+using Manos.IO;
 using Manos.Http;
 using Manos.Collections;
 
@@ -41,7 +42,7 @@ namespace Manos.Http {
 			set;
 		}
 		
-		string LocalPath {
+		string Path {
 			get;
 			set;
 		}
@@ -91,7 +92,14 @@ namespace Manos.Http {
 			get;
 		}
 
+		SocketStream Socket {
+			get;
+		}
+
+		void Read ();
 		void SetWwwFormData (DataDictionary data);
+
+		
 		
 	}
 }

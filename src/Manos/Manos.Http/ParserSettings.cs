@@ -77,6 +77,7 @@ namespace Manos.Http {
 			// if on_error gets called it MUST throw an exception, else the parser 
 			// will attempt to continue parsing, which it can't because it's
 			// in an invalid state.
+			Console.WriteLine ("ERROR: '{0}'", message);
 			throw new HttpException (message);
 		}
 

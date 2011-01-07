@@ -189,7 +189,7 @@ namespace Manos.Routing {
 			if (HasPatterns) {
 				int end;
 				
-				if (!FindPatternMatch (request.LocalPath, uri_start, out uri_data, out end)) {
+				if (!FindPatternMatch (request.Path, uri_start, out uri_data, out end)) {
 					return null;
 				}
 

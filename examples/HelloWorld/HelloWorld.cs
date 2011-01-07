@@ -24,9 +24,11 @@
 
 
 using Manos;
+using Manos.Http;
 
 using System;
 using System.IO;
+using System.Text;
 
 
 namespace HelloWorld {
@@ -39,13 +41,10 @@ namespace HelloWorld {
 
 			Route ("/shutdown", ctx => System.Environment.Exit (0));
 
-			Route ("/transactions", ctx => {
-				ctx.Response.Write ("Number of transactions: '{0}'", ctx.Server.Transactions.Count);
-
-				foreach (var t in ctx.Server.Transactions) {
-					ctx.Response.WriteLine ("{0}", t.Request.LocalPath);
-				}
-
+			Route ("/info", ctx => {
+				ctx.Response.Write ("Host: {0}", ctx.Request.Headers ["Host"]);
+				ctx.Response.Write ("Remote Address: {0}", ctx.Request.Socket.Address);
+				ctx.Response.Write ("Referer: '{0}'", ctx.Request.Headers ["Referer"]);
 				ctx.Response.End ();
 			});
 
@@ -69,14 +68,51 @@ namespace HelloWorld {
 
 			Get ("/upload", ctx => {
 				ctx.Response.Write ("<html><head></head><body>");
-				ctx.Response.Write ("<form method=\"POST\" enctype=\"multipart/form-data\">");
+				ctx.Response.Write ("<a href='/info'>a link</a>");
+				ctx.Response.Write ("<form method=\"POST\">");
 				ctx.Response.Write ("<input type=\"text\" name=\"some_name\"><br>");
 				ctx.Response.Write ("<input type=\"file\" name=\"the_file\" >");
+				ctx.Response.Write ("<input type=\"file\" name=\"the_other_file\" >");
 				ctx.Response.Write ("<input type=\"submit\">");
 				ctx.Response.Write ("</form>");
 				ctx.Response.Write ("</body></html>");
 
 				ctx.Response.End ();
+			});
+
+			Put ("/put", ctx => {
+				ctx.Response.End ("this is some stuff '{0}'", ctx.Request.Data ["foobar"]);
+			});
+
+			Get ("/request", ctx => {
+
+				var r = new HttpRequest ("http://127.0.0.1:8080/put");
+
+				r.Method = HttpMethod.HTTP_PUT;
+				r.Headers.SetNormalizedHeader ("Content-Type", "application/x-www-form-urlencoded");
+
+				r.Connected += (response) => {
+					r.End ("foobar=value");
+
+					response.BodyData += (data, offset, length) => {
+						ctx.Response.Write (data, offset, length);
+					};
+
+					response.Completed += delegate {
+						ctx.Response.End ();
+					};
+					response.Read ();
+				};
+				r.Execute ();
+			});
+
+			int count = 0;
+			Get ("/request_loop", ctx => {
+
+				if (++count == 3) {
+					ctx.Response.End ("Got this page three times!");
+					return;
+				}
 			});
 
 			Post ("/upload", ctx => {

@@ -98,6 +98,10 @@ namespace Manos.Http.Testing
 			AbortedMessage = String.Format (message, p);
 		}
 
+		public void OnRequestReady()
+		{
+		}
+
 		public void OnResponseFinished ()
 		{
 		}

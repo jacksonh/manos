@@ -32,7 +32,7 @@ using System.Net.Sockets;
 namespace Manos.IO {
 
 #if !DISABLE_POSIX
-	public class WriteFileOperation : IWriteOperation {
+	public class SendFileOperation : IWriteOperation {
 
 		private WriteCallback callback;
 
@@ -40,7 +40,7 @@ namespace Manos.IO {
 		private long file_offset;
 		private long file_length;
 		
-		public WriteFileOperation (FileStream file, WriteCallback callback)
+		public SendFileOperation (FileStream file, WriteCallback callback)
 		{
 			this.file = file;
 			this.callback = callback;
@@ -69,17 +69,19 @@ namespace Manos.IO {
 
 		public void HandleWrite (IOStream stream)
 		{
+			SocketStream sstream = (SocketStream) stream;
+
 			while (file_offset < file_length) {
 			      try {
-				      Mono.Unix.Native.Syscall.sendfile (stream.socket.Handle.ToInt32 (), 
+				      Mono.Unix.Native.Syscall.sendfile (sstream.socket.Handle.ToInt32 (), 
 						      file.Handle.ToInt32 (), ref file_offset,
 						      (ulong) (file_length - file_offset));
 			      } catch (SocketException se) {
 				      if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
 					      return;
-				      stream.Close ();
+				      sstream.Close ();
 			      } catch (Exception e) {
-				      stream.Close ();
+				      sstream.Close ();
 			      }
 			}
 

@@ -30,7 +30,7 @@ using System.Collections.Generic;
 
 namespace Manos.IO {
 
-	public class WriteBytesOperation : IWriteOperation {
+	public class SendBytesOperation : IWriteOperation {
 
 		private IList<ArraySegment<byte>> bytes;
 		private WriteCallback callback;
@@ -49,7 +49,7 @@ namespace Manos.IO {
 		private int segments_written;
 		private List<CallbackInfo> callbacks;
 
-		public WriteBytesOperation (IList<ArraySegment<byte>> bytes, WriteCallback callback)
+		public SendBytesOperation (IList<ArraySegment<byte>> bytes, WriteCallback callback)
 		{
 			this.bytes = bytes;
 			this.callback = callback;
@@ -62,25 +62,25 @@ namespace Manos.IO {
 
 		public bool Combine (IWriteOperation other)
 		{
-			WriteBytesOperation write_op = other as WriteBytesOperation;
-			if (write_op == null)
+			SendBytesOperation send_op = other as SendBytesOperation;
+			if (send_op == null)
 				return false;
 
 			int offset = bytes.Count;
-			foreach (var op in write_op.bytes) {
+			foreach (var op in send_op.bytes) {
 				bytes.Add (op);
 			}
 
-			if (write_op.callback != null) {
+			if (send_op.callback != null) {
 				if (callback == null && callbacks == null)
-					callback = write_op.callback;
+					callback = send_op.callback;
 				else {
 					if (callbacks == null) {
 						callbacks = new List<CallbackInfo> ();
 						callbacks.Add (new CallbackInfo (offset - 1, callback));
 						callback = null;
 					}
-					callbacks.Add (new CallbackInfo (bytes.Count - 1, write_op.callback));
+					callbacks.Add (new CallbackInfo (bytes.Count - 1, send_op.callback));
 				}
 			}
 
@@ -93,16 +93,18 @@ namespace Manos.IO {
 
 		public void HandleWrite (IOStream stream)
 		{
+			SocketStream sstream = (SocketStream) stream;
+			
 			while (bytes.Count > 0) {
 				int len = -1;
 				try {
-					len = stream.socket.Send (bytes);
+					len = sstream.socket.Send (bytes);
 				} catch (SocketException se) {
 					if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
 						return;
-					stream.Close ();
+					sstream.Close ();
 				} catch (Exception e) {
-					stream.Close ();
+					sstream.Close ();
 				} finally {
 					if (len != -1) {
 						int num_segments = bytes.Count;
