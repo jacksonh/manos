@@ -212,6 +212,5 @@ LinkInfo at the top of our Redirector method.
 
 ---
 
-Continue the tutorial in [part three](./3).
 
 
