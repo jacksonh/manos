@@ -43,7 +43,6 @@ namespace Manos.Http {
 
 	public class HttpServer: IDisposable {
 
-		// This gets called on every request so lets just use a hard coded string instead of reflection
 		public static readonly string ServerVersion;
 
 		private HttpConnectionCallback callback;
