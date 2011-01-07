@@ -55,7 +55,8 @@ namespace Manos.Tool {
 			manuals.Add ("Timeouts", "timeouts.md");
 
 			tutorial_pages = new List<string> () {
-				"Getting Started With Manos."
+				"Getting Started With Manos",
+				"Building the Shorty Application"
 			};
 		}
 
@@ -80,9 +81,9 @@ namespace Manos.Tool {
 		}
 
 		[Route ("/Tutorial/{page}")]
-		public void Tutorial (IManosContext ctx, int page)
+		public void Tutorial (IManosContext ctx, string page)
 		{
-			WriteMarkdownDocsPage (ctx.Response, "tutorial/page-" + page + ".md");
+			WriteMarkdownDocsPage (ctx.Response, "tutorial/" + page);
 		}		
 
 		private void WriteMarkdownDocsPage (IHttpResponse response, string page)
@@ -172,7 +173,7 @@ namespace Manos.Tool {
 			response.WriteLine ("<h2>Tutorial</h2>");
 			response.WriteLine ("<ul>");
 			for (int i = 0; i < tutorial_pages.Count; i++) {
-				response.WriteLine ("<li><a href='/Tutorial/{0}'>{1}</a></li>", i + 1, tutorial_pages [i]);
+				response.WriteLine ("<li><a href='/Tutorial/page-{0}.md'>{1}</a></li>", i + 1, tutorial_pages [i]);
 			}
 			response.WriteLine ("</ul>");
 			
