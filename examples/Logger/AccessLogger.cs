@@ -61,7 +61,7 @@ namespace Manos.Util {
 
 			string line = String.Format ("- - - [{0}] \"{1}\" {2} {3} - -\n",
 					DateTime.Now.ToString ("dd/MMM/yyyy:HH:mm:ss K"),
-					transaction.Request.LocalPath,
+					transaction.Request.Path,
 					transaction.Response.StatusCode,
 					transaction.Response.Headers.ContentLength);
 
