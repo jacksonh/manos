@@ -11,8 +11,4 @@ The Main Features of Manos:
  - **Testing built in** from the beginning making things testable was a primary concern on Manos.  This means you can easily Mock just about any object in the Manos stack, making testing your application dead simple.
 
 
-For installation instructions please read:
-
-
-   [Installation](docs/installation.md)
-
+For installation instructions please read the installation guide in the docs directory.
