@@ -1,4 +1,3 @@
-
 Manos is an easy to use, easy to test, high performance web application framework that stays out of your way and makes your life ridiculously simple.
 
 The Main Features of Manos:
@@ -15,5 +14,5 @@ The Main Features of Manos:
 For installation instructions please read:
 
 
-   [Installation](./docs/installation.md)
+   [Installation](docs/installation.md)
 
