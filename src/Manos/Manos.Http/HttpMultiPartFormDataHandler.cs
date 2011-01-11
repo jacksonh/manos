@@ -56,7 +56,6 @@ namespace Manos.Http {
 		private int index;
 		private State state;
 		private State previous_state;
-		private int previous_pos;
 		private bool not_boundary;
 
 		private string boundary;
@@ -71,7 +70,6 @@ namespace Manos.Http {
 		private string current_filename;
 		private string content_type;
 
-		private int upload_count;
 		private UploadedFile uploaded_file;
 		private List<byte> form_data = new List<byte> ();
 
@@ -233,7 +231,6 @@ namespace Manos.Http {
 				index = 1;
 				previous_state = state;
 				state = State.InBoundary;
-				previous_pos = pos;
 			}
 
 			return res;

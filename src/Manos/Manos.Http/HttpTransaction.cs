@@ -51,9 +51,6 @@ namespace Manos.Http {
 		private bool aborted;
 
 		private GCHandle gc_handle;
-		private HttpParser parser;
-		private ParserSettings parser_settings;
-
 		
 		public HttpTransaction (HttpServer server, SocketStream stream, HttpConnectionCallback callback)
 		{

@@ -217,7 +217,7 @@ namespace Manos.IO {
 				try {
 					s = socket.Accept ();
 				} catch (SocketException se) {
-					if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
+					if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain) 
 						return;
 					Console.WriteLine ("Socket exception in Accept handler");
 					Console.WriteLine (se);
