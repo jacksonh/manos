@@ -10,3 +10,9 @@ The Main Features of Manos:
  - **An easy to use, high performance template engine** Manos comes bundled with a designer friendly templating language. Just because the template engine is easy to use, doesn't mean its slow though.  Manos's template engine precompiles your templates to IL so there are no startup costs and templates are rendered lightning fast.
 
  - **Testing built in** from the beginning making things testable was a primary concern on Manos.  This means you can easily Mock just about any object in the Manos stack, making testing your application dead simple.
+
+
+For installation instructions please read:
+
+   docs/installation.md
+
