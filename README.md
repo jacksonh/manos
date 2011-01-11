@@ -14,5 +14,6 @@ The Main Features of Manos:
 
 For installation instructions please read:
 
-   docs/installation.md
+
+   [Installation](./docs/installation.md)
 
