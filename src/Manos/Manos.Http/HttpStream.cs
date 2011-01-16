@@ -168,6 +168,7 @@ namespace Manos.Http
 				return;
 			}
 
+			WriteMetadata (null);
 			SendBufferedOps (callback);
 		}
 
