@@ -39,7 +39,7 @@ namespace TestApp {
 
 		public void EchoLocalPath (IManosContext ctx)
 		{
-			ctx.Response.End (ctx.Request.LocalPath);
+			ctx.Response.End (ctx.Request.Path);
 		}
 
 		public void EchoInt (IManosContext ctx, int the_int)
