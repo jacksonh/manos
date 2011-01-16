@@ -166,6 +166,11 @@ namespace Manos.Http {
 			MinorVersion = parser.Minor;
 			Method = parser.HttpMethod;
 
+			if (query_data_builder.Length != 0) {
+				QueryData = HttpUtility.ParseUrlEncodedData (query_data_builder.ToString ());
+				query_data_builder.Length = 0;
+			}
+
 			Transaction.OnRequestReady ();
 		}
 
