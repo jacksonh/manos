@@ -39,7 +39,7 @@ namespace Manos.Tests {
 		private bool LoadTest = true;
 		private Process LoadProcess = null;
 
-		private string MANOS_SERVER = "http://localhost:8080";
+		private string MANOS_SERVER = "http://127.0.0.1:8080";
 
 		public static int Main (string [] args)
 		{
