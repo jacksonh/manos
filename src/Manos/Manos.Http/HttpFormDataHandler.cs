@@ -49,7 +49,6 @@ namespace Manos.Http {
 			pos = 0;
 			len = str_data.Length;
 
-			Console.WriteLine ("handling data:  '{0}'", Encoding.Default.GetString (data.Bytes, pos, len));
 			while (pos < len) {
 				char c = str_data [pos++];
 
