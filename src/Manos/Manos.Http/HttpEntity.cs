@@ -428,12 +428,12 @@ namespace Manos.Http {
 			End ();
 		}
 
-		public virtual void End ()
+		public void End ()
 		{
 			end_watcher.Send ();
 		}
 
-		private void OnEnd (Loop loop, AsyncWatcher watcher, EventTypes revents)
+		internal virtual void OnEnd (Loop loop, AsyncWatcher watcher, EventTypes revents)
 		{
 			if (!Stream.Chunked) {
 				Headers.ContentLength = Stream.Length;

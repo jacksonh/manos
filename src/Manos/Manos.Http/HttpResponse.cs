@@ -192,7 +192,7 @@ namespace Manos.Http {
 			return SetCookie (name, value, domain, DateTime.Now + max_age);
 		}
 
-		public override void End ()
+		internal override void OnEnd (Loop loop, AsyncWatcher watcher, EventTypes revents)
 		{
 			if (!Stream.Chunked)
 				Headers.ContentLength = Stream.Length;
