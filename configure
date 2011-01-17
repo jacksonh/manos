@@ -1,6 +1,8 @@
 #!/bin/bash
 prefix=/usr/local
 prefix_set=false
+install_prefix=/usr/local
+install_prefix_set=false
 pkg_config_path=''
 pkg_config_path_set=false
 common_packages=" mono;2.6"
@@ -80,6 +82,12 @@ while test x$1 != x; do
                                 prefix=$1
                                 prefix_set=true
                                 ;;
+		--install-prefix=*)
+		                install_prefix=`echo $1 | sed 's/--install-prefix=//'`
+                                install_prefix_set=true
+
+			        echo "The install prefix was set $install_prefix"
+			               ;;
                 --pkg_config_path=*)
                                 pkg_config_path=`echo $1 | sed 's/--pkg_config_path=//'`
                                 pkg_config_path_set=true
@@ -108,7 +116,13 @@ check_pkg_config_path
 
 [ $? -eq 1 ] && exit 1
 
+if [[ $install_prefix_set == false ]] ; then
+     install_prefix=$prefix
+     echo "setting the install prefix to prefix $install_prefix_set"
+fi
+
 echo "prefix=$prefix" > config.make
+echo "install_prefix=$install_prefix" >> config.make
 echo "pkg_config_path=$pkg_config_path" >> config.make
 
 echo

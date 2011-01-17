@@ -28,7 +28,7 @@ NUNIT_CONSOLE = nunit-console4
 
 define MANOS_EXEC_SCRIPT
 #!/bin/bash
-exec mono $$MONO_OPTIONS "$(install_bin_dir)manostool.exe" "$$@"
+exec mono $$MONO_OPTIONS "$(install_prefix)/lib/manos/manostool.exe" "$$@"
 endef
 export MANOS_EXEC_SCRIPT
 
@@ -36,10 +36,10 @@ define MANOS_PC_SCRIPT
 Name: Manos
 Description: Manos
 Version: $(version)
-Libraries: $(install_bin_dir)Manos.dll $(install_bin_dir)Manos.dll.mdb 
+Libraries: $(install_prefix)/lib/manos/Manos.dll $(install_prefix)/lib/manos/Manos.dll.mdb 
 
 Requires: 
-Libs: -r:$(install_bin_dir)Manos.dll
+Libs: -r:$(install_prefix)/lib/manos/Manos.dll
 endef
 export MANOS_PC_SCRIPT
 
@@ -96,7 +96,7 @@ dist: clean update-docs
 	git archive master | tar -x -C $(archivedir)
 	rm -rf $(distdir)
 	mkdir $(distdir)
-	cp -rf $(archivedir)/src/ $(archivedir)/data/ $(archivedir)/man $(archivedir)/docs $(distdir)
+	cp -rf $(archivedir)/src $(archivedir)/data $(archivedir)/man $(archivedir)/docs $(distdir)
 	cp -rf configure Makefile $(distdir)
 	tar cjvf manos-$(version).tar.bz2 manos-$(version)
 
