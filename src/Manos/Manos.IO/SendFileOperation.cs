@@ -40,9 +40,11 @@ namespace Manos.IO {
 		private long file_offset;
 		private long file_length;
 		
-		public SendFileOperation (FileStream file, WriteCallback callback)
+		string filename;
+
+		public SendFileOperation (string filename, long size, WriteCallback callback)
 		{
-			this.file = file;
+			this.filename = filename;
 			this.callback = callback;
 
 			// TODO: async.  Don't think there is a good reason to do any locking here.
@@ -86,9 +88,18 @@ namespace Manos.IO {
 
 			while (file_offset < file_length) {
 			      try {
-				      Mono.Unix.Native.Syscall.sendfile (sstream.socket.Handle.ToInt32 (), 
-						      file.Handle.ToInt32 (), ref file_offset,
-						      (ulong) (file_length - file_offset));
+				      int fdin = -1;
+				      try {
+					      fdin = Mono.Unix.Native.Syscall.open (filename,
+					                                            Mono.Unix.Native.OpenFlags.O_RDONLY);
+					      if (fdin != -1)
+						      Mono.Unix.Native.Syscall.sendfile (sstream.socket.Handle.ToInt32 (),
+						                                         fdin, ref file_offset,
+						                                         (ulong) (file_length - file_offset));
+				      } finally {
+					      if (fdin != -1)
+						      Mono.Unix.Native.Syscall.close (fdin);
+				      }
 			      } catch (SocketException se) {
 				      if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
 					      return;
