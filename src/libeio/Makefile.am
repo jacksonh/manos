@@ -4,8 +4,6 @@ VERSION_INFO = 1:0
 
 EXTRA_DIST = LICENSE Changes
 
-#man_MANS = ev.3
-
 include_HEADERS = eio.h
 
 pkglib_LTLIBRARIES = libeio.la
