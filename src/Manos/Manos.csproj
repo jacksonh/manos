@@ -165,4 +165,7 @@
     <None Include="Manos.Template\codegen.cs" />
     <None Include="Manos.Templates.Testing\ManosTemplateStub.cs" />
   </ItemGroup>
+  <Target Name="ListSources">
+    <Message Text="@(Compile)" Importance="High" />
+  </Target>
 </Project>
