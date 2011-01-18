@@ -1,6 +1,6 @@
 #! /bin/sh
 
-PROJECT=RouteCrash
+PROJECT=manos
 FILE=
 CONFIGURE=configure.ac
 
