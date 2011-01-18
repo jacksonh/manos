@@ -5,16 +5,16 @@
 /* #undef HAVE_CLOCK_GETTIME */
 
 /* "use syscall interface for clock_gettime" */
-/* #undef HAVE_CLOCK_SYSCALL */
+#define HAVE_CLOCK_SYSCALL 1
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #define HAVE_DLFCN_H 1
 
 /* Define to 1 if you have the `epoll_ctl' function. */
-/* #undef HAVE_EPOLL_CTL */
+#define HAVE_EPOLL_CTL 1
 
 /* Define to 1 if you have the `eventfd' function. */
-/* #undef HAVE_EVENTFD */
+#define HAVE_EVENTFD 1
 
 /* fdatasync(2) is available */
 #define HAVE_FDATASYNC 1
@@ -23,13 +23,13 @@
 #define HAVE_FUTIMES 1
 
 /* Define to 1 if you have the `inotify_init' function. */
-/* #undef HAVE_INOTIFY_INIT */
+#define HAVE_INOTIFY_INIT 1
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
 
 /* Define to 1 if you have the `kqueue' function. */
-#define HAVE_KQUEUE 1
+/* #undef HAVE_KQUEUE */
 
 /* Define to 1 if you have the `m' library (-lm). */
 #define HAVE_LIBM 1
@@ -56,7 +56,7 @@
 /* #undef HAVE_PORT_H */
 
 /* posix_fadvise(2) is available */
-/* #undef HAVE_POSIX_FADVISE */
+#define HAVE_POSIX_FADVISE 1
 
 /* posix_madvise(2) is available */
 #define HAVE_POSIX_MADVISE 1
@@ -65,7 +65,7 @@
 #define HAVE_PREADWRITE 1
 
 /* readahead(2) is available (linux) */
-/* #undef HAVE_READAHEAD */
+#define HAVE_READAHEAD 1
 
 /* Define to 1 if you have the `select' function. */
 #define HAVE_SELECT 1
@@ -74,7 +74,7 @@
 #define HAVE_SENDFILE 1
 
 /* Define to 1 if you have the `signalfd' function. */
-/* #undef HAVE_SIGNALFD */
+#define HAVE_SIGNALFD 1
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
@@ -89,25 +89,25 @@
 #define HAVE_STRING_H 1
 
 /* sync_file_range(2) is available */
-/* #undef HAVE_SYNC_FILE_RANGE */
+#define HAVE_SYNC_FILE_RANGE 1
 
 /* Define to 1 if you have the <sys/epoll.h> header file. */
-/* #undef HAVE_SYS_EPOLL_H */
+#define HAVE_SYS_EPOLL_H 1
 
 /* Define to 1 if you have the <sys/eventfd.h> header file. */
-/* #undef HAVE_SYS_EVENTFD_H */
+#define HAVE_SYS_EVENTFD_H 1
 
 /* Define to 1 if you have the <sys/event.h> header file. */
-#define HAVE_SYS_EVENT_H 1
+/* #undef HAVE_SYS_EVENT_H */
 
 /* Define to 1 if you have the <sys/inotify.h> header file. */
-/* #undef HAVE_SYS_INOTIFY_H */
+#define HAVE_SYS_INOTIFY_H 1
 
 /* Define to 1 if you have the <sys/select.h> header file. */
 #define HAVE_SYS_SELECT_H 1
 
 /* Define to 1 if you have the <sys/signalfd.h> header file. */
-/* #undef HAVE_SYS_SIGNALFD_H */
+#define HAVE_SYS_SIGNALFD_H 1
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #define HAVE_SYS_STAT_H 1
@@ -140,6 +140,9 @@
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME ""
 
+/* Define to the home page for this package. */
+#define PACKAGE_URL ""
+
 /* Define to the version of this package. */
 #define PACKAGE_VERSION ""
 
@@ -147,7 +150,7 @@
 #define STDC_HEADERS 1
 
 /* ... */
-#define USE_MACH_SEMA 1
+/* #undef USE_MACH_SEMA */
 
 /* Version number of package */
 #define VERSION "0.1.1"
