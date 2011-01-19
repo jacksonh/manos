@@ -30,6 +30,13 @@ fi
 LIBTOOLIZE=$(basename $WHICHLIBTOOLIZE)
 
 
+# MacPorts on OS X only seems to have glibtool
+WHICHLIBTOOL=$(which libtool || which glibtool)
+if [ x"$WHICHLIBTOOL" == x"" ]; then
+	error "libtool is required to configure $PROJECT"
+fi
+LIBTOOL=$(basename $WHICHLIBTOOL)
+
 ($AUTOCONF --version) < /dev/null > /dev/null 2>&1 || {
         echo
         echo "You must have autoconf installed to compile $PROJECT."
