@@ -49,6 +49,14 @@ namespace Manos.IO {
 			file_length = file.Length;
 		}
 
+		~SendFileOperation ()
+		{
+			if (file != null) {
+				file.Close ();
+				file = null;
+			}
+		}
+
 		public WriteCallback Callback {
 			get { return callback; }
 			set {
@@ -93,6 +101,11 @@ namespace Manos.IO {
 		{
 			if (Callback != null)
 				Callback ();
+
+			if (file != null) {
+				file.Close ();
+				file = null;
+			}
 		}
 
 		public bool Combine (IWriteOperation other)
