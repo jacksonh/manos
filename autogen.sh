@@ -23,7 +23,7 @@ DIE=0
 
 
 # MacPorts on OS X only seems to have glibtoolize
-WHICHLIBTOOLIZE=$(which libtoolize || which glibtoolize)
+WHICHLIBTOOLIZE=$(which glibtoolize || which libtoolize)
 if [ x"$WHICHLIBTOOLIZE" == x"" ]; then
 	error "libtool is required to configure $PROJECT"
 fi
@@ -31,7 +31,7 @@ LIBTOOLIZE=$(basename $WHICHLIBTOOLIZE)
 
 
 # MacPorts on OS X only seems to have glibtool
-WHICHLIBTOOL=$(which libtool || which glibtool)
+WHICHLIBTOOL=$(which glibtool || which libtool)
 if [ x"$WHICHLIBTOOL" == x"" ]; then
 	error "libtool is required to configure $PROJECT"
 fi
