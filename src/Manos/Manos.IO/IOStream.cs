@@ -167,6 +167,10 @@ namespace Manos.IO {
 
 			handle = IntPtr.Zero;
 
+			foreach (IWriteOperation op in write_ops) {
+				op.Dispose ();
+			}
+			
 			if (Closed != null)
 				Closed (this, EventArgs.Empty);
 		}

@@ -39,6 +39,11 @@ namespace Manos.IO {
 			this.callback = callback;
 		}
 
+		
+		public void Dispose ()
+		{
+		}
+
 		public bool IsComplete {
 			get { return true; }
 		}

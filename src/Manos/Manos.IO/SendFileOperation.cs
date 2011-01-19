@@ -51,6 +51,11 @@ namespace Manos.IO {
 
 		~SendFileOperation ()
 		{
+			Dispose ();
+		}
+
+		public void Dispose ()
+		{
 			if (file != null) {
 				file.Close ();
 				file = null;

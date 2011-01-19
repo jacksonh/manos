@@ -23,10 +23,12 @@
 //
 
 
+using System;
+
 
 namespace Manos.IO {
 
-	public interface IWriteOperation {
+	public interface IWriteOperation : IDisposable {
 
 		bool IsComplete {
 			get;
