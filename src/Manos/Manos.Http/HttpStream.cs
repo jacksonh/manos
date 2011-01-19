@@ -196,11 +196,10 @@ namespace Manos.Http
 				for (int i = 0; i < ops.Length; i++) {
 					SocketStream.QueueWriteOperation (ops [i]);
 				}
+				write_ops.Clear ();
 			}
 
 			SocketStream.QueueWriteOperation (new NopWriteOperation (callback));
-
-			write_ops.Clear ();
 		}
 
 		public void WriteMetadata (WriteCallback callback)
