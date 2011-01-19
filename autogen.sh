@@ -21,6 +21,15 @@ aclocalinclude="-I . $ACLOCAL_FLAGS"
 
 DIE=0
 
+
+# MacPorts on OS X only seems to have glibtoolize
+WHICHLIBTOOLIZE=$(which libtoolize || which glibtoolize)
+if [ x"$WHICHLIBTOOLIZE" == x"" ]; then
+	error "libtool is required to configure $PROJECT"
+fi
+LIBTOOLIZE=$(basename $WHICHLIBTOOLIZE)
+
+
 ($AUTOCONF --version) < /dev/null > /dev/null 2>&1 || {
         echo
         echo "You must have autoconf installed to compile $PROJECT."
