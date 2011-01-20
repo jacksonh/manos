@@ -47,8 +47,7 @@ namespace Manos.IO {
 			this.filename = filename;
 			this.callback = callback;
 
-			// TODO: async.  Don't think there is a good reason to do any locking here.
-			file_length = file.Length;
+			file_length = size;
 		}
 
 		~SendFileOperation ()
