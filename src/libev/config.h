@@ -1,5 +1,5 @@
 /* src/libev/config.h.  Generated from config.h.in by configure.  */
-/* src/libev/config.h.in.  Generated from configure.in by autoheader.  */
+/* src/libev/config.h.in.  Generated from configure.ac by autoheader.  */
 
 /* Define to 1 if you have the `clock_gettime' function. */
 /* #undef HAVE_CLOCK_GETTIME */

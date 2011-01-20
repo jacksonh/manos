@@ -7,4 +7,6 @@ doc_DATA = intro.md		\
 	   routing.md		\
 	   timeouts.md		\
 	   tutorial/page-1.md	\
-	   tutorial/page-2.md	
+	   tutorial/page-2.md
+
+EXTRA_DIST = $(doc_DATA)
