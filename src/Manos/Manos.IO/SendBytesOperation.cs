@@ -28,11 +28,17 @@ using System.Net.Sockets;
 using System.Collections;
 using System.Collections.Generic;
 
+using Manos;
+using Manos.Collections;
+
+
 namespace Manos.IO {
+
+	
 
 	public class SendBytesOperation : IWriteOperation {
 
-		private IList<ArraySegment<byte>> bytes;
+		private List<ByteBuffer> buffers;
 		private WriteCallback callback;
 
 		private class CallbackInfo {
@@ -49,9 +55,9 @@ namespace Manos.IO {
 		private int segments_written;
 		private List<CallbackInfo> callbacks;
 
-		public SendBytesOperation (IList<ArraySegment<byte>> bytes, WriteCallback callback)
+		public SendBytesOperation (List<ByteBuffer> buffers, WriteCallback callback)
 		{
-			this.bytes = bytes;
+			this.buffers = buffers;
 			this.callback = callback;
 		}
 
@@ -70,9 +76,9 @@ namespace Manos.IO {
 			if (send_op == null)
 				return false;
 
-			int offset = bytes.Count;
-			foreach (var op in send_op.bytes) {
-				bytes.Add (op);
+			int offset = buffers.Count;
+			foreach (var op in send_op.buffers) {
+				buffers.Add (op);
 			}
 
 			if (send_op.callback != null) {
@@ -84,7 +90,7 @@ namespace Manos.IO {
 						callbacks.Add (new CallbackInfo (offset - 1, callback));
 						callback = null;
 					}
-					callbacks.Add (new CallbackInfo (bytes.Count - 1, send_op.callback));
+					callbacks.Add (new CallbackInfo (buffers.Count - 1, send_op.callback));
 				}
 			}
 
@@ -95,31 +101,39 @@ namespace Manos.IO {
 		{
 		}
 
+		private ByteBufferS [] CreateBufferSArray ()
+		{
+			ByteBufferS [] b = new ByteBufferS [buffers.Count];
+
+			for (int i = 0; i < buffers.Count; i++) {
+				b [i] = buffers [i].buffer;
+			}
+
+			return b;
+		}
+
 		public void HandleWrite (IOStream stream)
 		{
 			SocketStream sstream = (SocketStream) stream;
 			
-			while (bytes.Count > 0) {
+			while (this.buffers.Count > 0) {
 				int len = -1;
-				try {
-					len = sstream.socket.Send (bytes);
-				} catch (SocketException se) {
-					if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
-						return;
-					sstream.Close ();
-				} catch (Exception e) {
-					sstream.Close ();
-				} finally {
-					if (len != -1) {
-						int num_segments = bytes.Count;
-						IOStream.AdjustSegments (len, bytes);
-						segments_written = num_segments - bytes.Count;
-					}
+				int error;
+				ByteBufferS [] bs = CreateBufferSArray ();
+				len = sstream.Send (bs, bs.Length, out error);
+
+				if (len < 0 && error == 0)
+					return;
+
+				if (len != -1) {
+					int num_segments = buffers.Count;
+					IOStream.AdjustSegments (len, buffers);
+					segments_written = num_segments - buffers.Count;
 				}
 			}
 
 			FireCallbacks ();
-			IsComplete = (bytes.Count == 0);
+			IsComplete = (buffers.Count == 0);
 		}
 
 		public void EndWrite (IOStream stream)
@@ -128,7 +142,7 @@ namespace Manos.IO {
 
 		private void FireCallbacks ()
 		{
-			if (bytes.Count == 0) {
+			if (buffers.Count == 0) {
 				FireAllCallbacks ();
 				return;
 			}

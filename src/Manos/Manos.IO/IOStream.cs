@@ -32,6 +32,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Libev;
+using Manos.Collections;
 
 
 namespace Manos.IO {
@@ -222,12 +223,12 @@ namespace Manos.IO {
 
 		/// This could use some tuning, but the basic idea is that we need to remove
 		/// all of the data that has been sent already.
-		public static void AdjustSegments (int len, IList<ArraySegment<byte>> write_data)
+		public static void AdjustSegments (int len, IList<ByteBuffer> write_data)
 		{
-			var remove = new List<ArraySegment<byte>>  ();
+			var remove = new List<ByteBuffer>  ();
 			int total = 0;
 			for (int i = 0; i < write_data.Count; i++) {
-				int seg_len = write_data [i].Count;
+				int seg_len = write_data [i].Length;
 				if (total + seg_len <= len) {
 					// The entire segment was written so we can pop it 
 					remove.Add (write_data [i]);
@@ -238,10 +239,9 @@ namespace Manos.IO {
 				} else if (total + seg_len > len) {
 					// Move to the point in the segment where we stopped writing
 
-					int offset = write_data [i].Offset + (len - total);
-					write_data [i] = new ArraySegment<byte> (write_data [i].Array,
-							offset,
-							write_data [i].Array.Length - offset);
+					int offset = write_data [i].Position + (len - total);
+					write_data [i].Position = offset;
+					write_data [i].Length = write_data [i].Bytes.Length - offset;
 					break;
 				}
 					

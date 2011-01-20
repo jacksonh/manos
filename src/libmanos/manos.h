@@ -13,7 +13,7 @@ int manos_socket_accept (int fd, int *err);
 int manos_socket_accept_many (int fd, int *fds, int len, int *err);
 int manos_socket_receive (int fd, char* data, int len, int *err);
 int manos_socket_send (int fd, bytebuffer_t *buffers, int len, int *err);
-int manos_socket_send_file (int fd, int file_fd, int offset, int *err);
+int manos_socket_send_file (int fd, int file_fd, off_t offset, int length, int *err);
 int manos_socket_close (int fd, int *err);
 
 /*

@@ -27,51 +27,64 @@ using System;
 
 namespace Manos.Collections {
 
+	
+	public struct ByteBufferS {
+		public int Position;
+		public int Length;
+		public byte [] Bytes;
+
+		public ByteBufferS (byte [] data, int position, int length)
+		{
+			this.Position = position;
+			this.Length = length;
+			this.Bytes = data;
+		}
+	}
+
 	public class ByteBuffer {
 
-		int length;
-		int position;
-
-		public byte [] Bytes;
+		internal ByteBufferS buffer;
 
 		public ByteBuffer (byte [] bytes, int position, int length)
 		{
-			Bytes = bytes;
-			this.position = position;
-			this.length = length;
+			buffer = new ByteBufferS (bytes, position, length);
 		}
 
 		public byte CurrentByte {
-			get { return Bytes [position]; }
+			get { return buffer.Bytes [buffer.Position]; }
+		}
+
+		public byte [] Bytes {
+			get { return buffer.Bytes; }
 		}
 
 		public int Length {
-			get { return length; }
+			get { return buffer.Length; }
 			set {
-				if (value > Bytes.Length)
+				if (value > buffer.Bytes.Length)
 					throw new ArgumentOutOfRangeException ("value", "Can not increase the size of a byte buffer.");
 				if (value < 0)
 					throw new ArgumentOutOfRangeException ("value", "Length must be zero or greater.");
-				length = value;
+				buffer.Length = value;
 			}
 		}
 
 		public int Position {
-			get { return position; }
+			get { return buffer.Position; }
 			set {
-				if (value > length)
+				if (value > buffer.Length)
 					throw new ArgumentOutOfRangeException ("value", "Position must be less than the array length.");
 				if (value < 0)
 					throw new ArgumentOutOfRangeException ("value", "Position must be zero or greater.");
-				position = value;
+				buffer.Position = value;
 			}
 		}
 
 		public byte ReadByte ()
 		{
-			if (position >= length)
+			if (buffer.Position >= buffer.Length)
 				throw new InvalidOperationException ("Read past end of ByteBuffer.");
-			return Bytes [position++];
+			return buffer.Bytes [buffer.Position++];
 		}
 	}
 }

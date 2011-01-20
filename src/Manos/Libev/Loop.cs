@@ -108,14 +108,14 @@ namespace Libev {
 		public static Loop CreateDefaultLoop (uint flags)
 		{
 			IntPtr native;
-            int backends = ev_supported_backends();
-            if (backends == 0)
-                throw new Exception ("No supported backend in libev");
+			int backends = ev_supported_backends ();
+			if (backends == 0)
+				throw new Exception ("No supported backend in libev");
 
-            if (IsV4)
-                native = ev_default_loop (flags);
-            else
-                native = ev_default_loop_init (flags);
+			if (IsV4)
+				native = ev_default_loop (flags);
+			else
+				native = ev_default_loop_init (flags);
 			
 			if (native == IntPtr.Zero)
 				throw new Exception ("Unable to create default loop");

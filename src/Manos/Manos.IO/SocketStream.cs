@@ -24,13 +24,13 @@
 
 
 using System;
-using System.Net;
-using System.Net.Sockets;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+
 
 using Libev;
-
+using Manos.Collections;
 
 namespace Manos.IO {
 
@@ -44,19 +44,22 @@ namespace Manos.IO {
 		}
 
 		private SocketState state;
-		internal Socket socket;
 
-		public SocketStream (IOLoop ioloop) : this (null, ioloop)
+		internal int fd;
+		internal IntPtr handle;
+		internal string host;
+		internal int port;
+
+		public SocketStream (IOLoop ioloop) : this (0, ioloop)
 		{
 		}
 
-		public SocketStream (Socket socket, IOLoop ioloop) : base (ioloop)
+		public SocketStream (int fd, IOLoop ioloop) : base (ioloop)
 		{
-			this.socket = socket;
+			this.fd = fd;
 
-			if (socket != null) {
-				socket.Blocking = false;
-				SetHandle (IOWatcher.GetHandle (socket));
+			if (fd > 0) {
+				SetHandle (fd);
 				state = SocketState.Open;
 			}
 		}
@@ -80,12 +83,19 @@ namespace Manos.IO {
 			}
 		}
 
+		private void SetHandle (int fd)
+		{
+			handle = new IntPtr (fd);
+			SetHandle (handle);
+		}
+		
 		//
 		// Eventually everything will be stored as IPAddress only, since
 		// DNS will be handled by our special DNS code
 		//
 		private string GetAddress (out int port)
 		{
+			/*
 			EndPoint end = null;
 			switch (state) {
 			case SocketState.Open:
@@ -107,7 +117,7 @@ namespace Manos.IO {
 				port = dns.Port;
 				return dns.Host;
 			}
-
+			*/
 			port = -1;
 			return null;
 
@@ -120,19 +130,32 @@ namespace Manos.IO {
 
 		public override void Close ()
 		{
-			IOWatcher.ReleaseHandle (socket, Handle);
+			//		IOWatcher.ReleaseHandle (socket, Handle);
 
 			base.Close ();
+
+			int error;
+			int res = manos_socket_close (fd, out error);
+
+			if (res < 0)
+				Console.Error.WriteLine ("Error '{0}' closing socket: {1}", error, fd);
+			
 		}
 
 		public void Connect (string host, int port)
 		{
-			socket = CreateSocket ();
-			socket.Connect (host, port);
+			int error;
+			fd = manos_socket_connect (host, port, out error);
 
-			IntPtr handle = IOWatcher.GetHandle (socket);
+			if (fd < 0)
+				throw new Exception (String.Format ("An error occurred while trying to connect to {0}:{1} errno: {2}", host, port, error));
+			
+			
 			IOWatcher iowatcher = new IOWatcher (handle, EventTypes.Write, IOLoop.EventLoop, (l, w, r) => {
 				w.Stop ();
+
+				this.host = host;
+				this.port = port;
 				OnConnected ();
 			});
 			iowatcher.Start ();
@@ -143,26 +166,19 @@ namespace Manos.IO {
 			Connect ("127.0.0.1", port);
 		}
 
-		public void Listen (IPEndPoint endpoint)
+		public void Listen (string host, int port)
 		{
-			socket = CreateSocket ();
+			int error;
+			fd = manos_socket_listen (host, port, out error);
 
-			socket.Bind (endpoint);
-			socket.Listen (128);
+			if (fd < 0)
+				throw new Exception (String.Format ("An error occurred while trying to liste to {0}:{1} errno: {2}", host, port, error));
 
-			SetHandle (IOWatcher.GetHandle (socket));
+			SetHandle (fd);
 
 			DisableTimeout ();
 			EnableReading ();
 			state = SocketState.AcceptingConnections;
-		}
-
-		public void Listen (string host, int port)
-		{
-			// TODO: Proper DNS lookups
-			IPEndPoint endpoint = new IPEndPoint (IPAddress.Parse (host), port);
-
-			Listen (endpoint);
 		}	
 
 		public void Write (byte [] data, WriteCallback callback)
@@ -172,8 +188,8 @@ namespace Manos.IO {
 
 		public void Write (byte [] data, int offset, int count, WriteCallback callback)
 		{
-			var bytes = new List<ArraySegment<byte>> ();
-			bytes.Add (new ArraySegment<byte> (data, offset, count));
+			var bytes = new List<ByteBuffer> ();
+			bytes.Add (new ByteBuffer (data, offset, count));
 
 			var write_bytes = new SendBytesOperation (bytes, callback);
 			QueueWriteOperation (write_bytes);
@@ -181,20 +197,11 @@ namespace Manos.IO {
 		
 		private void OnConnected ()
 		{
-			SetHandle (IOWatcher.GetHandle (socket));
+			SetHandle (fd);
 			state = SocketState.Open;
 
 			if (Connected != null)
 				Connected (this);
-		}
-
-		private Socket CreateSocket ()
-		{
-			Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			socket.SetSocketOption (SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-			socket.Blocking = false;
-
-			return socket;
 		}
 
 		protected override void HandleRead ()
@@ -212,23 +219,17 @@ namespace Manos.IO {
 
 		private void AcceptConnections ()
 		{
-			while (true) {
-			      	Socket s = null;
-				try {
-					s = socket.Accept ();
-				} catch (SocketException se) {
-					if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain) 
-						return;
-					Console.WriteLine ("Socket exception in Accept handler");
-					Console.WriteLine (se);
-					return;
-				} catch (Exception e) {
-					Console.WriteLine ("Exception in Accept handler");
-					Console.WriteLine (e);
-					return;
-				}
+			int error;
+			int [] afds = new int [100];
 
-				SocketStream iostream = new SocketStream (s, IOLoop);
+			int amount = manos_socket_accept_many (fd, afds, 100, out error);
+			if (amount < 0)
+				throw new Exception (String.Format ("Exception while accepting. errno: {0}", error));
+
+//			Console.WriteLine ("Accepted: '{0}' connections.", amount);
+			for (int i = 0; i < amount; i++) {
+//				Console.WriteLine ("Accepted: '{0}'", afds [i]);
+				SocketStream iostream = new SocketStream (afds [i], IOLoop);
 				OnConnectionAccepted (iostream);
 			}
 		}
@@ -236,16 +237,11 @@ namespace Manos.IO {
 		private void Read ()
 		{
 			int size;
+			int error;
 
-			try {
-				size = socket.Receive (ReadChunk);
-			} catch (SocketException se) {
-				if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
-					return;
-				Close ();
-				return;
-			} catch (Exception e) {
-			  	Console.WriteLine (e);
+			size = manos_socket_receive (fd, ReadChunk, ReadChunk.Length, out error);
+//			Console.WriteLine ("READ: '{0}'", size);
+			if (size < 0 && error != 0) {
 				Close ();
 				return;
 			}
@@ -259,6 +255,17 @@ namespace Manos.IO {
 			read_callback (this, ReadChunk, 0, size);
 		}
 
+		internal int Send (ByteBufferS [] buffers, int length, out int error)
+		{
+			return manos_socket_send (fd, buffers, length, out error);
+		}
+
+		internal int SendFile (int file_fd, long offset, int length, out int error)
+		{
+			int result = manos_socket_send_file (fd, file_fd, offset, length, out error);
+			return result;
+		}
+
 		private void OnConnectionAccepted (SocketStream stream)
 		{
 			if (ConnectionAccepted != null)
@@ -267,6 +274,31 @@ namespace Manos.IO {
 
 		public event Action<SocketStream> Connected;
 		public event EventHandler<ConnectionAcceptedEventArgs> ConnectionAccepted;
+
+
+		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
+		private static extern int manos_socket_connect (string host, int port, out int err);
+
+		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
+		private static extern int manos_socket_close (int fd, out int err);
+
+		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
+		private static extern int manos_socket_listen (string host, int port, out int err);
+
+		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
+		private static extern int manos_socket_accept (int fd, out int err);
+
+		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
+		private static extern int manos_socket_accept_many (int fd, int [] fds, int max, out int err);
+
+		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
+		private static extern int manos_socket_receive (int fd, byte [] buffer, int max, out int err);
+
+		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
+		internal static extern int manos_socket_send (int fd, ByteBufferS [] buffers, int len, out int err);
+
+		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
+		internal static extern int manos_socket_send_file (int socket_fd, int file_fd, long offset, int length, out int err);
 	}
 }
 

@@ -65,11 +65,11 @@ namespace Manos.Http {
 			get { return ioloop; }
 		}
 
-		public void Listen (IPEndPoint endpoint)
+		public void Listen (string host, int port)
 		{
 			SocketStream socket = new SocketStream (ioloop);
 
-			socket.Listen (endpoint);
+			socket.Listen (host, port);
 			socket.ConnectionAccepted += ConnectionAccepted;
 		}
 

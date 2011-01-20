@@ -118,8 +118,7 @@ namespace Manos
 			started = true;
 			server = new HttpServer (HandleTransaction, ioloop);
 			
-			IPEndPoint endpoint = new IPEndPoint (IPAddress, port);
-			server.Listen (endpoint);
+			server.Listen (IPAddress.ToString (), port);
 
 			ioloop.Start ();
 		}

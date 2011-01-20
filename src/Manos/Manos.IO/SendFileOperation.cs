@@ -86,26 +86,23 @@ namespace Manos.IO {
 			SocketStream sstream = (SocketStream) stream;
 
 			while (file_offset < file_length) {
-			      try {
-				      int fdin = -1;
-				      try {
-					      fdin = Mono.Unix.Native.Syscall.open (filename,
-					                                            Mono.Unix.Native.OpenFlags.O_RDONLY);
-					      if (fdin != -1)
-						      Mono.Unix.Native.Syscall.sendfile (sstream.socket.Handle.ToInt32 (),
-						                                         fdin, ref file_offset,
-						                                         (ulong) (file_length - file_offset));
-				      } finally {
-					      if (fdin != -1)
-						      Mono.Unix.Native.Syscall.close (fdin);
-				      }
-			      } catch (SocketException se) {
-				      if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
-					      return;
-				      sstream.Close ();
-			      } catch (Exception e) {
-				      sstream.Close ();
-			      }
+				int fdin = -1;
+				try {
+					int error;
+					fdin = Mono.Unix.Native.Syscall.open (filename,
+							Mono.Unix.Native.OpenFlags.O_RDONLY);
+					if (fdin == -1)
+						return;
+					int res = sstream.SendFile (fdin, file_offset, (int) file_length, out error);
+					if (error != 0)
+						throw new Exception (String.Format ("Send file error {0}.", error));
+
+					file_offset += res;
+					
+				} finally {
+					if (fdin != -1)
+						Mono.Unix.Native.Syscall.close (fdin);
+				}
 			}
 
 			if (file_offset >= file_length)

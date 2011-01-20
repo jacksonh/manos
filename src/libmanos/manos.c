@@ -230,28 +230,27 @@ manos_socket_send (int fd, bytebuffer_t* buffers, int len, int* err)
 
 
 int
-manos_socket_send_file (int fd, int file_fd, int offset, int *err)
+manos_socket_send_file (int socket_fd, int file_fd, off_t offset, int length, int *err)
 {
 	int res;
+	int len = length;
+	
+// #ifdef __linux__
+//	res = sendfile (socket_fd, file_fd, 0, length);
+// #elif defined(DARWIN)
+	res = sendfile (file_fd, socket_fd, offset, &len, NULL, 0);
+// #endif	
 
-#ifdef HAVE_SYS_SENDFILE_H
-
-#ifdef __linux__
-	res = sendfile (socket, file, NULL, statbuf.st_size);
-#elif defined(DARWIN)
-	res = sendfile (file, socket, 0, &statbuf.st_size, NULL, 0);
-#endif	
-
-	if (res < 0) {
+	if (res != 0) {
 		if (errno == EAGAIN || errno == EINTR) {
 			*err = 0;
-			return -1;
+			return len;
 		}
 		*err = errno;
 		return -1;
 	}
-#endif
-	return res;
+
+	return len;
 }
 
 
