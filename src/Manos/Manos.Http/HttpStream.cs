@@ -124,15 +124,15 @@ namespace Manos.Http
 		{
 			EnsureMetadata ();
 
-			long length;
+			long l;
 			using (var file_stream = new FileStream (file_name, FileMode.Open, FileAccess.Read))
-				length = file_stream.Length;
-			var write_file = new SendFileOperation (file_name, length, null);
+				l = file_stream.Length;
+			var write_file = new SendFileOperation (file_name, l, null);
 
-			length += length;
+			length += l;
 
 			if (chunk_encode)
-				SendChunk ((int) length, false);
+				SendChunk ((int) l, false);
 			QueueWriteOperation (write_file);
 
 			if (chunk_encode)
