@@ -36,18 +36,41 @@ namespace Libev {
 
 		private UnmanagedIdleWatcher unmanaged_watcher;
 
+		private static IntPtr unmanaged_callback_ptr;
+		private static UnmanagedWatcherCallback unmanaged_callback;
+
+		
+		static IdleWatcher ()
+		{
+			unmanaged_callback = new UnmanagedWatcherCallback (StaticCallback);
+			unmanaged_callback_ptr = Marshal.GetFunctionPointerForDelegate (unmanaged_callback);
+		}
+
 		public IdleWatcher (Loop loop, IdleWatcherCallback callback) : base (loop)
 		{
 			this.callback = callback;
 			
 			unmanaged_watcher = new UnmanagedIdleWatcher ();
-			unmanaged_watcher.callback = CallbackFunctionPtr;
+			unmanaged_watcher.callback = unmanaged_callback_ptr;
 
 			InitializeUnmanagedWatcher (unmanaged_watcher);
 		}
 
+		private static void StaticCallback (IntPtr loop, IntPtr watcher, EventTypes revents)
+		{
+			UnmanagedIdleWatcher iow = (UnmanagedIdleWatcher) Marshal.PtrToStructure (watcher, typeof (UnmanagedIdleWatcher));
+
+			GCHandle gchandle = GCHandle.FromIntPtr (iow.data);
+			IdleWatcher w = (IdleWatcher) gchandle.Target;
+
+			w.callback (w.Loop, w, revents);
+		}
+
 		protected override void StartImpl ()
 		{
+			unmanaged_watcher.data = GCHandle.ToIntPtr (gc_handle);
+			Marshal.StructureToPtr (unmanaged_watcher, watcher_ptr, false);
+			
 			ev_idle_start (Loop.Handle, WatcherPtr);
 		}
 		

@@ -37,14 +37,35 @@ namespace Libev {
 
 		private UnmanagedAsyncWatcher unmanaged_watcher;
 
+		
+		private static IntPtr unmanaged_callback_ptr;
+		private static UnmanagedWatcherCallback unmanaged_callback;
+
+		static AsyncWatcher ()
+		{
+			unmanaged_callback = new UnmanagedWatcherCallback (StaticCallback);
+			unmanaged_callback_ptr = Marshal.GetFunctionPointerForDelegate (unmanaged_callback);
+		}
+		
 		public AsyncWatcher (Loop loop, AsyncWatcherCallback callback) : base (loop)
 		{
 			this.callback = callback;
 			
 			unmanaged_watcher = new UnmanagedAsyncWatcher ();
-			unmanaged_watcher.callback = CallbackFunctionPtr;
+			unmanaged_watcher.callback = unmanaged_callback_ptr;
 
 			InitializeUnmanagedWatcher (unmanaged_watcher);
+		}
+
+		
+		private static void StaticCallback (IntPtr loop, IntPtr watcher, EventTypes revents)
+		{
+			UnmanagedAsyncWatcher iow = (UnmanagedAsyncWatcher) Marshal.PtrToStructure (watcher, typeof (UnmanagedAsyncWatcher));
+
+			GCHandle gchandle = GCHandle.FromIntPtr (iow.data);
+			AsyncWatcher w = (AsyncWatcher) gchandle.Target;
+
+			w.callback (w.Loop, w, revents);
 		}
 
 		public void Send ()
@@ -54,6 +75,9 @@ namespace Libev {
 
 		protected override void StartImpl ()
 		{
+			unmanaged_watcher.data = GCHandle.ToIntPtr (gc_handle);
+			Marshal.StructureToPtr (unmanaged_watcher, watcher_ptr, false);
+
 			ev_async_start (Loop.Handle, WatcherPtr);
 		}
 		
