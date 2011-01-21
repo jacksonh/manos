@@ -235,11 +235,11 @@ manos_socket_send_file (int socket_fd, int file_fd, off_t offset, int length, in
 	int res;
 	int len = length;
 	
-// #ifdef __linux__
-//	res = sendfile (socket_fd, file_fd, 0, length);
-// #elif defined(DARWIN)
+#ifdef __linux__
+	res = sendfile (socket_fd, file_fd, 0, length);
+#elif defined(DARWIN)
 	res = sendfile (file_fd, socket_fd, offset, &len, NULL, 0);
-// #endif	
+#endif	
 
 	if (res != 0) {
 		if (errno == EAGAIN || errno == EINTR) {
