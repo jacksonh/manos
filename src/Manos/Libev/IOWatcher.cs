@@ -14,6 +14,15 @@ namespace Libev {
 
 		private UnmanagedIOWatcher unmanaged_watcher;
 
+		private static IntPtr unmanaged_callback_ptr;
+		private static UnmanagedWatcherCallback unmanaged_callback;
+
+		static IOWatcher ()
+		{
+			unmanaged_callback = new UnmanagedWatcherCallback (StaticCallback);
+			unmanaged_callback_ptr = Marshal.GetFunctionPointerForDelegate (unmanaged_callback);
+		}
+		
 		public IOWatcher (IntPtr fd, EventTypes types, Loop loop, IOWatcherCallback callback) : base (loop)
 		{
 			this.fd = fd;
@@ -24,11 +33,21 @@ namespace Libev {
 			unmanaged_watcher.fd = fd.ToInt32 ();
 			unmanaged_watcher.events = types | EventTypes.EV__IOFDSET;
 
-			unmanaged_watcher.callback = CallbackFunctionPtr;
+			unmanaged_watcher.callback = unmanaged_callback_ptr;
 
 			InitializeUnmanagedWatcher (unmanaged_watcher);
 		}
 
+		
+		private static void StaticCallback (IntPtr loop, IntPtr watcher, EventTypes revents)
+		{
+			UnmanagedIOWatcher iow = (UnmanagedIOWatcher) Marshal.PtrToStructure (watcher, typeof (UnmanagedIOWatcher));
+
+			GCHandle gchandle = GCHandle.FromIntPtr (iow.data);
+			IOWatcher w = (IOWatcher) gchandle.Target;
+
+			w.callback (w.Loop, w, revents);
+		}
         
         public static IntPtr GetHandle(Socket handle) {
             if (Loop.IsWindows) {
@@ -53,11 +72,15 @@ namespace Libev {
 
 		protected override void StartImpl ()
 		{
+			unmanaged_watcher.data = GCHandle.ToIntPtr (gc_handle);
+			Marshal.StructureToPtr (unmanaged_watcher, watcher_ptr, false);
+
 			ev_io_start (Loop.Handle, WatcherPtr);
 		}
 		
 		protected override void StopImpl ()
 		{
+			
 			ev_io_stop (Loop.Handle, WatcherPtr);	
 		}
 		
@@ -66,6 +89,7 @@ namespace Libev {
 			// Maybe I should verify the pointers?
 			callback (Loop, this, revents);
 		}
+
 
         [DllImport ("libev", CallingConvention = CallingConvention.Cdecl)]
 		private static extern void ev_io_start (IntPtr loop, IntPtr watcher);

@@ -81,6 +81,7 @@ docs/Makefile
 man/Makefile
 scripts/Makefile
 scripts/manos
+data/Makefile
 src/Makefile
 src/Manos/Makefile
 src/Manos/Assembly/AssemblyInfo.cs

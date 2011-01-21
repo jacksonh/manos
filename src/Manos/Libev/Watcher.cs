@@ -7,19 +7,14 @@ namespace Libev {
 
 	public abstract class Watcher : IDisposable {
 
-		private IntPtr watcher_ptr;
-		private IntPtr unmanaged_callback_ptr;
-		private UnmanagedWatcherCallback unmanaged_callback;
+		protected IntPtr watcher_ptr;
 
 		private bool running;
-		private GCHandle gc_handle;
-		
+		protected GCHandle gc_handle;
+
 		internal Watcher (Loop loop)
 		{
 			Loop = loop;
-			
-			unmanaged_callback = new UnmanagedWatcherCallback (UnmanagedCallbackHandler);
-			unmanaged_callback_ptr = Marshal.GetFunctionPointerForDelegate (unmanaged_callback);
 		}
 		
 		public bool IsRunning {
@@ -35,10 +30,6 @@ namespace Libev {
 		       get;
 		       set;
 		}		
-
-		internal IntPtr CallbackFunctionPtr {
-			get { return unmanaged_callback_ptr; }
-		}
 
 		protected IntPtr WatcherPtr {
 			get { return watcher_ptr; }
@@ -57,15 +48,17 @@ namespace Libev {
 			watcher_ptr = Marshal.AllocHGlobal (Marshal.SizeOf (unmanaged_watcher.GetType ()));
 			Marshal.StructureToPtr (unmanaged_watcher, watcher_ptr, true);
 		}
+
 		
+
 		public void Start ()
 		{
 			if (running)
 			   return;
 
 			running = true;
-			gc_handle = GCHandle.Alloc (this);	
-		
+			gc_handle = GCHandle.Alloc (this);
+			
 			StartImpl ();
 		}
 

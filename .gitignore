@@ -20,6 +20,8 @@ Makefile.in
 stamp-*
 libtool.m4
 ltoptions.m4
+ltmain.sh
+install-sh
 .DS_Store
 scripts/manos
 config.*

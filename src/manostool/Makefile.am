@@ -12,4 +12,4 @@ CLEANFILES = $(top_srcdir)/build/manostool.exe
 
 
 $(top_srcdir)/build/manostool.exe: $(manos_sources)
-	$(XBUILD) $(manos_proj_file)
+	$(XBUILD) $(srcdir)/$(manos_proj_file)

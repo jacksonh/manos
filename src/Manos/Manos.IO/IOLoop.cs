@@ -46,7 +46,6 @@ namespace Manos.IO {
 
 		private Loop evloop;
 		private Libeio.Libeio eio;
-		private PrepareWatcher prepare_watcher;
 
 		public IOLoop ()
 		{
@@ -54,9 +53,6 @@ namespace Manos.IO {
 			eio = new Libeio.Libeio ();
 
 			eio.Initialize (evloop);
-
-			prepare_watcher = new PrepareWatcher (evloop, HandlePrepareEvent);
-			prepare_watcher.Start ();
 		}
 
 		public static IOLoop Instance {
@@ -81,14 +77,6 @@ namespace Manos.IO {
 		public void Stop ()
 		{
 			running = false;
-		}
-
-		private void HandlePrepareEvent (Loop loop, PrepareWatcher watcher, EventTypes revents)
-		{
-			if (!running) {
-			   loop.Unloop (UnloopType.All);
-			   prepare_watcher.Stop ();
-		        }
 		}
 
 		public void AddTimeout (Timeout timeout)

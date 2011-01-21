@@ -7,7 +7,18 @@ namespace Libev {
 
 		private TimerWatcherCallback callback;
 		private UnmanagedTimerWatcher unmanaged_watcher;
+
 		
+		
+		private static IntPtr unmanaged_callback_ptr;
+		private static UnmanagedWatcherCallback unmanaged_callback;
+
+		static TimerWatcher ()
+		{
+			unmanaged_callback = new UnmanagedWatcherCallback (StaticCallback);
+			unmanaged_callback_ptr = Marshal.GetFunctionPointerForDelegate (unmanaged_callback);
+		}
+
 		public TimerWatcher (TimeSpan repeat, Loop loop, TimerWatcherCallback callback) : this (TimeSpan.Zero, repeat, loop, callback)
 		{
 		}
@@ -18,13 +29,23 @@ namespace Libev {
 			
 			unmanaged_watcher = new UnmanagedTimerWatcher ();
 			
-			unmanaged_watcher.callback = CallbackFunctionPtr;
+			unmanaged_watcher.callback = unmanaged_callback_ptr;
 			unmanaged_watcher.after = after.TotalSeconds;
 			unmanaged_watcher.repeat = after.TotalSeconds;
 			
 			InitializeUnmanagedWatcher (unmanaged_watcher);
 		}
-		
+
+		private static void StaticCallback (IntPtr loop, IntPtr watcher, EventTypes revents)
+		{
+			UnmanagedTimerWatcher iow = (UnmanagedTimerWatcher) Marshal.PtrToStructure (watcher, typeof (UnmanagedTimerWatcher));
+
+			GCHandle gchandle = GCHandle.FromIntPtr (iow.data);
+			TimerWatcher w = (TimerWatcher) gchandle.Target;
+
+			w.callback (w.Loop, w, revents);
+		}
+
 		/*
 		public TimeSpan Repeat {
 			get {
@@ -38,6 +59,9 @@ namespace Libev {
 		
 		protected override void StartImpl ()
 		{
+			unmanaged_watcher.data = GCHandle.ToIntPtr (gc_handle);
+			Marshal.StructureToPtr (unmanaged_watcher, watcher_ptr, false);
+
 			ev_timer_start (Loop.Handle, WatcherPtr);
 		}
 		
