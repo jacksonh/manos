@@ -176,10 +176,12 @@ namespace Manos.IO {
 			foreach (IWriteOperation op in write_ops) {
 				op.Dispose ();
 			}
+			write_ops.Clear ();
 			
 			if (Closed != null)
 				Closed (this, EventArgs.Empty);
 			Closed = null;
+			read_callback = null;
 		}
 
 		private void HandleIOReadEvent (Loop loop, IOWatcher watcher, EventTypes revents)
