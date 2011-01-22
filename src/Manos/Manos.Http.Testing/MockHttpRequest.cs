@@ -62,7 +62,11 @@ namespace Manos.Http.Testing
 			data.Children.Add (QueryData);
 			data.Children.Add (PostData);
 		}
-		
+
+		public void Dispose ()
+		{
+		}
+
 		public HttpMethod Method {
 			get;
 			set;

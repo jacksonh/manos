@@ -14,6 +14,10 @@ namespace Manos.Http.Testing
 			this.Transaction = txn;
 		}
 
+		public void Dispose ()
+		{
+		}
+
 		public IHttpTransaction Transaction { get; set; }
 
 		public HttpHeaders Headers { get; set; }

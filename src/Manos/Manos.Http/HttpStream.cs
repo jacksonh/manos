@@ -35,7 +35,7 @@ using Manos.IO;
 
 namespace Manos.Http
 {
-	public class HttpStream : Stream
+	public class HttpStream : Stream, IDisposable
 	{
 		private long length;
 		private bool chunk_encode = true;
@@ -48,6 +48,12 @@ namespace Manos.Http
 		{
 			HttpEntity = entity;
 			SocketStream = stream;
+		}
+
+		public void Dispose ()
+		{
+			HttpEntity = null;
+			SocketStream = null;
 		}
 
 		public HttpEntity HttpEntity {

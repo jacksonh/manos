@@ -35,7 +35,7 @@ using Manos.Collections;
 
 namespace Manos.Http {
 
-	public interface IHttpRequest {
+	public interface IHttpRequest : IDisposable {
 		
 		HttpMethod Method {
 			get;

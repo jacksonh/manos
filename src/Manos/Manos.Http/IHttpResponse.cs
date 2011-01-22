@@ -30,7 +30,7 @@ using System.Text;
 
 namespace Manos.Http {
 
-	public interface IHttpResponse {
+	public interface IHttpResponse : IDisposable {
 
 		IHttpTransaction Transaction {
 			get;

@@ -45,7 +45,7 @@ namespace Manos.Http {
 	///  A base class for HttpRequest and HttpResponse.  Generally user code should not care at all about
 	///  this class, it just exists to eliminate some code duplication between the two derived types.
 	/// </summary>
-	public abstract class HttpEntity {
+	public abstract class HttpEntity : IDisposable {
 
 		private static readonly long MAX_BUFFERED_CONTENT_LENGTH = 2621440; // 2.5MB (Eventually this will be an environment var)
 
@@ -73,12 +73,24 @@ namespace Manos.Http {
 
 		~HttpEntity ()
 		{
+			Dispose ();
+		}
+
+		public void Dispose ()
+		{
+			Socket = null;
+
+			if (Stream != null) {
+				Stream.Dispose ();
+				Stream = null;
+			}
+
 			if (end_watcher != null) {
 				end_watcher.Dispose ();
 				end_watcher = null;
 			}
 		}
-		
+
 		public SocketStream Socket {
 			get;
 			protected set;
