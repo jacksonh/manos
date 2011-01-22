@@ -59,7 +59,6 @@ namespace Manos.Http {
 		private DataDictionary data;
 		private DataDictionary post_data;
 
-		private DataDictionary cookies;
 		private Dictionary<string,UploadedFile> uploaded_files;
 
 		private IHttpBodyHandler body_handler;
@@ -164,14 +163,6 @@ namespace Manos.Http {
 			}
 		}
 
-		public DataDictionary Cookies {
-			get {
-				if (cookies == null)
-					cookies = ParseCookies ();
-				return cookies;
-			}
-		}
-		
 		public Dictionary<string,UploadedFile> Files {
 			get {
 			    if (uploaded_files == null)
@@ -186,16 +177,6 @@ namespace Manos.Http {
 				data.Children.Remove (old);
 			if (newd != null)
 				Data.Children.Add (newd);
-		}
-
-		private DataDictionary ParseCookies ()
-		{
-			string cookie_header;
-
-			if (!Headers.TryGetValue ("Cookie", out cookie_header))
-				return new DataDictionary ();
-			
-			return HttpCookie.FromHeader (cookie_header);
 		}
 
 		protected void CreateParserSettingsInternal ()
@@ -333,7 +314,6 @@ namespace Manos.Http {
 			headers = null;
 			data = null;
 			post_data = null;
-			cookies = null;
 
 			if (parser_settings == null)
 				CreateParserSettingsInternal ();

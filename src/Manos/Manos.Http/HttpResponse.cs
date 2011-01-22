@@ -81,16 +81,6 @@ namespace Manos.Http {
 			set;
 		}
 
-		public int MajorVersion {
-			get;
-			set;
-		}
-
-		public int MinorVersion {
-			get;
-			set;
-		}
-
 		public bool WriteHeaders {
 			get;
 			set;
@@ -214,18 +204,6 @@ namespace Manos.Http {
 			settings.OnBody = OnBody;
 
 			return settings;
-		}
-
-		public static string ParseBoundary (string ct)
-		{
-			if (ct == null)
-				return null;
-
-			int start = ct.IndexOf ("boundary=");
-			if (start < 1)
-				return null;
-			
-			return ct.Substring (start + "boundary=".Length);
 		}
 
 		private void WriteStatusLine (StringBuilder builder)
