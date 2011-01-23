@@ -59,6 +59,7 @@ namespace Manos.Http {
 		private DataDictionary data;
 		private DataDictionary post_data;
 
+		private Dictionary<string,object> properties;
 		private Dictionary<string,UploadedFile> uploaded_files;
 
 		private IHttpBodyHandler body_handler;
@@ -181,6 +182,54 @@ namespace Manos.Http {
 			       uploaded_files = new Dictionary<string,UploadedFile> ();
 			    return uploaded_files;
 			}
+		}
+
+		public Dictionary<string,object> Properties {
+			get {
+				if (properties == null)
+					properties = new Dictionary<string,object> ();
+				return properties;
+			}
+		}
+
+		public void SetProperty (string name, object o)
+		{
+			if (name == null)
+				throw new ArgumentNullException ("name");
+
+			if (o == null && properties == null)
+				return;
+
+			if (o == null) {
+				properties.Remove (name);
+				if (properties.Count == 0)
+					properties = null;
+				return;
+			}
+
+			properties [name] = o;
+		}
+
+		public object GetProperty (string name)
+		{
+			if (name == null)
+				throw new ArgumentNullException ("name");
+
+			if (properties == null)
+				return null;
+
+			object res = null;
+			if (!properties.TryGetValue (name, out res))
+				return null;
+			return res;
+		}
+
+		public T GetProperty<T> (string name)
+		{
+			object res = GetProperty (name);
+			if (res == null)
+				return default (T);
+			return (T) res;
 		}
 
 		protected void SetDataDictionary (DataDictionary old, DataDictionary newd)

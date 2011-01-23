@@ -163,6 +163,27 @@ namespace Manos.Http.Testing
 			set;
 		}
 
+		
+		public Dictionary<string,object> Properties {
+			get;
+			set;
+		}
+
+		public void SetProperty (string name, object o)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public object GetProperty (string name)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public T GetProperty<T> (string name)
+		{
+			throw new NotImplementedException ();
+		}
+		
 		public void Read ()
 		{
 		}

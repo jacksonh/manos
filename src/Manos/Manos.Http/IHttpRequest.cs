@@ -96,10 +96,18 @@ namespace Manos.Http {
 			get;
 		}
 
+		Dictionary<string,object> Properties {
+			get;
+		}
+
+		void SetProperty (string name, object o);
+
+		object GetProperty (string name);
+
+		T GetProperty<T> (string name);
+		
 		void Read ();
 		void SetWwwFormData (DataDictionary data);
-
-		
 		
 	}
 }
