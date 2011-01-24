@@ -23,6 +23,7 @@
 #include <sys/sendfile.h>
 #endif
 
+
 #include "manos.h"
 
 
@@ -44,6 +45,34 @@
 		addr = is_ipv4 ? (struct sockaddr*)&in : (struct sockaddr*)&in6; 	\
 		addrlen = is_ipv4 ? sizeof in : sizeof in6;   				\
 	}
+
+
+/*
+typedef struct {
+	struct ev_loop *loop;
+	struct ev_idle eio_poll;
+	struct ev_async eio_want_poll_watcher;
+	struct ev_async eio_done_poll_watcher;
+} manos_data_t;
+*/
+
+manos_data_t *
+manos_init (struct ev_loop *loop)
+{
+	manos_data_t *res = malloc (sizeof (manos_data_t));
+
+	memset (res, 0, sizeof (manos_data_t));
+
+	
+}
+
+void
+manos_shutdown (manos_data_t *data)
+{
+
+}
+
+
 
 int
 setup_socket (int fd)
