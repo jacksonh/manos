@@ -48,28 +48,80 @@
 
 
 /*
-typedef struct {
-	struct ev_loop *loop;
-	struct ev_idle eio_poll;
-	struct ev_async eio_want_poll_watcher;
-	struct ev_async eio_done_poll_watcher;
-} manos_data_t;
-*/
+ * I want these to be part of the manos_data_t but then how do i get them in
+ * to eio_want_poll/eio_done_poll ?
+ */
+struct ev_async eio_want_poll_watcher;
+struct ev_async eio_done_poll_watcher;
+
+static void
+eio_on_poll (EV_P_ ev_idle *watcher, int revents)
+{
+	if (eio_poll () != -1)
+		ev_idle_stop (EV_A_ watcher);
+}
+
+static void
+eio_on_want_poll (EV_P_ ev_async *watcher, int revents)
+{
+	manos_data_t *data = (manos_data_t *) watcher->data;
+	if (eio_poll () != -1)
+		ev_idle_start (EV_A_ &data->eio_idle_watcher);
+}
+
+static void
+eio_on_done_poll (EV_P_ ev_async *watcher, int revents)
+{
+	manos_data_t *data = (manos_data_t *) watcher->data;
+	if (eio_poll () != -1)
+		ev_idle_start (EV_A_ &data->eio_idle_watcher);
+}
+
+static void
+eio_want_poll ()
+{
+	ev_async_send (EV_DEFAULT_UC_ &eio_want_poll_watcher);
+}
+
+static void
+eio_done_poll ()		
+{
+	ev_async_send (EV_DEFAULT_UC_ &eio_done_poll_watcher);
+}
+
 
 manos_data_t *
 manos_init (struct ev_loop *loop)
 {
-	manos_data_t *res = malloc (sizeof (manos_data_t));
+	manos_data_t *data = malloc (sizeof (manos_data_t));
 
-	memset (res, 0, sizeof (manos_data_t));
+	memset (data, 0, sizeof (manos_data_t));
 
+	data->loop = loop;
+
+	ev_idle_init (&data->eio_idle_watcher, eio_on_poll);
+	data->eio_idle_watcher.data = data;
 	
+	ev_async_init (&eio_want_poll_watcher, eio_on_want_poll);
+	ev_async_start (loop, &eio_want_poll_watcher);
+	eio_want_poll_watcher.data = data;
+	
+
+	ev_async_init (&eio_done_poll_watcher, eio_on_done_poll);
+        ev_async_start (loop, &eio_done_poll_watcher);
+	eio_done_poll_watcher.data = data;
+	
+	eio_init (eio_want_poll, eio_done_poll);
 }
 
 void
 manos_shutdown (manos_data_t *data)
 {
+	ev_async_stop (data->loop, &eio_want_poll_watcher);
+	ev_async_stop (data->loop, &eio_done_poll_watcher);
+	ev_idle_stop (data->loop, &data->eio_idle_watcher);
 
+	free (data);
 }
 
 
@@ -258,30 +310,92 @@ manos_socket_send (int fd, bytebuffer_t* buffers, int len, int* err)
 }
 
 
-int
-manos_socket_send_file (int socket_fd, int file_fd, off_t offset, int length, int *err)
+
+enum {
+	NO_FLAGS,
+	SEND_LENGTH = 0x2
+};
+
+
+typedef struct {
+	int fd;
+	int socket;
+	int flags;
+	off_t length;
+} sendfile_data_t;
+
+static int
+sendfile_sendfile_cb (eio_req *req)
 {
-	int res;
-	int len = length;
-	
-#ifdef __linux__
-	res = sendfile (socket_fd, file_fd, 0, length);
-#elif defined(DARWIN)
-	res = sendfile (file_fd, socket_fd, offset, &len, NULL, 0);
-#endif	
-
-	if (res != 0) {
-		if (errno == EAGAIN || errno == EINTR) {
-			*err = 0;
-			return len;
-		}
-		*err = errno;
-		return -1;
-	}
-
-	return len;
+	printf ("file sent  %d\n", req->size);
+	fflush (stdout);
 }
 
+static int
+sendfile_stat_cb (eio_req *req)
+{
+	struct stat *buf = EIO_STAT_BUF (req);
+	sendfile_data_t *data = (sendfile_data_t *) req->data;
+
+	data->length = buf->st_size;
+
+	/*
+	 * TODO: Write the chunk out here.  sendmsg would be useful...
+	 * The good news is we know our socket is in a writable state, because sendfile is
+	 * not invoked until we are ready to write.
+	 */
+	eio_sendfile (data->socket, data->fd, 0, data->length, 0, sendfile_sendfile_cb, data);
+	
+}
+
+static int
+sendfile_open_cb (eio_req *req)
+{
+	printf ("open_cb = %d\n", EIO_RESULT (req));
+	fflush (stdout);
+
+	sendfile_data_t *data = (sendfile_data_t *) req;
+	data->fd = EIO_RESULT (req);
+
+	if (data->flags & SEND_LENGTH)
+		eio_fstat (data->fd, 0, sendfile_stat_cb, data);
+	else
+		eio_sendfile (data->socket, data->fd, 0, data->length, 0, sendfile_sendfile_cb, data);
+}
+
+
+static int
+sendfile_internal (int socket, char *name, int length, int flags, int *err)
+{
+	/*	
+	 * HACK THIS GUY IN HERE FOR NOW, eventually it needs to be invoked from managed
+	 * but I want to test things before my batter runs out.
+	 */
+	
+	manos_init (EV_DEFAULT_UC);
+
+	sendfile_data_t *data = malloc (sizeof (sendfile_data_t));
+
+	memset (data, 0, sizeof (sendfile_data_t));
+
+	data->socket = socket;
+	data->flags = flags;
+	data->length = length;
+
+	eio_open (name, O_RDONLY, 0777, 0, sendfile_open_cb, data);
+}
+
+int
+manos_socket_send_file_chunked (int socket, char *name, int *err)
+{
+	return sendfile_internal (socket, name, -1, SEND_LENGTH, err);
+}
+
+int
+manos_socket_send_file (int socket, char *name, off_t length, int *err)
+{
+	return sendfile_internal (socket, name, length, NO_FLAGS, err);
+}
 
 int
 manos_socket_close (int fd, int *err)
