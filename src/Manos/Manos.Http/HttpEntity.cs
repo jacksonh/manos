@@ -45,7 +45,7 @@ namespace Manos.Http {
 	///  A base class for HttpRequest and HttpResponse.  Generally user code should not care at all about
 	///  this class, it just exists to eliminate some code duplication between the two derived types.
 	/// </summary>
-	public abstract class HttpEntity {
+	public abstract class HttpEntity : IDisposable {
 
 		private static readonly long MAX_BUFFERED_CONTENT_LENGTH = 2621440; // 2.5MB (Eventually this will be an environment var)
 
@@ -59,7 +59,7 @@ namespace Manos.Http {
 		private DataDictionary data;
 		private DataDictionary post_data;
 
-		private DataDictionary cookies;
+		private Dictionary<string,object> properties;
 		private Dictionary<string,UploadedFile> uploaded_files;
 
 		private IHttpBodyHandler body_handler;
@@ -74,12 +74,24 @@ namespace Manos.Http {
 
 		~HttpEntity ()
 		{
+			Dispose ();
+		}
+
+		public void Dispose ()
+		{
+			Socket = null;
+
+			if (Stream != null) {
+				Stream.Dispose ();
+				Stream = null;
+			}
+
 			if (end_watcher != null) {
 				end_watcher.Dispose ();
 				end_watcher = null;
 			}
 		}
-		
+
 		public SocketStream Socket {
 			get;
 			protected set;
@@ -164,14 +176,6 @@ namespace Manos.Http {
 			}
 		}
 
-		public DataDictionary Cookies {
-			get {
-				if (cookies == null)
-					cookies = ParseCookies ();
-				return cookies;
-			}
-		}
-		
 		public Dictionary<string,UploadedFile> Files {
 			get {
 			    if (uploaded_files == null)
@@ -180,22 +184,60 @@ namespace Manos.Http {
 			}
 		}
 
+		public Dictionary<string,object> Properties {
+			get {
+				if (properties == null)
+					properties = new Dictionary<string,object> ();
+				return properties;
+			}
+		}
+
+		public void SetProperty (string name, object o)
+		{
+			if (name == null)
+				throw new ArgumentNullException ("name");
+
+			if (o == null && properties == null)
+				return;
+
+			if (o == null) {
+				properties.Remove (name);
+				if (properties.Count == 0)
+					properties = null;
+				return;
+			}
+
+			properties [name] = o;
+		}
+
+		public object GetProperty (string name)
+		{
+			if (name == null)
+				throw new ArgumentNullException ("name");
+
+			if (properties == null)
+				return null;
+
+			object res = null;
+			if (!properties.TryGetValue (name, out res))
+				return null;
+			return res;
+		}
+
+		public T GetProperty<T> (string name)
+		{
+			object res = GetProperty (name);
+			if (res == null)
+				return default (T);
+			return (T) res;
+		}
+
 		protected void SetDataDictionary (DataDictionary old, DataDictionary newd)
 		{
 			if (data != null && old != null)
 				data.Children.Remove (old);
 			if (newd != null)
 				Data.Children.Add (newd);
-		}
-
-		private DataDictionary ParseCookies ()
-		{
-			string cookie_header;
-
-			if (!Headers.TryGetValue ("Cookie", out cookie_header))
-				return new DataDictionary ();
-			
-			return HttpCookie.FromHeader (cookie_header);
 		}
 
 		protected void CreateParserSettingsInternal ()
@@ -333,7 +375,6 @@ namespace Manos.Http {
 			headers = null;
 			data = null;
 			post_data = null;
-			cookies = null;
 
 			if (parser_settings == null)
 				CreateParserSettingsInternal ();

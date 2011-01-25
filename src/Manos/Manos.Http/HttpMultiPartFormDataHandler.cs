@@ -256,9 +256,11 @@ namespace Manos.Http {
 
 		private void FinishFormData (HttpEntity entity)
 		{
-			if (form_data.Count == 0)
+			if (form_data.Count <= 2)
 				return;
 
+			// Chop the \r\n off the end
+			form_data.RemoveRange (form_data.Count - 2, 2);
 			string data = encoding.GetString (form_data.ToArray ());
 			entity.PostData.Set (current_name, HttpUtility.UrlDecode (data, encoding));
 			form_data.Clear ();

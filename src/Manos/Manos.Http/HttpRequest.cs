@@ -45,7 +45,9 @@ namespace Manos.Http {
 
 		private DataDictionary uri_data;
 		private	DataDictionary query_data;
+		private DataDictionary cookies;
 
+		
 		public HttpRequest (string address)
 		{
 			Uri uri = null;
@@ -80,21 +82,6 @@ namespace Manos.Http {
 			private set;
 		}
 
-		public string RemoteAddress {
-			get;
-			set;
-		}
-
-		public int RemotePort {
-			get;
-			set;
-		}
-
-		public string Path {
-			get;
-			set;
-		}
-
 		public DataDictionary QueryData {
 			get {
 				if (query_data == null) {
@@ -123,6 +110,14 @@ namespace Manos.Http {
 			}
 		}
 
+		public DataDictionary Cookies {
+			get {
+				if (cookies == null)
+					cookies = ParseCookies ();
+				return cookies;
+			}
+		}
+
 		public override void Reset ()
 		{
 			Path = null;
@@ -136,6 +131,16 @@ namespace Manos.Http {
 		public void SetWwwFormData (DataDictionary data)
 		{
 			PostData = data;
+		}
+
+		private DataDictionary ParseCookies ()
+		{
+			string cookie_header;
+
+			if (!Headers.TryGetValue ("Cookie", out cookie_header))
+				return new DataDictionary ();
+
+			return HttpCookie.FromHeader (cookie_header);
 		}
 
 		private int OnPath (HttpParser parser, ByteBuffer data, int pos, int len)

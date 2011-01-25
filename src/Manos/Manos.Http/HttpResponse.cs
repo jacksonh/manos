@@ -71,22 +71,12 @@ namespace Manos.Http {
 		public StreamWriter Writer {
 			get {
 				if (writer == null)
-					writer = new StreamWriter (Stream);
+					writer = new StreamWriter (new HttpStreamWriterWrapper (Stream));
 				return writer;
 			}
 		}
 
 		public int StatusCode {
-			get;
-			set;
-		}
-
-		public int MajorVersion {
-			get;
-			set;
-		}
-
-		public int MinorVersion {
 			get;
 			set;
 		}
@@ -214,18 +204,6 @@ namespace Manos.Http {
 			settings.OnBody = OnBody;
 
 			return settings;
-		}
-
-		public static string ParseBoundary (string ct)
-		{
-			if (ct == null)
-				return null;
-
-			int start = ct.IndexOf ("boundary=");
-			if (start < 1)
-				return null;
-			
-			return ct.Substring (start + "boundary=".Length);
 		}
 
 		private void WriteStatusLine (StringBuilder builder)

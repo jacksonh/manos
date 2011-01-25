@@ -102,7 +102,8 @@ namespace Manos.IO {
 
 		public void DisableTimeout ()
 		{
-			timeout_watcher.Stop ();
+			if (timeout_watcher != null)
+				timeout_watcher.Stop ();
 		}
 
 		public void ReadBytes (ReadCallback callback)
@@ -141,12 +142,14 @@ namespace Manos.IO {
 
 		public void DisableReading ()
 		{
-			read_watcher.Stop ();
+			if (read_watcher != null)
+				read_watcher.Stop ();
 		}
 
 		public void DisableWriting ()
 		{
-			write_watcher.Stop ();
+			if (write_watcher != null)
+				write_watcher.Stop ();
 		}
 
 		private void UpdateExpires ()
@@ -155,7 +158,7 @@ namespace Manos.IO {
 		}
 
 		public virtual void Close ()
-		{			
+		{
 			if (handle == IntPtr.Zero)
 				return;			
 
@@ -166,14 +169,20 @@ namespace Manos.IO {
 			write_watcher.Dispose ();
 			timeout_watcher.Dispose ();
 
+			read_watcher = null;
+			write_watcher = null;
+			timeout_watcher = null;
 			handle = IntPtr.Zero;
 
 			foreach (IWriteOperation op in write_ops) {
 				op.Dispose ();
 			}
+			write_ops.Clear ();
 			
 			if (Closed != null)
 				Closed (this, EventArgs.Empty);
+			Closed = null;
+			read_callback = null;
 		}
 
 		private void HandleIOReadEvent (Loop loop, IOWatcher watcher, EventTypes revents)

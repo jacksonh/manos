@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 
 namespace Manos.Http.Testing
 {
@@ -12,6 +13,10 @@ namespace Manos.Http.Testing
 		{
 			this.Headers = new HttpHeaders ();
 			this.Transaction = txn;
+		}
+
+		public void Dispose ()
+		{
 		}
 
 		public IHttpTransaction Transaction { get; set; }
@@ -141,6 +146,27 @@ namespace Manos.Http.Testing
 			throw new NotImplementedException ();
 		}
 
+		
+		public Dictionary<string,object> Properties {
+			get;
+			set;
+		}
+
+		public void SetProperty (string name, object o)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public object GetProperty (string name)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public T GetProperty<T> (string name)
+		{
+			throw new NotImplementedException ();
+		}
+		
 		public event Action<IHttpResponse> Completed;
 		public event Action<byte [], int, int> BodyData;
 	}

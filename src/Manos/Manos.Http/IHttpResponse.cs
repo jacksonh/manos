@@ -27,10 +27,11 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 
 namespace Manos.Http {
 
-	public interface IHttpResponse {
+	public interface IHttpResponse : IDisposable {
 
 		IHttpTransaction Transaction {
 			get;
@@ -64,6 +65,17 @@ namespace Manos.Http {
 			set;
 		}
 
+		
+		Dictionary<string,object> Properties {
+			get;
+		}
+
+		void SetProperty (string name, object o);
+
+		object GetProperty (string name);
+
+		T GetProperty<T> (string name);
+		
 		void Write (string str);
 		void Write (string str, params object [] prms);
 		

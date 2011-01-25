@@ -25,90 +25,80 @@
 
 
 using System;
+using System.IO;
 using System.Text;
+using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 
 using Manos.IO;
-using Manos.Http;
-using Manos.Collections;
 
-namespace Manos.Http {
+namespace Manos.Http
+{
+	public class HttpStreamWriterWrapper : Stream
+	{
+		private HttpStream stream;
 
-	public interface IHttpRequest : IDisposable {
+		public HttpStreamWriterWrapper (HttpStream stream)
+		{
+			this.stream = stream;
+		}
+
 		
-		HttpMethod Method {
-			get;
-			set;
-		}
-		
-		string Path {
-			get;
-			set;
+		public override bool CanRead {
+			get { return stream.CanRead; }
 		}
 
-		DataDictionary Data {
-			get;	
-		}
-		
-		DataDictionary PostData {
-			get;
+		public override bool CanSeek {
+			get { return stream.CanSeek; }
 		}
 
-		DataDictionary QueryData {
-			get;
-			set;
+		public override bool CanWrite {
+			get { return stream.CanWrite; }
 		}
 
-		DataDictionary UriData {
-			get;
-			set;
+		public override long Length {
+			get {
+				return stream.Length;
+			}
 		}
 		
-		DataDictionary Cookies {
-			get;	
-		}
-
-		HttpHeaders Headers {
-			get;
-			set;
+		public override long Position {
+			get {
+				return stream.Position;
+			}
+			set {
+				stream.Position = value;
+			}
 		}
 		
-		Dictionary<string,UploadedFile> Files {
-			get;
+		public override void Flush ()
+		{
+			stream.Flush ();
 		}
 
-		int MajorVersion {
-			get;
-			set;
+		public override int Read (byte [] buffer, int offset, int count)
+		{
+			return stream.Read (buffer, offset, count);
 		}
-
-		int MinorVersion {
-			get;
-			set;
-		}
-
-		Encoding ContentEncoding {
-			get;
-		}
-
-		SocketStream Socket {
-			get;
-		}
-
-		Dictionary<string,object> Properties {
-			get;
-		}
-
-		void SetProperty (string name, object o);
-
-		object GetProperty (string name);
-
-		T GetProperty<T> (string name);
 		
-		void Read ();
-		void SetWwwFormData (DataDictionary data);
-		
+		public override long Seek (long offset, SeekOrigin origin)
+		{
+			return stream.Seek (offset, origin);
+		}
+
+		public override void SetLength (long value)
+		{
+			stream.SetLength (value);
+		}
+
+		public override void Write (byte[] buffer, int offset, int count)
+		{
+			stream.Write ((byte []) buffer.Clone (), offset, count);
+		}
 	}
+
 }
+
+
 

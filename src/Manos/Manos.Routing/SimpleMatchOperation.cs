@@ -69,7 +69,7 @@ namespace Manos.Routing
 		{
 			end = start;
 			data = null;
-			
+
 			if (groups == null) {
 				return false;
 			}
@@ -81,11 +81,11 @@ namespace Manos.Routing
 			foreach (Group g in groups) {
 				// scan until start
 				int g_start = start + g.Start;
-				
-				if (g_start > input.Length)
+
+				if (g_start > pattern.Length)
 					return false;
-				
-				int len = g_start - input_pos;
+
+				int len = g_start - pattern_pos;
 				for (int i = 0; i < len; i++) {
 					if (input [input_pos] != pattern [pattern_pos])
 						return false;
@@ -93,10 +93,10 @@ namespace Manos.Routing
 					input_pos++;
 					pattern_pos++;
 					
-					if (input_pos > input.Length)
+					if (input_pos > input.Length - 1)
 						return false;
 				}
-				
+
 				if (g.End == pattern.Length - 1) {
 					// slurp until end
 					data_str = input.Substring (input_pos);
@@ -124,7 +124,7 @@ namespace Manos.Routing
 				input_pos++;
 				pattern_pos = g.End + 2;
 			}
-			
+
 			while (pattern_pos < pattern.Length) {
 				if (pattern [pattern_pos] != input [input_pos]) {
 					return false;

@@ -71,7 +71,8 @@ namespace Manos.Http {
 
 		public void Dispose ()
 		{
-			Stream.Close ();
+			if (Stream != null) 
+				Stream.Close ();
 			
 			// Technically the IOStream should call our Close method, but lets be sure
 			if (gc_handle.IsAllocated)
@@ -122,6 +123,16 @@ namespace Manos.Http {
 		{
 			if (gc_handle.IsAllocated)
 				gc_handle.Free ();
+
+			if (Request != null)
+				Request.Dispose ();
+
+			if (Response != null)
+				Response.Dispose ();
+
+			Stream = null;
+			Request = null;
+			Response = null;
 		}
 
 		public void Run ()
@@ -152,8 +163,14 @@ namespace Manos.Http {
 			}
 
 			if (disconnect) {
-				Request = null;
-				Response = null;
+				if (Request != null) {
+					Request.Dispose ();
+					Request = null;
+				}
+				if (Response != null) {
+					Response.Dispose ();
+					Response = null;
+				}
 			      	Stream.Close ();
 				return;
 			} else
