@@ -35,16 +35,66 @@ using Manos.IO;
 
 namespace Manos.Http
 {
-	public class HttpStreamWriterWrapper : HttpStream
+	public class HttpStreamWriterWrapper : Stream
 	{
-		
-		public HttpStreamWriterWrapper (HttpEntity entity, SocketStream stream) : base (entity, stream)
+		private HttpStream stream;
+
+		public HttpStreamWriterWrapper (HttpStream stream)
 		{
+			this.stream = stream;
+		}
+
+		
+		public override bool CanRead {
+			get { return stream.CanRead; }
+		}
+
+		public override bool CanSeek {
+			get { return stream.CanSeek; }
+		}
+
+		public override bool CanWrite {
+			get { return stream.CanWrite; }
+		}
+
+		public override long Length {
+			get {
+				return stream.Length;
+			}
+		}
+		
+		public override long Position {
+			get {
+				return stream.Position;
+			}
+			set {
+				stream.Position = value;
+			}
+		}
+		
+		public override void Flush ()
+		{
+			stream.Flush ();
+		}
+
+		public override int Read (byte [] buffer, int offset, int count)
+		{
+			return stream.Read (buffer, offset, count);
+		}
+		
+		public override long Seek (long offset, SeekOrigin origin)
+		{
+			return stream.Seek (offset, origin);
+		}
+
+		public override void SetLength (long value)
+		{
+			stream.SetLength (value);
 		}
 
 		public override void Write (byte[] buffer, int offset, int count)
 		{
-			base.Write ((byte []) buffer.Clone (), offset, count);
+			stream.Write ((byte []) buffer.Clone (), offset, count);
 		}
 	}
 

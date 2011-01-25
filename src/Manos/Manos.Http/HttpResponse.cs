@@ -59,7 +59,7 @@ namespace Manos.Http {
 
 			WriteHeaders = true;
 
-			Stream = new HttpStreamWriterWrapper (this, stream);
+			Stream = new HttpStream (this, stream);
 			Stream.Chunked = (transaction.Request.MajorVersion > 0 && transaction.Request.MinorVersion > 0);
 		}
 
@@ -71,7 +71,7 @@ namespace Manos.Http {
 		public StreamWriter Writer {
 			get {
 				if (writer == null)
-					writer = new StreamWriter (Stream);
+					writer = new StreamWriter (new HttpStreamWriterWrapper (Stream));
 				return writer;
 			}
 		}
