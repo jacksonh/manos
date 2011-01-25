@@ -69,7 +69,7 @@ namespace Manos.Routing
 		{
 			end = start;
 			data = null;
-			
+
 			if (groups == null) {
 				return false;
 			}
@@ -84,8 +84,8 @@ namespace Manos.Routing
 				
 				if (g_start > input.Length)
 					return false;
-				
-				int len = g_start - input_pos;
+
+				int len = g_start - pattern_pos;
 				for (int i = 0; i < len; i++) {
 					if (input [input_pos] != pattern [pattern_pos])
 						return false;
@@ -96,7 +96,7 @@ namespace Manos.Routing
 					if (input_pos > input.Length)
 						return false;
 				}
-				
+
 				if (g.End == pattern.Length - 1) {
 					// slurp until end
 					data_str = input.Substring (input_pos);
@@ -124,7 +124,7 @@ namespace Manos.Routing
 				input_pos++;
 				pattern_pos = g.End + 2;
 			}
-			
+
 			while (pattern_pos < pattern.Length) {
 				if (pattern [pattern_pos] != input [input_pos]) {
 					return false;
