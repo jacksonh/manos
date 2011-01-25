@@ -65,6 +65,7 @@
     <Compile Include="Manos.Http\HttpMultiPartFormDataHandler.cs" />
     <Compile Include="Manos.Http\HttpParser.cs" />
     <Compile Include="Manos.Http\HttpStream.cs" />
+    <Compile Include="Manos.Http\HttpStreamWriterWrapper.cs" />
     <Compile Include="Manos.Http\IHttpBodyHandler.cs" />
     <Compile Include="Manos.Http\ParserSettings.cs" />
     <Compile Include="Manos.Http\ParserType.cs" />
