@@ -85,6 +85,7 @@ namespace Manos.IO {
 		{
 			SocketStream sstream = (SocketStream) stream;
 
+			/*
 			while (file_offset < file_length) {
 				int fdin = -1;
 				try {
@@ -104,7 +105,12 @@ namespace Manos.IO {
 						Mono.Unix.Native.Syscall.close (fdin);
 				}
 			}
+			*/
+			int error;
+			sstream.SendFile (filename, out error);
+			sstream.DisableWriting ();
 
+			Console.WriteLine ("FILE SENT:  " + error);
 			if (file_offset >= file_length)
 				IsComplete = true;
 		}

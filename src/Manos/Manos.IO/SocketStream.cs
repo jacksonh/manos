@@ -260,9 +260,9 @@ namespace Manos.IO {
 			return manos_socket_send (fd, buffers, length, out error);
 		}
 
-		internal int SendFile (int file_fd, long offset, int length, out int error)
+		internal int SendFile (string name, out int error)
 		{
-			int result = manos_socket_send_file (fd, file_fd, offset, length, out error);
+			int result = manos_socket_send_file (fd, name, out error);
 			return result;
 		}
 
@@ -298,7 +298,7 @@ namespace Manos.IO {
 		internal static extern int manos_socket_send (int fd, ByteBufferS [] buffers, int len, out int err);
 
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
-		internal static extern int manos_socket_send_file (int socket_fd, int file_fd, long offset, int length, out int err);
+		internal static extern int manos_socket_send_file (int socket_fd, string name, out int err);
 	}
 }
 
