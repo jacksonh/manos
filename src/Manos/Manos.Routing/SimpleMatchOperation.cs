@@ -93,7 +93,7 @@ namespace Manos.Routing
 					input_pos++;
 					pattern_pos++;
 					
-					if (input_pos > input.Length)
+					if (input_pos > input.Length - 1)
 						return false;
 				}
 
