@@ -81,8 +81,8 @@ namespace Manos.Routing
 			foreach (Group g in groups) {
 				// scan until start
 				int g_start = start + g.Start;
-				
-				if (g_start > input.Length)
+
+				if (g_start > pattern.Length)
 					return false;
 
 				int len = g_start - pattern_pos;
