@@ -322,13 +322,15 @@ typedef struct {
 	int socket;
 	int flags;
 	off_t length;
+	sendfile_cb cb;
 } sendfile_data_t;
 
 static int
 sendfile_sendfile_cb (eio_req *req)
 {
-	printf ("file sent  %d\n", req->size);
-	fflush (stdout);
+	sendfile_data_t *data = (sendfile_data_t *) req->data;
+	
+	data->cb (data->length, 0);
 }
 
 static int
@@ -336,14 +338,19 @@ sendfile_stat_cb (eio_req *req)
 {
 	struct stat *buf = EIO_STAT_BUF (req);
 	sendfile_data_t *data = (sendfile_data_t *) req->data;
+	static char buffer [24];
+	int buffer_len;
 
 	data->length = buf->st_size;
 
-	/*
-	 * TODO: Write the chunk out here.  sendmsg would be useful...
-	 * The good news is we know our socket is in a writable state, because sendfile is
-	 * not invoked until we are ready to write.
-	 */
+	buffer_len = snprintf (buffer, 10, "%d\r\n", data->length);
+
+	/* send the chunk length */
+	if (send (data->socket, buffer, buffer_len, 0) != buffer_len) {
+		data->cb (-1, errno);
+		return;
+	}
+
 	eio_sendfile (data->socket, data->fd, 0, data->length, 0, sendfile_sendfile_cb, data);
 	
 }
@@ -351,13 +358,10 @@ sendfile_stat_cb (eio_req *req)
 static int
 sendfile_open_cb (eio_req *req)
 {
-	printf ("open_cb = %d\n", EIO_RESULT (req));
-	fflush (stdout);
-
-	sendfile_data_t *data = (sendfile_data_t *) req;
+	sendfile_data_t *data = (sendfile_data_t *) req->data;
 	data->fd = EIO_RESULT (req);
 
-	if (data->flags & SEND_LENGTH)
+	if (data->flags & SEND_LENGTH) 
 		eio_fstat (data->fd, 0, sendfile_stat_cb, data);
 	else
 		eio_sendfile (data->socket, data->fd, 0, data->length, 0, sendfile_sendfile_cb, data);
@@ -365,15 +369,8 @@ sendfile_open_cb (eio_req *req)
 
 
 static int
-sendfile_internal (int socket, char *name, int length, int flags, int *err)
+sendfile_internal (int socket, char *name, int length, int flags, sendfile_cb cb, int *err)
 {
-	/*	
-	 * HACK THIS GUY IN HERE FOR NOW, eventually it needs to be invoked from managed
-	 * but I want to test things before my batter runs out.
-	 */
-	
-	manos_init (EV_DEFAULT_UC);
-
 	sendfile_data_t *data = malloc (sizeof (sendfile_data_t));
 
 	memset (data, 0, sizeof (sendfile_data_t));
@@ -381,21 +378,25 @@ sendfile_internal (int socket, char *name, int length, int flags, int *err)
 	data->socket = socket;
 	data->flags = flags;
 	data->length = length;
+	data->cb = cb;
 
 	eio_open (name, O_RDONLY, 0777, 0, sendfile_open_cb, data);
 }
 
-int
-manos_socket_send_file_chunked (int socket, char *name, int *err)
-{
-	return sendfile_internal (socket, name, -1, SEND_LENGTH, err);
-}
 
 int
-manos_socket_send_file (int socket, char *name, off_t length, int *err)
+manos_socket_send_file_chunked (int socket, char *name, sendfile_cb cb, int *err)
 {
-	return sendfile_internal (socket, name, length, NO_FLAGS, err);
+	return sendfile_internal (socket, name, -1, SEND_LENGTH, cb, err);
 }
+
+
+int
+manos_socket_send_file (int socket, char *name, off_t length, sendfile_cb cb, int *err)
+{
+	return sendfile_internal (socket, name, length, NO_FLAGS, cb, err);
+}
+
 
 int
 manos_socket_close (int fd, int *err)

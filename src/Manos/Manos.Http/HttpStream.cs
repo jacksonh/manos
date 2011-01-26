@@ -43,6 +43,7 @@ namespace Manos.Http
 		private bool chunk_encode = true;
 		private bool metadata_written;
 		private bool final_chunk_sent;
+		private byte [] chunk_buffer = new byte [24];
 
 		private Queue<IWriteOperation> write_ops;
 
@@ -265,7 +266,7 @@ namespace Manos.Http
 				return;
 
 			int i = 0;
-			byte [] chunk_buffer = new byte [24];
+			
 
 			if (l >= 0) {
 				string s = l.ToString ("x");
