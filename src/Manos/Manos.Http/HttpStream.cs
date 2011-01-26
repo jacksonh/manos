@@ -32,6 +32,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Manos.IO;
+using Manos.Collections;
 
 namespace Manos.Http
 {
@@ -149,14 +150,14 @@ namespace Manos.Http
 		{
 			EnsureMetadata ();
 
-			var bytes = new List<ArraySegment<byte>> ();
+			var bytes = new List<ByteBuffer> ();
 
 			if (chunked)
 				WriteChunk (bytes, count, false);
 
 			length += (count - offset);
 			
-			bytes.Add (new ArraySegment<byte> (buffer, offset, count));
+			bytes.Add (new ByteBuffer (buffer, offset, count));
 			if (chunked)
 				WriteChunk (bytes, -1, false);
 
@@ -188,7 +189,7 @@ namespace Manos.Http
 				return;
 			final_chunk_sent = true;
 
-			var bytes = new List<ArraySegment<byte>> ();
+			var bytes = new List<ByteBuffer> ();
 
 			WriteChunk (bytes, 0, true);
 
@@ -219,8 +220,8 @@ namespace Manos.Http
 
 			metadata_written = true;
 
-			var bytes = new List<ArraySegment<byte>> ();
-			bytes.Add (new ArraySegment<byte> (data, 0, data.Length));
+			var bytes = new List<ByteBuffer> ();
+			bytes.Add (new ByteBuffer (data, 0, data.Length));
 			var write_bytes = new SendBytesOperation (bytes, callback);
 
 			SocketStream.QueueWriteOperation (write_bytes);
@@ -249,7 +250,7 @@ namespace Manos.Http
 
 		private void SendChunk (int l, bool last)
 		{
-			var bytes = new List<ArraySegment<byte>> ();
+			var bytes = new List<ByteBuffer> ();
 
 			WriteChunk (bytes, l, last);
 
@@ -257,7 +258,7 @@ namespace Manos.Http
 			QueueWriteOperation (write_bytes);
 		}
 
-		private void WriteChunk (List<ArraySegment<byte>> bytes, int l, bool last)
+		private void WriteChunk (List<ByteBuffer> bytes, int l, bool last)
 		{
 			if (l == 0 && !last)
 				return;
@@ -281,7 +282,7 @@ namespace Manos.Http
 
 			length += i;
 			
-			bytes.Add (new ArraySegment<byte> (chunk_buffer, 0, i));
+			bytes.Add (new ByteBuffer (chunk_buffer, 0, i));
 		}
 	}
 }
