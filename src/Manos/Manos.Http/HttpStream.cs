@@ -32,8 +32,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Manos.IO;
-using Manos.Collections;
-
 
 namespace Manos.Http
 {
@@ -43,7 +41,6 @@ namespace Manos.Http
 		private bool chunk_encode = true;
 		private bool metadata_written;
 		private bool final_chunk_sent;
-		private byte [] chunk_buffer = new byte [24];
 
 		private Queue<IWriteOperation> write_ops;
 
@@ -152,14 +149,14 @@ namespace Manos.Http
 		{
 			EnsureMetadata ();
 
-			var bytes = new List<ByteBuffer> ();
+			var bytes = new List<ArraySegment<byte>> ();
 
 			if (chunked)
 				WriteChunk (bytes, count, false);
 
 			length += (count - offset);
 			
-			bytes.Add (new ByteBuffer (buffer, offset, count));
+			bytes.Add (new ArraySegment<byte> (buffer, offset, count));
 			if (chunked)
 				WriteChunk (bytes, -1, false);
 
@@ -191,7 +188,7 @@ namespace Manos.Http
 				return;
 			final_chunk_sent = true;
 
-			var bytes = new List<ByteBuffer> ();
+			var bytes = new List<ArraySegment<byte>> ();
 
 			WriteChunk (bytes, 0, true);
 
@@ -222,8 +219,8 @@ namespace Manos.Http
 
 			metadata_written = true;
 
-			var bytes = new List<ByteBuffer> ();
-			bytes.Add (new ByteBuffer (data, 0, data.Length));
+			var bytes = new List<ArraySegment<byte>> ();
+			bytes.Add (new ArraySegment<byte> (data, 0, data.Length));
 			var write_bytes = new SendBytesOperation (bytes, callback);
 
 			SocketStream.QueueWriteOperation (write_bytes);
@@ -252,7 +249,7 @@ namespace Manos.Http
 
 		private void SendChunk (int l, bool last)
 		{
-			var bytes = new List<ByteBuffer> ();
+			var bytes = new List<ArraySegment<byte>> ();
 
 			WriteChunk (bytes, l, last);
 
@@ -260,13 +257,14 @@ namespace Manos.Http
 			QueueWriteOperation (write_bytes);
 		}
 
-		private void WriteChunk (List<ByteBuffer> bytes, int l, bool last)
+		private void WriteChunk (List<ArraySegment<byte>> bytes, int l, bool last)
 		{
 			if (l == 0 && !last)
 				return;
 
-			int i = 0;
 			
+			int i = 0;
+			byte [] chunk_buffer = new byte [24];
 
 			if (l >= 0) {
 				string s = l.ToString ("x");
@@ -283,7 +281,7 @@ namespace Manos.Http
 
 			length += i;
 			
-			bytes.Add (new ByteBuffer (chunk_buffer, 0, i));
+			bytes.Add (new ArraySegment<byte> (chunk_buffer, 0, i));
 		}
 	}
 }
