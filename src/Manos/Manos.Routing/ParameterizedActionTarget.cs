@@ -101,24 +101,29 @@ namespace Manos.Routing
 				string name = parameters [i].Name;
 				UnsafeString strd = ctx.Request.Data.Get (name);
 			
-				if (!TryConvertType (ctx, parameters [i].ParameterType, strd, out data [i]))
+				if (!TryConvertType (ctx, parameters [i].ParameterType, parameters [i], strd, out data [i]))
 				    return false;
 			}
 			
 			return true;
 		}
 		
-		public static bool TryConvertType (IManosContext ctx, Type type, UnsafeString unsafe_str_value, out object data)
+		public static bool TryConvertType (IManosContext ctx, Type type, ParameterInfo param, UnsafeString unsafe_str_value, out object data)
 		{
 			if (type == typeof (UnsafeString)) {
 				data = unsafe_str_value;
 				return true;
 			}
-			
+
 			string str_value = unsafe_str_value == null ? null : unsafe_str_value.SafeValue;
 			
 			if (TryConvertFormData (type, str_value, out data))
 				return true;
+
+			if (str_value == null && param.DefaultValue != null) {
+				data = param.DefaultValue;
+				return true;
+			}
 			
 			try {
 				data = Convert.ChangeType (str_value, type);

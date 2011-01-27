@@ -51,6 +51,7 @@ namespace Manos.Tests {
 			data = Encoding.ASCII.GetBytes ("I AM THE POST DATA! HEAR ME ROAR!");
 			TestRunner.RunPostTest ("/StreamTests/PostBody", data, data);
 
+			TestRunner.RunTest ("/StreamTests/DefaultValue", "/StreamTests/DefaultValue", "I AM THE VALUE");
 			TestRunner.RunTest ("/StreamTests/EchoInt?the_int=45", "/StreamTests/EchoInt?the_int=52", "45");
 			TestRunner.RunTest ("/StreamTests/EchoString?the_string=foobar", 
 					"/StreamTests/EchoString?the_string=iamtheloaduri", "foobar");

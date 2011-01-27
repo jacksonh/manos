@@ -108,6 +108,11 @@ namespace TestApp {
 
 			ctx.Response.End (data);
 		}
+
+		public void DefaultValue (IManosContext ctx, string the_value = "I AM THE VALUE")
+		{
+			ctx.Response.End (the_value);
+		}
 	}
 }
 
