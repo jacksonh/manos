@@ -26,7 +26,7 @@
 
 using System;
 using System.IO;
-
+using System.Text;
 
 namespace Manos.Tests {
 
@@ -44,13 +44,18 @@ namespace Manos.Tests {
 
 		public void Run ()
 		{
+			byte [] data;
+
 			TestRunner.RunTest ("/StreamTests/EchoLocalPath", "/StreamTests/EchoLocalPath");
+
+			data = Encoding.ASCII.GetBytes ("I AM THE POST DATA! HEAR ME ROAR!");
+			TestRunner.RunPostTest ("/StreamTests/PostBody", data, data);
 
 			TestRunner.RunTest ("/StreamTests/EchoInt?the_int=45", "/StreamTests/EchoInt?the_int=52", "45");
 			TestRunner.RunTest ("/StreamTests/EchoString?the_string=foobar", 
 					"/StreamTests/EchoString?the_string=iamtheloaduri", "foobar");
 
-			byte [] data = File.ReadAllBytes ("TestRunner.exe");
+			data = File.ReadAllBytes ("TestRunner.exe");
 			TestRunner.RunTest ("/StreamTests/SendFile?name=TestRunner.exe", data);
 
 			TestRunner.RunUploadTest ("/StreamTests/UploadFile?name=TestRunner.exe", "TestRunner.exe", data);

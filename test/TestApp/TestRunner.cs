@@ -74,14 +74,20 @@ namespace Manos.Tests {
 
 		public void RunTest (string uri, object expected)
 		{
-			RunTestInternal (uri, uri, "GET", null, expected, 1, 0);
-			RunTestInternal (uri, uri, "GET", null, expected, 1, 1);
+			RunTestInternal (uri, uri, "GET", null, null, expected, 1, 0);
+			RunTestInternal (uri, uri, "GET", null, null, expected, 1, 1);
 		}
 
 		public void RunTest (string uri, string load_uri, object expected)
 		{
-			RunTestInternal (uri, load_uri, "GET", null, expected, 1, 0);
-			RunTestInternal (uri, load_uri, "GET", null, expected, 1, 1);
+			RunTestInternal (uri, load_uri, "GET", null, null, expected, 1, 0);
+			RunTestInternal (uri, load_uri, "GET", null, null, expected, 1, 1);
+		}
+
+		public void RunPostTest (string uri, byte [] data, byte [] expected)
+		{
+			RunTestInternal (uri, uri, "POST", null, data, expected, 1, 0);
+			RunTestInternal (uri, uri, "POST", null, data, expected, 1, 1);
 		}
 
 		public void RunUploadTest (string uri, string file, object expected)
@@ -100,7 +106,7 @@ namespace Manos.Tests {
 			Console.WriteLine ("PASSED.");
 		}
 
-		public void RunTestInternal (string uri, string load_uri, string method, Dictionary<string,string> data, object expected, int major_version, int minor_version, bool upload=false)
+		public void RunTestInternal (string uri, string load_uri, string method, Dictionary<string,string> data, byte [] post_data, object expected, int major_version, int minor_version, bool upload=false)
 		{
 			Console.Write ("RUNNING {0} with HTTP VERSION {1}.{2} ...", uri, major_version, minor_version);
 
@@ -114,6 +120,12 @@ namespace Manos.Tests {
 
 			request.Method = method;
 			request.ProtocolVersion = new Version (major_version, minor_version);
+
+			if (post_data != null) {
+			   Stream post_stream = request.GetRequestStream ();
+			   post_stream.Write (post_data, 0, post_data.Length);
+			   post_stream.Close ();
+			}
 
 			HttpWebResponse response = (HttpWebResponse) request.GetResponse ();
 		        if (response.StatusCode != HttpStatusCode.OK)

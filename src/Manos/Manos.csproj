@@ -56,6 +56,7 @@
     <Compile Include="Manos\PutAttribute.cs" />
     <Compile Include="Manos\TraceAttribute.cs" />
     <Compile Include="Manos.Http\HState.cs" />
+    <compile Include="Manos.Http\HttpBufferedBodyHandler.cs" />
     <Compile Include="Manos.Http\HttpCallback.cs" />
     <Compile Include="Manos.Http\HttpCookie.cs" />
     <Compile Include="Manos.Http\HttpDataCallback.cs" />

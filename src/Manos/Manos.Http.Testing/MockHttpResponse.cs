@@ -152,6 +152,11 @@ namespace Manos.Http.Testing
 			set;
 		}
 
+		public string PostBody {
+			get;
+			set;
+		}
+
 		public void SetProperty (string name, object o)
 		{
 			throw new NotImplementedException ();

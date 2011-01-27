@@ -163,7 +163,11 @@ namespace Manos.Http.Testing
 			set;
 		}
 
-		
+		public string PostBody {
+			get;
+			set;
+		}
+
 		public Dictionary<string,object> Properties {
 			get;
 			set;
