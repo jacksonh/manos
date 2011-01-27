@@ -112,7 +112,7 @@ namespace Manos.Tests {
 
 			uri = MANOS_SERVER + uri;
 
-			if (LoadTest) {
+			if (LoadTest && method == "GET") {
 				BeginLoad (uri);
 			}
 
@@ -153,7 +153,7 @@ namespace Manos.Tests {
 					throw new Exception ("Data does not match, extra data at end of stream.");
 			}
 
-			if (LoadTest) {
+			if (LoadTest && method == "GET") {
 				WaitForLoad ();
 			}
 

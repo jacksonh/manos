@@ -52,6 +52,8 @@ namespace Manos.Tests {
 			TestRunner.RunPostTest ("/StreamTests/PostBody", data, data);
 
 			TestRunner.RunTest ("/StreamTests/DefaultValue", "/StreamTests/DefaultValue", "I AM THE VALUE");
+			TestRunner.RunTest ("/StreamTests/DefaultValue?the_value=FOOBAR", "/StreamTests/DefaultValue?the_value=BLAH", "FOOBAR");
+
 			TestRunner.RunTest ("/StreamTests/EchoInt?the_int=45", "/StreamTests/EchoInt?the_int=52", "45");
 			TestRunner.RunTest ("/StreamTests/EchoString?the_string=foobar", 
 					"/StreamTests/EchoString?the_string=iamtheloaduri", "foobar");
