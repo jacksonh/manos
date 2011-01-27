@@ -57,6 +57,15 @@ namespace Manos.IO {
 			ReadFile ();
 		}
 
+		
+		public void Dispose ()
+		{
+			if (file != null) {
+				file.Close ();
+				file = null;
+			}
+		}
+
 		public WriteCallback Callback {
 			get { return callback; }
 			set {
