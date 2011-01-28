@@ -124,6 +124,7 @@ namespace Manos.Http {
 
 			uri_data = null;
 			query_data = null;
+			cookies = null;
 
 			base.Reset ();
 		}

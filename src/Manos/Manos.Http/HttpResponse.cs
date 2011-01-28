@@ -197,6 +197,12 @@ namespace Manos.Http {
 				Completed (this);
 		}
 
+		public override void Reset ()
+		{
+			cookies = null;
+			base.Reset ();
+		}
+
 		public override ParserSettings CreateParserSettings ()
 		{
 			ParserSettings settings = new ParserSettings ();
