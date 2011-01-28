@@ -87,6 +87,7 @@
     <Compile Include="Manos.IO\ConnectionAcceptedEventArgs.cs" />
     <Compile Include="Manos.IO\IOLoop.cs" />
     <Compile Include="Manos.IO\IOStream.cs" />
+    <Compile Include="Manos.IO\FileSystem.cs" />
     <Compile Include="Manos.IO\NopWriteOperation.cs" />
     <Compile Include="Manos.IO\SendBytesOperation.cs" />
     <Compile Include="Manos.IO\SendFileOperation.cs" />

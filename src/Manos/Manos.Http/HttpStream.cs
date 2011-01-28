@@ -43,6 +43,10 @@ namespace Manos.Http
 		private bool metadata_written;
 		private bool final_chunk_sent;
 
+		private int pending_length_cbs;
+		private bool waiting_for_length;
+		private WriteCallback final_chunk_callback;
+
 		private Queue<IWriteOperation> write_ops;
 
 		public HttpStream (HttpEntity entity, SocketStream stream)
@@ -131,15 +135,27 @@ namespace Manos.Http
 		{
 			EnsureMetadata ();
 
-			long l;
-			using (var file_stream = new FileStream (file_name, FileMode.Open, FileAccess.Read))
-				l = file_stream.Length;
-			var write_file = new SendFileOperation (file_name, l, null);
+			var write_file = new SendFileOperation (file_name, null) {
+				Chunked = chunk_encode,
+			};
 
-			length += l;
+			if (!chunk_encode) {
+				pending_length_cbs++;
+				FileSystem.GetFileLength (file_name, (l, e) => {
+					if (l != -1)
+						write_file.Length = l;
+					LengthCallback (l, e);
+				});
+			} else {
+				write_file.Completed += delegate {
+					length += write_file.Length;
+				};
+			}
 
-			if (chunk_encode)
-				SendChunk ((int) l, false);
+			// If chunk encoding is used the initial chunk will be written by the sendfile operation
+			// because only it knows the length at the time.
+			//
+			
 			QueueWriteOperation (write_file);
 
 			if (chunk_encode)
@@ -187,6 +203,13 @@ namespace Manos.Http
 
 			if (!chunk_encode || final_chunk_sent)
 				return;
+
+			if (pending_length_cbs > 0) {
+				waiting_for_length = true;
+				final_chunk_callback = callback;
+				return;
+			}
+
 			final_chunk_sent = true;
 
 			var bytes = new List<ByteBuffer> ();
@@ -283,6 +306,21 @@ namespace Manos.Http
 			length += i;
 			
 			bytes.Add (new ByteBuffer (chunk_buffer, 0, i));
+		}
+
+		private void LengthCallback (long length, int error)
+		{
+			if (length == -1) {
+				Console.Error.WriteLine ("Error getting file length errno: '{0}'", error);
+				length = 0;
+			}
+
+			this.length += length;
+			--pending_length_cbs;
+
+			if (pending_length_cbs <= 0 && waiting_for_length) {
+				SendFinalChunk (final_chunk_callback);
+			}
 		}
 	}
 }
