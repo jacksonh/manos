@@ -119,5 +119,10 @@ namespace HelloWorld {
 				ctx.Response.End ("handled upload!");
 			});
 		}
+
+		public void Default (IManosContext ctx, string default_value = "I AM DEFAULT")
+		{
+			ctx.Response.End (default_value);
+		}
 	}
 }

@@ -61,6 +61,14 @@ it should either be a generic ManosApp object or your applications top level Man
 the first two parameters, the rest of the parameters can be of any type as long as they are not passed by ref (ie not a ref or out param). The
 parameters will be converted from the strings passed to Manos from the browser in url and form data. The method may be an instance method or a static method.
 
+Default values can also be used for Actions to make parameters optional.  Standard C# default param syntax is used:
+
+    public void MyMethod (IManosContext ctx, string user_name = "ANONYMOUS")
+    {
+    }
+
+Default values will be used if the user_name is not found in the supplied data.
+
 If you have a method that matches this signature and don't want it to be added to the routing table simply add an IgnoreAttribute
 
     [Ignore]

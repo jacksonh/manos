@@ -176,6 +176,11 @@ namespace Manos.Http {
 			}
 		}
 
+		public string PostBody {
+			get;
+			set;
+		}
+
 		public Dictionary<string,UploadedFile> Files {
 			get {
 			    if (uploaded_files == null)
@@ -336,7 +341,7 @@ namespace Manos.Http {
 			string ct;
 
 			if (!Headers.TryGetValue ("Content-Type", out ct)) {
-				body_handler = new HttpFormDataHandler ();
+				body_handler = new HttpBufferedBodyHandler ();
 				return;
 			}
 
@@ -352,6 +357,8 @@ namespace Manos.Http {
 				body_handler = new HttpMultiPartFormDataHandler (boundary, ContentEncoding, file_creator);
 				return;
 			}
+
+			body_handler = new HttpBufferedBodyHandler ();
 		}
 
 		private IUploadedFileCreator GetFileCreator ()
@@ -375,6 +382,7 @@ namespace Manos.Http {
 			headers = null;
 			data = null;
 			post_data = null;
+			cookies = null;
 
 			if (parser_settings == null)
 				CreateParserSettingsInternal ();

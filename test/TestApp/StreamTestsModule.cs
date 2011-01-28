@@ -52,6 +52,11 @@ namespace TestApp {
 			ctx.Response.End (the_string);
 		}
 
+		public void PostBody (IManosContext ctx)
+		{
+			ctx.Response.End (ctx.Request.PostBody);
+		}
+
 		public void ReverseString (IManosContext ctx, string the_string)
 		{
 			// This is intentionally awful, as its trying to test the stream 
@@ -102,6 +107,11 @@ namespace TestApp {
 			file.Contents.Read (data, 0, data.Length);
 
 			ctx.Response.End (data);
+		}
+
+		public void DefaultValue (IManosContext ctx, string the_value = "I AM THE VALUE")
+		{
+			ctx.Response.End (the_value);
 		}
 	}
 }

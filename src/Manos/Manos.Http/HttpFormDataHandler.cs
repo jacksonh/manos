@@ -88,8 +88,6 @@ namespace Manos.Http {
 
 		private void FinishPair (HttpEntity entity)
 		{
-			if (value_buffer.Length == 0)
-				return;
 			if (key_buffer.Length == 0)
 				throw new HttpException ("zero length key in www-form data.");
 

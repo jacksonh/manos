@@ -22,98 +22,30 @@
 //
 //
 
-
-
 using System;
 using System.Text;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 
-using Manos.IO;
-using Manos.Http;
 using Manos.Collections;
 
 namespace Manos.Http {
 
-	public interface IHttpRequest : IDisposable {
-		
-		HttpMethod Method {
-			get;
-			set;
-		}
-		
-		string Path {
-			get;
-			set;
+	public class HttpBufferedBodyHandler : IHttpBodyHandler {
+
+		private StringBuilder builder;
+
+		public void HandleData (HttpEntity entity, ByteBuffer data, int pos, int len)
+		{
+			if (builder == null)
+				builder = new StringBuilder ();
+
+			string str = entity.ContentEncoding.GetString (data.Bytes, pos, len);
+			builder.Append (str);
 		}
 
-		DataDictionary Data {
-			get;	
+		public void Finish (HttpEntity entity)
+		{
+			entity.PostBody = builder.ToString ();
 		}
-		
-		DataDictionary PostData {
-			get;
-		}
-
-		DataDictionary QueryData {
-			get;
-			set;
-		}
-
-		DataDictionary UriData {
-			get;
-			set;
-		}
-		
-		DataDictionary Cookies {
-			get;	
-		}
-
-		HttpHeaders Headers {
-			get;
-			set;
-		}
-		
-		Dictionary<string,UploadedFile> Files {
-			get;
-		}
-
-		int MajorVersion {
-			get;
-			set;
-		}
-
-		int MinorVersion {
-			get;
-			set;
-		}
-
-		Encoding ContentEncoding {
-			get;
-		}
-
-		SocketStream Socket {
-			get;
-		}
-
-		Dictionary<string,object> Properties {
-			get;
-		}
-
-		string PostBody {
-			get;
-			set;
-		}
-
-		void SetProperty (string name, object o);
-
-		object GetProperty (string name);
-
-		T GetProperty<T> (string name);
-		
-		void Read ();
-		void SetWwwFormData (DataDictionary data);
-		
 	}
 }
 
