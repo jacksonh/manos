@@ -382,6 +382,7 @@ namespace Manos.Http {
 			headers = null;
 			data = null;
 			post_data = null;
+			cookies = null;
 
 			if (parser_settings == null)
 				CreateParserSettingsInternal ();
