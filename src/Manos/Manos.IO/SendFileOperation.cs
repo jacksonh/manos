@@ -82,10 +82,18 @@ namespace Manos.IO {
 		{
 		}
 
+		private SocketStream waiting_stream = null;
+
 		public void HandleWrite (IOStream stream)
 		{
 			SocketStream sstream = (SocketStream) stream;
 
+			if (!Chunked && Length == -1) {
+				waiting_stream = sstream;
+				sstream.DisableWriting ();
+				return;
+			}
+			
 			sstream.SendFile (filename, Chunked, Length, (length, error) => {
 				IsComplete = true;
 				sstream.EnableWriting ();
@@ -114,9 +122,17 @@ namespace Manos.IO {
 				// Let it at least complete.
 			} else
 				Length = length;
-			
+
 			if (Completed != null)
 				Completed (this, EventArgs.Empty);
+		}
+
+		public void SetLength (long l)
+		{
+			Length = l;
+			if (waiting_stream != null)
+				waiting_stream.EnableWriting ();
+			waiting_stream = null;
 		}
 
 		public event EventHandler Completed;

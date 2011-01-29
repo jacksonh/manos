@@ -143,7 +143,7 @@ namespace Manos.Http
 				pending_length_cbs++;
 				FileSystem.GetFileLength (file_name, (l, e) => {
 					if (l != -1)
-						write_file.Length = l;
+						write_file.SetLength (l);
 					LengthCallback (l, e);
 				});
 			} else {
