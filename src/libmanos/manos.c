@@ -344,7 +344,7 @@ sendfile_stat_cb (eio_req *req)
 
 	data->length = buf->st_size;
 
-	buffer_len = snprintf (buffer, 10, "%d\r\n", data->length);
+	buffer_len = snprintf (buffer, 10, "%x\r\n", data->length);
 
 	/* send the chunk length */
 	if (send (data->socket, buffer, buffer_len, 0) != buffer_len) {
