@@ -200,10 +200,6 @@ namespace Manos.Http {
 		public override void Reset ()
 		{
 			cookies = null;
-<<<<<<< HEAD
-=======
-
->>>>>>> 3f2aa19978ff9cdf81098e4fbff0ca9cc900dd8b
 			base.Reset ();
 		}
 
