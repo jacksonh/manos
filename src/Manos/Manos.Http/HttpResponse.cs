@@ -109,8 +109,11 @@ namespace Manos.Http {
 			
 			WriteStatusLine (builder);
 
-			if (WriteHeaders)
+			if (WriteHeaders) {
+				if (!Stream.Chunked)
+					Headers.ContentLength = Stream.Length;
 				Headers.Write (builder, cookies == null ? null : Cookies.Values, Encoding.ASCII);
+			}
 		}
 
 		public void SetHeader (string name, string value)
@@ -183,9 +186,6 @@ namespace Manos.Http {
 
 		internal override void OnEnd (Loop loop, AsyncWatcher watcher, EventTypes revents)
 		{
-			if (!Stream.Chunked)
-				Headers.ContentLength = Stream.Length;
-
 			Stream.End (Transaction.OnResponseFinished);
 		}
 
