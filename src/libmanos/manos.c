@@ -74,7 +74,7 @@ eio_on_done_poll (EV_P_ ev_async *watcher, int revents)
 {
 	manos_data_t *data = (manos_data_t *) watcher->data;
 	if (eio_poll () != -1)
-		ev_idle_start (EV_A_ &data->eio_idle_watcher);
+		ev_idle_stop (EV_A_ &data->eio_idle_watcher);
 }
 
 static void
@@ -332,6 +332,7 @@ sendfile_complete_cb (eio_req *req)
 	sendfile_data_t *data = (sendfile_data_t *) req->data;
 
 	data->cb (data->length, 0);
+	return 0;
 }
 
 static int
@@ -353,7 +354,8 @@ sendfile_stat_cb (eio_req *req)
 	}
 
 	eio_sendfile (data->socket, data->fd, 0, data->length, 0, sendfile_complete_cb, data);
-	
+
+	return 0;
 }
 
 static int
@@ -366,6 +368,8 @@ sendfile_open_cb (eio_req *req)
 		eio_fstat (data->fd, 0, sendfile_stat_cb, data);
 	else
 		eio_sendfile (data->socket, data->fd, 0, data->length, 0, sendfile_complete_cb, data);
+
+	return 0;
 }
 
 
@@ -417,4 +421,6 @@ int
 manos_file_get_length (char *path, length_cb cb)
 {
 	eio_stat (path, 0, file_get_length_stat_cb, cb);
+
+	return 0;
 }
