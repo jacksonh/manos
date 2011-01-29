@@ -70,6 +70,12 @@ namespace Manos.Http {
 			get;
 		}
 
+		
+		string PostBody {
+			get;
+			set;
+		}
+
 		void SetProperty (string name, object o);
 
 		object GetProperty (string name);
