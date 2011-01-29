@@ -53,9 +53,11 @@
  */
 struct ev_async eio_want_poll_watcher;
 struct ev_async eio_done_poll_watcher;
+struct ev_idle eio_idle_watcher;
+
 
 static void
-eio_on_poll (EV_P_ ev_idle *watcher, int revents)
+eio_on_idle (EV_P_ ev_idle *watcher, int revents)
 {
 	if (eio_poll () != -1)
 		ev_idle_stop (EV_A_ watcher);
@@ -65,8 +67,8 @@ static void
 eio_on_want_poll (EV_P_ ev_async *watcher, int revents)
 {
 	manos_data_t *data = (manos_data_t *) watcher->data;
-	if (eio_poll () != -1)
-		ev_idle_start (EV_A_ &data->eio_idle_watcher);
+	if (eio_poll () == -1)
+		ev_idle_start (EV_A_ &eio_idle_watcher);
 }
 
 static void
@@ -74,7 +76,7 @@ eio_on_done_poll (EV_P_ ev_async *watcher, int revents)
 {
 	manos_data_t *data = (manos_data_t *) watcher->data;
 	if (eio_poll () != -1)
-		ev_idle_stop (EV_A_ &data->eio_idle_watcher);
+		ev_idle_stop (EV_A_ &eio_idle_watcher);
 }
 
 static void
@@ -99,16 +101,16 @@ manos_init (struct ev_loop *loop)
 
 	data->loop = loop;
 
-	ev_idle_init (&data->eio_idle_watcher, eio_on_poll);
-	data->eio_idle_watcher.data = data;
+	ev_idle_init (&eio_idle_watcher, eio_on_idle);
+	eio_idle_watcher.data = data;
 	
 	ev_async_init (&eio_want_poll_watcher, eio_on_want_poll);
-	ev_async_start (loop, &eio_want_poll_watcher);
+	ev_async_start (EV_DEFAULT_UC_ &eio_want_poll_watcher);
 	eio_want_poll_watcher.data = data;
 	
 
 	ev_async_init (&eio_done_poll_watcher, eio_on_done_poll);
-        ev_async_start (loop, &eio_done_poll_watcher);
+        ev_async_start (EV_DEFAULT_UC_ &eio_done_poll_watcher);
 	eio_done_poll_watcher.data = data;
 	
 	eio_init (eio_want_poll, eio_done_poll);
@@ -119,7 +121,7 @@ manos_shutdown (manos_data_t *data)
 {
 	ev_async_stop (data->loop, &eio_want_poll_watcher);
 	ev_async_stop (data->loop, &eio_done_poll_watcher);
-	ev_idle_stop (data->loop, &data->eio_idle_watcher);
+	ev_idle_stop (data->loop, &eio_idle_watcher);
 
 	free (data);
 }
@@ -329,7 +331,9 @@ static int
 sendfile_close_cb (eio_req *req)
 {
 	sendfile_data_t *data = (sendfile_data_t *) req->data;
+
 	data->cb (data->length, 0);
+	return 0;
 }
 
 static int
@@ -361,7 +365,7 @@ sendfile_stat_cb (eio_req *req)
 	/* send the chunk length */
 	if (send (data->socket, buffer, buffer_len, 0) != buffer_len) {
 		data->cb (-1, errno);
-		return;
+		return 0;
 	}
 
 	eio_sendfile (data->socket, data->fd, 0, data->length, 0, sendfile_complete_cb, data);
@@ -425,6 +429,7 @@ file_get_length_stat_cb (eio_req *req)
 	length_cb cb = (length_cb) req->data;
 
 	cb (buf->st_size, 0);
+	return 0;
 }
 
 
