@@ -322,14 +322,15 @@ typedef struct {
 	int socket;
 	int flags;
 	off_t length;
-	sendfile_cb cb;
+	length_cb cb;
 } sendfile_data_t;
 
+
 static int
-sendfile_sendfile_cb (eio_req *req)
+sendfile_complete_cb (eio_req *req)
 {
 	sendfile_data_t *data = (sendfile_data_t *) req->data;
-	
+
 	data->cb (data->length, 0);
 }
 
@@ -343,7 +344,7 @@ sendfile_stat_cb (eio_req *req)
 
 	data->length = buf->st_size;
 
-	buffer_len = snprintf (buffer, 10, "%d\r\n", data->length);
+	buffer_len = snprintf (buffer, 10, "%x\r\n", data->length);
 
 	/* send the chunk length */
 	if (send (data->socket, buffer, buffer_len, 0) != buffer_len) {
@@ -351,7 +352,7 @@ sendfile_stat_cb (eio_req *req)
 		return;
 	}
 
-	eio_sendfile (data->socket, data->fd, 0, data->length, 0, sendfile_sendfile_cb, data);
+	eio_sendfile (data->socket, data->fd, 0, data->length, 0, sendfile_complete_cb, data);
 	
 }
 
@@ -364,12 +365,12 @@ sendfile_open_cb (eio_req *req)
 	if (data->flags & SEND_LENGTH) 
 		eio_fstat (data->fd, 0, sendfile_stat_cb, data);
 	else
-		eio_sendfile (data->socket, data->fd, 0, data->length, 0, sendfile_sendfile_cb, data);
+		eio_sendfile (data->socket, data->fd, 0, data->length, 0, sendfile_complete_cb, data);
 }
 
 
 static int
-sendfile_internal (int socket, char *name, int length, int flags, sendfile_cb cb, int *err)
+sendfile_internal (int socket, char *name, int length, int flags, length_cb cb)
 {
 	sendfile_data_t *data = malloc (sizeof (sendfile_data_t));
 
@@ -381,20 +382,14 @@ sendfile_internal (int socket, char *name, int length, int flags, sendfile_cb cb
 	data->cb = cb;
 
 	eio_open (name, O_RDONLY, 0777, 0, sendfile_open_cb, data);
+
+	return 0;
 }
 
-
 int
-manos_socket_send_file_chunked (int socket, char *name, sendfile_cb cb, int *err)
+manos_socket_send_file (int socket, char *name, int chunked, off_t length, length_cb cb)
 {
-	return sendfile_internal (socket, name, -1, SEND_LENGTH, cb, err);
-}
-
-
-int
-manos_socket_send_file (int socket, char *name, off_t length, sendfile_cb cb, int *err)
-{
-	return sendfile_internal (socket, name, length, NO_FLAGS, cb, err);
+	return sendfile_internal (socket, name, length, chunked ? SEND_LENGTH : NO_FLAGS, cb);
 }
 
 
@@ -407,3 +402,19 @@ manos_socket_close (int fd, int *err)
 	return rc;
 }
 
+
+static int
+file_get_length_stat_cb (eio_req *req)
+{
+	struct stat *buf = EIO_STAT_BUF (req);
+	length_cb cb = (length_cb) req->data;
+
+	cb (buf->st_size, 0);
+}
+
+
+int
+manos_file_get_length (char *path, length_cb cb)
+{
+	eio_stat (path, 0, file_get_length_stat_cb, cb);
+}

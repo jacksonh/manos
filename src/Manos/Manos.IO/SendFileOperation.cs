@@ -35,19 +35,14 @@ namespace Manos.IO {
 	public class SendFileOperation : IWriteOperation {
 
 		private WriteCallback callback;
+		private string filename;
 
-		private FileStream file;
-		private long file_offset;
-		private long file_length;
-		
-		string filename;
-
-		public SendFileOperation (string filename, long size, WriteCallback callback)
+		public SendFileOperation (string filename, WriteCallback callback)
 		{
 			this.filename = filename;
 			this.callback = callback;
 
-			file_length = size;
+			Length = -1;
 		}
 
 		~SendFileOperation ()
@@ -57,10 +52,16 @@ namespace Manos.IO {
 
 		public void Dispose ()
 		{
-			if (file != null) {
-				file.Close ();
-				file = null;
-			}
+		}
+
+		public bool Chunked {
+			get;
+			set;
+		}
+
+		public long Length {
+			get;
+			set;
 		}
 
 		public WriteCallback Callback {
@@ -85,51 +86,40 @@ namespace Manos.IO {
 		{
 			SocketStream sstream = (SocketStream) stream;
 
-			/*
-			while (file_offset < file_length) {
-				int fdin = -1;
-				try {
-					int error;
-					fdin = Mono.Unix.Native.Syscall.open (filename,
-							Mono.Unix.Native.OpenFlags.O_RDONLY);
-					if (fdin == -1)
-						return;
-					int res = sstream.SendFile (fdin, file_offset, (int) file_length, out error);
-					if (error != 0)
-						throw new Exception (String.Format ("Send file error {0}.", error));
-
-					file_offset += res;
-					
-				} finally {
-					if (fdin != -1)
-						Mono.Unix.Native.Syscall.close (fdin);
-				}
-			}
-			*/
-			int error;
-			sstream.SendFile (filename, out error);
-			sstream.DisableWriting ();
-
-			Console.WriteLine ("FILE SENT:  " + error);
-			if (file_offset >= file_length)
+			sstream.SendFile (filename, Chunked, Length, (length, error) => {
 				IsComplete = true;
+				sstream.EnableWriting ();
+				OnComplete (length, error);
+			});
+
+			sstream.DisableWriting ();
 		}
 
 		public void EndWrite (IOStream stream)
 		{
 			if (Callback != null)
 				Callback ();
-
-			if (file != null) {
-				file.Close ();
-				file = null;
-			}
 		}
 
 		public bool Combine (IWriteOperation other)
 		{
 			return false;
 		}
+
+		private void OnComplete (long length, int error)
+		{
+			if (length == -1) {
+				// hmmm, how best to propogate this?
+				Console.Error.WriteLine ("Error sending file '{0}' errno: '{1}'", filename, error);
+				// Let it at least complete.
+			} else
+				Length = length;
+			
+			if (Completed != null)
+				Completed (this, EventArgs.Empty);
+		}
+
+		public event EventHandler Completed;
 	}
 #endif
 }

@@ -224,6 +224,11 @@ namespace Manos.IO {
 				return;
 			}
 
+			if (current_write_op.IsComplete) {
+				FinishCurrentWrite ();
+				return;
+			}
+
 			current_write_op.HandleWrite (this);
 
 			if (current_write_op.IsComplete)

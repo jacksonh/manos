@@ -17,7 +17,7 @@ typedef struct {
 	struct ev_idle eio_idle_watcher;
 } manos_data_t;
 
-typedef void (*sendfile_cb) (int length, int error);
+typedef void (*length_cb) (off_t length, int error);
 
 
 manos_data_t *manos_init (struct ev_loop *loop);
@@ -31,11 +31,9 @@ int manos_socket_accept_many (int fd, int *fds, int len, int *err);
 int manos_socket_receive (int fd, char* data, int len, int *err);
 int manos_socket_send (int fd, bytebuffer_t *buffers, int len, int *err);
 int manos_socket_close (int fd, int *err);
+int manos_socket_send_file (int socket, char *name, int chunked, off_t length, length_cb cb);
 
-
-int manos_socket_send_file_chunked (int socket, char *name, sendfile_cb cb, int *err);
-int manos_socket_send_file (int socket, char *name, off_t length, sendfile_cb cb, int *err);
-
+int manos_file_get_length (char *path, length_cb cb);
 
 #endif
 

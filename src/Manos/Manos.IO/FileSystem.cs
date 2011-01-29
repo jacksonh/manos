@@ -38,69 +38,18 @@ using Libeio;
 
 namespace Manos.IO {
 
-	public class IOLoop {
-	       
-		private static IOLoop instance = new IOLoop ();
+	public static class FileSystem {
+
+		public static void GetFileLength (string path, Action<long,int> cb)
+		{
+			manos_file_get_length (path, (l, e) => {
+				cb (l.ToInt64 (), e);
+			});
+		}
+
 		
-		private bool running;
-
-		private Loop evloop;
-		private Libeio.Libeio eio;
-		private IntPtr libmanos_data;
-
-		public IOLoop ()
-		{
-			evloop = Loop.CreateDefaultLoop (0);
-			eio = new Libeio.Libeio ();
-
-//			eio.Initialize (evloop);
-
-			libmanos_data = manos_init (evloop.Handle);
-		}
-
-		public static IOLoop Instance {
-			get { return instance; }
-		}
-
-		public Loop EventLoop {
-		       get { return evloop; }
-		}
-
-		public Libeio.Libeio Eio {
-			get { return eio; }
-		}
-
-		public void Start ()
-		{
-			running = true;
-			
-			evloop.RunBlocking ();
-		}
-
-		public void Stop ()
-		{
-			running = false;
-		}
-
-		public void AddTimeout (Timeout timeout)
-		{
-			TimerWatcher t = new TimerWatcher (timeout.begin, timeout.span, evloop, HandleTimeout);
-			t.UserData = timeout;
-			t.Start ();
-		}
-
-		private void HandleTimeout (Loop loop, TimerWatcher timeout, EventTypes revents)
-		{
-			Timeout t = (Timeout) timeout.UserData;
-
-			AppHost.RunTimeout (t);
-			if (!t.ShouldContinueToRepeat ())
-			   timeout.Stop ();
-		}
-
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
-		private static extern IntPtr manos_init (IntPtr handle);
-
+		private static extern void manos_file_get_length (string path, Action<IntPtr,int> cb);
 	}
 }
 

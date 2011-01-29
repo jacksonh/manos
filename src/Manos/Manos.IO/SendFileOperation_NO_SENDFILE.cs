@@ -48,9 +48,9 @@ namespace Manos.IO {
 		private FileStream file;
 		private int file_length;
 		
-		public SendFileOperation (FileStream file, WriteCallback callback)
+		public SendFileOperation (string filename, WriteCallback callback)
 		{
-			this.file = file;
+			this.file = new FileStream (file_name, FileMode.Open, FileAccess.Read)
 			this.callback = callback;
 
 			file_length = (int) file.Length;
@@ -73,6 +73,16 @@ namespace Manos.IO {
 					throw new ArgumentNullException ("value");
 				callback = value;
 			}
+		}
+
+		public bool Chunked {
+			get;
+			set;
+		}
+				
+		public long Length {
+			get { return file_length; }
+			set { /* NOOP on windows because we set in the ctor */ }
 		}
 
 		public bool IsComplete {
@@ -105,6 +115,9 @@ namespace Manos.IO {
 			}
 
 			IsComplete = (bytes_index == file_length);
+
+			if (IsComplete)
+				OnComplete ();
 		}
 
 		public void EndWrite (IOStream stream)
@@ -124,6 +137,15 @@ namespace Manos.IO {
 
 			file.Read (bytes, 0, bytes.Length);
 		}
+
+		
+		private void OnComplete ()
+		{
+			if (Completed != null)
+				Completed (this, EventArgs.Empty);
+		}
+
+		public event EventHandler Completed;
 	}
 
 #endif

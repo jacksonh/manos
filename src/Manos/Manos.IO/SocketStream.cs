@@ -134,12 +134,18 @@ namespace Manos.IO {
 
 			base.Close ();
 
+			if (fd == -1)
+				return;
+
 			int error;
 			int res = manos_socket_close (fd, out error);
 
-			if (res < 0)
+			if (res < 0) {
 				Console.Error.WriteLine ("Error '{0}' closing socket: {1}", error, fd);
-			
+				Console.Error.WriteLine (Environment.StackTrace);
+			}
+
+			fd = -1;
 		}
 
 		public void Connect (string host, int port)
@@ -240,7 +246,6 @@ namespace Manos.IO {
 			int error;
 
 			size = manos_socket_receive (fd, ReadChunk, ReadChunk.Length, out error);
-//			Console.WriteLine ("READ: '{0}'", size);
 			if (size < 0 && error != 0) {
 				Close ();
 				return;
@@ -260,9 +265,11 @@ namespace Manos.IO {
 			return manos_socket_send (fd, buffers, length, out error);
 		}
 
-		internal int SendFile (string name, out int error)
+		internal int SendFile (string name, bool chunked, long length, Action<long,int> callback)
 		{
-			int result = manos_socket_send_file (fd, name, out error);
+			int result = manos_socket_send_file (fd, name, chunked ? 1 : 0, new IntPtr (length), (l,e) => {
+				callback (l.ToInt64 (), e);
+			});
 			return result;
 		}
 
@@ -298,7 +305,7 @@ namespace Manos.IO {
 		internal static extern int manos_socket_send (int fd, ByteBufferS [] buffers, int len, out int err);
 
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
-		internal static extern int manos_socket_send_file (int socket_fd, string name, out int err);
+		internal static extern int manos_socket_send_file (int socket_fd, string name, int chunked, IntPtr length, Action<IntPtr,int> callback);
 	}
 }
 
