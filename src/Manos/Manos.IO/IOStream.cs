@@ -132,12 +132,14 @@ namespace Manos.IO {
 
 		public void EnableReading ()
 		{
-			read_watcher.Start ();
+			if (read_watcher != null)
+				read_watcher.Start ();
 		}
 
 		public void EnableWriting ()
 		{
-			write_watcher.Start ();
+			if (write_watcher != null)
+				write_watcher.Start ();
 		}
 
 		public void DisableReading ()
