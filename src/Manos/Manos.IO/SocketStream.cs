@@ -134,12 +134,18 @@ namespace Manos.IO {
 
 			base.Close ();
 
+			if (fd == -1)
+				return;
+
 			int error;
 			int res = manos_socket_close (fd, out error);
 
-			if (res < 0)
+			if (res < 0) {
 				Console.Error.WriteLine ("Error '{0}' closing socket: {1}", error, fd);
-			
+				Console.Error.WriteLine (Environment.StackTrace);
+			}
+
+			fd = -1;
 		}
 
 		public void Connect (string host, int port)
