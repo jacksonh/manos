@@ -321,7 +321,7 @@ typedef struct {
 	int fd;
 	int socket;
 	int flags;
-	off_t length;
+	size_t length;
 	length_cb cb;
 } sendfile_data_t;
 
@@ -385,7 +385,7 @@ sendfile_open_cb (eio_req *req)
 
 
 static int
-sendfile_internal (int socket, char *name, int length, int flags, length_cb cb)
+sendfile_internal (int socket, char *name, size_t length, int flags, length_cb cb)
 {
 	sendfile_data_t *data = malloc (sizeof (sendfile_data_t));
 
@@ -402,7 +402,7 @@ sendfile_internal (int socket, char *name, int length, int flags, length_cb cb)
 }
 
 int
-manos_socket_send_file (int socket, char *name, int chunked, off_t length, length_cb cb)
+manos_socket_send_file (int socket, char *name, int chunked, size_t length, length_cb cb)
 {
 	return sendfile_internal (socket, name, length, chunked ? SEND_LENGTH : NO_FLAGS, cb);
 }
