@@ -325,13 +325,24 @@ typedef struct {
 	length_cb cb;
 } sendfile_data_t;
 
+static int
+sendfile_close_cb (eio_req *req)
+{
+	sendfile_data_t *data = (sendfile_data_t *) req->data;
+	data->cb (data->length, 0);
+}
 
 static int
 sendfile_complete_cb (eio_req *req)
 {
 	sendfile_data_t *data = (sendfile_data_t *) req->data;
 
-	data->cb (data->length, 0);
+	/*
+	 * TODO: We might not have sent the full file yet.  Need to check and
+	 * call eio_sendfile again if needed.
+	 */
+
+	eio_close (data->fd, 0, sendfile_close_cb, data);
 	return 0;
 }
 
