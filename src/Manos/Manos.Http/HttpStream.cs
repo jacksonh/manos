@@ -45,7 +45,7 @@ namespace Manos.Http
 
 		private int pending_length_cbs;
 		private bool waiting_for_length;
-		private WriteCallback final_chunk_callback;
+		private WriteCallback end_callback;
 
 		private Queue<IWriteOperation> write_ops;
 
@@ -187,7 +187,13 @@ namespace Manos.Http
 		}
 
 		public void End (WriteCallback callback)
-		{
+		{			
+			if (pending_length_cbs > 0) {
+				waiting_for_length = true;
+				end_callback = callback;
+				return;
+			}
+
 			if (chunk_encode) {
 				SendFinalChunk (callback);
 				return;
@@ -203,12 +209,6 @@ namespace Manos.Http
 
 			if (!chunk_encode || final_chunk_sent)
 				return;
-
-			if (pending_length_cbs > 0) {
-				waiting_for_length = true;
-				final_chunk_callback = callback;
-				return;
-			}
 
 			final_chunk_sent = true;
 
@@ -319,7 +319,7 @@ namespace Manos.Http
 			--pending_length_cbs;
 
 			if (pending_length_cbs <= 0 && waiting_for_length) {
-				SendFinalChunk (final_chunk_callback);
+				End (end_callback);
 			}
 		}
 	}
