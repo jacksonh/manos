@@ -1,0 +1,7 @@
+Name: Manos
+Description: Manos
+Version: 0.1.1
+Libraries: @prefix@/lib/@PACKAGE@/Manos.dll @prefix@/lib/@PACKAGE@/Manos.dll.mdb 
+
+Requires: 
+Libs: -r:@prefix@/lib/@PACKAGE@/Manos.dll
