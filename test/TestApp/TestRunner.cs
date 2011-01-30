@@ -36,7 +36,7 @@ namespace Manos.Tests {
 
 	public class TestRunner {
 
-		private bool LoadTest = true;
+		private bool LoadTest = false;
 		private Process LoadProcess = null;
 
 		private string MANOS_SERVER = "http://127.0.0.1:8080";
@@ -76,20 +76,20 @@ namespace Manos.Tests {
 
 		public void RunTest (string uri, object expected)
 		{
-			RunTestInternal (uri, uri, "GET", null, null, expected, 1, 1);
 			RunTestInternal (uri, uri, "GET", null, null, expected, 1, 0);
+			RunTestInternal (uri, uri, "GET", null, null, expected, 1, 1);
 		}
 
 		public void RunTest (string uri, string load_uri, object expected)
 		{
-			RunTestInternal (uri, load_uri, "GET", null, null, expected, 1, 1);
 			RunTestInternal (uri, load_uri, "GET", null, null, expected, 1, 0);
+			RunTestInternal (uri, load_uri, "GET", null, null, expected, 1, 1);
 		}
 
 		public void RunPostTest (string uri, byte [] data, byte [] expected)
 		{
-			RunTestInternal (uri, uri, "POST", null, data, expected, 1, 1);
 			RunTestInternal (uri, uri, "POST", null, data, expected, 1, 0);
+			RunTestInternal (uri, uri, "POST", null, data, expected, 1, 1);
 		}
 
 		public void RunUploadTest (string uri, string file, object expected)
