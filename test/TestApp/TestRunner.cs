@@ -68,9 +68,11 @@ namespace Manos.Tests {
 		public void RunStreamTests ()
 		{
 			var st = new StreamTests (this);
+			var files = new FileSystemTests (this);
 			var http = new HttpTests (this);
 
 			st.Run ();
+			files.Run ();
 			http.Run ();
 		}
 

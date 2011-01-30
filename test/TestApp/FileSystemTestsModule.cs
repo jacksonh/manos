@@ -23,30 +23,27 @@
 //
 
 
+
 using Manos;
+using Manos.IO;
+using Manos.Http;
+
+using System;
+using System.Linq;
+using System.Text;
 
 
 namespace TestApp {
 
-	public class TestApp : ManosApp {
+	public class FileSystemTestsModule : ManosModule {
 
-		public TestApp ()
+		public void FileLength (IManosContext ctx, string filename)
 		{
+			FileSystem.GetFileLength (filename, (length, error) => { 
+				ctx.Response.End (length.ToString ());
+			});
 		}
 
-		public StreamTestsModule StreamTests {
-		       get;
-		       private set;
-		}
-
-		public HttpTestsModule HttpTests {
-		       get;
-		       private set;
-		}
-
-		public FileSystemTestsModule FileSystemTests {
-			get;
-			private set;
-		}
 	}
 }
+

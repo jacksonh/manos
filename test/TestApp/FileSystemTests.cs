@@ -23,30 +23,30 @@
 //
 
 
-using Manos;
 
+using System;
+using System.IO;
+using System.Text;
 
-namespace TestApp {
+namespace Manos.Tests {
 
-	public class TestApp : ManosApp {
+	public class FileSystemTests {
 
-		public TestApp ()
+		public FileSystemTests (TestRunner tr)
 		{
+			TestRunner = tr;
 		}
 
-		public StreamTestsModule StreamTests {
-		       get;
-		       private set;
-		}
-
-		public HttpTestsModule HttpTests {
-		       get;
-		       private set;
-		}
-
-		public FileSystemTestsModule FileSystemTests {
+		public TestRunner TestRunner {
 			get;
 			private set;
 		}
+
+		public void Run ()
+		{
+			long length = new FileInfo ("TestRunner.exe").Length;
+			TestRunner.RunTest ("/FileSystemTests/FileLength?file=TestRunner.exe", "/FileSystemTests/FileLength?file=TestRunner.exe", length.ToString ());
+		}
 	}
 }
+
