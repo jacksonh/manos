@@ -267,10 +267,19 @@ namespace Manos.IO {
 
 		internal int SendFile (string name, bool chunked, long length, Action<long,int> callback)
 		{
-			int result = manos_socket_send_file (fd, name, chunked ? 1 : 0, new IntPtr (length), (l,e) => {
-				callback (l.ToInt64 (), e);
-			});
+			GCHandle handle = GCHandle.Alloc (callback);
+			int result = manos_socket_send_file (fd, name, chunked ? 1 : 0, new IntPtr (length), LengthCallbackHandler, GCHandle.ToIntPtr (handle));
 			return result;
+		}
+
+		private static void LengthCallbackHandler (IntPtr gchandle, IntPtr length, int error)
+		{
+			GCHandle handle = GCHandle.FromIntPtr (gchandle);
+			Action<long,int> cb = (Action<long,int>) handle.Target;
+
+			handle.Free ();
+
+			cb (length.ToInt64 (), error);
 		}
 
 		private void OnConnectionAccepted (SocketStream stream)
@@ -305,7 +314,7 @@ namespace Manos.IO {
 		internal static extern int manos_socket_send (int fd, ByteBufferS [] buffers, int len, out int err);
 
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
-		internal static extern int manos_socket_send_file (int socket_fd, string name, int chunked, IntPtr length, Action<IntPtr,int> callback);
+		internal static extern int manos_socket_send_file (int socket_fd, string name, int chunked, IntPtr length, Action<IntPtr,IntPtr,int> callback, IntPtr gchandle);
 	}
 }
 

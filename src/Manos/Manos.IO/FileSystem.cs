@@ -42,14 +42,23 @@ namespace Manos.IO {
 
 		public static void GetFileLength (string path, Action<long,int> cb)
 		{
-			manos_file_get_length (path, (l, e) => {
-				cb (l.ToInt64 (), e);
-			});
+			GCHandle handle = GCHandle.Alloc (cb);
+			manos_file_get_length (path, LengthCallbackHandler, GCHandle.ToIntPtr (handle));
+
 		}
 
+		public static void LengthCallbackHandler (IntPtr gchandle, IntPtr length, int error)
+		{
+			GCHandle handle = GCHandle.FromIntPtr (gchandle);
+			Action<long,int> cb = (Action<long,int>) handle.Target;
+
+			handle.Free ();
+
+			cb (length.ToInt64 (), error);
+		}
 		
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
-		private static extern void manos_file_get_length (string path, Action<IntPtr,int> cb);
+		private static extern void manos_file_get_length (string path, Action<IntPtr,IntPtr,int> cb, IntPtr gchandle);
 	}
 }
 

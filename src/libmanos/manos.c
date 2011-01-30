@@ -325,21 +325,22 @@ typedef struct {
 	int flags;
 	size_t length;
 	length_cb cb;
-} sendfile_data_t;
+	void *gchandle;
+} callback_data_t;
 
 static int
 sendfile_close_cb (eio_req *req)
 {
-	sendfile_data_t *data = (sendfile_data_t *) req->data;
+	callback_data_t *data = (callback_data_t *) req->data;
 
-	data->cb (data->length, 0);
+	data->cb (data->gchandle, data->length, 0);
 	return 0;
 }
 
 static int
 sendfile_complete_cb (eio_req *req)
 {
-	sendfile_data_t *data = (sendfile_data_t *) req->data;
+	callback_data_t *data = (callback_data_t *) req->data;
 
 	/*
 	 * TODO: We might not have sent the full file yet.  Need to check and
@@ -354,7 +355,7 @@ static int
 sendfile_stat_cb (eio_req *req)
 {
 	struct stat *buf = EIO_STAT_BUF (req);
-	sendfile_data_t *data = (sendfile_data_t *) req->data;
+	callback_data_t *data = (callback_data_t *) req->data;
 	static char buffer [24];
 	int buffer_len;
 
@@ -364,7 +365,7 @@ sendfile_stat_cb (eio_req *req)
 
 	/* send the chunk length */
 	if (send (data->socket, buffer, buffer_len, 0) != buffer_len) {
-		data->cb (-1, errno);
+		data->cb (data->gchandle, -1, errno);
 		return 0;
 	}
 
@@ -376,7 +377,7 @@ sendfile_stat_cb (eio_req *req)
 static int
 sendfile_open_cb (eio_req *req)
 {
-	sendfile_data_t *data = (sendfile_data_t *) req->data;
+	callback_data_t *data = (callback_data_t *) req->data;
 	data->fd = EIO_RESULT (req);
 
 	if (data->flags & SEND_LENGTH) 
@@ -389,16 +390,17 @@ sendfile_open_cb (eio_req *req)
 
 
 static int
-sendfile_internal (int socket, char *name, size_t length, int flags, length_cb cb)
+sendfile_internal (int socket, char *name, size_t length, int flags, length_cb cb, void *gchandle)
 {
-	sendfile_data_t *data = malloc (sizeof (sendfile_data_t));
+	callback_data_t *data = malloc (sizeof (callback_data_t));
 
-	memset (data, 0, sizeof (sendfile_data_t));
+	memset (data, 0, sizeof (callback_data_t));
 
 	data->socket = socket;
 	data->flags = flags;
 	data->length = length;
 	data->cb = cb;
+	data->gchandle = gchandle;
 
 	eio_open (name, O_RDONLY, 0777, 0, sendfile_open_cb, data);
 
@@ -406,9 +408,9 @@ sendfile_internal (int socket, char *name, size_t length, int flags, length_cb c
 }
 
 int
-manos_socket_send_file (int socket, char *name, int chunked, size_t length, length_cb cb)
+manos_socket_send_file (int socket, char *name, int chunked, size_t length, length_cb cb, void *gchandle)
 {
-	return sendfile_internal (socket, name, length, chunked ? SEND_LENGTH : NO_FLAGS, cb);
+	return sendfile_internal (socket, name, length, chunked ? SEND_LENGTH : NO_FLAGS, cb, gchandle);
 }
 
 
@@ -426,17 +428,24 @@ static int
 file_get_length_stat_cb (eio_req *req)
 {
 	struct stat *buf = EIO_STAT_BUF (req);
-	length_cb cb = (length_cb) req->data;
+	callback_data_t *data = (callback_data_t *) req->data;
 
-	cb (buf->st_size, 0);
+	data->cb (data->gchandle, buf->st_size, 0);
 	return 0;
 }
 
 
 int
-manos_file_get_length (char *path, length_cb cb)
+manos_file_get_length (char *path, length_cb cb, void *gchandle)
 {
-	eio_stat (path, 0, file_get_length_stat_cb, cb);
+	callback_data_t *data = malloc (sizeof (callback_data_t));
+
+	memset (data, 0, sizeof (callback_data_t));
+
+	data->cb = cb;
+	data->gchandle = gchandle;
+
+	eio_stat (path, 0, file_get_length_stat_cb, data);
 
 	return 0;
 }
