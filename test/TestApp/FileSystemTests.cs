@@ -45,7 +45,7 @@ namespace Manos.Tests {
 		public void Run ()
 		{
 			long length = new FileInfo ("TestRunner.exe").Length;
-			TestRunner.RunTest ("/FileSystemTests/FileLength?file=TestRunner.exe", "/FileSystemTests/FileLength?file=TestRunner.exe", length.ToString ());
+			TestRunner.RunTest ("/FileSystemTests/FileLength?filename=TestRunner.exe", "/FileSystemTests/FileLength?file=TestRunner.exe", length.ToString ());
 		}
 	}
 }
