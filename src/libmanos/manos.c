@@ -324,6 +324,7 @@ typedef struct {
 	int socket;
 	int flags;
 	size_t length;
+	size_t offset;
 	length_cb cb;
 	void *gchandle;
 } callback_data_t;
@@ -343,7 +344,13 @@ static int
 sendfile_complete_cb (eio_req *req)
 {
 	callback_data_t *data = (callback_data_t *) req->data;
+	size_t length = req->size;
 
+	if (length < data->length) {
+		data->offset += length;
+		eio_sendfile (data->socket, data->fd, data->offset, data->length - data->offset, 0, sendfile_complete_cb, data);
+		return 0;
+	}
 	/*
 	 * TODO: We might not have sent the full file yet.  Need to check and
 	 * call eio_sendfile again if needed.
