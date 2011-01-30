@@ -23,25 +23,25 @@
 //
 
 
+
 using Manos;
+using Manos.IO;
+using Manos.Http;
+
+using System;
+using System.Linq;
+using System.Text;
 
 
 namespace TestApp {
 
-	public class TestApp : ManosApp {
+	public class HttpTestsModule : ManosModule {
 
-		public TestApp ()
+		public void Version (IManosContext ctx)
 		{
+			ctx.Response.End ("{0}.{1}", ctx.Request.MajorVersion, ctx.Request.MinorVersion);
 		}
 
-		public StreamTestsModule StreamTests {
-		       get;
-		       private set;
-		}
-
-		public HttpTestsModule HttpTests {
-		       get;
-		       private set;
-		}
 	}
 }
+

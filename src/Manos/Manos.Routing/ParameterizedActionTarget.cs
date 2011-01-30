@@ -120,7 +120,7 @@ namespace Manos.Routing
 			if (TryConvertFormData (type, str_value, out data))
 				return true;
 
-			if (str_value == null && param.DefaultValue != null) {
+			if (str_value == null && param.DefaultValue != DBNull.Value) {
 				data = param.DefaultValue;
 				return true;
 			}

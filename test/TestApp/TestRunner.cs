@@ -68,26 +68,28 @@ namespace Manos.Tests {
 		public void RunStreamTests ()
 		{
 			var st = new StreamTests (this);
+			var http = new HttpTests (this);
 
 			st.Run ();
+			http.Run ();
 		}
 
 		public void RunTest (string uri, object expected)
 		{
-			RunTestInternal (uri, uri, "GET", null, null, expected, 1, 0);
 			RunTestInternal (uri, uri, "GET", null, null, expected, 1, 1);
+			RunTestInternal (uri, uri, "GET", null, null, expected, 1, 0);
 		}
 
 		public void RunTest (string uri, string load_uri, object expected)
 		{
-			RunTestInternal (uri, load_uri, "GET", null, null, expected, 1, 0);
 			RunTestInternal (uri, load_uri, "GET", null, null, expected, 1, 1);
+			RunTestInternal (uri, load_uri, "GET", null, null, expected, 1, 0);
 		}
 
 		public void RunPostTest (string uri, byte [] data, byte [] expected)
 		{
-			RunTestInternal (uri, uri, "POST", null, data, expected, 1, 0);
 			RunTestInternal (uri, uri, "POST", null, data, expected, 1, 1);
+			RunTestInternal (uri, uri, "POST", null, data, expected, 1, 0);
 		}
 
 		public void RunUploadTest (string uri, string file, object expected)
