@@ -44,8 +44,8 @@ namespace Manos.Tests {
 
 		public void Run ()
 		{
-			TestRunner.RunTestInternal ("/HttpTests/Version", "/HttpTests/Version", "GET", null, null, "1.1", 1, 1);
 			TestRunner.RunTestInternal ("/HttpTests/Version", "/HttpTests/Version", "GET", null, null, "1.0", 1, 0);
+			TestRunner.RunTestInternal ("/HttpTests/Version", "/HttpTests/Version", "GET", null, null, "1.1", 1, 1);
 		}
 	}
 }
