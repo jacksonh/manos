@@ -334,6 +334,8 @@ sendfile_close_cb (eio_req *req)
 	callback_data_t *data = (callback_data_t *) req->data;
 
 	data->cb (data->gchandle, data->length, 0);
+
+	free (data);
 	return 0;
 }
 
@@ -431,6 +433,8 @@ file_get_length_stat_cb (eio_req *req)
 	callback_data_t *data = (callback_data_t *) req->data;
 
 	data->cb (data->gchandle, buf->st_size, 0);
+
+	free (data);
 	return 0;
 }
 
