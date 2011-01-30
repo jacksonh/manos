@@ -308,7 +308,7 @@ namespace Manos.Http {
 					/* major HTTP version or dot */
 				case State.res_http_major:
 					if (DOT == ch) {
-						state = State.res_http_minor;
+						state = State.res_first_http_minor;
 						break;
 					}
 					if (!isDigit (ch))
