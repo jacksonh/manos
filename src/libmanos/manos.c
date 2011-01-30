@@ -327,7 +327,45 @@ typedef struct {
 	size_t offset;
 	length_cb cb;
 	void *gchandle;
+	ev_io *watcher;
 } callback_data_t;
+
+static int sendfile_complete_cb (eio_req *req);
+
+
+
+static void
+free_callback_data (callback_data_t *data)
+{
+	if (data->watcher)
+		free (data->watcher);
+	free (data);
+}
+
+static void
+sendfile_on_ready (EV_P_ ev_io *watcher, int revents)
+{
+	callback_data_t *data = (callback_data_t *) watcher->data;
+
+	eio_sendfile (data->socket, data->fd, data->offset, data->length - data->offset, 0, sendfile_complete_cb, data);
+
+	ev_io_stop (EV_DEFAULT_UC_ watcher);
+}
+
+void
+queue_sendfile (callback_data_t *data)
+{
+	if (!data->watcher) {
+		data->watcher = malloc (sizeof (ev_io));
+		memset (data->watcher, 0, sizeof (ev_io));
+
+		ev_io_init (data->watcher, sendfile_on_ready, data->socket, EV_WRITE);
+		data->watcher->data = data;
+	}
+
+	ev_io_start (EV_DEFAULT_UC_ data->watcher);
+}
+
 
 static int
 sendfile_close_cb (eio_req *req)
@@ -336,7 +374,7 @@ sendfile_close_cb (eio_req *req)
 
 	data->cb (data->gchandle, data->length, 0);
 
-	free (data);
+	free_callback_data (data);
 	return 0;
 }
 
@@ -344,17 +382,23 @@ static int
 sendfile_complete_cb (eio_req *req)
 {
 	callback_data_t *data = (callback_data_t *) req->data;
-	size_t length = req->size;
+	ssize_t length = req->result;
 
-	if (length < data->length) {
+	if (length == -1) {
+		if (req->errorno == EAGAIN ||  req->errorno == EINTR) {
+			queue_sendfile (data);
+			return 0;
+		}
+
+		eio_close (data->fd, 0, sendfile_close_cb, data);
+		return 0;
+	}
+
+	if (length + data->offset < data->length) {
 		data->offset += length;
 		eio_sendfile (data->socket, data->fd, data->offset, data->length - data->offset, 0, sendfile_complete_cb, data);
 		return 0;
 	}
-	/*
-	 * TODO: We might not have sent the full file yet.  Need to check and
-	 * call eio_sendfile again if needed.
-	 */
 
 	eio_close (data->fd, 0, sendfile_close_cb, data);
 	return 0;
@@ -441,7 +485,7 @@ file_get_length_stat_cb (eio_req *req)
 
 	data->cb (data->gchandle, buf->st_size, 0);
 
-	free (data);
+	free_callback_data (data);
 	return 0;
 }
 
