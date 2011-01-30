@@ -23,25 +23,30 @@
 //
 
 
-using Manos;
 
+using System;
+using System.IO;
+using System.Text;
 
-namespace TestApp {
+namespace Manos.Tests {
 
-	public class TestApp : ManosApp {
+	public class HttpTests {
 
-		public TestApp ()
+		public HttpTests (TestRunner tr)
 		{
+			TestRunner = tr;
 		}
 
-		public StreamTestsModule StreamTests {
-		       get;
-		       private set;
+		public TestRunner TestRunner {
+			get;
+			private set;
 		}
 
-		public HttpTestsModule HttpTests {
-		       get;
-		       private set;
+		public void Run ()
+		{
+			TestRunner.RunTestInternal ("/HttpTests/Version", "/HttpTests/Version", "GET", null, null, "1.1", 1, 1);
+			TestRunner.RunTestInternal ("/HttpTests/Version", "/HttpTests/Version", "GET", null, null, "1.0", 1, 0);
 		}
 	}
 }
+

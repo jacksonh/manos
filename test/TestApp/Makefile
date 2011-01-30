@@ -1,11 +1,11 @@
 
 all: TestApp.dll TestRunner.exe
 
-TestApp.dll: TestApp.cs StreamTestsModule.cs
-	dmcs -pkg:manos -target:library -out:TestApp.dll TestApp.cs StreamTestsModule.cs
+TestApp.dll: TestApp.cs StreamTestsModule.cs HttpTestsModule.cs
+	dmcs -pkg:manos -target:library -out:TestApp.dll TestApp.cs StreamTestsModule.cs HttpTestsModule.cs
 
-TestRunner.exe: TestRunner.cs StreamTests.cs
-	dmcs -out:TestRunner.exe TestRunner.cs StreamTests.cs
+TestRunner.exe: TestRunner.cs StreamTests.cs HttpTests.cs
+	dmcs -out:TestRunner.exe TestRunner.cs StreamTests.cs HttpTests.cs 
 
 clean:
 	rm -f TestRunner.exe
