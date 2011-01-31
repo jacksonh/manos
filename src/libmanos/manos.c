@@ -308,6 +308,8 @@ manos_socket_send (int fd, bytebuffer_t* buffers, int len, int* err)
 		return -1;
 	}
 
+	free (msg.msg_iov);
+
 	return rc;
 }
 
