@@ -404,8 +404,6 @@ namespace Manos.Http {
 			} catch (Exception e) {
 				Console.WriteLine ("Exception while parsing");
 				Console.WriteLine (e);
-
-				Socket.Close ();
 			}
 		}
 
