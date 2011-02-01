@@ -50,6 +50,9 @@ namespace Manos.IO {
 		internal string host;
 		internal int port;
 
+		private static readonly int MAX_ACCEPT = 100;
+		private int [] accept_fds;
+
 		public SocketStream (IOLoop ioloop) : this (0, ioloop)
 		{
 		}
@@ -185,6 +188,7 @@ namespace Manos.IO {
 			DisableTimeout ();
 			EnableReading ();
 			state = SocketState.AcceptingConnections;
+			accept_fds = new int [MAX_ACCEPT];
 		}	
 
 		public void Write (byte [] data, WriteCallback callback)
@@ -226,16 +230,15 @@ namespace Manos.IO {
 		private void AcceptConnections ()
 		{
 			int error;
-			int [] afds = new int [100];
 
-			int amount = manos_socket_accept_many (fd, afds, 100, out error);
+			int amount = manos_socket_accept_many (fd, accept_fds, MAX_ACCEPT, out error);
 			if (amount < 0)
 				throw new Exception (String.Format ("Exception while accepting. errno: {0}", error));
 
 //			Console.WriteLine ("Accepted: '{0}' connections.", amount);
 			for (int i = 0; i < amount; i++) {
-//				Console.WriteLine ("Accepted: '{0}'", afds [i]);
-				SocketStream iostream = new SocketStream (afds [i], IOLoop);
+//				Console.WriteLine ("Accepted: '{0}'", accept_fds [i]);
+				SocketStream iostream = new SocketStream (accept_fds [i], IOLoop);
 				OnConnectionAccepted (iostream);
 			}
 		}
