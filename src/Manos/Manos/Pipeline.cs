@@ -67,19 +67,19 @@ namespace Manos {
 			step = PipelineStep.PreProcess;
 			handle = GCHandle.Alloc (this);
 
-			transaction.Response.OnEnd += HandleEnd;
+//			transaction.Response.OnEnd += HandleEnd;
 		}
 
 		public void Begin ()
 		{
 			if (AppHost.Pipes == null) {
-				HandleEnd (null, EventArgs.Empty);
+				StepCompleted ();
 				return;
 			}
 
 			foreach (IManosPipe pipe in AppHost.Pipes) {
 				try {
-					pipe.OnPreProcessRequest (app, transaction);
+					pipe.OnPreProcessRequest (app, transaction, StepCompleted);
 				} catch (Exception e) {
 					pending--;
 
@@ -125,19 +125,19 @@ namespace Manos {
 				// end = true;
 			}
 
-			HandleEnd (null, EventArgs.Empty);
+			StepCompleted ();
 		}
 
 		private void PostProcess ()
 		{
 			if (AppHost.Pipes == null) {
-				HandleEnd (null, EventArgs.Empty);
+				StepCompleted ();
 				return;
 			}
 
 			foreach (IManosPipe pipe in AppHost.Pipes) {
 				try {
-					pipe.OnPostProcessRequest (app, transaction);
+					pipe.OnPostProcessRequest (app, transaction, StepCompleted);
 					
 					if (ctx.Transaction.Aborted)
 						return;
@@ -152,12 +152,12 @@ namespace Manos {
 
 		private void Complete ()
 		{
-			transaction.Response.Complete ();
+//			transaction.Response.Complete ();
 
 			handle.Free ();
 		}
 
-		private void HandleEnd (object sender, EventArgs e)
+		private void StepCompleted ()
 		{
 			if (--pending > 0)
 				return;

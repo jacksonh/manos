@@ -46,7 +46,7 @@ namespace Manos.Util {
 			CreateStream ();
 		}
 
-		public override void OnPostProcessRequest (ManosApp app, IHttpTransaction transaction)
+		public override void OnPostProcessRequest (ManosApp app, IHttpTransaction transaction, Action complete)
 		{
 			// LogFormat "%h %l %u %t "%r" %>s %b "%{Referer}i" "%{User-Agent}i"" combined
 			// %h - Remote host       -- DONT HAVE
@@ -67,6 +67,8 @@ namespace Manos.Util {
 
 			byte [] data = Encoding.Default.GetBytes (line);
 			stream.BeginWrite (data, 0, data.Length, null, null);
+
+			complete ();
 		}
 
 		private void CreateStream ()
