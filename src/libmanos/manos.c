@@ -207,13 +207,13 @@ manos_socket_listen (char *host, int port, int backlog, int *err)
 }
 
 int
-manos_socket_accept (int fd, int *err)
+manos_socket_accept (int fd, manos_socket_info_t *info, int *err)
 {
-	struct sockaddr_storage dummy;
+	struct sockaddr_storage addr;
 	socklen_t len = sizeof (struct sockaddr_storage);
 	int res;
 
-	res = accept (fd, (struct sockaddr *) &dummy, &len);
+	res = accept (fd, (struct sockaddr *) &addr, &len);
 	if (res < 0) {
 		if (errno == EAGAIN || errno == ECONNABORTED) {
 			*err = 0;
@@ -229,22 +229,41 @@ manos_socket_accept (int fd, int *err)
 		return -1;
 	}
 
+	info->fd = res;
+
+	struct sockaddr_in *in4;
+	struct sockaddr_in6 *in6;
+
+	switch (addr.ss_family) {
+	case AF_INET:
+		in4 = (struct sockaddr_in *) &addr;
+		info->port = ntohs (in4->sin_port);
+		info->addr1 = in4->sin_addr.s_addr;
+		info->addr2 = 0;
+
+		break;
+	case AF_INET6:
+		in6 = (struct sockaddr_in6 *) &addr;
+		info->port = ntohs (in6->sin6_port);
+		break;
+	}
+	
 	return res;
 }
 
 
 int
-manos_socket_accept_many (int fd, int *fds, int len, int *err)
+manos_socket_accept_many (int fd, manos_socket_info_t *infos, int len, int *err)
 {
 	int i = 0;
 	
 	for (i = 0; i < len; i++) {
-		int a = manos_socket_accept (fd, err);
+		int a = manos_socket_accept (fd, &(infos [i]), err);
+
 		if (a < 0 && *err == 0)
 			return i; // Just a wouldblock error
 		if (a < 0)
 			return -1; // err will be set by manos_socket_accept
-		*(fds + i) = a;
 	}
 
 	return i;

@@ -2,6 +2,8 @@
 #ifndef MANOS_H
 #define MANOS_H
 
+#include <stdint.h>
+		
 #include "ev.h"
 #include "eio.h"
 
@@ -17,6 +19,13 @@ typedef struct {
 	struct ev_idle eio_idle_watcher;
 } manos_data_t;
 
+typedef struct {
+	int fd;
+	int port;
+	uint64_t addr1;
+	uint64_t addr2;
+} manos_socket_info_t;
+
 typedef void (*length_cb) (void *gchandle, size_t length, int error);
 
 
@@ -26,8 +35,8 @@ void manos_shutdown (manos_data_t *data);
 
 int manos_socket_connect (char *host, int port, int *err);
 int manos_socket_listen (char *host, int port, int backlog, int *err);
-int manos_socket_accept (int fd, int *err);
-int manos_socket_accept_many (int fd, int *fds, int len, int *err);
+int manos_socket_accept (int fd, manos_socket_info_t *info, int *err);
+int manos_socket_accept_many (int fd, manos_socket_info_t *infos, int len, int *err);
 int manos_socket_receive (int fd, char* data, int len, int *err);
 int manos_socket_send (int fd, bytebuffer_t *buffers, int len, int *err);
 int manos_socket_close (int fd, int *err);

@@ -34,6 +34,14 @@ using Manos.Collections;
 
 namespace Manos.IO {
 
+	[StructLayout (LayoutKind.Sequential)]
+	public struct SocketInfo {
+		public int fd;
+		public int port;
+		public long addr1;
+		public long addr2;
+	}
+
 	public class SocketStream : IOStream, IDisposable {
 
 		public enum SocketState {
@@ -49,22 +57,25 @@ namespace Manos.IO {
 		internal IntPtr handle;
 		internal string host;
 		internal int port;
+		internal byte [] addr;
 
 		private static readonly int MAX_ACCEPT = 100;
-		private int [] accept_fds;
+		private SocketInfo [] accept_infos;
 
-		public SocketStream (IOLoop ioloop) : this (0, ioloop)
+		public SocketStream (IOLoop ioloop) : base (ioloop)
 		{
 		}
 
-		public SocketStream (int fd, IOLoop ioloop) : base (ioloop)
+		public SocketStream (SocketInfo info, IOLoop ioloop) : base (ioloop)
 		{
-			this.fd = fd;
+			fd = info.fd;
 
 			if (fd > 0) {
 				SetHandle (fd);
 				state = SocketState.Open;
 			}
+
+			port = info.port;
 		}
 
 		public string Address {
@@ -188,7 +199,7 @@ namespace Manos.IO {
 			DisableTimeout ();
 			EnableReading ();
 			state = SocketState.AcceptingConnections;
-			accept_fds = new int [MAX_ACCEPT];
+			accept_infos = new SocketInfo [MAX_ACCEPT];
 		}	
 
 		public void Write (byte [] data, WriteCallback callback)
@@ -231,14 +242,14 @@ namespace Manos.IO {
 		{
 			int error;
 
-			int amount = manos_socket_accept_many (fd, accept_fds, MAX_ACCEPT, out error);
+			int amount = manos_socket_accept_many (fd, accept_infos, MAX_ACCEPT, out error);
 			if (amount < 0)
 				throw new Exception (String.Format ("Exception while accepting. errno: {0}", error));
 
 //			Console.WriteLine ("Accepted: '{0}' connections.", amount);
 			for (int i = 0; i < amount; i++) {
-//				Console.WriteLine ("Accepted: '{0}'", accept_fds [i]);
-				SocketStream iostream = new SocketStream (accept_fds [i], IOLoop);
+//				Console.WriteLine ("Accepted: '{0}'", accept_infos [i]);
+				SocketStream iostream = new SocketStream (accept_infos [i], IOLoop);
 				OnConnectionAccepted (iostream);
 			}
 		}
@@ -305,10 +316,7 @@ namespace Manos.IO {
 		private static extern int manos_socket_listen (string host, int port, out int err);
 
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
-		private static extern int manos_socket_accept (int fd, out int err);
-
-		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
-		private static extern int manos_socket_accept_many (int fd, int [] fds, int max, out int err);
+		private static extern int manos_socket_accept_many (int fd, SocketInfo [] infos, int max, out int err);
 
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
 		private static extern int manos_socket_receive (int fd, byte [] buffer, int max, out int err);
