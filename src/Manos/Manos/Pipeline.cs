@@ -125,6 +125,11 @@ namespace Manos {
 				// end = true;
 			}
 
+			if (ctx.Response.StatusCode == 404) {
+				ctx.Response.End ();
+				return;
+			}
+
 			StepCompleted ();
 		}
 
