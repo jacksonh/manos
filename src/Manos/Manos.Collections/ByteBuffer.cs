@@ -24,10 +24,12 @@
 
 
 using System;
+using System.Runtime.InteropServices;
+
 
 namespace Manos.Collections {
 
-	
+	[StructLayout (LayoutKind.Sequential)]
 	public struct ByteBufferS {
 		public int Position;
 		public int Length;
