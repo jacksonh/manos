@@ -38,15 +38,15 @@ namespace Manos
 	public interface IManosPipe
 	{
 		
-		void OnPreProcessRequest (ManosApp app, IHttpTransaction transaction);
+		void OnPreProcessRequest (ManosApp app, IHttpTransaction transaction, Action complete);
 
-		IManosTarget OnPreProcessTarget (IManosContext ctx);
+		void OnPreProcessTarget (IManosContext ctx, Action<IManosTarget> complete);
 
-		void OnPostProcessTarget (IManosContext ctx, IManosTarget target);
+		void OnPostProcessTarget (IManosContext ctx, IManosTarget target, Action complete);
 
-		void OnPostProcessRequest (ManosApp app, IHttpTransaction transaction);
+		void OnPostProcessRequest (ManosApp app, IHttpTransaction transaction, Action complete);
 		
-		void OnError (IManosContext ctx);
+		void OnError (IManosContext ctx, Action complete);
 		
 	}
 }

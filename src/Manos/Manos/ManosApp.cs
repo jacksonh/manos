@@ -38,7 +38,7 @@ namespace Manos {
 	/// <remarks>
 	/// This is similar in concept to the HttpApplication in the ASP.Net stack.
 	/// </remarks>
-	public class ManosApp : ManosModule, IManosPipe {
+	public class ManosApp : ManosModule {
 		
 		public ManosApp ()
 		{
@@ -47,145 +47,9 @@ namespace Manos {
 
 		public void HandleTransaction (ManosApp app, IHttpTransaction con)
 		{
-			bool end = false;
+			Pipeline pipeline = new Pipeline (app, con);
 
-			if (con == null)
-				throw new ArgumentNullException ("con");
-
-			OnPreProcessRequest (this, con);
-			if (con.Aborted)
-				goto cleanup;
-			
-			var ctx = new ManosContext (con);
-			
-			var handler = OnPreProcessTarget (ctx);
-			if (handler == null)
-				handler = Routes.Find (con.Request);
-			
-			if (handler == null) {
-				Console.WriteLine ("no handler found for: '{0}'", ctx.Request.Path);
-				con.Response.StatusCode = 404;
-				con.Response.End ();
-				return;
-			}
-
-			con.Response.StatusCode = 200;
-
-			OnPostProcessTarget (ctx, handler);
-
-			try {
-				handler.Invoke (app, new ManosContext (con));
-			} catch (Exception e) {
-				Console.Error.WriteLine ("Exception in transaction handler:");
-				Console.Error.WriteLine (e);
-				con.Response.StatusCode = 500;
-				//
-				// TODO: Maybe the cleanest thing to do is
-				// have a HandleError, HandleException thing
-				// on HttpTransaction, along with an UnhandledException
-				// method/event on ManosModule.
-				//
-				end = true;
-			}
-
-			if (con.Response.StatusCode == 404)
-				con.Response.End ();
-
-		cleanup:
-			OnPostProcessRequest (this, con);
-
-			if (end)
-				con.Response.End ();
-		}
-
-		public void OnPreProcessRequest (ManosApp app, IHttpTransaction transaction)
-		{
-			if (AppHost.Pipes == null)
-				return;
-
-			foreach (IManosPipe pipe in AppHost.Pipes) {
-				try {
-					pipe.OnPreProcessRequest (app, transaction);
-					
-					if (transaction.Aborted)
-						return;
-					
-				} catch (Exception e) {
-					Console.Error.WriteLine ("Exception in {0}::OnPreProcessRequest.", pipe);
-					Console.Error.WriteLine (e);
-				}
-			}
-		}
-
-		public IManosTarget OnPreProcessTarget (IManosContext ctx)
-		{
-			if (AppHost.Pipes == null)
-				return null;
-
-			foreach (IManosPipe pipe in AppHost.Pipes) {
-				try {
-					var found = pipe.OnPreProcessTarget (ctx);
-					
-					if (found != null)
-						return found;
-
-					if (ctx.Transaction.Aborted)
-						return null;
-				} catch (Exception e) {
-					Console.Error.WriteLine ("Exception in {0}::OnPreProcessTarget.", pipe);
-					Console.Error.WriteLine (e);
-				}
-			}
-			
-			return null;
-		}
-
-		public void OnPostProcessTarget (IManosContext ctx, IManosTarget target)
-		{
-			if (AppHost.Pipes == null)
-				return;
-
-			foreach (IManosPipe pipe in AppHost.Pipes) {
-				try {
-					pipe.OnPostProcessTarget (ctx, target);
-					
-					if (ctx.Transaction.Aborted)
-						return;
-				} catch (Exception e) {
-					Console.Error.WriteLine ("Exception in {0}::OnPostProcessTarget.", pipe);
-					Console.Error.WriteLine (e);
-				}
-			}
-		}
-
-		public void OnPostProcessRequest (ManosApp app, IHttpTransaction transaction)
-		{
-			if (AppHost.Pipes == null)
-				return;
-
-			foreach (IManosPipe pipe in AppHost.Pipes) {
-				try {
-					pipe.OnPostProcessRequest (this, transaction);
-				} catch (Exception e) {
-					Console.Error.WriteLine ("Exception in {0}::OnPostProcessRequest.", pipe);
-					Console.Error.WriteLine (e);
-				}
-			}
-		}
-
-		public void OnError (IManosContext ctx)
-		{
-			if (AppHost.Pipes == null)
-				return;
-
-			foreach (IManosPipe pipe in AppHost.Pipes) {
-				try {
-					pipe.OnError (ctx);
-				} catch (Exception e) {
-					Console.Error.WriteLine ("Exception in {0}::OnError", pipe);
-					Console.Error.WriteLine (e);
-				}
-			}
+			pipeline.Begin ();
 		}
 	}
 }

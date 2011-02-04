@@ -131,6 +131,7 @@
     <Compile Include="Manos.Routing\SimpleMatchOperation.cs" />
     <Compile Include="Manos\IManosPipe.cs" />
     <Compile Include="Manos\ManosPipe.cs" />
+    <Compile Include="Manos\Pipeline.cs" />
     <Compile Include="Manos.Collections\DataDictionary.cs" />
     <Compile Include="Manos.Collections\ByteBuffer.cs" />
     <Compile Include="Manos\RouteAttribute.cs" />

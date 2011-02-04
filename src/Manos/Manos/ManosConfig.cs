@@ -61,7 +61,7 @@ namespace Manos
 		// Load configuration from file
 		// Search path:
 		//	1.<app_folder>/manos.config
-		public static void Load (IManosPipe pipe)
+		public static void Load (ManosApp app)
 		{
 			string [] sources =
 			{
