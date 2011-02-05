@@ -50,7 +50,8 @@ namespace Manos.Tool
 				string lib_dir = Path.GetDirectoryName (ManosDirectory);
 				string prefix = Path.GetDirectoryName (lib_dir);
 			
-				DataDirectory = Path.Combine (prefix.ToString (), "share/manos/");
+				DataDirectory = Path.Combine (prefix, "share/manos/");
+				DocsDirectory = Path.Combine (prefix, "share/doc/manos");
 			}
 		}
 		
@@ -75,6 +76,11 @@ namespace Manos.Tool
 		}
 		
 		public string DataDirectory {
+			get;
+			set;
+		}
+
+		public string DocsDirectory {
 			get;
 			set;
 		}
