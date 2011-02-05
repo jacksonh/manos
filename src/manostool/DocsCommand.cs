@@ -50,12 +50,6 @@ namespace Manos.Tool
 			private set;
 		}
 		
-		public string DocsDirectory {
-			get {
-				return Path.Combine (Environment.DataDirectory, "docs");	
-			}
-		}
-		
 		public int Port {
 			get { 
 				if (port == null)
@@ -71,7 +65,7 @@ namespace Manos.Tool
 		
 		public void Run ()
 		{
-			DocsModule docs = new DocsModule (DocsDirectory);
+			DocsModule docs = new DocsModule (Environment.DocsDirectory);
 			Console.WriteLine ("Go to http://localhost:{0}/ to see your docs.", Port);
 			
 			AppHost.Port = Port;

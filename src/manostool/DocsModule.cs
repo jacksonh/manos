@@ -83,13 +83,14 @@ namespace Manos.Tool {
 		[Route ("/Tutorial/{page}")]
 		public void Tutorial (IManosContext ctx, string page)
 		{
-			WriteMarkdownDocsPage (ctx.Response, "tutorial/" + page);
+			WriteMarkdownDocsPage (ctx.Response, page);
 		}		
 
 		private void WriteMarkdownDocsPage (IHttpResponse response, string page)
 		{
 			page = Path.Combine (docs_dir, page);
 			if (!File.Exists (page)) {
+				Console.WriteLine ("docs file does not exist: " + page);
 				response.StatusCode = 404;
 				return;
 			}
