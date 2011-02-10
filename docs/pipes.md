@@ -76,19 +76,37 @@ To create your own pipes simply inherit from ManosPipe or implement the IManosPi
 
 Once you have inherited from ManosMiddlware you can override any or all of the following methods:
 
-    ProcessRequest (IManosContext)
+    OnPreProcessRequest (ManosApp app, IHttpTransaction transaction, Action complete)
 
 This method is called before anything at all has been done with the request. No routing has been done and no target has been invoked.
 
-    PreProcessAction (IManosContext, IManosTarget)
+    OnPreProcessTarget (IManosContext, Action<IManosTarget> complete)
 
 This is called after the target has been looked up through routing. This method will not be called if no route is found.
 
-    PostProcessAction (IManosContext)
+    OnPostProcessTarget (IManosContext, IManosTarget target, Action complete)
+
+This method is called after the Target has been found.
+
+    OnPostProcessRequest (ManosApp app, IHttpTransaction transaction, Action complete)
 
 This method is called directly after the ManosAction has ben invoked. At this point there should be a valid response object available and its likely that there is a buffer of rendered text that you could manipulate.
 
-    ProcessError (IManosContext)
+    OnProcessError (IManosContext, Action complete)
 
 This method is invoked any time an error occurs. Typically a pipe would log the error and redirect the user to an error page.
+
+
+Completing Steps in the pipeline
+---------------------------------
+
+Each pipeline method is passed an Action that should be called when the step is complete.  This is done so async methods that live longer than their method scope can be used. For example:
+
+    public void OnPreProcessRequest (ManosApp app, IHttpTransaction trans, Action complete)
+    {
+         Cache.Get (trans.Request.Path, result => {
+	     Conosle.WriteLine ("Got the result: '{0}'", result);
+	     complete ();
+   	 });
+    }
 
