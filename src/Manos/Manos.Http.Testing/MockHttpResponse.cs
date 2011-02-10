@@ -145,7 +145,10 @@ namespace Manos.Http.Testing
 		{
 			throw new NotImplementedException ();
 		}
-
+		public void Complete (Manos.IO.WriteCallback callback)
+		{
+			throw new NotImplementedException ();
+		}
 		
 		public Dictionary<string,object> Properties {
 			get;
@@ -174,6 +177,9 @@ namespace Manos.Http.Testing
 		
 		public event Action<IHttpResponse> Completed;
 		public event Action<byte [], int, int> BodyData;
+
+		
+		public event Action OnEnd;
 	}
 }
 

@@ -68,7 +68,7 @@ namespace Manos.Http {
 
 		public HttpEntity ()
 		{
-			end_watcher = new AsyncWatcher (IOLoop.Instance.EventLoop, OnEnd);
+			end_watcher = new AsyncWatcher (IOLoop.Instance.EventLoop, HandleEnd);
 			end_watcher.Start ();
 		}
 
@@ -480,13 +480,19 @@ namespace Manos.Http {
 			end_watcher.Send ();
 		}
 
-		internal virtual void OnEnd (Loop loop, AsyncWatcher watcher, EventTypes revents)
+		internal virtual void HandleEnd (Loop loop, AsyncWatcher watcher, EventTypes revents)
+		{
+			if (OnEnd != null)
+				OnEnd ();
+		}
+
+		public void Complete (WriteCallback callback)
 		{
 			if (!Stream.Chunked) {
 				Headers.ContentLength = Stream.Length;
 			}
 
-			Stream.End (null);
+			Stream.End (callback);
 		}
 
 		public void WriteLine (string str)
@@ -516,6 +522,8 @@ namespace Manos.Http {
 		public event Action<byte [], int, int> BodyData;
 
 		public event Action<string> Error; // TODO: Proper error object of some sort
+
+		public event Action OnEnd;
 	}
 
 }

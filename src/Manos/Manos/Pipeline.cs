@@ -37,6 +37,7 @@ namespace Manos {
 	public enum PipelineStep {
 		PreProcess,
 		Execute,
+		WaitingForEnd,
 		PostProcess,
 		Complete
 	}
@@ -67,7 +68,7 @@ namespace Manos {
 			step = PipelineStep.PreProcess;
 			handle = GCHandle.Alloc (this);
 
-//			transaction.Response.OnEnd += HandleEnd;
+			transaction.Response.OnEnd += HandleEnd;
 		}
 
 		public void Begin ()
@@ -126,11 +127,12 @@ namespace Manos {
 			}
 
 			if (ctx.Response.StatusCode == 404) {
+				step = PipelineStep.WaitingForEnd;
 				ctx.Response.End ();
 				return;
 			}
 
-			StepCompleted ();
+			step = PipelineStep.WaitingForEnd;
 		}
 
 		private void PostProcess ()
@@ -157,7 +159,7 @@ namespace Manos {
 
 		private void Complete ()
 		{
-//			transaction.Response.Complete ();
+			transaction.Response.Complete (transaction.OnResponseFinished);
 
 			handle.Free ();
 		}
@@ -181,6 +183,12 @@ namespace Manos {
 				Complete ();
 				break;
 			}
+		}
+
+		private void HandleEnd ()
+		{
+			pending = 0;
+			StepCompleted ();
 		}
 	}
 

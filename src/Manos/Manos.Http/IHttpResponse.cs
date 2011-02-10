@@ -94,6 +94,8 @@ namespace Manos.Http {
 		void End (byte [] data, int offset, int length);
 		void End (string str, params object [] prms);
 
+		void Complete (Manos.IO.WriteCallback callback);
+
 		void Write (byte [] data);
 		void Write (byte [] data, int offset, int length);
 
@@ -116,6 +118,7 @@ namespace Manos.Http {
 		event Action<IHttpResponse> Completed;
 		event Action<byte [], int, int> BodyData;
 
+		event Action OnEnd;
 	}
 }
 

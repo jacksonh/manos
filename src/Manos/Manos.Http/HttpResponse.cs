@@ -184,11 +184,6 @@ namespace Manos.Http {
 			return SetCookie (name, value, domain, DateTime.Now + max_age);
 		}
 
-		internal override void OnEnd (Loop loop, AsyncWatcher watcher, EventTypes revents)
-		{
-			Stream.End (Transaction.OnResponseFinished);
-		}
-
 		protected override void OnFinishedReading (HttpParser parser)
 		{
 			base.OnFinishedReading (parser);
