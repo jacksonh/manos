@@ -37,15 +37,35 @@ namespace Manos
 	/// This is similar in concept to the HttpModule in the ASP.Net stack.</remarks>
 	public interface IManosPipe
 	{
-		
+		/// <summarY>
+		///  Called as a request is coming in, before any actions at all have been taken on the
+		///  request.  There is not a valid Response object on the transaction yet and the
+		///  routing information has not been looked up.
+		/// </summary>
 		void OnPreProcessRequest (ManosApp app, IHttpTransaction transaction, Action complete);
 
+		/// <summary>
+		///  Called after the response object has been created but before any routing has been done
+		///  if you would like to override the default routing you can do it here, by changing the
+		///  IManosTarget returned in the complete Action.
+		/// </summary>
 		void OnPreProcessTarget (IManosContext ctx, Action<IManosTarget> complete);
 
+		/// <summary>
+		///  The default routing information has been looked up, but the actual action execution
+		///  has not occurred yet.
+		/// </summary>
 		void OnPostProcessTarget (IManosContext ctx, IManosTarget target, Action complete);
 
+		/// <summary>
+		///  The action has been invoked and has had its End method called.  This is the final
+		///  step in the pipeline.
+		/// </summary>
 		void OnPostProcessRequest (ManosApp app, IHttpTransaction transaction, Action complete);
-		
+
+		/// <summary>
+		///  An error has been raised by Manos. (Currently unimplemented).
+		/// </summary>
 		void OnError (IManosContext ctx, Action complete);
 		
 	}
