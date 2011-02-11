@@ -55,12 +55,6 @@ namespace Manos.Http
 			SocketStream = stream;
 		}
 
-		public void Dispose ()
-		{
-			HttpEntity = null;
-			SocketStream = null;
-		}
-
 		public HttpEntity HttpEntity {
 			get;
 			private set;
