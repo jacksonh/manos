@@ -65,54 +65,13 @@ Grab the Mono 2.8 OSX package from the [Mono Downloads Page](http://mono-project
 You need to have Mono 2.8 installed on your system. An older Mono install wont cut it. Also, if you've install Mono from source on your Mac, things might work, things might not work.  This guide assumes you have it installed from packages.
 
 
-### Install libev
-
-libev is Manos's one native dependency.  I installed this guy using macports:
-
-    sudo port install libev +universal
-
-The key part of this is that we are installing the universal build of libev. If you leave that part out you could get a 64bit version and Mono won't be able to load it.
-
-You should now have a libev.dylib in /opt/local/lib/ to make sure Mono knows where to find that library, update your DYLD_FALLBACK_LIBRARY_PATH.
-
-    export DYLD_FALLBACK_LIBRARY_PATH=/opt/local/lib
-
-### HomeBrew
-
-Home brew by default installs the 64-bit version. We need to edit the libev formula
-
-    Run "brew edit libev" 
-
-Add
-    
-    ENV["CFLAGS"] = '-arch i386 -arch x86_64'
-
-before
-    
-    system "./configure", "--disable-debug", 
-                          "--disable-dependency-tracking", 
-                          "--prefix=#{prefix}", 
-                          "--enable-shared", 
-                          "--mandir=#{man}" 
-    system "make install" 
-
-Take from [google group](http://groups.google.com/group/manos-de-mono/browse_thread/thread/cc5328e3abc30fa7)
-    
-
-The key part of this is that we are installing the universal build of libev. If you leave that part out you could get a 64bit version and Mono won't be able to load it.
-
-You should now have a libev.dylib in /opt/local/lib/ to make sure Mono knows where to find that library, update your DYLD_FALLBACK_LIBRARY_PATH.
-
-    export DYLD_FALLBACK_LIBRARY_PATH=/opt/local/lib
-
 
 ### Install Manos
 
 Now that all the dependencies are installed you should be able to build and install Manos.
 
     git clone https://jacksonh@github.com/jacksonh/manos.git
-    cd manos
-    ./configue
+    ./autogen.sh
     make
     sudo make install
 
@@ -168,24 +127,14 @@ Once Mono 2.8 is installed you can verify your installation by typing mono on th
     jackson@erm:~$ mono --version
     Mono JIT compiler version 2.8 (mono-2-8/57dae7a Mon Oct  4 18:24:09 EDT 2010)
 
-### Install libev
-
-You should install the native libev library from packages you can find OpenSuse packages for libev by
-searching <http://software.opensuse.org>. Ubuntu users should install the 'libev-dev' package using
-apt-get.
-
-Verify that you have libev installed:
-
-    jackson@erm:~$ ls /usr/lib/libev.so
-    /usr/lib/libev.so
 
 ### Install Manos
 
 Checkout Manos from github at <http://github.com/jacksonh/manos/> and build/install it:
 
-    jackson@erm:manos$ ./configure
+    jackson@erm:manos$ ./autogen.sh
     ...
-    jackson@erm:manos$ sudo make install
+    jackson@erm:manos$ make && sudo make install
     ...
 
 To verify your installation you can use the manos -docs command.  This will create a new server running on
@@ -199,16 +148,10 @@ Installation on OpenBSD
 ### Install prerequisites
 From ports or packages install mono 2.8
 
-From ports or packages install libev
-
-Create a symbolic link from /usr/local/bin/bash to /bin/bash:
-
-    $ ln -s /usr/local/bin/bash /bin/bash
-
 ### Install Manos
 Checkout Manos from github at <http://github.com/jacksonh/manos/> and build/install it:
 
-    $ ./configure
+    $ ./autogen.sh
     ...
     $ su
     ...
