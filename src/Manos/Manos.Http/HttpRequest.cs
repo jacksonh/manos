@@ -195,11 +195,21 @@ namespace Manos.Http {
 			Socket.Connected += delegate {
 				Stream = new HttpStream (this, Socket);
 
-				Stream.WriteMetadata (() => {
+				byte [] body = GetBody ();
+
+				if (body != null)
+					Stream.Write (body, 0, body.Length);
+
+				Stream.End (() => {
 					HttpResponse response = new HttpResponse (Socket);
 
-					if (Connected != null)
-						Connected (response);
+					Console.WriteLine ("completing the response");
+					response.OnCompleted += () => {
+						if (OnResponse != null)
+							OnResponse (response);
+					};
+					
+					response.Read ();
 				});
 			};
 		}
@@ -219,7 +229,7 @@ namespace Manos.Http {
 			Headers.Write (builder, null, Encoding.ASCII);
 		}
 
-		public event Action<IHttpResponse> Connected;
+		public event Action<IHttpResponse> OnResponse;
 	}
 }
 

@@ -184,14 +184,6 @@ namespace Manos.Http {
 			return SetCookie (name, value, domain, DateTime.Now + max_age);
 		}
 
-		protected override void OnFinishedReading (HttpParser parser)
-		{
-			base.OnFinishedReading (parser);
-
-			if (Completed != null)
-				Completed (this);
-		}
-
 		public override void Reset ()
 		{
 			cookies = null;
@@ -282,8 +274,6 @@ namespace Manos.Http {
 			}
 			return "";
 		}
-
-		public event Action<IHttpResponse> Completed;
 	}
 
 }

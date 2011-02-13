@@ -81,7 +81,8 @@ namespace HelloWorld {
 			});
 
 			Put ("/put", ctx => {
-				ctx.Response.End ("this is some stuff '{0}'", ctx.Request.Data ["foobar"]);
+				Console.WriteLine ("got the PUT request");
+				ctx.Response.End ("this is some stuff!");
 			});
 
 			Get ("/request", ctx => {
@@ -89,19 +90,12 @@ namespace HelloWorld {
 				var r = new HttpRequest ("http://127.0.0.1:8080/put");
 
 				r.Method = HttpMethod.HTTP_PUT;
-				r.Headers.SetNormalizedHeader ("Content-Type", "application/x-www-form-urlencoded");
 
-				r.Connected += (response) => {
-					r.End ("foobar=value");
+				Console.WriteLine ("got the request");
+				r.OnResponse += (response) => {
+					Console.WriteLine ("got the response");
+					ctx.Response.End (response.PostBody);
 
-					response.BodyData += (data, offset, length) => {
-						ctx.Response.Write (data, offset, length);
-					};
-
-					response.Completed += delegate {
-						ctx.Response.End ();
-					};
-					response.Read ();
 				};
 				r.Execute ();
 			});

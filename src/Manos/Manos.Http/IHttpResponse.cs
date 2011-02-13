@@ -115,10 +115,10 @@ namespace Manos.Http {
 
 		void Read ();
 
-		event Action<IHttpResponse> Completed;
 		event Action<byte [], int, int> BodyData;
 
 		event Action OnEnd;
+		event Action OnCompleted;
 	}
 }
 

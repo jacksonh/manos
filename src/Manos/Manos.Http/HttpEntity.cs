@@ -414,6 +414,9 @@ namespace Manos.Http {
 				body_handler.Finish (this);
 				body_handler = null;
 			}
+
+			if (OnCompleted != null)
+				OnCompleted ();
 		}
 
 		public static string ParseBoundary (string ct)
@@ -515,15 +518,33 @@ namespace Manos.Http {
 			Stream.Write (data, offset, length);
 		}
 
+		
+		protected internal byte [] GetBody ()
+		{
+			StringBuilder data = null;
+
+			if (PostBody != null) {
+				data = new StringBuilder ();
+
+				data.Append (PostData);
+			}
+
+			if (data == null)
+				return null;
+
+			return ContentEncoding.GetBytes (data.ToString ());
+			
+		}
+
 		public abstract void WriteMetadata (StringBuilder builder);
 		public abstract ParserSettings CreateParserSettings ();
 
-		public event Action<IHttpResponse> Connected;
 		public event Action<byte [], int, int> BodyData;
 
 		public event Action<string> Error; // TODO: Proper error object of some sort
 
 		public event Action OnEnd;
+		public event Action OnCompleted;
 	}
 
 }

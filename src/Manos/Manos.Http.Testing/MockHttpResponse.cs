@@ -175,7 +175,7 @@ namespace Manos.Http.Testing
 			throw new NotImplementedException ();
 		}
 		
-		public event Action<IHttpResponse> Completed;
+		public event Action OnCompleted;
 		public event Action<byte [], int, int> BodyData;
 
 		
