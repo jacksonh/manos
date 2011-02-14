@@ -101,6 +101,10 @@ namespace Manos.Http {
 			}
 		}
 
+		public Dictionary<string,string>.KeyCollection Keys {
+			get { return items.Keys; }
+		}
+
 		public string this [string name] {
 			get {
 				if (name == null)
