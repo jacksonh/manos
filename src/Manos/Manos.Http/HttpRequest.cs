@@ -203,7 +203,6 @@ namespace Manos.Http {
 				Stream.End (() => {
 					HttpResponse response = new HttpResponse (Socket);
 
-					Console.WriteLine ("completing the response");
 					response.OnCompleted += () => {
 						if (OnResponse != null)
 							OnResponse (response);
