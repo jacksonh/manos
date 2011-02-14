@@ -1286,8 +1286,6 @@ namespace Manos.Http {
 
 					c = UNHEX[ch];
 					if (c == -1) {
-						
-						Console.WriteLine ("THE CHAR:  '{0}'", (char) ch);
 						settings.RaiseOnError(this, "invalid hex char in chunk content length", data, p_err);
 					}
 					content_length = c;
@@ -1312,7 +1310,6 @@ namespace Manos.Http {
 							state = State.chunk_parameters;
 							break;
 						}
-						Console.WriteLine ("THE CHAR: '{0}'", (char) ch);
 						settings.RaiseOnError(this, "invalid hex char in chunk content length", data, p_err);
 					}
 
