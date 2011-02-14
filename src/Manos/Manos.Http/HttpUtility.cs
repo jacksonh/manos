@@ -640,6 +640,70 @@ namespace Manos.Http {
 
 			return entities;
 		}
+
+		public static string HtmlEncode (string s)
+		{
+			if (s == null)
+				return null;
+
+			if (s.Length == 0)
+				return String.Empty;
+			
+			bool needEncode = false;
+			for (int i = 0; i < s.Length; i++) {
+				char c = s [i];
+				if (c == '&' || c == '"' || c == '<' || c == '>' || c > 159 || c == '\'') {
+					needEncode = true;
+					break;
+				}
+			}
+
+			if (!needEncode)
+				return s;
+
+			StringBuilder output = new StringBuilder ();
+			char ch;
+			int len = s.Length;
+			
+			for (int i = 0; i < len; i++) {
+				switch (s [i]) {
+					case '&' :
+						output.Append ("&amp;");
+						break;
+					case '>' : 
+						output.Append ("&gt;");
+						break;
+					case '<' :
+						output.Append ("&lt;");
+						break;
+					case '"' :
+						output.Append ("&quot;");
+						break;
+					case '\'':
+						output.Append ("&#39;");
+						break;
+					case '\uff1c':
+						output.Append ("&#65308;");
+						break;
+
+					case '\uff1e':
+						output.Append ("&#65310;");
+						break;
+						
+					default:
+						ch = s [i];
+						if (ch > 159 && ch < 256) {
+							output.Append ("&#");
+							output.Append (((int) ch).ToString (System.Globalization.CultureInfo.InvariantCulture));
+							output.Append (";");
+						} else
+							output.Append (ch);
+						break;
+				}	
+			}
+			
+			return output.ToString ();			
+		}
 	}
 }
 
