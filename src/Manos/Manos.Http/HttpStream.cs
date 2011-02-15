@@ -230,6 +230,9 @@ namespace Manos.Http
 
 		public void WriteMetadata (WriteCallback callback)
 		{
+			if (Chunked)
+				 HttpEntity.Headers.SetNormalizedHeader ("Transfer-Encoding", "chunked");
+
 			StringBuilder builder = new StringBuilder ();
 			HttpEntity.WriteMetadata (builder);
 			

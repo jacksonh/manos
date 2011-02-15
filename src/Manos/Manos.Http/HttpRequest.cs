@@ -194,6 +194,7 @@ namespace Manos.Http {
 
 			Socket.Connected += delegate {
 				Stream = new HttpStream (this, Socket);
+				Stream.Chunked = false;
 
 				byte [] body = GetBody ();
 

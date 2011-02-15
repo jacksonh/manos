@@ -99,13 +99,10 @@ namespace Manos.Http {
 		
 		public override void WriteMetadata (StringBuilder builder)
 		{
-			SetStandardHeaders ();
-			
 			WriteStatusLine (builder);
 
 			if (WriteHeaders) {
-				if (!Stream.Chunked)
-					Headers.ContentLength = Stream.Length;
+				
 				Headers.Write (builder, cookies == null ? null : Cookies.Values, Encoding.ASCII);
 			}
 		}
@@ -212,16 +209,6 @@ namespace Manos.Http {
 			builder.Append (" ");
 			builder.Append (GetStatusDescription (StatusCode));
 			builder.Append ("\r\n");
-		}
-
-		private void SetStandardHeaders ()
-		{
-//			Headers.ContentLength = 0;
-
-			Headers.SetNormalizedHeader ("Server", HttpServer.ServerVersion);
-
-			if (Stream.Chunked)
-				Headers.SetNormalizedHeader ("Transfer-Encoding", "chunked");
 		}
 
 		private static string GetStatusDescription (int code)

@@ -160,6 +160,11 @@ namespace Manos.Http.Testing
 			set;
 		}
 
+		public void WriteMetadata (StringBuilder builder)
+		{
+			throw new NotImplementedException ();
+		}
+
 		public void SetProperty (string name, object o)
 		{
 			throw new NotImplementedException ();

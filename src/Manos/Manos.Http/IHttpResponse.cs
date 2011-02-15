@@ -110,6 +110,7 @@ namespace Manos.Http {
 		HttpCookie SetCookie (string name, string value, string domain, TimeSpan max_age);
 
 		void Read ();
+		void WriteMetadata (StringBuilder builder);
 
 		event Action<byte [], int, int> BodyData;
 
