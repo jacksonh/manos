@@ -33,10 +33,6 @@ namespace Manos.Http {
 
 	public interface IHttpResponse : IDisposable {
 
-		IHttpTransaction Transaction {
-			get;
-		}
-
 		HttpHeaders Headers {
 			get;
 		}

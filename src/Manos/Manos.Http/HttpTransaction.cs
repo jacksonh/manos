@@ -143,7 +143,7 @@ namespace Manos.Http {
 		public void OnRequestReady ()
 		{
 			try {
-				Response = new HttpResponse (this, Stream);
+				Response = new HttpResponse (Request, Stream);
 
 				Server.RunTransaction (this);
 			} catch (Exception e) {

@@ -201,7 +201,7 @@ namespace Manos.Http {
 					Stream.Write (body, 0, body.Length);
 
 				Stream.End (() => {
-					HttpResponse response = new HttpResponse (Socket);
+					HttpResponse response = new HttpResponse (this, Socket);
 
 					response.OnCompleted += () => {
 						if (OnResponse != null)

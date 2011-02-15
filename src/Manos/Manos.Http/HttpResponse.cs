@@ -44,15 +44,9 @@ namespace Manos.Http {
 		private StreamWriter writer;
 		private Dictionary<string, HttpCookie> cookies;
 
-		public HttpResponse (SocketStream stream)
+		public HttpResponse (IHttpRequest request, SocketStream stream)
 		{
-			Socket = stream;
-			Stream = new HttpStream (this, stream);
-		}
-
-		public HttpResponse (IHttpTransaction transaction, SocketStream stream)
-		{
-			Transaction = transaction;
+			Request = request;
 			Socket = stream;
 
 			StatusCode = 200;
@@ -60,10 +54,10 @@ namespace Manos.Http {
 			WriteHeaders = true;
 
 			Stream = new HttpStream (this, stream);
-			Stream.Chunked = (transaction.Request.MajorVersion > 0 && transaction.Request.MinorVersion > 0);
+			Stream.Chunked = (request.MajorVersion > 0 && request.MinorVersion > 0);
 		}
 
-		public IHttpTransaction Transaction {
+		public IHttpRequest Request {
 			get;
 			private set;
 		}
@@ -195,16 +189,24 @@ namespace Manos.Http {
 			ParserSettings settings = new ParserSettings ();
 
 			settings.OnBody = OnBody;
-
 			return settings;
+		}
+
+		protected override int OnHeadersComplete (HttpParser parser)
+		{
+			base.OnHeadersComplete (parser);
+
+			if (Request.Method == HttpMethod.HTTP_HEAD)
+				return 1;
+			return 0;
 		}
 
 		private void WriteStatusLine (StringBuilder builder)
 		{
 			builder.Append ("HTTP/");
-			builder.Append (Transaction.Request.MajorVersion);
+			builder.Append (Request.MajorVersion);
 			builder.Append (".");
-			builder.Append (Transaction.Request.MinorVersion);
+			builder.Append (Request.MinorVersion);
 			builder.Append (" ");
 			builder.Append (StatusCode);
 			builder.Append (" ");

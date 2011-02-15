@@ -1582,25 +1582,10 @@ namespace Manos.Http {
 			 * parsingHeader) implementation ...
 			 */
 
-			/*TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO */ 
 			if (null != settings.OnHeadersComplete) {
-				settings.RaiseOnHeadersComplete(this);
-				//return;
+				if (settings.RaiseOnHeadersComplete (this) == 1)
+					flags |= F_SKIPBODY;
 			}
-    
-			//        if (null != settings.on_headers_complete) {
-			//          switch (settings.on_headers_complete.cb(parser)) {
-			//            case 0:
-			//              break;
-			//
-			//            case 1:
-			//              flags |= F_SKIPBODY;
-			//              break;
-			//
-			//            default:
-			//              return p - data; /* Error */ // TODO // RuntimeException ?
-			//          }
-			//        }
 
 
 			// Exit, the rest of the connect is in a different protocol.

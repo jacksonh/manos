@@ -50,6 +50,7 @@ namespace Manos.Http {
 		public HttpCallback       OnMessageComplete;
 		public HttpErrorCallback  OnError;
 
+
 		public void RaiseOnMessageBegin (HttpParser p)
 		{
 			Raise (OnMessageBegin, p);
@@ -116,38 +117,38 @@ namespace Manos.Http {
 			Raise (OnBody, p, buf, pos, len);
 		}
 
-		public void RaiseOnHeadersComplete (HttpParser p)
+		public int RaiseOnHeadersComplete (HttpParser p)
 		{
-			Raise (OnHeadersComplete, p);
+			return Raise (OnHeadersComplete, p);
 		}
 
-		private void Raise (HttpCallback cb, HttpParser p)
+		private int Raise (HttpCallback cb, HttpParser p)
 		{
 			if (cb == null)
-				return;
+				return 0;
 
 			try {
-				cb (p);
+				return cb (p);
 			} catch (Exception e) {
 				Console.WriteLine (e);
 
 				RaiseOnError (p, e.Message, null, -1);
-				return;
+				return -1;
 			}
 		}
 
-		private void Raise (HttpDataCallback cb, HttpParser p, ByteBuffer buf, int pos, int len)
+		private int Raise (HttpDataCallback cb, HttpParser p, ByteBuffer buf, int pos, int len)
 		{
 			if (cb == null || pos == -1)
-				return;
+				return 0;
 
 			try {
-				cb (p,buf,pos,len);
+				return cb (p,buf,pos,len);
 			} catch (Exception e) {
 				Console.WriteLine (e);
 
 				RaiseOnError (p, e.Message, buf, pos);
-				return;
+				return -1;
 			}
 				
 		}
