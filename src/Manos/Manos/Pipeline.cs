@@ -92,6 +92,8 @@ namespace Manos {
 
 		private void Execute ()
 		{
+			step = PipelineStep.WaitingForEnd;
+
 			ctx = new ManosContext (transaction);
 			
 			// TODO:
@@ -100,7 +102,6 @@ namespace Manos {
 			var handler = app.Routes.Find (transaction.Request);
 			
 			if (handler == null) {
-				Console.WriteLine ("no handler found for: '{0}' ({1})", ctx.Request.Path, ctx.Request.Method);
 				ctx.Response.StatusCode = 404;
 				ctx.Response.End ();
 				return;
@@ -131,8 +132,6 @@ namespace Manos {
 				ctx.Response.End ();
 				return;
 			}
-
-			step = PipelineStep.WaitingForEnd;
 		}
 
 		private void PostProcess ()
