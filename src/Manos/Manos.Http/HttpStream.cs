@@ -53,6 +53,7 @@ namespace Manos.Http
 		{
 			HttpEntity = entity;
 			SocketStream = stream;
+			AddHeaders = true;
 		}
 
 		public HttpEntity HttpEntity {
@@ -72,6 +73,11 @@ namespace Manos.Http
 					throw new InvalidOperationException ("Chunked can not be changed after a write has been performed.");
 				chunk_encode = value;
 			}
+		}
+
+		public bool AddHeaders {
+			get;
+			set;
 		}
 
 		public override bool CanRead {
@@ -233,10 +239,12 @@ namespace Manos.Http
 			if (pending_length_cbs > 0)
 				return;
 
-			if (chunk_encode) {
-				HttpEntity.Headers.SetNormalizedHeader ("Transfer-Encoding", "chunked");
-			} else {
-				HttpEntity.Headers.ContentLength = Length;
+			if (AddHeaders) {
+				if (chunk_encode) {
+					HttpEntity.Headers.SetNormalizedHeader ("Transfer-Encoding", "chunked");
+				} else {
+					HttpEntity.Headers.ContentLength = Length;
+				}
 			}
 			
 			StringBuilder builder = new StringBuilder ();
