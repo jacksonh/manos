@@ -491,10 +491,6 @@ namespace Manos.Http {
 
 		public void Complete (WriteCallback callback)
 		{
-			if (!Stream.Chunked) {
-				Headers.ContentLength = Stream.Length;
-			}
-
 			Stream.End (callback);
 		}
 

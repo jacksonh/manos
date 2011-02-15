@@ -181,7 +181,7 @@ namespace Manos.Http
 		}
 
 		public void End (WriteCallback callback)
-		{			
+		{
 			if (pending_length_cbs > 0) {
 				waiting_for_length = true;
 				end_callback = callback;
@@ -230,12 +230,18 @@ namespace Manos.Http
 
 		public void WriteMetadata (WriteCallback callback)
 		{
-			if (Chunked)
-				 HttpEntity.Headers.SetNormalizedHeader ("Transfer-Encoding", "chunked");
+			if (pending_length_cbs > 0)
+				return;
 
+			if (chunk_encode) {
+				HttpEntity.Headers.SetNormalizedHeader ("Transfer-Encoding", "chunked");
+			} else {
+				HttpEntity.Headers.ContentLength = Length;
+			}
+			
 			StringBuilder builder = new StringBuilder ();
 			HttpEntity.WriteMetadata (builder);
-			
+
 			byte [] data = Encoding.ASCII.GetBytes (builder.ToString ());
 
 			metadata_written = true;
