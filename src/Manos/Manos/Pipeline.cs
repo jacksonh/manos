@@ -100,7 +100,7 @@ namespace Manos {
 			var handler = app.Routes.Find (transaction.Request);
 			
 			if (handler == null) {
-				Console.WriteLine ("no handler found for: '{0}'", ctx.Request.Path);
+				Console.WriteLine ("no handler found for: '{0}' ({1})", ctx.Request.Path, ctx.Request.Method);
 				ctx.Response.StatusCode = 404;
 				ctx.Response.End ();
 				return;
