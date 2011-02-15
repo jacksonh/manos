@@ -113,6 +113,8 @@ namespace Manos.Http {
 		
 		void Read ();
 		void SetWwwFormData (DataDictionary data);
+		void WriteMetadata (StringBuilder builder);
+
 	}
 }
 

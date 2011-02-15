@@ -196,5 +196,10 @@ namespace Manos.Http.Testing
 		{
 			PostData.Children.Add (data);
 		}
+
+		public void WriteMetadata (StringBuilder builder)
+		{
+			throw new NotImplementedException ();
+		}
 	}
 }
