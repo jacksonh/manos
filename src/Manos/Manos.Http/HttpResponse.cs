@@ -193,6 +193,8 @@ namespace Manos.Http {
 		{
 			base.OnHeadersComplete (parser);
 
+			StatusCode = parser.StatusCode;
+
 			if (Request.Method == HttpMethod.HTTP_HEAD)
 				return 1;
 			return 0;
