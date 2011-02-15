@@ -215,8 +215,6 @@ namespace Manos.Http {
 
 		public override void WriteMetadata (StringBuilder builder)
 		{
-			Headers.SetNormalizedHeader ("Transfer-Encoding", "chunked");
-
 			builder.Append (Encoding.ASCII.GetString (HttpMethodBytes.GetBytes (Method)));
 			builder.Append (" ");
 			builder.Append (Path);
