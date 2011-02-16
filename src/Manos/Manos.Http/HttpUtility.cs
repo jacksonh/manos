@@ -704,6 +704,19 @@ namespace Manos.Http {
 			
 			return output.ToString ();			
 		}
+
+		public static void AddBasicAuthentication (HttpEntity entity, string user, string password)
+		{
+			if (entity == null)
+				throw new ArgumentNullException ("entity");
+			if (user == null)
+				throw new ArgumentNullException ("user");
+			if (password == null)
+				throw new ArgumentNullException ("password");
+
+			string authd = user + ":" + password;
+			entity.Headers.SetNormalizedHeader ("Authorization", "Basic " + Convert.ToBase64String (Encoding.ASCII.GetBytes (authd)));
+		}
 	}
 }
 
