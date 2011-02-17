@@ -74,7 +74,7 @@ namespace Manos.Collections {
 		public int Position {
 			get { return buffer.Position; }
 			set {
-				if (value > buffer.Length)
+				if (value > buffer.Bytes.Length)
 					throw new ArgumentOutOfRangeException ("value", "Position must be less than the array length.");
 				if (value < 0)
 					throw new ArgumentOutOfRangeException ("value", "Position must be zero or greater.");
