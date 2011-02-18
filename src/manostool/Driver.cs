@@ -41,6 +41,8 @@ namespace Manos.Tool
 		public static readonly string DEPLOYMENT_DIRECTORY = "Deployment";
 		
 		private static Environment Environment = new Environment ();
+
+		private static StreamWriter output;
 		
 		public static int Main (string[] args)
 		{
@@ -81,10 +83,31 @@ namespace Manos.Tool
 			return 0;
 		}
 
+		private static StreamWriter StreamForFile (string file)
+		{
+                        if (file == null)
+                           throw new ArgumentNullException ("file");
+
+                        FileStream fs = new FileStream (file, FileMode.Create);
+                        StreamWriter sw = new StreamWriter (fs);
+
+			return sw;
+		}
+
+		private static void SetOutput (string file)
+		{
+			Console.WriteLine ("setting output:  " + file);
+			output = StreamForFile (file);
+			Console.SetOut (output);
+			Console.SetError (output);
+		}
+
 		private static string [] ParseGlobalOptions (string [] args)
 		{
+			Console.WriteLine ("parsing global options");
 			var p = new OptionSet () {
 				{ "-data-dir=", v => Environment.DataDirectory = v },
+				{ "-out|out=", v => SetOutput (v) },
 			};
 			
 			List<string> extra = null;
