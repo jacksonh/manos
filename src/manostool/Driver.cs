@@ -90,6 +90,7 @@ namespace Manos.Tool
 
                         FileStream fs = new FileStream (file, FileMode.Create);
                         StreamWriter sw = new StreamWriter (fs);
+			sw.AutoFlush = true;
 
 			return sw;
 		}
