@@ -171,7 +171,7 @@ namespace Manos.IO {
 				throw new Exception (String.Format ("An error occurred while trying to connect to {0}:{1} errno: {2}", host, port, error));
 			
 			
-			IOWatcher iowatcher = new IOWatcher (handle, EventTypes.Write, IOLoop.EventLoop, (l, w, r) => {
+			IOWatcher iowatcher = new IOWatcher (new IntPtr (fd), EventTypes.Write, IOLoop.EventLoop, (l, w, r) => {
 				w.Stop ();
 
 				this.host = host;
