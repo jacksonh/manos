@@ -53,19 +53,30 @@ namespace Manos.Http {
 		}
 	}
 	
-	public abstract class UploadedFile {
+	public abstract class UploadedFile : IDisposable {
 
 	  	 public UploadedFile (string name)
 		 {
 			Name = name;
 		 }
 
-	  	 public string Name {
+		~UploadedFile ()
+		{
+			Dispose ();
+		}
+
+		public string Name {
 		 	get;
 			private set;
 		 }
 
-		 public string ContentType {
+		public void Dispose ()
+		{
+			if (Contents != null)
+				Contents.Close ();
+		}
+
+		public string ContentType {
 		 	get;
 			set;
 		 }
@@ -142,6 +153,7 @@ namespace Manos.Http {
 		 {
 			 stream.Flush ();
 			 stream.Close ();
+			 stream = null;
 		 }
 	  }
 }
