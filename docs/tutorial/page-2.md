@@ -92,7 +92,7 @@ can either be a nested class or you can create a LinkData.cs file and stick it i
         }
     }
 
-Finally, we need to create a hashing function for generating unique ids based on our URLs.
+Finally, we need to create a hashing function for generating unique ids based on our URLs. 
 
     private static string GenerateHash (string str, int length)
     {
@@ -120,7 +120,7 @@ Now that we have that stuff out of the way, all we need to do is stick our id an
 cache and then redirect the user to their LinkInfo page.
 
     [Post ("/submit-link")]
-    public void SubmitLink (Shorty app, IManosContext ctx, string link)
+    public void SubmitLink (IManosContext ctx, Shorty app, string link)
     {
         string id = GenerateHash (link, 5);
 
@@ -137,7 +137,7 @@ Our LinkInfo method is pretty straight forward.  It looks up the suppiled id and
 corresponding data.  If no data is found, the user is given a 404 error.
 
     [Route ("/r/{id}~")]
-    public void LinkInfo (Shorty app, IManosContext ctx, string id)
+    public void LinkInfo (IManosContext ctx, Shorty app, string id)
     {
         Cache.Get (id, (name, item) => {
             LinkData info = item as LinkData;
@@ -163,7 +163,7 @@ Handling the Redirection
 When a user goes to the generated link, we want to redirect them to the proper link.
 
     [Route ("/r/{id}")]
-    public void Redirector (Shorty app, IManosContext ctx, string id)
+    public void Redirector (IManosContext ctx, Shorty app, string id)
     {
         Cache.Get (id, (name, item) => {
             LinkData info = item as LinkData;
