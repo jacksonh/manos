@@ -118,6 +118,7 @@ namespace Manos {
 				Console.Error.WriteLine ("Exception in transaction handler:");
 				Console.Error.WriteLine (e);
 				ctx.Response.StatusCode = 500;
+				ctx.Response.End ();
 				//
 				// TODO: Maybe the cleanest thing to do is
 				// have a HandleError, HandleException thing
