@@ -27,7 +27,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
 
-#if !DISABLE_POSIX
+#if ENABLE_CONFIG
 using Mono.CSharp;
 #endif
 
@@ -120,7 +120,7 @@ namespace Manos
 #region Private methods		
 		private static bool CompileFile (string path)
 		{
-#if !DISABLE_POSIX
+#if ENABLE_CONFIG
 			using (StreamReader sr = new StreamReader (path))
 			{
 				string txt = sr.ReadToEnd ();
