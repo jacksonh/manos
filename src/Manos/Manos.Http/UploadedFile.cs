@@ -144,7 +144,7 @@ namespace Manos.Http {
 		 public override Stream Contents {
 		 	get {
 				if (stream == null)
-					stream = File.OpenWrite (TempFile);
+					stream = File.Open (TempFile, FileMode.Open, FileAccess.ReadWrite);
 				return stream;
 			}
 		 }
