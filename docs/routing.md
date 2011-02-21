@@ -77,6 +77,39 @@ If you have a method that matches this signature and don't want it to be added t
     }
 
 
+Arrays and Dictionaries in parameters
+--------------------------------------
+
+Manos supports creating arrays or dictionaries of parameters.  For example the following html form data would be mapped to an array param:
+
+    &lt;input type="text" name="foobar[]"&gt;
+    &lt;input type="text" name="foobar[]"&gt;
+    &lt;input type="text" name="foobar[]"&gt;
+
+with those three elements in a form you can now have a method signature like this:
+
+    public void MyMethod (IManosContext ctx, string [] foobar)
+    {
+    }
+
+The element values of the array follow the exact same rules as normal parameter values.  So in the case of a string [] array type, the elements are escaped UnsafeStrings.
+
+Dictionaries can also be created by using a dictionary syntax:
+
+    &lt;input type="text" name="foobar[blah]"&gt;
+    &lt;input type="text" name="foobar[blarg]"&gt;
+    &lt;input type="text" name="foobar[blaz]"&gt;
+
+the elements would map to a Dictionary<string,...> in a method like this:
+
+    public void MyMethod (IManosContext ctx, Dictionary<string,string> foobar)
+    { 
+        Console.WriteLine (foobar ["blah"]);
+    }
+
+Dictionaries can be created from any type that implements IDictionary however the keys will always be strings and if you create a generic type that implements IDictionary the second generic parameter will be used to map the value.  So in the standard Dictionary<TKey,TValue> TKey must be a string and TValue will be mapped using the same conversion methods as any other parameter.
+
+
 Explicitly routing methods using attributes
 -------------------------------------------
 
