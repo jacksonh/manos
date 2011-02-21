@@ -199,8 +199,10 @@ namespace Manos.Http {
 
 				byte [] body = GetBody ();
 
-				if (body != null)
+				if (body != null) {
+					Headers.ContentLength = body.Length;
 					Stream.Write (body, 0, body.Length);
+				}
 
 				Stream.End (() => {
 					HttpResponse response = new HttpResponse (this, Socket);
