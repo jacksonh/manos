@@ -54,6 +54,10 @@ namespace Manos.Collections
 			get { return GetString (key); }
 			set { Set (key, value); }
 		}
+
+		public ICollection<string> Keys {
+		       get { return dictionary.Keys; }
+		}
 		
 		/// <summary>
 		/// The number of child dictionaries + the number or keys in the this dictionary.
