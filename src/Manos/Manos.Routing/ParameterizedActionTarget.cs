@@ -25,6 +25,8 @@
 
 using System;
 using System.Reflection;
+using System.Collections;
+using System.Collections.Generic;
 
 
 namespace Manos.Routing
@@ -99,16 +101,41 @@ namespace Manos.Routing
 			
 			for (int i = param_start; i < data.Length; i++) {
 				string name = parameters [i].Name;
-				UnsafeString strd = ctx.Request.Data.Get (name);
 			
-				if (!TryConvertType (ctx, parameters [i].ParameterType, parameters [i], strd, out data [i]))
+				if (!TryConvertType (ctx, name, parameters [i], out data [i]))
 				    return false;
 			}
 			
 			return true;
 		}
-		
-		public static bool TryConvertType (IManosContext ctx, Type type, ParameterInfo param, UnsafeString unsafe_str_value, out object data)
+
+		public static bool TryConvertType (IManosContext ctx, string name, ParameterInfo param, out object data)
+		{
+			Type dest = param.ParameterType;
+			
+			if (dest.IsArray) {
+				var list = ctx.Request.Data.GetList (name);
+				if (list != null) {
+					Type element = dest.GetElementType ();
+					IList arr = Array.CreateInstance (element, list.Count);
+					for (int i = 0; i < list.Count; i++) {
+						object elem_data;
+						if (!TryConvertUnsafeString (ctx, element, param, list [i], out elem_data)) {
+							data = null;
+							return false;
+						}
+						arr [i] = elem_data;
+					}
+					data = arr;
+					return true;
+				}
+			}
+
+			UnsafeString strd = ctx.Request.Data.Get (name);
+			return TryConvertUnsafeString (ctx, dest, param, strd, out data);
+		}
+
+		public static bool TryConvertUnsafeString (IManosContext ctx, Type type, ParameterInfo param, UnsafeString unsafe_str_value, out object data)
 		{
 			if (type == typeof (UnsafeString)) {
 				data = unsafe_str_value;
