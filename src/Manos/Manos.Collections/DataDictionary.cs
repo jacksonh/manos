@@ -203,7 +203,7 @@ namespace Manos.Collections
 			}
 
 			Dictionary<string,UnsafeString> dict = null;
-			string dname = UnsafeString.Escape (key.Substring (open, close - open));
+			string dname = UnsafeString.Escape (key.Substring (open + 1, close - open - 1));
 			if (dictionary.TryGetValue (elkey, out col)) {
 				dict = col as Dictionary<string,UnsafeString>;
 				if (dict != null) {
