@@ -187,7 +187,7 @@ namespace Manos.Collections
 			if (close == open + 1) {
 				List<UnsafeString> list = null;
 
-				if (dictionary.TryGetValue (key, out col)) {
+				if (dictionary.TryGetValue (elkey, out col)) {
 					list = col as List<UnsafeString>;
 					if (list != null) {
 						list.Add (value);
