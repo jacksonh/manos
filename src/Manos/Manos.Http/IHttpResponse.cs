@@ -112,8 +112,6 @@ namespace Manos.Http {
 		void Read ();
 		void WriteMetadata (StringBuilder builder);
 
-		event Action<byte [], int, int> BodyData;
-
 		event Action OnEnd;
 		event Action OnCompleted;
 	}

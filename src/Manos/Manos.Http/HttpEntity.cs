@@ -143,11 +143,6 @@ namespace Manos.Http {
 			set;
 		}
 
-		public bool StreamBody {
-			get;
-			set;
-		}
-
 		public Encoding ContentEncoding {
 			get { return Headers.ContentEncoding; }
 			set { Headers.ContentEncoding = value; }
@@ -320,12 +315,6 @@ namespace Manos.Http {
 
 		public int OnBody (HttpParser parser, ByteBuffer data, int pos, int len)
 		{
-			if (StreamBody) {
-				if (BodyData != null)
-					BodyData (data.Bytes, pos, len);
-				return 0;
-			}
-
 			if (body_handler == null)
 				CreateBodyHandler ();
 
@@ -548,8 +537,6 @@ namespace Manos.Http {
 
 		public abstract void WriteMetadata (StringBuilder builder);
 		public abstract ParserSettings CreateParserSettings ();
-
-		public event Action<byte [], int, int> BodyData;
 
 		public event Action<string> Error; // TODO: Proper error object of some sort
 
