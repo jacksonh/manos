@@ -520,8 +520,23 @@ namespace Manos.Http {
 
 			if (PostBody != null) {
 				data = new StringBuilder ();
-
 				data.Append (PostBody);
+			}
+
+			if (post_data != null) {
+				data = new StringBuilder ();
+				bool first = true;
+				foreach (string key in post_data.Keys) {
+					if (!first)
+						data.Append ('&');
+					first = false;
+
+					UnsafeString s = post_data.Get (key);
+					if (s != null) {
+						data.AppendFormat ("{0}={1}", key, s.UnsafeValue);
+						continue;
+					}
+				}
 			}
 
 			if (data == null)
