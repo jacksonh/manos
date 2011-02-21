@@ -131,6 +131,32 @@ namespace Manos.Routing
 				}
 			}
 
+			if (dest.GetInterface ("IDictionary") != null) {
+				var dict = ctx.Request.Data.GetDict (name);
+				if (dict != null) {
+					Type eltype = typeof (UnsafeString);
+					IDictionary dd = (IDictionary) Activator.CreateInstance (dest);
+					if (dest.IsGenericType) {
+						Type [] args = dest.GetGenericArguments ();
+						if (args.Length != 2)
+							throw new Exception ("Generic Dictionaries must contain two generic type arguments.");
+						if (args [0] != typeof (string))
+							throw new Exception ("Generic Dictionaries must use strings for their keys.");
+						eltype = args [1]; // ie the TValue in Dictionary<TKey,TValue>
+					}
+					foreach (string key in dict.Keys) {
+						object elem_data;
+						if (!TryConvertUnsafeString (ctx, eltype, param, dict [key], out elem_data)) {
+							data = null;
+							return false;
+						}
+						dd.Add (key, elem_data);
+					}
+					data = dd;
+					return true;
+				}
+			}
+
 			UnsafeString strd = ctx.Request.Data.Get (name);
 			return TryConvertUnsafeString (ctx, dest, param, strd, out data);
 		}
