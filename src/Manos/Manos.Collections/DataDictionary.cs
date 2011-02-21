@@ -33,6 +33,10 @@ namespace Manos.Collections
 {
 	/// <summary>
 	/// A Heirarcical dictionary. Data can live at the "root" level, or in child dictionaries.
+	/// DataDictionaries can store UnsafeStrings, lists of UnsafeStrings and dictionarys with
+	/// strings as their key and UnsafeStrings as their values.  To add a list to the DataDictionary
+	/// simply add an item with a [] at the end of the keyname.  To add a dictionary you
+	/// just add an item in this format keyname[key].
 	/// </summary>
 	public class DataDictionary
 	{
@@ -45,7 +49,7 @@ namespace Manos.Collections
 		}
 		
 		/// <summary>
-		/// Get or set the value at the specified key.
+		/// Get or set the string value at the specified key.
 		/// </summary>
 		/// <param name="key">
 		/// A <see cref="System.String"/>
@@ -60,7 +64,8 @@ namespace Manos.Collections
 		}
 		
 		/// <summary>
-		/// The number of child dictionaries + the number or keys in the this dictionary.
+		/// The sum of child dictionaries count and the count
+		/// of the keys in this dictionary.
 		/// </summary>
 		public int Count {
 			get {
@@ -83,7 +88,7 @@ namespace Manos.Collections
 		}
 		
 		/// <summary>
-		/// The "unsafe" version of the value that is stored in this dictionary, or "null" if no value is stored for the specified key.
+		/// The "unsafe" string version of the value that is stored in this dictionary, or "null" if no value is stored for the specified key.
 		/// </summary>
 		/// <param name="key">
 		/// A <see cref="System.String"/>
@@ -96,11 +101,22 @@ namespace Manos.Collections
 			return Get<UnsafeString> (key);
 		}
 
+		/// <summary>
+		/// A list of unsafe strings stored with the specified
+		/// key.  Lists are created when an item is added to
+		/// the dictionary with [] at the end of its name.
+		/// </summary>  
 		public IList<UnsafeString> GetList (string key)
 		{
 			return Get<IList<UnsafeString>> (key);
 		}
 
+		/// <summary>
+		/// A dictionary of Unsafe strings.  Dictionaries are
+		/// created when an item is added to the
+		/// DataDictionary with a key in the format:
+		/// foo[key].
+		/// </summary>
 		public IDictionary<string,UnsafeString> GetDict (string key)
 		{
 			return Get<IDictionary<string,UnsafeString>> (key);
