@@ -82,9 +82,9 @@ Arrays and Dictionaries in parameters
 
 Manos supports creating arrays or dictionaries of parameters.  For example the following html form data would be mapped to an array param:
 
-    &lt;input type="text" name="foobar[]"&gt;
-    &lt;input type="text" name="foobar[]"&gt;
-    &lt;input type="text" name="foobar[]"&gt;
+    <input type="text" name="foobar[]">
+    <input type="text" name="foobar[]">
+    <input type="text" name="foobar[]">
 
 with those three elements in a form you can now have a method signature like this:
 
@@ -96,9 +96,9 @@ The element values of the array follow the exact same rules as normal parameter 
 
 Dictionaries can also be created by using a dictionary syntax:
 
-    &lt;input type="text" name="foobar[blah]"&gt;
-    &lt;input type="text" name="foobar[blarg]"&gt;
-    &lt;input type="text" name="foobar[blaz]"&gt;
+    <input type="text" name="foobar[blah]">
+    <input type="text" name="foobar[blarg]">
+    <input type="text" name="foobar[blaz]">
 
 the elements would map to a Dictionary<string,...> in a method like this:
 
