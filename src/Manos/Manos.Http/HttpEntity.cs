@@ -514,15 +514,14 @@ namespace Manos.Http {
 			Stream.Write (data, offset, length);
 		}
 
-		
-		protected internal byte [] GetBody ()
+		public byte [] GetBody ()
 		{
 			StringBuilder data = null;
 
 			if (PostBody != null) {
 				data = new StringBuilder ();
 
-				data.Append (PostData);
+				data.Append (PostBody);
 			}
 
 			if (data == null)
