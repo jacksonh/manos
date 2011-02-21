@@ -36,12 +36,12 @@ namespace Manos.Collections
 	/// </summary>
 	public class DataDictionary
 	{
-		private Dictionary<string,UnsafeString> dictionary;
+		private Dictionary<string,object> dictionary;
 		private List<DataDictionary> children;
 		
 		public DataDictionary ()
 		{
-			dictionary = new Dictionary<string, UnsafeString> ();
+			dictionary = new Dictionary<string, object> ();
 		}
 		
 		/// <summary>
@@ -89,15 +89,33 @@ namespace Manos.Collections
 		/// </returns>
 		public UnsafeString Get (string key)
 		{
-			UnsafeString value = null;
+			return Get<UnsafeString> (key);
+		}
+
+		public IList<UnsafeString> GetList (string key)
+		{
+			return Get<IList<UnsafeString>> (key);
+		}
+
+		public IDictionary<string,UnsafeString> GetDict (string key)
+		{
+			return Get<IDictionary<string,UnsafeString>> (key);
+		}
+
+		private T Get<T> (string key)
+		{
+			object value = null;
+			T t = default (T);
 			
-			if (dictionary.TryGetValue (key, out value))
-				return value;
+			if (dictionary.TryGetValue (key, out value)) {
+				if (value is T)
+					return (T) value;
+			}
 			
 			if (children != null)
-				children.Where (d => (value = d.Get (key)) != null).FirstOrDefault ();
+				children.Where (d => (t = d.Get<T> (key)) != null).FirstOrDefault ();
 			
-			return value;
+			return t;
 		}
 		
 		/// <summary>
@@ -138,7 +156,7 @@ namespace Manos.Collections
 		/// </param>
 		public void Set (string key, string value)
 		{
-			dictionary [key] = new UnsafeString (value);
+			Set (key, new UnsafeString (value));
 		}
 		
 		/// <summary>
@@ -152,7 +170,51 @@ namespace Manos.Collections
 		/// </param>
 		public void Set (string key, UnsafeString value)
 		{
-			dictionary [key] = value;
+			int open = key.IndexOf ('[');
+			if (open == -1) {
+				dictionary [key] = value;
+				return;
+			}
+
+			string elkey = key.Substring (0, open);
+			int close = key.IndexOf (']');
+			if (close == -1 || close < open) {
+				dictionary [elkey] = value;
+				return;
+			}
+
+			object col;
+			if (close == open + 1) {
+				List<UnsafeString> list = null;
+
+				if (dictionary.TryGetValue (key, out col)) {
+					list = col as List<UnsafeString>;
+					if (list != null) {
+						list.Add (value);
+						return;
+					}
+				}
+
+				list = new List<UnsafeString> ();
+				list.Add (value);
+				dictionary [elkey] = list;
+				
+				return;
+			}
+
+			Dictionary<string,UnsafeString> dict = null;
+			string dname = UnsafeString.Escape (key.Substring (open, close - open));
+			if (dictionary.TryGetValue (key, out col)) {
+				dict = col as Dictionary<string,UnsafeString>;
+				if (dict != null) {
+					dict [dname] = value;
+					return;
+				}
+			}
+
+			dict = new Dictionary<string,UnsafeString> ();
+			dict [dname] = value;
+			dictionary [elkey] = dict;
 		}
 	}
 }
