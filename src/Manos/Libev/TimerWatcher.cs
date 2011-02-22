@@ -31,7 +31,7 @@ namespace Libev {
 			
 			unmanaged_watcher.callback = unmanaged_callback_ptr;
 			unmanaged_watcher.after = after.TotalSeconds;
-			unmanaged_watcher.repeat = after.TotalSeconds;
+			unmanaged_watcher.repeat = repeat.TotalSeconds;
 			
 			InitializeUnmanagedWatcher (unmanaged_watcher);
 		}
