@@ -20,6 +20,8 @@ Makefile.in
 stamp-*
 libtool.m4
 ltoptions.m4
+ltsugar.m4
+ltversion.m4
 ltmain.sh
 install-sh
 .DS_Store
@@ -28,3 +30,5 @@ config.*
 autom4te.cache
 aclocal.m4
 libtool
+configure
+*.pc
