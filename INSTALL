@@ -1,0 +1,5 @@
+Please see docs/installation.md
+
+On a system with manos installed, this documentation is
+best read by running `manos --docs` and opening the URL
+in your browser.
