@@ -32,3 +32,6 @@ aclocal.m4
 libtool
 configure
 *.pc
+COPYING
+INSTALL
+missing
