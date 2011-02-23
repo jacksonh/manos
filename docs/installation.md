@@ -6,13 +6,6 @@ Currently Manos can be installed on Linux, OS X and Windows.
 You should read the whole guide before reading your operating system specific instructions.
 
 
-Dependencies
-------------
-
-Manos requires the unmanaged libev library. Libev should be available in a packages format from your distro or homebrew for OS X users. Windows users will have to download and compile libev.
-
-Libev can be found here: <http://software.schmorp.de/pkg/libev.html>
-
 Files
 -----
 
@@ -62,7 +55,7 @@ Installing Manos on OS X
 
 Grab the Mono 2.8 OSX package from the [Mono Downloads Page](http://mono-project.com/Downloads).
 
-You need to have Mono 2.8 installed on your system. An older Mono install wont cut it. Also, if you've install Mono from source on your Mac, things might work, things might not work.  This guide assumes you have it installed from packages.
+You need to have Mono 2.8 installed on your system. An older Mono install won't cut it. Also, if you've installed Mono from source on your Mac, things might work, things might not work.  This guide assumes you have it installed from packages.
 
 
 
@@ -83,36 +76,7 @@ You should now be able to run the manos documentation server:
 
     manos --docs
 
-and navigate to http://localhost:8181/ in your browser.  
-
-
-### Trouble Shooting
-
-
-1.  If you are getting a type load exception, make sure you have the universal libev installed:
-
-    erp:~ jackson$ cd /opt/local/lib
-    
-    erp:lib jackson$ file libev.dylib 
-
-        libev.dylib: symbolic link to libev.3.0.0.dylib
-
-
-
-    erp:lib jackson$ file libev.3.0.0.dylib 
-        
-        libev.3.0.0.dylib: Mach-O universal binary with 2 architectures
-
-        libev.3.0.0.dylib (for architecture x86_64):    Mach-O 64-bit dynamically linked shared library x86_64
-        
-        libev.3.0.0.dylib (for architecture i386):      Mach-O dynamically linked shared library i386
-
-
-Another trick is to use Mono's logging to see where Mono is looking for libev.dylib
-
-     MONO_LOG_MASK=dll MONO_LOG_LEVEL=debug manos --docs
-
-
+and navigate to http://localhost:8181/ in your browser.
 
 
 Installation on Linux
@@ -171,11 +135,6 @@ Installation on Windows
 Follow the Windows specific instructions on <http://www.mono-project.com/download> to install Mono 2.8.
 This step is optional but you will need the Mono.Posix.dll and PosixHelper.dll when you want to compile
 a single Manos dll for both Windows and Linux/MacOS.
-
-### Install libev
-
-Download the libev package from: <http://software.schmorp.de/pkg/libev.html>
-Extract it and place it next to the libev in the source dir, so both libev-4.00 and libev are in the same directory.
 
 ### Install Manos
 
