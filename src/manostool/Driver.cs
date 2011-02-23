@@ -128,7 +128,7 @@ namespace Manos.Tool
 		private static int Init (IList<string> args)
 		{
 			if (args.Count < 1) {
-				Console.WriteLine ("manos -init <AppName>");
+				Console.WriteLine ("manos --init <AppName>");
 				Console.WriteLine ("This will initialize a new application with the supplied name.");
 			}
 				

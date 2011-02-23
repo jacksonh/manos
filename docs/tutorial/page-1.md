@@ -4,10 +4,10 @@ Getting Started with Manos
 This tutorial will get you writing your first Manos apps in no time.
 
 We assume you already have Manos installed on your machine.  If you don't check out
-the Installation Guide. To ensure you have Manos running try typing the manos -help
+the Installation Guide. To ensure you have Manos running try typing the manos --help
 command in a terminal.
 
-    manos -help
+    manos --help
 
 For this tutorial we are going to create a simple URL shortening service. It will allow
 users to submit links for shortening and will also keep track of how many times a shortened
@@ -19,14 +19,14 @@ Create a Manos Project
 
 To create a Manos application all you need to do is run the following command:
 
-    manos -init <YourApplicationName>
+    manos --init <YourApplicationName>
 
 Make sure you don't have any spaces in your application name. An app name should just be letters,
 digits and underscores. 
 
 We'll call our app Shorty;
 
-    manos -init Shorty
+    manos --init Shorty
 
 This will create a folder named Shorty with a few files and subfolders:
 
@@ -107,12 +107,12 @@ Building and Running Manos Apps
 
 To test out your application first you'll need to build it. You can build the app with the manos build command.
 
-    manos -build
+    manos --build
 
-To run this app all we'll use the manos -server command. This command loads the local compiled manos app
+To run this app all we'll use the manos --server command. This command loads the local compiled manos app
 and sets up hosting for it.
 
-    manos -server
+    manos --server
 
 Once the application is running you can check it out by navigating your browser to http://localhost:8080/
 
