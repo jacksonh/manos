@@ -36,7 +36,7 @@ On windows all files will be installed in the same directory:
 Layouts
 -------
 
-Layouts are the files that are copied to your new application directory when you use the manos -init command.
+Layouts are the files that are copied to your new application directory when you use the manos --init command.
 
 
 Installing from source
@@ -51,7 +51,7 @@ The configure script also supports changing the installation prefix:
 
     ./configure --prefix=/tmp/install
 
-To verify your installation you can use the manos -docs command.  This will create a new server running on http://localhost:8181/ you should be able to navigate there in your browser and view the manos documentation.
+To verify your installation you can use the manos --docs command.  This will create a new server running on http://localhost:8181/ you should be able to navigate there in your browser and view the manos documentation.
 
 
 
@@ -81,7 +81,7 @@ This will install Manos.dll and manos.exe into /usr/local/lib/manos. As well as 
 
 You should now be able to run the manos documentation server:
 
-    manos -docs
+    manos --docs
 
 and navigate to http://localhost:8181/ in your browser.  
 
@@ -110,7 +110,7 @@ and navigate to http://localhost:8181/ in your browser.
 
 Another trick is to use Mono's logging to see where Mono is looking for libev.dylib
 
-     MONO_LOG_MASK=dll MONO_LOG_LEVEL=debug manos -docs
+     MONO_LOG_MASK=dll MONO_LOG_LEVEL=debug manos --docs
 
 
 
@@ -137,7 +137,7 @@ Checkout Manos from github at <http://github.com/jacksonh/manos/> and build/inst
     jackson@erm:manos$ make && sudo make install
     ...
 
-To verify your installation you can use the manos -docs command.  This will create a new server running on
+To verify your installation you can use the manos --docs command.  This will create a new server running on
 http://localhost:8181/ you should be able to navigate there in your browser and view the manos documentation.
 
 
@@ -158,7 +158,7 @@ Checkout Manos from github at <http://github.com/jacksonh/manos/> and build/inst
     $ gmake install
     ...
 
-To verify your installation you can use the manos -docs command.  This will create a new server running on
+To verify your installation you can use the manos --docs command.  This will create a new server running on
 http://localhost:8181/ you should be able to navigate there in your browser and view the manos documentation.
 
 
