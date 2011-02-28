@@ -43,6 +43,8 @@ namespace Manos
 		internal object data;
 		internal TimeoutCallback callback;
 
+		private bool stopped;
+
 		public Timeout (TimeSpan span, IRepeatBehavior repeat, object data, TimeoutCallback callback) : this (TimeSpan.Zero, span, repeat,data, callback)
 		{
 		}
@@ -64,6 +66,9 @@ namespace Manos
 		/// </param>
 		public void Run (ManosApp app)
 		{
+			if (stopped)
+				return;
+
 			try {
 				callback (app, data);
 			} catch (Exception e) {
@@ -73,13 +78,21 @@ namespace Manos
 			
 			repeat.RepeatPerformed ();
 		}
-		
+
+		/// <summary>
+		/// Stop the current timeout from further execution.  Once a timeout is stopped it can not be restarted
+		/// </summary>
+		public void Stop ()
+		{
+			stopped = true;
+		}
+
 		/// <summary>
 		/// Inidicates that the IOLoop should retain this timeout, because it will be run again at some point in the future. Infrastructure.
 		/// </summary>
 		public bool ShouldContinueToRepeat ()
 		{
-			return repeat.ShouldContinueToRepeat ();	
+			return !stopped || repeat.ShouldContinueToRepeat ();	
 		}
 	}
 }
