@@ -1542,7 +1542,7 @@ namespace Manos.Http {
 
 		bool headers_almost_done (int ch, ParserSettings settings) {
 
-			if (LF != ch) {
+			if (strict && LF != ch) {
 				return false;
 			}
 
@@ -1591,6 +1591,7 @@ namespace Manos.Http {
 			// Exit, the rest of the connect is in a different protocol.
 			if (upgrade) {
 				settings.RaiseOnMessageComplete(this);
+				state = new_message ();
 				return true;
 			}
 
