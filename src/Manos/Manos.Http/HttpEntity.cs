@@ -63,6 +63,7 @@ namespace Manos.Http {
 		private Dictionary<string,UploadedFile> uploaded_files;
 
 		private IHttpBodyHandler body_handler;
+		private bool finished_reading;
 
 		private AsyncWatcher end_watcher;
 
@@ -268,6 +269,7 @@ namespace Manos.Http {
 			// Upgrade connections will raise this event at the end of OnBytesRead
 			if (!parser.Upgrade) 
 				OnFinishedReading (parser);
+			finished_reading = true;
 			return 0;
 		}
 
@@ -377,6 +379,7 @@ namespace Manos.Http {
 			data = null;
 			post_data = null;
 			uploaded_files = null;
+			finished_reading = false;
 
 			if (parser_settings == null)
 				CreateParserSettingsInternal ();
@@ -401,7 +404,7 @@ namespace Manos.Http {
 				Console.WriteLine (e);
 			}
 
-			if (parser.Upgrade) {
+			if (finished_reading && parser.Upgrade) {
 
 				//
 				// Well, this is a bit of a hack.  Ideally, maybe there should be a putback list
