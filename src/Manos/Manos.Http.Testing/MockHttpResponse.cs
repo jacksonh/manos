@@ -9,10 +9,9 @@ namespace Manos.Http.Testing
 	{
 		StringBuilder builder = new StringBuilder ();
 
-		public MockHttpResponse (IHttpTransaction txn)
+		public MockHttpResponse ()
 		{
 			this.Headers = new HttpHeaders ();
-			this.Transaction = txn;
 		}
 
 		public void Dispose ()
@@ -100,7 +99,13 @@ namespace Manos.Http.Testing
 
 		public void SendFile (string file)
 		{
-			throw new NotImplementedException ();
+			SentFile = file;
+		}
+		
+		public string SentFile
+		{
+			get;
+			private set;
 		}
 
 		public void Redirect (string url)
