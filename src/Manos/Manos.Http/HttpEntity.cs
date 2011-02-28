@@ -200,6 +200,9 @@ namespace Manos.Http {
 			if (o == null && properties == null)
 				return;
 
+			if (properties == null)
+				properties = new Dictionary<string,object> ();
+
 			if (o == null) {
 				properties.Remove (name);
 				if (properties.Count == 0)
@@ -262,7 +265,9 @@ namespace Manos.Http {
 
 		private int OnMessageComplete (HttpParser parser)
 		{
-			OnFinishedReading (parser);
+			// Upgrade connections will raise this event at the end of OnBytesRead
+			if (!parser.Upgrade) 
+				OnFinishedReading (parser);
 			return 0;
 		}
 
@@ -394,6 +399,25 @@ namespace Manos.Http {
 			} catch (Exception e) {
 				Console.WriteLine ("Exception while parsing");
 				Console.WriteLine (e);
+			}
+
+			if (parser.Upgrade) {
+
+				//
+				// Well, this is a bit of a hack.  Ideally, maybe there should be a putback list
+				// on the socket so we can put these bytes back into the stream and the upgrade
+				// protocol handler can read them out as if they were just reading normally.
+				//
+
+				if (bytes.Position < bytes.Length) {
+					byte [] upgrade_head = new byte [bytes.Length - bytes.Position];
+					Array.Copy (bytes.Bytes, bytes.Position, upgrade_head, 0, upgrade_head.Length);
+
+					SetProperty ("UPGRADE_HEAD", upgrade_head);
+				}
+
+				// This is delayed until here with upgrade connnections.
+				OnFinishedReading (parser);
 			}
 		}
 
