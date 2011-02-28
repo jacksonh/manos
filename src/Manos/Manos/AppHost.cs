@@ -140,16 +140,18 @@ namespace Manos
 			pipes.Add (pipe);
 		}
 
-		public static void AddTimeout (TimeSpan timespan, IRepeatBehavior repeat, object data, TimeoutCallback callback)
+		public static Timeout AddTimeout (TimeSpan timespan, IRepeatBehavior repeat, object data, TimeoutCallback callback)
 		{
-			AddTimeout (timespan, timespan, repeat, data, callback);
+			return AddTimeout (timespan, timespan, repeat, data, callback);
 		}
 
-		public static void AddTimeout (TimeSpan begin, TimeSpan timespan, IRepeatBehavior repeat, object data, TimeoutCallback callback)
+		public static Timeout AddTimeout (TimeSpan begin, TimeSpan timespan, IRepeatBehavior repeat, object data, TimeoutCallback callback)
 		{
 			Timeout t = new Timeout (begin, timespan, repeat, data, callback);
 			
 			ioloop.AddTimeout (t);
+
+			return t;
 		}
 		
 		public static void RunTimeout (Timeout t)

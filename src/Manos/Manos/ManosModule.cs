@@ -295,24 +295,24 @@ namespace Manos {
 			return AddRouteHandler (module, patterns, HttpMethods.TraceMethods);
 		}
 		
-		public static void AddTimeout (TimeSpan timespan, TimeoutCallback callback)
+		public static Timeout AddTimeout (TimeSpan timespan, TimeoutCallback callback)
 		{
-			AddTimeout (timespan, RepeatBehavior.Single, null, callback);
+			return AddTimeout (timespan, RepeatBehavior.Single, null, callback);
 		}
 		
-		public static void AddTimeout (TimeSpan timespan, IRepeatBehavior repeat, TimeoutCallback callback)
+		public static Timeout AddTimeout (TimeSpan timespan, IRepeatBehavior repeat, TimeoutCallback callback)
 		{
-			AddTimeout (timespan, repeat, null, callback);
+			return AddTimeout (timespan, repeat, null, callback);
 		}
 		
-		public static void AddTimeout (TimeSpan timespan, object data, TimeoutCallback callback)
+		public static Timeout AddTimeout (TimeSpan timespan, object data, TimeoutCallback callback)
 		{
-			AddTimeout (timespan, RepeatBehavior.Single, data, callback);
+			return AddTimeout (timespan, RepeatBehavior.Single, data, callback);
 		}
 		
-		public static void AddTimeout (TimeSpan timespan, IRepeatBehavior repeat, object data, TimeoutCallback callback)
+		public static Timeout AddTimeout (TimeSpan timespan, IRepeatBehavior repeat, object data, TimeoutCallback callback)
 		{
-			AppHost.AddTimeout (timespan, repeat, data, callback);
+			return AppHost.AddTimeout (timespan, repeat, data, callback);
 		}
 
 		public static void AddPipe (ManosPipe pipe)
