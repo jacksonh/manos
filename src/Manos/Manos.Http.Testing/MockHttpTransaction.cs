@@ -35,14 +35,14 @@ namespace Manos.Http.Testing
 	{
 		private bool aborted;
 
-		public MockHttpTransaction (IHttpRequest request)
+		public MockHttpTransaction (IHttpRequest request, IHttpResponse response)
 		{
 			if (request == null)
 			   throw new ArgumentNullException ("request");
 
 			Request = request;
 
-			Response = new MockHttpResponse (this);
+			Response = response;
 		}
 		
 		public String ResponseString{
