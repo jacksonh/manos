@@ -897,8 +897,8 @@ namespace Manos.Http {
 						/* they might be just sending \n instead of \r\n so this would be
 						 * the second \n to denote the end of headers*/
 						state = State.headers_almost_done;
-						if (!headers_almost_done(ch, settings))
-							settings.RaiseOnError(this, "header not properly completed", data, p_err);
+						if (!headers_almost_done(ch, settings, data, p_err))
+							return;
 						break;
 					}
 
@@ -1242,8 +1242,8 @@ namespace Manos.Http {
 					break;
 
 				case State.headers_almost_done:
-					if (!headers_almost_done(ch, settings))
-						settings.RaiseOnError(this, "header not properly completed", data, p_err);
+					if (!headers_almost_done(ch, settings, data, p_err))
+						return;
 					break;
 
 				/******************* Header *******************/
@@ -1540,9 +1540,11 @@ namespace Manos.Http {
 			return true;
 		}
 
-		bool headers_almost_done (int ch, ParserSettings settings) {
+		// Return true if we should continue processing
+		bool headers_almost_done (int ch, ParserSettings settings, ByteBuffer data, int p_err) {
 
 			if (strict && LF != ch) {
+				settings.RaiseOnError (this, "header not properly completed", data, p_err);
 				return false;
 			}
 
@@ -1592,7 +1594,7 @@ namespace Manos.Http {
 			if (upgrade) {
 				settings.RaiseOnMessageComplete(this);
 				state = new_message ();
-				return true;
+				return false;
 			}
 
 			if (0 != (flags & F_SKIPBODY)) {
