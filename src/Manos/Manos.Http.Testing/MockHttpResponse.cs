@@ -8,10 +8,12 @@ namespace Manos.Http.Testing
 	public class MockHttpResponse : Manos.Http.IHttpResponse
 	{
 		StringBuilder builder = new StringBuilder ();
+		Dictionary<string, HttpCookie> cookies = new Dictionary<string, HttpCookie> ();
 
 		public MockHttpResponse ()
 		{
 			this.Headers = new HttpHeaders ();
+			Properties = new Dictionary<string,object> ();
 		}
 
 		public void Dispose ()
@@ -36,12 +38,8 @@ namespace Manos.Http.Testing
 		public StreamWriter Writer { get{throw new NotImplementedException();} }
 
 		public Encoding ContentEncoding {
-			get {
-				throw new NotImplementedException ();
-			}
-			set{
-				throw new NotImplementedException();	
-			}
+			get { return Headers.ContentEncoding; }
+			set { Headers.ContentEncoding = value; }
 		}
 
 		public int StatusCode { get; set; }
@@ -108,9 +106,15 @@ namespace Manos.Http.Testing
 			private set;
 		}
 
+		public string RedirectedUrl
+		{
+			get;
+			private set;
+		}
+
 		public void Redirect (string url)
 		{
-			throw new NotImplementedException ();
+			RedirectedUrl = url;
 		}
 
 		public void Read ()
@@ -122,33 +126,51 @@ namespace Manos.Http.Testing
 		{
 			this.Headers.SetHeader (name, value);
 		}
+		
+		public Dictionary<string,HttpCookie> Cookies {
+			get { return cookies; }
+		}
+		
 		public void SetCookie (string name, HttpCookie cookie)
 		{
-			throw new NotImplementedException ();
+			cookies [name] = cookie;
 		}
 		public HttpCookie SetCookie (string name, string value)
 		{
-			throw new NotImplementedException ();
+			var cookie = new HttpCookie (name, value);
+			
+			SetCookie (name, cookie);
+			return cookie;
 		}
 		public HttpCookie SetCookie (string name, string value, string domain)
 		{
-			throw new NotImplementedException ();
+			var cookie = new HttpCookie (name, value);
+			cookie.Domain = domain;
+			
+			SetCookie (name, cookie);
+			return cookie;
 		}
 		public HttpCookie SetCookie (string name, string value, DateTime expires)
 		{
-			throw new NotImplementedException ();
+			return SetCookie (name, value, null, expires);
 		}
 		public HttpCookie SetCookie (string name, string value, string domain, DateTime expires)
 		{
-			throw new NotImplementedException ();
+			var cookie = new HttpCookie (name, value);
+			
+			cookie.Domain = domain;
+			cookie.Expires = expires;
+			
+			SetCookie (name, cookie);
+			return cookie;
 		}
 		public HttpCookie SetCookie (string name, string value, TimeSpan max_age)
 		{
-			throw new NotImplementedException ();
+			return SetCookie (name, value, DateTime.Now + max_age);
 		}
 		public HttpCookie SetCookie (string name, string value, string domain, TimeSpan max_age)
 		{
-			throw new NotImplementedException ();
+			return SetCookie (name, value, domain, DateTime.Now + max_age);
 		}
 		public void Complete (Manos.IO.WriteCallback callback)
 		{
@@ -169,20 +191,38 @@ namespace Manos.Http.Testing
 		{
 			throw new NotImplementedException ();
 		}
-
+		
 		public void SetProperty (string name, object o)
 		{
-			throw new NotImplementedException ();
+			if (name == null)
+				throw new ArgumentNullException ("name");
+
+			if (o == null) {
+				Properties.Remove (name);
+				return;
+			}
+
+			Properties [name] = o;
 		}
 
 		public object GetProperty (string name)
 		{
-			throw new NotImplementedException ();
+			if (name == null)
+				throw new ArgumentNullException ("name");
+
+			object res = null;
+			if (Properties.TryGetValue (name, out res))
+				return null;
+				
+			return res;
 		}
 
 		public T GetProperty<T> (string name)
 		{
-			throw new NotImplementedException ();
+			object res = GetProperty (name);
+			if (res == null)
+				return default (T);
+			return (T) res;
 		}
 		
 		public event Action OnCompleted;

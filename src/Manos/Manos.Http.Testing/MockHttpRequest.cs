@@ -25,6 +25,7 @@
 
 using System;
 using System.Text;
+using System.Globalization;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
@@ -57,6 +58,8 @@ namespace Manos.Http.Testing
 			uri_data = new DataDictionary ();
 			query_data = new DataDictionary ();
 			post_data = new DataDictionary ();
+			
+			Properties = new Dictionary<string,object> ();
 			
 			data.Children.Add (UriData);
 			data.Children.Add (QueryData);
@@ -175,17 +178,35 @@ namespace Manos.Http.Testing
 
 		public void SetProperty (string name, object o)
 		{
-			throw new NotImplementedException ();
+			if (name == null)
+				throw new ArgumentNullException ("name");
+
+			if (o == null) {
+				Properties.Remove (name);
+				return;
+			}
+
+			Properties [name] = o;
 		}
 
 		public object GetProperty (string name)
 		{
-			throw new NotImplementedException ();
+			if (name == null)
+				throw new ArgumentNullException ("name");
+
+			object res = null;
+			if (Properties.TryGetValue (name, out res))
+				return null;
+				
+			return res;
 		}
 
 		public T GetProperty<T> (string name)
 		{
-			throw new NotImplementedException ();
+			object res = GetProperty (name);
+			if (res == null)
+				return default (T);
+			return (T) res;
 		}
 		
 		public void Read ()
@@ -199,7 +220,15 @@ namespace Manos.Http.Testing
 
 		public void WriteMetadata (StringBuilder builder)
 		{
-			throw new NotImplementedException ();
+			builder.Append (Encoding.ASCII.GetString (HttpMethodBytes.GetBytes (Method)));
+			builder.Append (" ");
+			builder.Append (Path);
+			builder.Append (" HTTP/");
+			builder.Append (MajorVersion.ToString (CultureInfo.InvariantCulture));
+			builder.Append (".");
+			builder.Append (MinorVersion.ToString (CultureInfo.InvariantCulture));
+			builder.Append ("\r\n");
+			Headers.Write (builder, null, Encoding.ASCII);		
 		}
 	}
 }
