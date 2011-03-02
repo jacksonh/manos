@@ -286,7 +286,7 @@ manos_socket_receive (int fd, char* buffer, int len, int *err)
 	msg.msg_iovlen = 1;
 
 	rc = recvmsg (fd, &msg, 0);
-	if (rc < -1) {
+	if (rc == -1) {
 		if (errno == EAGAIN || errno == EINTR) {
 			*err = 0;
 			return -1;
