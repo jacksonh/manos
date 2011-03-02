@@ -92,7 +92,7 @@ namespace Manos
 		/// </summary>
 		public bool ShouldContinueToRepeat ()
 		{
-			return !stopped || repeat.ShouldContinueToRepeat ();	
+			return !stopped && repeat.ShouldContinueToRepeat ();	
 		}
 	}
 }
