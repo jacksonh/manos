@@ -1,5 +1,6 @@
 //
-// Copyright (C) 2010 Jackson Harper (jackson@manosdemono.com)
+// ManosConfig - configuration management for Manos
+// Author: Axel Callabed <axelc@github.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -27,9 +28,15 @@ using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
 
+using Manos.Logging;
+
 #if ENABLE_CONFIG
 using Mono.CSharp;
+using System.Threading;
+using System.Runtime.Remoting.Messaging;
 #endif
+
+
 
 namespace Manos
 {
@@ -48,8 +55,12 @@ namespace Manos
 	
 	public static class ManosConfig
 	{
+		delegate bool AsyncParseWorker(string path);
+	
 		// Property storage
 		private static Dictionary<string, object> cfg = new Dictionary<string, object> ();
+			
+		
 		
 		static ManosConfig ()
 		{
@@ -61,8 +72,17 @@ namespace Manos
 		// Load configuration from file
 		// Search path:
 		//	1.<app_folder>/manos.config
+		
+		// TODO: because execution of config scripts is async, we can run into race conditions if application
+		// code requests a config variable before we're done executing the script. We should add a callback
+		// parameter, so we can notify the ManosApp that config is ready for business.
+		
 		public static void Load (ManosApp app)
 		{
+#if ENABLE_CONFIG		
+			
+			Evaluator.Init (new string[0]);
+			
 			string [] sources =
 			{
 				Path.Combine (Environment.CurrentDirectory, "manos.config"),
@@ -72,16 +92,27 @@ namespace Manos
 			{
 				try
 				{
-					if (File.Exists (src))
-						CompileFile (src);
+					if (File.Exists (src)) 
+					{
+						AsyncParseWorker w = new AsyncParseWorker (ParseFile);
+						w.BeginInvoke (src, ir =>
+							{
+								AsyncResult res = (AsyncResult) ir;
+								AsyncParseWorker cw = (AsyncParseWorker) res.AsyncDelegate;
+								
+								cw.EndInvoke (ir);
+							},
+						null);
+					}
 				}
 				catch (Exception ex)
 				{
-					Console.Error.WriteLine ("** Error processing config file '{0}': {1}", src, ex.Message);
-					Console.Error.WriteLine ("** Trace: {0}", ex.StackTrace);
+					AppHost.Log.Error ("Error processing configuration: {0}", ex.Message);
+					AppHost.Log.Error ("Trace: {0}", ex.StackTrace);
 					continue; 
 				}
-			}	
+			}
+#endif				
 		}
 		
 		public static void Add<T> (string key, T val)
@@ -118,23 +149,38 @@ namespace Manos
 #endregion
 		
 #region Private methods		
-		private static bool CompileFile (string path)
+		private static bool ParseFile (string path)
 		{
-#if ENABLE_CONFIG
-			using (StreamReader sr = new StreamReader (path))
+#if ENABLE_CONFIG		
+			try
+			{	
+				using (StreamReader sr = new StreamReader (path))
+				{
+					string txt = sr.ReadToEnd ();
+					
+					if (String.IsNullOrEmpty (txt))
+						return true;		
+											
+					Evaluator.ReferenceAssembly (Assembly.GetExecutingAssembly ());
+					Evaluator.Run ("using Manos;");
+					Evaluator.Run (txt);
+								
+					AppHost.Log.Info ("Read configuration from '{0}'", path);
+					
+					return true;
+				}
+			}
+			catch (Exception ex)
 			{
-				string txt = sr.ReadToEnd ();
+				AppHost.Log.Error ("Error processing config file '{0}': {1}", path, ex.Message);
+				AppHost.Log.Error ("Trace: {0}", ex.StackTrace);
 				
-				Evaluator.Init (new string[0]);
-				Evaluator.ReferenceAssembly (Assembly.GetExecutingAssembly ());
-				Evaluator.Run ("using Manos;");
-				Evaluator.Run (txt);
-				
-				return true;
+				return false;
 			}
 #else
-            return false;
-#endif
+		return false;	
+#endif		
+
 		}
 		
 #endregion		
