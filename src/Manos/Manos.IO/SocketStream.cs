@@ -144,6 +144,7 @@ namespace Manos.IO {
 
 		public override void Close ()
 		{
+
 			//		IOWatcher.ReleaseHandle (socket, Handle);
 
 			base.Close ();
@@ -189,10 +190,13 @@ namespace Manos.IO {
 		public void Listen (string host, int port)
 		{
 			int error;
-			fd = manos_socket_listen (host, port, out error);
+			fd = manos_socket_listen (host, port, 128, out error);
 
-			if (fd < 0)
-				throw new Exception (String.Format ("An error occurred while trying to liste to {0}:{1} errno: {2}", host, port, error));
+			if (fd < 0) {
+			       if (error == 98)
+				       throw new Exception (String.Format ("Address {0}::{1} is already in use.", host, port));
+			       throw new Exception (String.Format ("An error occurred while trying to liste to {0}:{1} errno: {2}", host, port, error));
+			}
 
 			SetHandle (fd);
 
@@ -313,7 +317,7 @@ namespace Manos.IO {
 		private static extern int manos_socket_close (int fd, out int err);
 
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
-		private static extern int manos_socket_listen (string host, int port, out int err);
+		private static extern int manos_socket_listen (string host, int port, int backlog, out int err);
 
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
 		private static extern int manos_socket_accept_many (int fd, SocketInfo [] infos, int max, out int err);
