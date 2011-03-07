@@ -95,8 +95,8 @@ namespace Manos.Http {
 			entity.PostData.Set (HttpUtility.UrlDecode (key_buffer.ToString (), e),
 					HttpUtility.UrlDecode (value_buffer.ToString (), e));
 
-			key_buffer.Clear ();
-			value_buffer.Clear ();
+			key_buffer.Length = 0;
+			value_buffer.Length = 0;
 		}
 	}
 }
