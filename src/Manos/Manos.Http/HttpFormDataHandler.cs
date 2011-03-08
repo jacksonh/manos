@@ -80,7 +80,7 @@ namespace Manos.Http {
 
 		public void Finish (HttpEntity entity)
 		{
-			if (state == State.InKey)
+			if (state == State.InKey && key_buffer.Length > 0)
 				throw new HttpException ("Malformed POST data, key found without value.");
 
 			FinishPair (entity);
