@@ -70,7 +70,7 @@ namespace Manos
 		/// <summary>
 		/// Indicates true if the original string value contained "unsafe" content.
 		/// </summary>
-		public bool HasUnsafefData {
+		public bool HasUnsafeData {
 			get {
 				if (safe_value == null)
 					safe_value = Escape (unsafe_value, out has_unsafe_data);

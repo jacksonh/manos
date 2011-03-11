@@ -105,7 +105,6 @@ namespace Manos.Tool
 
 		private static string [] ParseGlobalOptions (string [] args)
 		{
-			Console.WriteLine ("parsing global options");
 			var p = new OptionSet () {
 				{ "-data-dir=", v => Environment.DataDirectory = v },
 				{ "-out|out=", v => SetOutput (v) },

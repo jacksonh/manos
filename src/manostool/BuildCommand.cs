@@ -102,7 +102,6 @@ namespace Manos.Tool
 		public bool RunXBuild ()
 		{
 			string [] slns = Directory.GetFiles (Directory.GetCurrentDirectory (), "*.sln");
-			Console.WriteLine ("COMPILING SOLUTION:  '{0}'  '{1}'", slns.Length, Directory.GetCurrentDirectory ());
 			if (slns.Length < 1)
 				return false;
 
@@ -130,9 +129,6 @@ namespace Manos.Tool
 			var provider = new CSharpCodeProvider ();
 			var options = new CompilerParameters (ReferencedAssemblies, OutputAssembly, true);
 
-			foreach (string s in ReferencedAssemblies) {
-				Console.WriteLine (s);	
-			}
 			
 			var results = provider.CompileAssemblyFromFile (options, Sources);
 			
