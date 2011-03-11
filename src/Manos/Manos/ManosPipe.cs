@@ -47,9 +47,9 @@ namespace Manos
 			complete ();
 		}
 
-		public virtual void OnPreProcessTarget (IManosContext ctx, Action<IManosTarget> complete)
+		public virtual void OnPreProcessTarget (IManosContext ctx, Action<IManosTarget> changeHandler)
 		{
-			complete (null);
+			// default: don't change the handler
 		}
 
 		public virtual void OnPostProcessTarget (IManosContext ctx, IManosTarget target, Action complete)

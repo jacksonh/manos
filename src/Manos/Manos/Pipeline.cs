@@ -64,7 +64,7 @@ namespace Manos {
 			this.app = app;
 			this.transaction = transaction;
 
-			pending = 1;
+			pending = AppHost.Pipes == null ? 1 : AppHost.Pipes.Count;
 			step = PipelineStep.PreProcess;
 			handle = GCHandle.Alloc (this);
 
@@ -81,6 +81,9 @@ namespace Manos {
 			foreach (IManosPipe pipe in AppHost.Pipes) {
 				try {
 					pipe.OnPreProcessRequest (app, transaction, StepCompleted);
+					
+					if (transaction.Aborted)
+						return;
 				} catch (Exception e) {
 					pending--;
 
@@ -95,12 +98,15 @@ namespace Manos {
 			step = PipelineStep.WaitingForEnd;
 
 			ctx = new ManosContext (transaction);
-			
-			// TODO:
-			// var handler = OnPreProcessTarget (ctx);
-			// if (handler == null)
+
 			var handler = app.Routes.Find (transaction.Request);
-			
+
+			PipePreProcessTarget((newHandler) => {
+					if(newHandler != handler) {
+						handler = newHandler;
+					}
+				});
+						
 			if (handler == null) {
 				ctx.Response.StatusCode = 404;
 				ctx.Response.End ();
@@ -108,9 +114,6 @@ namespace Manos {
 			}
 
 			ctx.Response.StatusCode = 200;
-
-			// TODO: 
-			// OnPostProcessTarget (ctx, handler);
 
 			try {
 				handler.Invoke (app, ctx);
@@ -128,11 +131,47 @@ namespace Manos {
 				// end = true;
 			}
 
+			PipePostProcessTarget(handler);
+
 			if (ctx.Response.StatusCode == 404) {
 				step = PipelineStep.WaitingForEnd;
 				ctx.Response.End ();
 				return;
 			}
+		}
+		
+		private void PipePreProcessTarget(Action<IManosTarget> callback)
+		{
+			if (null != AppHost.Pipes) {
+				for (int i = 0; i < AppHost.Pipes.Count; ++i)
+				{
+					IManosPipe pipe = AppHost.Pipes[i];
+					try {
+						pipe.OnPreProcessTarget (ctx, callback);
+					} catch (Exception e) {
+						Console.Error.WriteLine ("Exception in {0}::OnPreProcessTarget.", pipe);
+						Console.Error.WriteLine (e);
+					}
+				}
+			}
+		}
+
+		private void PipePostProcessTarget(IManosTarget handler)
+		{
+			if (null != AppHost.Pipes) {
+				// reset pending pipes
+				pending = AppHost.Pipes == null ? 1 : AppHost.Pipes.Count;
+		
+				for (int i = AppHost.Pipes.Count - 1; i >= 0 ; --i)	{
+					IManosPipe pipe = AppHost.Pipes[i];
+					try {
+						pipe.OnPostProcessTarget (ctx, handler, StepCompleted);
+					} catch (Exception e) {
+						Console.Error.WriteLine ("Exception in {0}::OnPostProcessTarget.", pipe);
+						Console.Error.WriteLine (e);
+					}
+				}
+			}		
 		}
 
 		private void PostProcess ()
@@ -142,17 +181,23 @@ namespace Manos {
 				return;
 			}
 
-			foreach (IManosPipe pipe in AppHost.Pipes) {
-				try {
-					pipe.OnPostProcessRequest (app, transaction, StepCompleted);
-					
-					if (ctx.Transaction.Aborted)
-						return;
-				} catch (Exception e) {
-					pending--;
+			if (null != AppHost.Pipes) {
+				// reset pending pipes
+				pending = AppHost.Pipes == null ? 1 : AppHost.Pipes.Count;
+			
+				for (int i = AppHost.Pipes.Count - 1; i >= 0 ; --i)	{
+					IManosPipe pipe = AppHost.Pipes[i];
+					try {
+						pipe.OnPostProcessRequest (app, transaction, StepCompleted);
 
-					Console.Error.WriteLine ("Exception in {0}::OnPostProcessRequest.", pipe);
-					Console.Error.WriteLine (e);
+						if (ctx.Transaction.Aborted)
+							return;
+					} catch (Exception e) {
+						pending--;
+
+						Console.Error.WriteLine ("Exception in {0}::OnPostProcessRequest.", pipe);
+						Console.Error.WriteLine (e);
+					}
 				}
 			}
 		}
@@ -171,7 +216,7 @@ namespace Manos {
 
 			pending = AppHost.Pipes == null ? 1 : AppHost.Pipes.Count;
 			step++;
-
+			
 			switch (step) {
 			case PipelineStep.Execute:
 				Execute ();
