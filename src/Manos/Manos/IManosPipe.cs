@@ -49,7 +49,7 @@ namespace Manos
 		///  if you would like to override the default routing you can do it here, by changing the
 		///  IManosTarget returned in the complete Action.
 		/// </summary>
-		void OnPreProcessTarget (IManosContext ctx, Action<IManosTarget> complete);
+		void OnPreProcessTarget (IManosContext ctx, Action<IManosTarget> changeHandler);
 
 		/// <summary>
 		///  The default routing information has been looked up, but the actual action execution
