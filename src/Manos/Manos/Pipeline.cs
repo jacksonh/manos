@@ -109,7 +109,7 @@ namespace Manos {
 						
 			if (handler == null) {
 				ctx.Response.StatusCode = 404;
-				ctx.Response.End ();
+				ctx.Response.End (app.Get404Response());
 				return;
 			}
 
@@ -121,7 +121,7 @@ namespace Manos {
 				Console.Error.WriteLine ("Exception in transaction handler:");
 				Console.Error.WriteLine (e);
 				ctx.Response.StatusCode = 500;
-				ctx.Response.End ();
+				ctx.Response.End (app.Get500Response());
 				//
 				// TODO: Maybe the cleanest thing to do is
 				// have a HandleError, HandleException thing
