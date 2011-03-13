@@ -168,13 +168,15 @@ namespace Manos.Http.Testing
 		{
 			return SetCookie (name, value, DateTime.Now + max_age);
 		}
+		
 		public HttpCookie SetCookie (string name, string value, string domain, TimeSpan max_age)
 		{
 			return SetCookie (name, value, domain, DateTime.Now + max_age);
 		}
+		
 		public void Complete (Manos.IO.WriteCallback callback)
 		{
-			throw new NotImplementedException ();
+			
 		}
 		
 		public Dictionary<string,object> Properties {
