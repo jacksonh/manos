@@ -195,7 +195,7 @@ namespace Manos.Http.Testing
 				throw new ArgumentNullException ("name");
 
 			object res = null;
-			if (Properties.TryGetValue (name, out res))
+			if (!Properties.TryGetValue (name, out res))
 				return null;
 				
 			return res;
