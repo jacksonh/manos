@@ -39,7 +39,7 @@ namespace Manos.Routing {
 
 	public class RouteHandler : IEnumerable<RouteHandler> {
 
-		private ObservableCollection<string> patterns;
+		private C5.IList<string> patterns;
 		private List<HttpMethod> methods;
 
 		private IMatchOperation [] match_ops;
@@ -49,7 +49,7 @@ namespace Manos.Routing {
 			SetupChildrenCollection ();
 		}
 
-		void HandleChildrenCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		void HandleChildrenCollectionChanged (object sender, EventArgs e)
 		{
 			if (Target != null)
 				throw new InvalidOperationException ("Can not add Children to a RouteHandler that has a Target set.");	
@@ -87,9 +87,12 @@ namespace Manos.Routing {
 			
 		private void SetupChildrenCollection ()
 		{
-			var children = new ObservableCollection<RouteHandler> ();
+			var children = new C5.ArrayList<RouteHandler> ();
 			
-			children.CollectionChanged += HandleChildrenCollectionChanged;
+			children.ItemInserted += HandleChildrenCollectionChanged;
+			children.ItemsAdded += HandleChildrenCollectionChanged;
+			children.ItemRemovedAt += HandleChildrenCollectionChanged;
+			children.ItemsRemoved += HandleChildrenCollectionChanged;
 			Children = children;
 		}
 
@@ -107,7 +110,7 @@ namespace Manos.Routing {
 				}
 				else 
 				{
-					patterns = new ObservableCollection<string> ();
+					patterns = new C5.ArrayList<string> ();
 					//
 					// TODO: ObservableCollection (IList) isn't implemented yet.
 					//
@@ -115,10 +118,15 @@ namespace Manos.Routing {
 					{
 						patterns.Add (s);
 					}
-					patterns.CollectionChanged += delegate(object sender, NotifyCollectionChangedEventArgs e) 
+					EventHandler handler = delegate(object sender, EventArgs e) 
 					{
 						UpdateMatchOps ();
 					};
+
+					patterns.ItemInserted += new C5.ItemInsertedHandler<string> (handler);
+					patterns.ItemsAdded += new C5.ItemsAddedHandler<string> (handler);
+					patterns.ItemRemovedAt += new C5.ItemRemovedAtHandler<string> (handler);
+					patterns.ItemsRemoved += new C5.ItemsRemovedHandler<string> (handler);
 				}
 				UpdateMatchOps ();
 			}
