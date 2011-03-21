@@ -44,7 +44,7 @@ namespace Manos {
 	/// <summary>
 	/// A pre-packaged set of routes/actions that can be registered in the constructor of a ManoApp-derived class.
 	/// </summary>
-	public class ManosModule {
+	public class ManosModule : IManosModule {
 
 		private RouteHandler routes = new RouteHandler ();
 
@@ -79,7 +79,7 @@ namespace Manos {
 			return default500;
 		}
 		
-		private RouteHandler AddRouteHandler (ManosModule module, string [] patterns, HttpMethod [] methods)
+		private RouteHandler AddRouteHandler (IManosModule module, string [] patterns, HttpMethod [] methods)
 		{
 			if (module == null)
 				throw new ArgumentNullException ("module");
@@ -116,7 +116,7 @@ namespace Manos {
 			return res;
 		}
 
-		private RouteHandler AddImplicitRouteHandler (ManosModule module, string [] patterns, HttpMethod [] methods)
+		private RouteHandler AddImplicitRouteHandler (IManosModule module, string [] patterns, HttpMethod [] methods)
 		{
 			module.Routes.IsImplicit = true;
 			module.Routes.Patterns = patterns;
@@ -135,7 +135,7 @@ namespace Manos {
 			return res;
 		}
 		
-		public RouteHandler Route (string pattern, ManosModule module)
+		public RouteHandler Route (string pattern, IManosModule module)
 		{
 			return AddRouteHandler (module, new string [] { pattern }, HttpMethods.RouteMethods);
 		}
@@ -150,12 +150,12 @@ namespace Manos {
 			return AddRouteHandler (action, patterns, HttpMethods.RouteMethods);
 		}
 
-		public RouteHandler Route (ManosModule module, params string [] patterns)
+		public RouteHandler Route (IManosModule module, params string [] patterns)
 		{
 			return AddRouteHandler (module, patterns, HttpMethods.RouteMethods);
 		}
 
-		public RouteHandler Get (string pattern, ManosModule module)
+		public RouteHandler Get (string pattern, IManosModule module)
 		{
 			return AddRouteHandler (module, new string [] { pattern }, HttpMethods.GetMethods);
 		}
@@ -170,14 +170,14 @@ namespace Manos {
 			return AddRouteHandler (action, patterns, HttpMethods.GetMethods);
 		}
 
-		public RouteHandler Get (ManosModule module, params string [] patterns)
+		public RouteHandler Get (IManosModule module, params string [] patterns)
 		{
 			return AddRouteHandler (module, patterns, HttpMethods.GetMethods);
 		}
 		
 		//
 		
-		public RouteHandler Put (string pattern, ManosModule module)
+		public RouteHandler Put (string pattern, IManosModule module)
 		{
 			return AddRouteHandler (module, new string [] { pattern }, HttpMethods.PutMethods);
 		}
@@ -192,12 +192,12 @@ namespace Manos {
 			return AddRouteHandler (action, patterns, HttpMethods.PutMethods);
 		}
 
-		public RouteHandler Put (ManosModule module, params string [] patterns)
+		public RouteHandler Put (IManosModule module, params string [] patterns)
 		{
 			return AddRouteHandler (module, patterns, HttpMethods.PutMethods);
 		}
 		
-		public RouteHandler Post (string pattern, ManosModule module)
+		public RouteHandler Post (string pattern, IManosModule module)
 		{
 			return AddRouteHandler (module, new string [] { pattern }, HttpMethods.PostMethods);
 		}
@@ -212,14 +212,14 @@ namespace Manos {
 			return AddRouteHandler (action, patterns, HttpMethods.PostMethods);
 		}
 
-		public RouteHandler Post (ManosModule module, params string [] patterns)
+		public RouteHandler Post (IManosModule module, params string [] patterns)
 		{
 			return AddRouteHandler (module, patterns, HttpMethods.PostMethods);
 		}
 		
 		//
 		
-		public RouteHandler Delete (string pattern, ManosModule module)
+		public RouteHandler Delete (string pattern, IManosModule module)
 		{
 			return AddRouteHandler (module, new string [] { pattern }, HttpMethods.DeleteMethods);
 		}
@@ -234,14 +234,14 @@ namespace Manos {
 			return AddRouteHandler (action, patterns, HttpMethods.DeleteMethods);
 		}
 
-		public RouteHandler Delete (ManosModule module, params string [] patterns)
+		public RouteHandler Delete (IManosModule module, params string [] patterns)
 		{
 			return AddRouteHandler (module, patterns, HttpMethods.DeleteMethods);
 		}
 		
 		//
 		
-		public RouteHandler Head (string pattern, ManosModule module)
+		public RouteHandler Head (string pattern, IManosModule module)
 		{
 			return AddRouteHandler (module, new string [] { pattern }, HttpMethods.HeadMethods);
 		}
@@ -256,14 +256,14 @@ namespace Manos {
 			return AddRouteHandler (action, patterns, HttpMethods.HeadMethods);
 		}
 
-		public RouteHandler Head (ManosModule module, params string [] patterns)
+		public RouteHandler Head (IManosModule module, params string [] patterns)
 		{
 			return AddRouteHandler (module, patterns, HttpMethods.HeadMethods);
 		}
 		
 		//
 		
-		public RouteHandler Options (string pattern, ManosModule module)
+		public RouteHandler Options (string pattern, IManosModule module)
 		{
 			return AddRouteHandler (module, new string [] { pattern }, HttpMethods.OptionsMethods);
 		}
@@ -278,14 +278,14 @@ namespace Manos {
 			return AddRouteHandler (action, patterns, HttpMethods.OptionsMethods);
 		}
 
-		public RouteHandler Options (ManosModule module, params string [] patterns)
+		public RouteHandler Options (IManosModule module, params string [] patterns)
 		{
 			return AddRouteHandler (module, patterns, HttpMethods.OptionsMethods);
 		}
 		
 		//
 		
-		public RouteHandler Trace (string pattern, ManosModule module)
+		public RouteHandler Trace (string pattern, IManosModule module)
 		{
 			return AddRouteHandler (module, new string [] { pattern }, HttpMethods.TraceMethods);
 		}
@@ -300,7 +300,7 @@ namespace Manos {
 			return AddRouteHandler (action, patterns, HttpMethods.TraceMethods);
 		}
 
-		public RouteHandler Trace (ManosModule module, params string [] patterns)
+		public RouteHandler Trace (IManosModule module, params string [] patterns)
 		{
 			return AddRouteHandler (module, patterns, HttpMethods.TraceMethods);
 		}

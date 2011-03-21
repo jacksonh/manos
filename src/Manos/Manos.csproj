@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Manos</RootNamespace>
     <AssemblyName>Manos</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -50,7 +50,8 @@
     <Compile Include="Manos\IgnoreAttribute.cs" />
     <Compile Include="Manos\ManosApp.cs" />
     <Compile Include="Manos\ManosContext.cs" />
-    <Compile Include="Manos\ManosModule.cs" />
+    <Compile Include="Manos\IManosModule.cs" />
+	<Compile Include="Manos\ManosModule.cs" />
     <Compile Include="Manos\ManosMimeTypes.cs" />
     <Compile Include="Manos\OptionsAttribute.cs" />
     <Compile Include="Manos\PostAttribute.cs" />
