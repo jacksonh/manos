@@ -103,7 +103,7 @@ namespace Manos.Tool
 		
 		public void Run ()
 		{
-			app = LoadLibrary (ApplicationAssembly);
+			app = Loader.LoadLibrary<ManosApp> (ApplicationAssembly, Arguments);
 
 			Console.WriteLine ("Running {0} on port {1}.", app, Port);
 
@@ -116,59 +116,6 @@ namespace Manos.Tool
 			AppHost.Start (app);
 		}
 		
-		public ManosApp LoadLibrary (string library)
-		{
-			Assembly a = Assembly.LoadFrom (library);
-
-			foreach (Type t in a.GetTypes ()) {
-				if (t.BaseType == typeof (ManosApp)) {
-					if (app != null)
-						throw new Exception ("Library contains multiple apps.");
-					app = CreateAppInstance (t);
-				}
-			}
-
-			return app;
-		}
-		
-		public ManosApp CreateAppInstance (Type t)
-		{
-			int arg_count = Arguments.Count;
-			ConstructorInfo [] constructors = t.GetConstructors ();
-			
-			foreach (ConstructorInfo ci in constructors.Where (c => c.GetParameters ().Count () == arg_count)) {
-				object [] args = ArgsForParams (ci.GetParameters ());
-				if (args == null)
-					continue;
-				try {
-					return (ManosApp) Activator.CreateInstance (t, args);
-				} catch (Exception e) {
-					Console.Error.WriteLine ("Exception creating App Type: '{0}'.", t);
-					Console.Error.WriteLine (e);
-				}
-			}
-			
-			return null;
-		}
-		
-		public object [] ArgsForParams (ParameterInfo [] prms)
-		{
-			object [] res = new object [prms.Length];
-			
-			for (int i = 0; i < prms.Count (); i++) {
-				try {
-					res [i] = Convert.ChangeType (Arguments [i], prms [i].ParameterType);
-				} catch (Exception e) {
-					Console.Error.WriteLine ("Exception converting type: '{0}'.", prms [i].ParameterType);
-					Console.Error.WriteLine (e);
-					
-					return null;
-				}
-			}
-			
-			return res;
-		}
-
 		public void SetServerUser (string user)
 		{
 			if (user == null)
