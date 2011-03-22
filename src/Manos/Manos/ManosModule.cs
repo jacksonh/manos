@@ -50,7 +50,7 @@ namespace Manos {
 
 		public ManosModule ()
 		{
-			StartInternal ();
+			//StartInternal ();
 		}
 
 		public RouteHandler Routes {
@@ -335,7 +335,7 @@ namespace Manos {
 			TemplateEngine.RenderToStream (template, ctx.Response.Writer, data);
 		}
 
-		protected void StartInternal ()
+		public void StartInternal ()
 		{
 			AddImplicitRoutes ();
 		}
