@@ -175,6 +175,14 @@ namespace Manos.Http {
 			return SetCookie (name, value, domain, DateTime.Now + max_age);
 		}
 
+		public void RemoveCookie(string name)
+		{
+			var cookie = new HttpCookie (name, "");
+			cookie.Expires = DateTime.Now.AddYears(-1);
+		
+			SetCookie (name, cookie);
+		}
+		
 		public override void Reset ()
 		{
 			cookies = null;

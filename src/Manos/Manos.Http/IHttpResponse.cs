@@ -109,6 +109,8 @@ namespace Manos.Http {
 		HttpCookie SetCookie (string name, string value, TimeSpan max_age);
 		HttpCookie SetCookie (string name, string value, string domain, TimeSpan max_age);
 
+		void RemoveCookie(string name);
+
 		void Read ();
 		void WriteMetadata (StringBuilder builder);
 

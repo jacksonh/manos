@@ -136,6 +136,7 @@ namespace Manos.Http.Testing
 		{
 			cookies [name] = cookie;
 		}
+		
 		public HttpCookie SetCookie (string name, string value)
 		{
 			var cookie = new HttpCookie (name, value);
@@ -143,6 +144,7 @@ namespace Manos.Http.Testing
 			SetCookie (name, cookie);
 			return cookie;
 		}
+		
 		public HttpCookie SetCookie (string name, string value, string domain)
 		{
 			var cookie = new HttpCookie (name, value);
@@ -151,10 +153,12 @@ namespace Manos.Http.Testing
 			SetCookie (name, cookie);
 			return cookie;
 		}
+		
 		public HttpCookie SetCookie (string name, string value, DateTime expires)
 		{
 			return SetCookie (name, value, null, expires);
 		}
+		
 		public HttpCookie SetCookie (string name, string value, string domain, DateTime expires)
 		{
 			var cookie = new HttpCookie (name, value);
@@ -165,6 +169,7 @@ namespace Manos.Http.Testing
 			SetCookie (name, cookie);
 			return cookie;
 		}
+		
 		public HttpCookie SetCookie (string name, string value, TimeSpan max_age)
 		{
 			return SetCookie (name, value, DateTime.Now + max_age);
@@ -173,6 +178,14 @@ namespace Manos.Http.Testing
 		public HttpCookie SetCookie (string name, string value, string domain, TimeSpan max_age)
 		{
 			return SetCookie (name, value, domain, DateTime.Now + max_age);
+		}
+		
+		public void RemoveCookie(string name)
+		{
+			var cookie = new HttpCookie (name, "");
+			cookie.Expires = DateTime.Now.AddYears(-1);
+		
+			SetCookie (name, cookie);
 		}
 		
 		public void Complete (Manos.IO.WriteCallback callback)
