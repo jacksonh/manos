@@ -49,6 +49,8 @@
     <Compile Include="DocsModule.cs" />
     <Compile Include="Markdown.cs" />
     <Compile Include="BuildCommand.cs" />
+    <Compile Include="RunCommand.cs" />
+    <Compile Include="Loader.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Manos\Manos.csproj">

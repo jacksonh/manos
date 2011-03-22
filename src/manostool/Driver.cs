@@ -57,7 +57,8 @@ namespace Manos.Tool
 				{ "server|s", v => command = Server },
 				{ "docs|d", v => command = Docs },
 				{ "build|b", v => command = Build },
-				{ "show-environment|se", v => command = ShowEnvironment }
+				{ "show-environment|se", v => command = ShowEnvironment },
+				{ "run|r=", v => command = a => { return Run(v, a); } },
 			};
 			
 			List<string> extra = null;
@@ -268,6 +269,12 @@ namespace Manos.Tool
 			Console.WriteLine ("manos usage is: manos [command] [options]");
 			Console.WriteLine ();
 			os.WriteOptionDescriptions (Console.Out);
+		}
+		
+		private static int Run (string app, IList<string> args)
+		{
+			RunCommand cmd = new RunCommand ();
+			return cmd.Run (app, args);
 		}
 	}
 }
