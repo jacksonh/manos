@@ -49,23 +49,33 @@ namespace Manos.Http.Testing
 		private Dictionary<string,UploadedFile> uploaded_files;
 		private Encoding encoding;
 		
+		public MockHttpRequest()
+		{
+			Reset();		
+		}
+		
 		public MockHttpRequest (HttpMethod method, string path)
 		{
 			Method = method;
 			Path = path;
 
+			Reset();
+		}
+
+		public void Reset()
+		{
 			data = new DataDictionary ();
 			uri_data = new DataDictionary ();
 			query_data = new DataDictionary ();
 			post_data = new DataDictionary ();
-			
+		
 			Properties = new Dictionary<string,object> ();
-			
+		
 			data.Children.Add (UriData);
 			data.Children.Add (QueryData);
 			data.Children.Add (PostData);
 		}
-
+		
 		public void Dispose ()
 		{
 		}
@@ -122,6 +132,8 @@ namespace Manos.Http.Testing
 					cookies = new DataDictionary ();
 				return cookies;
 			}
+			
+			set { cookies = value; }
 		}
 		
 		public HttpHeaders Headers {

@@ -84,6 +84,9 @@ namespace Manos.Http {
 		void WriteLine (string str);
 		void WriteLine (string str, params object [] prms);
 
+		void Write (byte [] data);
+		void Write (byte [] data, int offset, int length);
+
 		void End ();
 		void End (string str);
 		void End (byte [] data);
@@ -91,9 +94,6 @@ namespace Manos.Http {
 		void End (string str, params object [] prms);
 
 		void Complete (Manos.IO.WriteCallback callback);
-
-		void Write (byte [] data);
-		void Write (byte [] data, int offset, int length);
 
 		void SendFile (string file);
 		

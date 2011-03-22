@@ -114,6 +114,7 @@ namespace Manos.Http.Testing
 
 		public void Redirect (string url)
 		{
+			StatusCode = 302;
 			RedirectedUrl = url;
 		}
 
