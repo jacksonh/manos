@@ -137,6 +137,23 @@ setup_socket (int fd)
 	return (fcntl (fd, F_SETFL, O_NONBLOCK) != -1);
 }
 
+int create_dgram_socket (int *err)
+{
+	int fd = socket (PF_INET, SOCK_DGRAM, 0);
+	if (fd < 0) {
+		*err = errno;
+		return -1;
+	}
+
+	if (!setup_socket (fd)) {
+		*err = errno;
+		close (fd);
+		return -1;
+	}
+
+	return fd;
+}
+
 int create_socket (int *err)
 {
 	int fd = socket (PF_INET, SOCK_STREAM, 0);
@@ -176,6 +193,30 @@ manos_socket_connect (char *host, int port, int *err)
 
 	return fd;
 }	
+
+int
+manos_dgram_socket_listen (char *host, int port, int *err)
+{
+	struct sockaddr* addr;
+	ssize_t addrlen;
+	int fd, r;
+
+	
+	fd = create_dgram_socket (err);
+	if (fd < 0)
+		return -1;
+
+	PARSE_ADDR (host, port, addr, addrlen);
+
+	r = bind (fd, addr, addrlen);
+	if (r < 0) {
+		*err = errno;
+		return -1;
+	}
+
+	return fd;
+}
+
 
 int
 manos_socket_listen (char *host, int port, int backlog, int *err)
@@ -267,6 +308,43 @@ manos_socket_accept_many (int fd, manos_socket_info_t *infos, int len, int *err)
 	}
 
 	return i;
+}
+
+int
+manos_socket_receive_from (int fd, char* buffer, int len, int flags, manos_socket_info_t *info, int *err )
+{
+    ssize_t rc;
+       
+    struct sockaddr_storage addr;
+    socklen_t addrlen = sizeof (struct sockaddr_storage);
+
+    rc = recvfrom( fd, buffer, len, flags, (struct sockaddr*)&addr, &addrlen );
+    if (rc < 0 ) {
+        if (errno == EAGAIN || errno == EINTR) {
+        *err = 0;
+        return -1;
+        }
+        *err = errno;
+        return -1;
+    }
+
+    struct sockaddr_in *in4;
+    struct sockaddr_in6 *in6;
+
+    switch (addr.ss_family) {
+    case AF_INET:
+        in4 = (struct sockaddr_in *) &addr;
+        info->port = ntohs (in4->sin_port);
+        info->addr1 = in4->sin_addr.s_addr;
+        info->addr2 = 0;
+    break;
+    case AF_INET6:
+        in6 = (struct sockaddr_in6 *) &addr;
+        info->port = ntohs (in6->sin6_port);
+    break;
+    }
+
+    return rc;
 }
 
 

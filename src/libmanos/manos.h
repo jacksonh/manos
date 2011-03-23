@@ -35,9 +35,11 @@ void manos_shutdown (manos_data_t *data);
 
 int manos_socket_connect (char *host, int port, int *err);
 int manos_socket_listen (char *host, int port, int backlog, int *err);
+int manos_dgram_socket_listen (char *host, int port, int *err);
 int manos_socket_accept (int fd, manos_socket_info_t *info, int *err);
 int manos_socket_accept_many (int fd, manos_socket_info_t *infos, int len, int *err);
 int manos_socket_receive (int fd, char* data, int len, int *err);
+int manos_socket_receive_from (int fd, char* buffer, int len, int flags, manos_socket_info_t *info, int *err );
 int manos_socket_send (int fd, bytebuffer_t *buffers, int len, int *err);
 int manos_socket_close (int fd, int *err);
 int manos_socket_send_file (int socket, char *name, int chunked, size_t length, length_cb cb, void *gchandle);
