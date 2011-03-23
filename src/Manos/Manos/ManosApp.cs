@@ -42,7 +42,7 @@ namespace Manos {
 		
 		public ManosApp ()
 		{
-			ManosConfig.Load (this);
+			ManosConfig.Load ();
 		}
 
 		public void HandleTransaction (ManosApp app, IHttpTransaction con)
