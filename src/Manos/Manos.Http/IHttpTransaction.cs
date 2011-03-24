@@ -49,6 +49,10 @@ namespace Manos.Http {
 			get;	
 		}
 
+		bool ResponseReady {
+			get;
+		}
+
 		void OnRequestReady ();
 		void OnResponseFinished ();
 

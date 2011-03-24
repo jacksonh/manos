@@ -71,6 +71,11 @@ namespace Manos.Http.Testing
 			private set;
 		}
 
+		public bool ResponseReady {
+			get;
+			private set;
+		}
+
 		public int AbortedStatusCode {
 		       get;
 		       private set;
