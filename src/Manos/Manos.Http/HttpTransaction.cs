@@ -110,6 +110,11 @@ namespace Manos.Http {
 			get { return aborted; }	
 		}
 
+		public bool ResponseReady {
+			get;
+			private set;
+		}
+
 		// Force the server to disconnect
 		public bool NoKeepAlive {
 			get;
@@ -146,6 +151,7 @@ namespace Manos.Http {
 		{
 			try {
 				Response = new HttpResponse (Request, Stream);
+				ResponseReady = true;
 				if( closeOnEnd ) Response.OnEnd += () => Response.Complete( OnResponseFinished );
 				Server.RunTransaction (this);
 			} catch (Exception e) {

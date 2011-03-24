@@ -168,6 +168,7 @@
     <Compile Include="Manos.Http\HttpBufferedBodyHandler.cs" />
     <Compile Include="Manos\IManosRun.cs" />
     <Compile Include="Manos.IO\UdpReceiver.cs" />
+    <Compile Include="Manos\SynchronizedBlock.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
