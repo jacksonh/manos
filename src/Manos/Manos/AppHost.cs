@@ -168,7 +168,7 @@ namespace Manos
 			t.Run (app);	
 		}
 
-		public static void Synchronize (Action<ManosApp, IManosContext, object> action,
+		public static void Synchronize (Action<IManosContext, object> action,
 			IManosContext context, object arg)
 		{
 			if (action == null) {
@@ -198,7 +198,7 @@ namespace Manos
 				// perhaps we should bail here instead, as a result of 'false' would indicate that
 				// somebody is stealing our events.
 				if (waitingSyncBlocks.TryDequeue (out oneBlock)) {
-					oneBlock.Run (App);
+					oneBlock.Run ();
 				}
 			}
 		}
@@ -207,7 +207,7 @@ namespace Manos
 	public static class SynchronizedExtension
 	{
 		public static void Synchronize (this IManosContext context,
-			Action<ManosApp, IManosContext, object> action, object arg)
+			Action<IManosContext, object> action, object arg)
 		{
 			AppHost.Synchronize (action, context, arg);
 		}

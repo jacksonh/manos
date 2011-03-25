@@ -4,11 +4,11 @@ namespace Manos
 {
 	public class SynchronizedBlock
 	{
-		internal Action<ManosApp, IManosContext, object> callback;
+		internal Action<IManosContext, object> callback;
 		internal IManosContext context;
 		internal object data;
 
-		public SynchronizedBlock (Action<ManosApp, IManosContext, object> callback, 
+		public SynchronizedBlock (Action<IManosContext, object> callback, 
 			IManosContext context, object data)
 		{
 			this.data = data;
@@ -19,14 +19,11 @@ namespace Manos
 		/// <summary>
 		/// Causes the action specified in the constructor to be executed. Infrastructure.
 		/// </summary>
-		/// <param name="app">
-		/// A <see cref="ManosApp"/>
-		/// </param>
-		public void Run (ManosApp app)
+		public void Run ()
 		{
 			if (context.Response != null) {
 				try {
-					callback (app, context, data);
+					callback (context, data);
 				} catch (Exception e) {
 					Console.Error.WriteLine ("Exception in synchronous block.");
 					Console.Error.WriteLine (e);
