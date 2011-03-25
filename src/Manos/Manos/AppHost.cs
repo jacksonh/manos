@@ -205,5 +205,14 @@ namespace Manos
 			}
 		}
 	}
+	
+	public static class SynchronizedExtension
+	{
+		public static void Synchronize (this IManosContext context,
+			Action<ManosApp, IManosContext, object> action, object arg)
+		{
+			AppHost.Synchronize (action, context, arg);
+		}
+	}
 }
 
