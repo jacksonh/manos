@@ -68,7 +68,6 @@ namespace Manos.Tool
 			DocsModule docs = new DocsModule (Environment.DocsDirectory);
 			Console.WriteLine ("Go to http://localhost:{0}/ to see your docs.", Port);
 
-			docs.StartInternal ();
 			AppHost.Port = Port;
 			AppHost.Start (docs);
 		}

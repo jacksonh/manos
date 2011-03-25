@@ -114,7 +114,9 @@ namespace Manos
 				throw new ArgumentNullException ("application");
 			
 			app = application;
-			
+
+			app.StartInternal ();
+
 			started = true;
 			server = new HttpServer (HandleTransaction, ioloop);
 			

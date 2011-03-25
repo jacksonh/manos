@@ -112,7 +112,6 @@ namespace Manos.Tool
 			if (IPAddress != null)
 				AppHost.IPAddress = System.Net.IPAddress.Parse (IPAddress);
 
-			app.StartInternal();
 			AppHost.Port = Port;
 			AppHost.Start (app);
 		}

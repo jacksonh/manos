@@ -87,7 +87,8 @@ namespace Manos {
 				throw new ArgumentNullException ("patterns");
 			if (methods == null)
 				throw new ArgumentNullException ("methods");
-			
+
+			module.StartInternal ();
 			module.Routes.Patterns = patterns;
 			module.Routes.Methods = methods;
 			Routes.Children.Add (module.Routes);
@@ -118,6 +119,8 @@ namespace Manos {
 
 		private RouteHandler AddImplicitRouteHandler (IManosModule module, string [] patterns, HttpMethod [] methods)
 		{
+			module.StartInternal ();
+
 			module.Routes.IsImplicit = true;
 			module.Routes.Patterns = patterns;
 			module.Routes.Methods = methods;
