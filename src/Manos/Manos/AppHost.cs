@@ -211,6 +211,12 @@ namespace Manos
 		{
 			AppHost.Synchronize (action, context, arg);
 		}
+		
+		public static void Synchronize (this IManosContext context,
+			Action<IManosContext, object> action, object arg)
+		{
+			AppHost.Synchronize (action, context, arg);
+		}
 	}
 }
 
