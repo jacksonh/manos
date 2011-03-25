@@ -123,14 +123,14 @@ namespace HelloWorld {
 			try {
 				for (var count = 0; count < 60; count++) {
 					System.Threading.Thread.Sleep (1000);
-					AppHost.Synchronize ((r, c, o) => {
+					ctx.Synchronize ((c, o) => {
 						var line = "Alive " + count + " seconds";
 						c.Response.WriteLine (line);
-					}, ctx, null);
+					}, null);
 				}
-				AppHost.Synchronize ((r, c, o) => {
+				ctx.Synchronize ((c, o) => {
 					c.Response.End ();
-				}, ctx, null);
+				}, null);
 			} catch (InvalidOperationException e) {
 				Console.WriteLine ("Sync block died:");
 				Console.WriteLine (e);
