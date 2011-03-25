@@ -168,8 +168,8 @@ namespace Manos
 			t.Run (app);	
 		}
 
-		public static void Synchronize (Action<IManosContext, object> action,
-			IManosContext context, object arg)
+		public static void Synchronize<T> (Action<IManosContext, T> action,
+			IManosContext context, T arg)
 		{
 			if (action == null) {
 				throw new ArgumentNullException ("action");
@@ -182,7 +182,7 @@ namespace Manos
 				throw new InvalidOperationException ("Response stream has been closed");
 			}
 			
-			waitingSyncBlocks.Enqueue (new SynchronizedBlock (action, context, arg));
+			waitingSyncBlocks.Enqueue (new SynchronizedBlock<T> (action, context, arg));
 			syncBlockWatcher.Send ();
 		}
 		
@@ -206,8 +206,8 @@ namespace Manos
 	
 	public static class SynchronizedExtension
 	{
-		public static void Synchronize (this IManosContext context,
-			Action<IManosContext, object> action, object arg)
+		public static void Synchronize<T> (this IManosContext context,
+			Action<IManosContext, T> action, T arg)
 		{
 			AppHost.Synchronize (action, context, arg);
 		}
