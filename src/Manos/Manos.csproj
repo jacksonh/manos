@@ -127,6 +127,7 @@
     <Compile Include="Manos.Caching\ManosInProcCache.cs" />
     <Compile Include="Manos.Testing\ManosContextStub.cs" />
     <Compile Include="Manos.Testing\ManosAppStub.cs" />
+    <Compile Include="Manos.Testing\ManosBrowser.cs" />
     <Compile Include="Manos.Routing\ActionTarget.cs" />
     <Compile Include="Manos.Routing\IManosTarget.cs" />
     <Compile Include="Manos.Routing\ParameterizedAction.cs" />
@@ -171,6 +172,7 @@
     <Compile Include="Manos\IManosRun.cs" />
     <Compile Include="Manos.IO\UdpReceiver.cs" />
     <Compile Include="Manos\ManosConfig.cs" />
+    <Compile Include="Manos\SynchronizedBlock.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

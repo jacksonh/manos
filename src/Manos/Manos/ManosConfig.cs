@@ -41,27 +41,27 @@ namespace Manos
 	/// 
 	/// Here is an example config:
 	/// 
-	/// [main]
-    /// database_user = ahall
-    /// database_password = temp123
-    /// database_name = mydb
-    /// database_hostname = localhost
-    /// database_type = postgresql
-    /// 
-    /// Getting the db user is as simple as ManosConfig.GetString("database_user");
+	/// [manos]
+	/// database_user = ahall
+	/// database_password = temp123
+	/// database_name = mydb
+	/// database_hostname = localhost
+	/// database_type = postgresql
+	/// 
+	/// Getting the db user is as simple as ManosConfig.GetString("database_user");
 	/// </summary>
-    public static class ManosConfig {
+	public static class ManosConfig {
 		public static IConfigSource Source { get; private set; }
 		public static IConfig Main { get; private set; }
-		private const string MAIN_SECTION = "main";
+		private const string MAIN_SECTION = "manos";
 		
 		public static void Load ()
 		{
 			string source = Environment.GetEnvironmentVariable ("MANOS_CONFIG") ??
                     Path.Combine (Environment.CurrentDirectory, "manos.config");
-            if (!File.Exists(source))
-                return;
-                
+			if (!File.Exists(source))
+				return;
+
 			Source = new IniConfigSource(source);
 			Main = Source.Configs[MAIN_SECTION];
 		}

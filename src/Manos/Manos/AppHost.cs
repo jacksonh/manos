@@ -34,6 +34,8 @@ using Manos.Http;
 using Manos.Caching;
 using Manos.Logging;
 
+using Libev;
+
 namespace Manos
 {
 	/// <summary>
@@ -51,6 +53,9 @@ namespace Manos
 		private static IManosCache cache;
 		private static IManosLogger log;
 		private static List<IManosPipe> pipes;
+
+		private static Queue<SynchronizedBlock> waitingSyncBlocks = new Queue<SynchronizedBlock> ();
+		private static AsyncWatcher syncBlockWatcher;
 
 		private static IOLoop ioloop = IOLoop.Instance;
 		
@@ -114,11 +119,16 @@ namespace Manos
 				throw new ArgumentNullException ("application");
 			
 			app = application;
-			
+
+			app.StartInternal ();
+
 			started = true;
 			server = new HttpServer (HandleTransaction, ioloop);
 			
 			server.Listen (IPAddress.ToString (), port);
+			
+			syncBlockWatcher = new AsyncWatcher (IOLoop.EventLoop, HandleSynchronizationEvent);
+			syncBlockWatcher.Start ();
 
 			ioloop.Start ();
 		}
@@ -157,6 +167,36 @@ namespace Manos
 		public static void RunTimeout (Timeout t)
 		{
 			t.Run (app);	
+		}
+
+		public static void Synchronize (Action<ManosApp, IManosContext, object> action,
+			IManosContext context, object arg)
+		{
+			if (action == null) {
+				throw new ArgumentNullException ("action");
+			}
+			if (context == null) {
+				throw new ArgumentNullException ("context");
+			}
+			
+			if (context.Transaction.ResponseReady && context.Transaction.Response == null) {
+				throw new InvalidOperationException ("Response stream has been closed");
+			}
+			
+			lock (waitingSyncBlocks) {
+				waitingSyncBlocks.Enqueue (new SynchronizedBlock (action, context, arg));
+			}
+			syncBlockWatcher.Send ();
+		}
+		
+		private static void HandleSynchronizationEvent (Loop loop, AsyncWatcher watcher, EventTypes revents)
+		{
+			lock (waitingSyncBlocks) {
+				while (waitingSyncBlocks.Count > 0) {
+					var oneBlock = waitingSyncBlocks.Dequeue ();
+					oneBlock.Run (App);
+				}
+			}
 		}
 	}
 }

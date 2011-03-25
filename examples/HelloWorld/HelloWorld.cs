@@ -109,9 +109,32 @@ namespace HelloWorld {
 				}
 			});
 
+			Get ("/sync", ctx => {
+				new System.Threading.Thread (() => AsyncCounter (ctx)).Start ();
+			});
+
 			Post ("/upload", ctx => {
 				ctx.Response.End ("handled upload!");
 			});
+		}
+
+		void AsyncCounter (IManosContext ctx)
+		{
+			try {
+				for (var count = 0; count < 60; count++) {
+					System.Threading.Thread.Sleep (1000);
+					AppHost.Synchronize ((r, c, o) => {
+						var line = "Alive " + count + " seconds";
+						c.Response.WriteLine (line);
+					}, ctx, null);
+				}
+				AppHost.Synchronize ((r, c, o) => {
+					c.Response.End ();
+				}, ctx, null);
+			} catch (InvalidOperationException e) {
+				Console.WriteLine ("Sync block died:");
+				Console.WriteLine (e);
+			}
 		}
 
 		public void Default (IManosContext ctx, string default_value = "I AM DEFAULT")
