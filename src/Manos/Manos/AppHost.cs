@@ -27,6 +27,7 @@
 using System;
 using System.Net;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 using Manos.IO;
@@ -54,7 +55,7 @@ namespace Manos
 		private static IManosLogger log;
 		private static List<IManosPipe> pipes;
 
-		private static Queue<SynchronizedBlock> waitingSyncBlocks = new Queue<SynchronizedBlock> ();
+		private static ConcurrentQueue<SynchronizedBlock> waitingSyncBlocks = new ConcurrentQueue<SynchronizedBlock> ();
 		private static AsyncWatcher syncBlockWatcher;
 
 		private static IOLoop ioloop = IOLoop.Instance;
@@ -183,17 +184,22 @@ namespace Manos
 				throw new InvalidOperationException ("Response stream has been closed");
 			}
 			
-			lock (waitingSyncBlocks) {
-				waitingSyncBlocks.Enqueue (new SynchronizedBlock (action, context, arg));
-			}
+			waitingSyncBlocks.Enqueue (new SynchronizedBlock (action, context, arg));
 			syncBlockWatcher.Send ();
 		}
 		
 		private static void HandleSynchronizationEvent (Loop loop, AsyncWatcher watcher, EventTypes revents)
 		{
-			lock (waitingSyncBlocks) {
-				while (waitingSyncBlocks.Count > 0) {
-					var oneBlock = waitingSyncBlocks.Dequeue ();
+			// we don't want to empty the whole queue here, as any number of threads can enqueue
+			// sync blocks at will while we try to empty it. only process a fixed number of blocks
+			// to not starve other events.
+			int pendingBlocks = waitingSyncBlocks.Count;
+			
+			while (pendingBlocks-- > 0) {
+				SynchronizedBlock oneBlock;
+				// perhaps we should bail here instead, as a result of 'false' would indicate that
+				// somebody is stealing our events.
+				if (waitingSyncBlocks.TryDequeue (out oneBlock)) {
 					oneBlock.Run (App);
 				}
 			}
