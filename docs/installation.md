@@ -91,6 +91,11 @@ Once Mono 2.8 is installed you can verify your installation by typing mono on th
     jackson@erm:~$ mono --version
     Mono JIT compiler version 2.8 (mono-2-8/57dae7a Mon Oct  4 18:24:09 EDT 2010)
 
+### Build Dependencies
+    automake
+    gcc
+    make
+    libtool
 
 ### Install Manos
 
