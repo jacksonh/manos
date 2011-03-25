@@ -2,14 +2,19 @@ using System;
 
 namespace Manos
 {
-	public class SynchronizedBlock
+	public abstract class SynchronizedBlock
 	{
-		internal Action<IManosContext, object> callback;
+		public abstract void Run ();
+	}
+	
+	public class SynchronizedBlock<T> : SynchronizedBlock
+	{
+		internal Action<IManosContext, T> callback;
 		internal IManosContext context;
-		internal object data;
+		internal T data;
 
-		public SynchronizedBlock (Action<IManosContext, object> callback, 
-			IManosContext context, object data)
+		public SynchronizedBlock (Action<IManosContext, T> callback, 
+			IManosContext context, T data)
 		{
 			this.data = data;
 			this.context = context;
@@ -19,7 +24,7 @@ namespace Manos
 		/// <summary>
 		/// Causes the action specified in the constructor to be executed. Infrastructure.
 		/// </summary>
-		public void Run ()
+		public override void Run ()
 		{
 			if (context.Response != null) {
 				try {
