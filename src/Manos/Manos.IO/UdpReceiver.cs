@@ -84,7 +84,7 @@ namespace Manos
 
             if( readCallback != null )
             {
-                IPEndPoint remoteEndPoint = new IPEndPoint( new IPAddress( socketInfo.addr1 ), socketInfo.port );
+                IPEndPoint remoteEndPoint = new IPEndPoint( socketInfo.Address, socketInfo.port );
                 readCallback( this, readBuffer, size, remoteEndPoint );
             }
         }

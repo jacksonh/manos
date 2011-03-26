@@ -20,10 +20,13 @@ typedef struct {
 } manos_data_t;
 
 typedef struct {
-	int fd;
-	int port;
-	uint64_t addr1;
-	uint64_t addr2;
+	int32_t fd;
+	int32_t port;
+	int32_t is_ipv4;
+	union {
+		uint32_t ipv4addr;
+		uint8_t  address_bytes[16];
+	};
 } manos_socket_info_t;
 
 typedef void (*length_cb) (void *gchandle, size_t length, int error);
