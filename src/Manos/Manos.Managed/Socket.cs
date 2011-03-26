@@ -240,7 +240,6 @@ namespace Manos.Managed
                 }
                 lock (write_ops)
                 {
-                    sending = false;
                     StartSending();
                 }
             }, null);
@@ -253,26 +252,36 @@ namespace Manos.Managed
 
         private void StartSending()
         {
-            if (current_write_op == null || sending) return;
-            if (current_write_op.IsComplete)
+            if (current_write_op == null) return;
+            bool cont = true;
+            while (cont)
             {
-                current_write_op.EndWrite(this);
-
-                if (write_ops.Count > 0)
+                cont = false;
+                if (current_write_op.IsComplete)
                 {
-                    IWriteOperation op = write_ops.Dequeue();
-                    op.BeginWrite(this);
-                    current_write_op = op;
-                    current_write_op.HandleWrite(this);
+                    current_write_op.EndWrite(this);
+
+                    if (write_ops.Count > 0)
+                    {
+                        IWriteOperation op = write_ops.Dequeue();
+                        sending = false;
+                        op.BeginWrite(this);
+                        current_write_op = op;
+                        current_write_op.HandleWrite(this);
+                        if (!sending)
+                            cont = true;
+                    }
+                    else
+                    {
+                        current_write_op = null;
+                    }
                 }
                 else
                 {
-                    current_write_op = null;
+                    current_write_op.HandleWrite(this);
                 }
             }
-            else
-                current_write_op.HandleWrite(this);
-           
+            
         }
         
         public event EventHandler Error;
