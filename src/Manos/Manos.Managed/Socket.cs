@@ -137,7 +137,6 @@ namespace Manos.Managed
 
         private void StartTimeout()
         {
-            return;
             if (timer == null)
             {
                 timer = new System.Timers.Timer(60 * 1000);
@@ -233,6 +232,7 @@ namespace Manos.Managed
             }
             socket.BeginSend(buffers.Select(a => new ArraySegment<byte>(a.Bytes, a.Position, a.Length)).ToArray(), SocketFlags.None, out er, (ar) =>
             {
+                StartTimeout();
                 socket.EndSend(ar, out er);
                 if (er != SocketError.Success)
                 {
@@ -298,6 +298,7 @@ namespace Manos.Managed
             SocketError se;
             socket.BeginReceive(receiveBuffer, 0, receiveBuffer.Length, SocketFlags.None, out se, (ar) =>
             {
+                StartTimeout();
                 int len = socket.EndReceive(ar, out se);
                 if (se != SocketError.Success)
                 {
@@ -322,6 +323,11 @@ namespace Manos.Managed
                 {
                     try
                     {
+                        if (timer != null)
+                        {
+                            timer.Dispose();
+                            timer = null;
+                        }
                         socket.EndDisconnect(ar);
                         if (Closed != null)
                             Closed(this, EventArgs.Empty);
