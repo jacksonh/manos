@@ -27,25 +27,6 @@
 #include "manos.h"
 
 
-#define PARSE_ADDR(host, port, addr, addrlen) 	{					\
-		static struct sockaddr_in in;						\
-		static struct sockaddr_in6 in6;						\
-	        memset (&in, 0, sizeof (in));						\
-		memset (&in6, 0, sizeof (in6));						\
-	        in.sin_port = in6.sin6_port = htons (port); 				\
-		in.sin_family = AF_INET;  		  				\
-		in6.sin6_family = AF_INET6;             				\
-		int is_ipv4 = 1; 		           				\
-		if (inet_pton (AF_INET, host, &(in.sin_addr)) <= 0) { 			\
-			is_ipv4 = 0; 							\
-			if (inet_pton(AF_INET6, host, &(in6.sin6_addr)) <= 0) { 	\
-				return -1; 						\
-			} 								\
-		} 									\
-		addr = is_ipv4 ? (struct sockaddr*)&in : (struct sockaddr*)&in6; 	\
-		addrlen = is_ipv4 ? sizeof in : sizeof in6;   				\
-	}
-
 
 /*
  * I want these to be part of the manos_data_t but then how do i get them in
@@ -137,9 +118,52 @@ setup_socket (int fd)
 	return (fcntl (fd, F_SETFL, O_NONBLOCK) != -1);
 }
 
-int create_dgram_socket (int *err)
+static
+int create_any_socket (char *host, int port, int type,
+		int *(socket_alive_cb)(int fd, struct sockaddr *addr, int addrlen))
 {
-	int fd = socket (PF_INET, SOCK_DGRAM, 0);
+	struct sockaddr_in in;
+	struct sockaddr_in6 in6;
+	int fd, ipv4;
+	
+	memset (&in, 0, sizeof (in));
+	memset (&in6, 0, sizeof (in6));
+	
+	in.sin_port = in6.sin6_port = htons (port);
+	in.sin_family = AF_INET;
+	in6.sin6_family = AF_INET6;
+
+	if (inet_pton (AF_INET, host, &(in.sin_addr)) > 0) {
+		ipv4 = 1;
+		fd = socket (PF_INET, type, 0);
+	} else if (inet_pton(AF_INET6, host, &(in6.sin6_addr)) > 0) {
+		ipv4 = 0;
+		fd = socket (PF_INET6, type, 0);
+	} else {
+		return -1;
+	}
+
+	if (!setup_socket (fd)) {
+		close (fd);
+		return -1;
+	}
+
+	if (socket_alive_cb) {
+		int r = socket_alive_cb (fd,
+				ipv4 ? (struct sockaddr*) &in : (struct sockaddr*) &in6,
+				ipv4 ? sizeof (in) : sizeof (in6));
+		if (r != 0) {
+			close (fd);
+			return -1;
+		}
+	}
+
+	return fd;
+}
+
+int create_dgram_socket (int ipv4, int *err)
+{
+	int fd = socket (ipv4 ? PF_INET : PF_INET6, SOCK_DGRAM, 0);
 	if (fd < 0) {
 		*err = errno;
 		return -1;
@@ -154,39 +178,23 @@ int create_dgram_socket (int *err)
 	return fd;
 }
 
-int create_socket (int *err)
+static int
+connect_async (int fd, struct sockaddr *addr, int addrlen)
 {
-	int fd = socket (PF_INET, SOCK_STREAM, 0);
-	if (fd < 0) {
-		*err = errno;
+	int r = connect (fd, addr, addrlen);
+	
+	if (r < 0 && errno != EINPROGRESS) {
 		return -1;
 	}
-
-	if (!setup_socket (fd)) {
-		*err = errno;
-		close (fd);
-		return -1;
-	}
-
-	return fd;
+	return 0;
 }
 
 int
 manos_socket_connect (char *host, int port, int *err)
 {
-	struct sockaddr* addr;
-	ssize_t addrlen;
-	int fd;
+	int fd = create_any_socket (host, port, SOCK_STREAM, &connect_async);
 
-	
-	fd = create_socket (err);
-	if (fd < 0)
-		return -1;
-
-	PARSE_ADDR (host, port, addr, addrlen);
-
-	int r = connect (fd, addr, addrlen);
-	if (r < 0 && errno != EINPROGRESS) {
+	if (fd < 0) {
 		*err = errno;
 		return -1;
 	}
@@ -197,19 +205,11 @@ manos_socket_connect (char *host, int port, int *err)
 int
 manos_dgram_socket_listen (char *host, int port, int *err)
 {
-	struct sockaddr* addr;
-	ssize_t addrlen;
 	int fd, r;
 
-	
-	fd = create_dgram_socket (err);
-	if (fd < 0)
-		return -1;
+	fd = create_any_socket (host, port, SOCK_DGRAM, &bind);
 
-	PARSE_ADDR (host, port, addr, addrlen);
-
-	r = bind (fd, addr, addrlen);
-	if (r < 0) {
+	if (fd < 0) {
 		*err = errno;
 		return -1;
 	}
@@ -217,23 +217,14 @@ manos_dgram_socket_listen (char *host, int port, int *err)
 	return fd;
 }
 
-
 int
 manos_socket_listen (char *host, int port, int backlog, int *err)
 {
-	struct sockaddr* addr;
-	ssize_t addrlen;
 	int fd, r;
 
-	
-	fd = create_socket (err);
-	if (fd < 0)
-		return -1;
+	fd = create_any_socket (host, port, SOCK_STREAM, &bind);
 
-	PARSE_ADDR (host, port, addr, addrlen);
-
-	r = bind (fd, addr, addrlen);
-	if (r < 0) {
+	if (fd < 0) {
 		*err = errno;
 		return -1;
 	}
