@@ -104,7 +104,7 @@ namespace Libev {
 	}
 	
 	[UnmanagedFunctionPointer (System.Runtime.InteropServices.CallingConvention.Cdecl)]
-    public delegate void AsyncWatcherCallback(BaseLoop loop, AsyncWatcher watcher, EventTypes revents);
+    public delegate void AsyncWatcherCallback(BaseLoop loop, IAsyncWatcher watcher, EventTypes revents);
 	
 	[StructLayout (LayoutKind.Sequential)]
 	internal struct UnmanagedAsyncWatcher {

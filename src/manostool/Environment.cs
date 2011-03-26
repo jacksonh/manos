@@ -44,7 +44,8 @@ namespace Manos.Tool
 
 			if (Libev.Loop.IsWindows) {
 				ManosDirectory = Path.GetDirectoryName(Path.GetDirectoryName(exe_path));
-				DataDirectory = ManosDirectory;
+                DataDirectory = Path.Combine(ManosDirectory, "..");
+                DocsDirectory = Path.Combine(ManosDirectory, "..\\docs");
 			} else {
 				ManosDirectory = Path.GetDirectoryName (exe_path);
 				string lib_dir = Path.GetDirectoryName (ManosDirectory);

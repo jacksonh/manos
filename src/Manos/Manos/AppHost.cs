@@ -188,7 +188,7 @@ namespace Manos
 			syncBlockWatcher.Send ();
 		}
 		
-		private static void HandleSynchronizationEvent (BaseLoop loop, AsyncWatcher watcher, EventTypes revents)
+		private static void HandleSynchronizationEvent (BaseLoop loop, IAsyncWatcher watcher, EventTypes revents)
 		{
 			// we don't want to empty the whole queue here, as any number of threads can enqueue
 			// sync blocks at will while we try to empty it. only process a fixed number of blocks

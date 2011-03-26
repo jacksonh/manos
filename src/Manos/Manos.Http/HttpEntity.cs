@@ -499,7 +499,7 @@ namespace Manos.Http {
 			end_watcher.Send ();
 		}
 
-		internal virtual void HandleEnd (BaseLoop loop, AsyncWatcher watcher, EventTypes revents)
+		internal virtual void HandleEnd (BaseLoop loop, IAsyncWatcher watcher, EventTypes revents)
 		{
 			if (OnEnd != null)
 				OnEnd ();
