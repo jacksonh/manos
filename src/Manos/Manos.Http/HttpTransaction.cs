@@ -162,6 +162,7 @@ namespace Manos.Http {
 
 		public void OnResponseFinished ()
 		{
+            if (Request == null) return;
 			bool disconnect = true;
 
 			if (!NoKeepAlive) {
