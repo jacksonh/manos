@@ -69,7 +69,7 @@ namespace Manos.Http {
 			RemotePort = port;
 		}
 
-		public HttpRequest (IHttpTransaction transaction, SocketStream stream)
+		public HttpRequest (IHttpTransaction transaction, ISocketStream stream)
 		{
 			Transaction = transaction;
 			Socket = stream;

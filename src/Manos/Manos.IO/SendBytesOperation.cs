@@ -114,7 +114,7 @@ namespace Manos.IO {
 
 		public void HandleWrite (IOStream stream)
 		{
-			SocketStream sstream = (SocketStream) stream;
+			ISocketStream sstream = (ISocketStream) stream;
 			
 			while (this.buffers.Count > 0) {
 				int len = -1;

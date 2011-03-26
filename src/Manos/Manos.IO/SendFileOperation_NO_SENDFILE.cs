@@ -97,7 +97,7 @@ namespace Manos.IO {
 
 		public void HandleWrite (IOStream stream)
 		{
-			SocketStream sstream = (SocketStream) stream;
+			ISocketStream sstream = (ISocketStream) stream;
 
 			while (bytes_index < file_length) {
 				int len = -1;

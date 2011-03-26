@@ -72,7 +72,7 @@ namespace Manos.IO.Libev
             return new AsyncWatcher(EventLoop, cb);
         }
 
-        public override IO.SocketStream CreateSocketStream()
+        public override IO.ISocketStream CreateSocketStream()
         {
             return new Manos.IO.Libev.SocketStream (this);
         }

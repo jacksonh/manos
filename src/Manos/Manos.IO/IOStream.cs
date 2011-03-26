@@ -64,20 +64,19 @@ namespace Manos.IO
 
     }
 
-    public interface SocketStream : IOStream, IDisposable
+    public interface ISocketStream : IOStream, IDisposable
     {
         void Connect (string host, int port);
 		void Connect (int port);
 		void Listen (string host, int port);
         string Address { get; }
         int Port { get; }
-        event Action<Manos.IO.SocketStream> Connected;
+        event Action<Manos.IO.ISocketStream> Connected;
         event EventHandler<ConnectionAcceptedEventArgs> ConnectionAccepted;
 
         void Write (byte[] data, WriteCallback callback);
         void Write (byte[] data, int offset, int count, WriteCallback callback);
         int Send (ByteBufferS[] buffers, int length, out int error);
-        int SendFile (string name, bool chunked, long length, Action<long, int> callback);
-
+        
     }
 }

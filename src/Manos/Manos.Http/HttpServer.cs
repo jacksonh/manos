@@ -47,7 +47,7 @@ namespace Manos.Http {
 
 		private HttpConnectionCallback callback;
 		private IOLoop ioloop;
-		SocketStream socket;
+		ISocketStream socket;
 		private bool closeOnEnd;
 		
 		static HttpServer ()
@@ -69,7 +69,7 @@ namespace Manos.Http {
 
 		public void Listen (string host, int port)
 		{
-            SocketStream socket = ioloop.CreateSocketStream();
+            ISocketStream socket = ioloop.CreateSocketStream();
 
 			socket.Listen (host, port);
 			socket.ConnectionAccepted += ConnectionAccepted;

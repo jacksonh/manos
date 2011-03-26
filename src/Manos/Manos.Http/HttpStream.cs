@@ -49,7 +49,7 @@ namespace Manos.Http
 
 		private Queue<IWriteOperation> write_ops;
 
-		public HttpStream (HttpEntity entity, SocketStream stream)
+		public HttpStream (HttpEntity entity, ISocketStream stream)
 		{
 			HttpEntity = entity;
 			SocketStream = stream;
@@ -61,7 +61,7 @@ namespace Manos.Http
 			private set;
 		}
 
-		public SocketStream SocketStream {
+		public ISocketStream SocketStream {
 			get;
 			private set;
 		}

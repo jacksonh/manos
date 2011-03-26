@@ -173,7 +173,7 @@ namespace Manos.Http.Testing
 			set;
 		}
 
-		public SocketStream Socket {
+		public ISocketStream Socket {
 			get;
 			set;
 		}

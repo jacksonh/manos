@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Manos
 {
-    public class BaseLoop: IDisposable
+    public abstract class BaseLoop: IDisposable
     {
         private static readonly bool _windows;
 

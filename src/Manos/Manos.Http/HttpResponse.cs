@@ -44,7 +44,7 @@ namespace Manos.Http {
 		private StreamWriter writer;
 		private Dictionary<string, HttpCookie> cookies;
 
-		public HttpResponse (IHttpRequest request, SocketStream stream)
+		public HttpResponse (IHttpRequest request, ISocketStream stream)
 		{
 			Request = request;
 			Socket = stream;

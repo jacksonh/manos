@@ -93,7 +93,7 @@ namespace Manos.Http {
 			}
 		}
 
-		public SocketStream Socket {
+		public ISocketStream Socket {
 			get;
 			protected set;
 		}

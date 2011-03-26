@@ -54,7 +54,7 @@ namespace Manos.IO.Libev {
 		}
 	}
 
-	public class SocketStream : IOStream, Manos.IO.SocketStream, IDisposable {
+	public class SocketStream : IOStream, Manos.IO.ISocketStream, IDisposable {
 
 		public enum SocketState {
 			None,
@@ -319,7 +319,7 @@ namespace Manos.IO.Libev {
 				ConnectionAccepted (this, new ConnectionAcceptedEventArgs (stream));
 		}
 
-		public event Action<Manos.IO.SocketStream> Connected;
+		public event Action<Manos.IO.ISocketStream> Connected;
 		public event EventHandler<ConnectionAcceptedEventArgs> ConnectionAccepted;
 
 

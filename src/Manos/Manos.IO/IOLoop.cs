@@ -40,11 +40,24 @@ namespace Manos.IO {
 
     public abstract class IOLoop
     {
-        private static IOLoop instance = new Libev.IOLoop();
+        private static IOLoop instance;
 
         public static IOLoop Instance
         {
-            get { return instance; }
+            get
+            {
+                if (instance == null)
+                    if (Loop.IsWindows)
+                        instance = new Managed.IOLoop();
+                    else
+                        instance = new Libev.IOLoop();
+                return instance;
+            }
+            set
+            {
+                if (instance != null) throw new ArgumentException("Cannot set the instance once it''s been used");
+                instance = value;
+            }
         }
 
         public abstract BaseLoop EventLoop
@@ -60,7 +73,7 @@ namespace Manos.IO {
 
         public abstract IAsyncWatcher NewAsyncWatcher(AsyncWatcherCallback cb);
 
-        public abstract SocketStream CreateSocketStream();
+        public abstract ISocketStream CreateSocketStream();
     }
 }
 
