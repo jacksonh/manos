@@ -267,6 +267,7 @@ manos_socket_accept (int fd, manos_socket_info_t *info, int *err)
 		return -1;
 	}
 
+	memset (info, 0, sizeof (*info));
 	info->fd = res;
 
 	struct sockaddr_in *in4;
@@ -276,13 +277,14 @@ manos_socket_accept (int fd, manos_socket_info_t *info, int *err)
 	case AF_INET:
 		in4 = (struct sockaddr_in *) &addr;
 		info->port = ntohs (in4->sin_port);
-		info->addr1 = in4->sin_addr.s_addr;
-		info->addr2 = 0;
-
+		info->ipv4addr = in4->sin_addr.s_addr;
+		info->is_ipv4 = 1;
 		break;
 	case AF_INET6:
 		in6 = (struct sockaddr_in6 *) &addr;
 		info->port = ntohs (in6->sin6_port);
+		memcpy (info->address_bytes, in6->sin6_addr.s6_addr, 16);
+		info->is_ipv4 = 0;
 		break;
 	}
 	
@@ -332,12 +334,14 @@ manos_socket_receive_from (int fd, char* buffer, int len, int flags, manos_socke
     case AF_INET:
         in4 = (struct sockaddr_in *) &addr;
         info->port = ntohs (in4->sin_port);
-        info->addr1 = in4->sin_addr.s_addr;
-        info->addr2 = 0;
+        info->ipv4addr = in4->sin_addr.s_addr;
+		info->is_ipv4 = 1;
     break;
     case AF_INET6:
         in6 = (struct sockaddr_in6 *) &addr;
         info->port = ntohs (in6->sin6_port);
+		memcpy (info->address_bytes, in6->sin6_addr.s6_addr, 16);
+		info->is_ipv4 = 0;
     break;
     }
 
