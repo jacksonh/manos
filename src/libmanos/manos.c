@@ -120,7 +120,7 @@ setup_socket (int fd)
 
 static
 int create_any_socket (char *host, int port, int type,
-		int *(socket_alive_cb)(int fd, struct sockaddr *addr, int addrlen))
+		int (socket_alive_cb)(int fd, struct sockaddr *addr, int addrlen))
 {
 	struct sockaddr_in in;
 	struct sockaddr_in6 in6;
@@ -202,12 +202,18 @@ manos_socket_connect (char *host, int port, int *err)
 	return fd;
 }	
 
+static int
+bind_async (int fd, struct sockaddr *addr, int addrlen)
+{
+	return bind (fd, addr, addrlen);
+}
+
 int
 manos_dgram_socket_listen (char *host, int port, int *err)
 {
 	int fd, r;
 
-	fd = create_any_socket (host, port, SOCK_DGRAM, &bind);
+	fd = create_any_socket (host, port, SOCK_DGRAM, &bind_async);
 
 	if (fd < 0) {
 		*err = errno;
@@ -222,7 +228,7 @@ manos_socket_listen (char *host, int port, int backlog, int *err)
 {
 	int fd, r;
 
-	fd = create_any_socket (host, port, SOCK_STREAM, &bind);
+	fd = create_any_socket (host, port, SOCK_STREAM, &bind_async);
 
 	if (fd < 0) {
 		*err = errno;
