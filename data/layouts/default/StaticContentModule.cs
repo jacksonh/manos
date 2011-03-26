@@ -33,13 +33,27 @@ namespace $APPNAME {
 			if (path.StartsWith ("/"))
 				path = path.Substring (1);
 
-			if (File.Exists (path)) {
+			if (ValidFile (path)) {
 				ctx.Response.Headers.SetNormalizedHeader ("Content-Type", ManosMimeTypes.GetMimeType (path));
 				ctx.Response.SendFile (path);
 			} else
 				ctx.Response.StatusCode = 404;
 
 			ctx.Response.End ();
+		}
+
+		
+		private bool ValidFile (string path)
+		{
+			try {
+				string full = Path.GetFullPath (path);
+				if (full.StartsWith (basedir))
+					return File.Exists (full);
+			} catch {
+				return false;
+			}
+
+			return false;
 		}
 	}
 }
