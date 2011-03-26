@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -16,7 +16,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\build\</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;DISABLE_POSIX;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -47,6 +47,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Manos.IO.Libev\IOLoop.cs" />
+    <Compile Include="Manos.IO\IOStream.cs" />
+    <Compile Include="Manos\BaseLoop.cs" />
+    <Compile Include="Manos\BaseWatcher.cs" />
     <Compile Include="Manos\DeleteAttribute.cs" />
     <Compile Include="Manos\GetAttribute.cs" />
     <Compile Include="Manos\HeadAttribute.cs" />
@@ -92,13 +96,13 @@
     <Compile Include="Manos.IO\ByteUtils.cs" />
     <Compile Include="Manos.IO\ConnectionAcceptedEventArgs.cs" />
     <Compile Include="Manos.IO\IOLoop.cs" />
-    <Compile Include="Manos.IO\IOStream.cs" />
+    <Compile Include="Manos.IO.Libev\IOStream.cs" />
     <Compile Include="Manos.IO\FileSystem.cs" />
     <Compile Include="Manos.IO\NopWriteOperation.cs" />
     <Compile Include="Manos.IO\SendBytesOperation.cs" />
     <Compile Include="Manos.IO\SendFileOperation.cs" />
     <Compile Include="Manos.IO\SendFileOperation_NO_SENDFILE.cs" />
-    <Compile Include="Manos.IO\SocketStream.cs" />
+    <Compile Include="Manos.IO.Libev\SocketStream.cs" />
     <Compile Include="Manos.IO\IWriteOperation.cs" />
     <Compile Include="Manos\IManosContext.cs" />
     <Compile Include="Manos.Logging\IManosLogger.cs" />
@@ -170,7 +174,7 @@
     <Compile Include="Manos.Http.Testing\MockHttpResponse.cs" />
     <Compile Include="Manos.Http\HttpBufferedBodyHandler.cs" />
     <Compile Include="Manos\IManosRun.cs" />
-    <Compile Include="Manos.IO\UdpReceiver.cs" />
+    <Compile Include="Manos.IO.Libev\UdpReceiver.cs" />
     <Compile Include="Manos\ManosConfig.cs" />
     <Compile Include="Manos\SynchronizedBlock.cs" />
   </ItemGroup>

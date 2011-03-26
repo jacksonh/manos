@@ -69,7 +69,7 @@ namespace Manos.Http {
 
 		public void Listen (string host, int port)
 		{
-			SocketStream socket = new SocketStream (ioloop);
+            SocketStream socket = ioloop.CreateSocketStream();
 
 			socket.Listen (host, port);
 			socket.ConnectionAccepted += ConnectionAccepted;

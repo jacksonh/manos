@@ -34,12 +34,33 @@ using System.Runtime.InteropServices;
 
 using Libev;
 using Libeio;
+using System.IO;
 
 
 namespace Manos.IO {
 
 	public static class FileSystem {
+#if WINDOWS
+        public static void GetFileLength(string path, Action<long, int> cb)
+        {
+            long l = 0;
+            int e = 0;
+            try
+            {
+                l = new System.IO.FileInfo(path).Length;
+            }
+            catch (FileNotFoundException)
+            {
+                e = 1;
+            }
+            catch (IOException)
+            {
+                e = 2;
+            }
+            cb(l, e);
+        }
 
+#else
 		public static void GetFileLength (string path, Action<long,int> cb)
 		{
 			GCHandle handle = GCHandle.Alloc (cb);
@@ -59,6 +80,7 @@ namespace Manos.IO {
 		
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
 		private static extern void manos_file_get_length (string path, Action<IntPtr,IntPtr,int> cb, IntPtr gchandle);
+#endif
 	}
 }
 

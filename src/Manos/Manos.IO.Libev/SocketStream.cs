@@ -33,7 +33,7 @@ using Libev;
 using Manos.Collections;
 using System.Net;
 
-namespace Manos.IO {
+namespace Manos.IO.Libev {
 
 	[StructLayout (LayoutKind.Sequential)]
 	public struct SocketInfo {
@@ -54,7 +54,7 @@ namespace Manos.IO {
 		}
 	}
 
-	public class SocketStream : IOStream, IDisposable {
+	public class SocketStream : IOStream, Manos.IO.SocketStream, IDisposable {
 
 		public enum SocketState {
 			None,
@@ -291,12 +291,12 @@ namespace Manos.IO {
 			read_callback (this, ReadChunk, 0, size);
 		}
 
-		internal int Send (ByteBufferS [] buffers, int length, out int error)
+        public int Send(ByteBufferS[] buffers, int length, out int error)
 		{
 			return manos_socket_send (fd, buffers, length, out error);
 		}
 
-		internal int SendFile (string name, bool chunked, long length, Action<long,int> callback)
+		public int SendFile (string name, bool chunked, long length, Action<long,int> callback)
 		{
 			GCHandle handle = GCHandle.Alloc (callback);
 			int result = manos_socket_send_file (fd, name, chunked ? 1 : 0, new IntPtr (length), LengthCallbackHandler, GCHandle.ToIntPtr (handle));
@@ -319,7 +319,7 @@ namespace Manos.IO {
 				ConnectionAccepted (this, new ConnectionAcceptedEventArgs (stream));
 		}
 
-		public event Action<SocketStream> Connected;
+		public event Action<Manos.IO.SocketStream> Connected;
 		public event EventHandler<ConnectionAcceptedEventArgs> ConnectionAccepted;
 
 

@@ -127,7 +127,7 @@ namespace Manos.IO {
 
 				if (len != -1) {
 					int num_segments = buffers.Count;
-					IOStream.AdjustSegments (len, buffers);
+					IOStreamUtilities.AdjustSegments (len, buffers);
 					segments_written = num_segments - buffers.Count;
 				}
 			}

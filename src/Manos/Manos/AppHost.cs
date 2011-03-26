@@ -56,7 +56,7 @@ namespace Manos
 		private static List<IManosPipe> pipes;
 
 		private static ConcurrentQueue<SynchronizedBlock> waitingSyncBlocks = new ConcurrentQueue<SynchronizedBlock> ();
-		private static AsyncWatcher syncBlockWatcher;
+		private static IAsyncWatcher syncBlockWatcher;
 
 		private static IOLoop ioloop = IOLoop.Instance;
 		
@@ -128,7 +128,7 @@ namespace Manos
 			
 			server.Listen (IPAddress.ToString (), port);
 			
-			syncBlockWatcher = new AsyncWatcher (IOLoop.EventLoop, HandleSynchronizationEvent);
+			syncBlockWatcher = IOLoop.NewAsyncWatcher (HandleSynchronizationEvent);
 			syncBlockWatcher.Start ();
 
 			ioloop.Start ();
@@ -188,7 +188,7 @@ namespace Manos
 			syncBlockWatcher.Send ();
 		}
 		
-		private static void HandleSynchronizationEvent (Loop loop, AsyncWatcher watcher, EventTypes revents)
+		private static void HandleSynchronizationEvent (BaseLoop loop, AsyncWatcher watcher, EventTypes revents)
 		{
 			// we don't want to empty the whole queue here, as any number of threads can enqueue
 			// sync blocks at will while we try to empty it. only process a fixed number of blocks

@@ -26,6 +26,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Net.Sockets;
+using Manos;
 
 
 namespace Libev {
@@ -46,7 +47,7 @@ namespace Libev {
 			unmanaged_callback_ptr = Marshal.GetFunctionPointerForDelegate (unmanaged_callback);
 		}
 
-		public IdleWatcher (Loop loop, IdleWatcherCallback callback) : base (loop)
+		public IdleWatcher (BaseLoop loop, IdleWatcherCallback callback) : base (loop)
 		{
 			this.callback = callback;
 			
@@ -93,7 +94,7 @@ namespace Libev {
 	}
 	
 	[UnmanagedFunctionPointer (System.Runtime.InteropServices.CallingConvention.Cdecl)]
-	public delegate void IdleWatcherCallback (Loop loop, IdleWatcher watcher, EventTypes revents);
+	public delegate void IdleWatcherCallback (BaseLoop loop, IdleWatcher watcher, EventTypes revents);
 	
 	[StructLayout (LayoutKind.Sequential)]
 	internal struct UnmanagedIdleWatcher {

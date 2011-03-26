@@ -26,11 +26,12 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Net.Sockets;
+using Manos;
 
 
 namespace Libev {
 
-	public class AsyncWatcher : Watcher {
+	public class AsyncWatcher : Watcher, IAsyncWatcher {
 
 		private IntPtr fd;
 		private AsyncWatcherCallback callback;
@@ -47,7 +48,7 @@ namespace Libev {
 			unmanaged_callback_ptr = Marshal.GetFunctionPointerForDelegate (unmanaged_callback);
 		}
 		
-		public AsyncWatcher (Loop loop, AsyncWatcherCallback callback) : base (loop)
+		public AsyncWatcher (BaseLoop loop, AsyncWatcherCallback callback) : base (loop)
 		{
 			this.callback = callback;
 			
@@ -103,7 +104,7 @@ namespace Libev {
 	}
 	
 	[UnmanagedFunctionPointer (System.Runtime.InteropServices.CallingConvention.Cdecl)]
-	public delegate void AsyncWatcherCallback (Loop loop, AsyncWatcher watcher, EventTypes revents);
+    public delegate void AsyncWatcherCallback(BaseLoop loop, AsyncWatcher watcher, EventTypes revents);
 	
 	[StructLayout (LayoutKind.Sequential)]
 	internal struct UnmanagedAsyncWatcher {

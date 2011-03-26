@@ -3,6 +3,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Net.Sockets;
+using Manos;
 
 
 namespace Libev {
@@ -23,7 +24,7 @@ namespace Libev {
 			unmanaged_callback_ptr = Marshal.GetFunctionPointerForDelegate (unmanaged_callback);
 		}
 		
-		public IOWatcher (IntPtr fd, EventTypes types, Loop loop, IOWatcherCallback callback) : base (loop)
+		public IOWatcher (IntPtr fd, EventTypes types, BaseLoop loop, IOWatcherCallback callback) : base (loop)
 		{
 			this.fd = fd;
 			this.callback = callback;
@@ -50,7 +51,7 @@ namespace Libev {
 		}
         
         public static IntPtr GetHandle(Socket handle) {
-            if (Loop.IsWindows) {
+            if (BaseLoop.IsWindows) {
                 return EV_WIN32_HANDLE_TO_FD (handle.Handle, 0);
             } else
                 return handle.Handle;
@@ -58,7 +59,7 @@ namespace Libev {
 
         public static void ReleaseHandle(Socket socket, IntPtr handle)
         {
-            if (Loop.IsWindows)
+            if (BaseLoop.IsWindows)
             {
                 EV_WIN32_CLOSE_FD(handle);
             }

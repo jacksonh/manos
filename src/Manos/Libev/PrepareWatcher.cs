@@ -2,6 +2,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using Manos;
 
 
 namespace Libev {
@@ -22,7 +23,7 @@ namespace Libev {
 			unmanaged_callback_ptr = Marshal.GetFunctionPointerForDelegate (unmanaged_callback);
 		}
 
-		public PrepareWatcher (Loop loop, PrepareWatcherCallback callback) : base (loop)
+		public PrepareWatcher (BaseLoop loop, PrepareWatcherCallback callback) : base (loop)
 		{ 
 			this.callback = callback;
 			
@@ -72,7 +73,7 @@ namespace Libev {
 	}
 	
     [UnmanagedFunctionPointer (System.Runtime.InteropServices.CallingConvention.Cdecl)] 
-	public delegate void PrepareWatcherCallback (Loop loop, PrepareWatcher watcher, EventTypes revents);
+	public delegate void PrepareWatcherCallback (BaseLoop loop, PrepareWatcher watcher, EventTypes revents);
 	
 	[StructLayout (LayoutKind.Sequential)]
 	internal struct UnmanagedPrepareWatcher {

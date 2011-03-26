@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using Manos;
 
 namespace Libev {
 
@@ -19,11 +20,11 @@ namespace Libev {
 			unmanaged_callback_ptr = Marshal.GetFunctionPointerForDelegate (unmanaged_callback);
 		}
 
-		public TimerWatcher (TimeSpan repeat, Loop loop, TimerWatcherCallback callback) : this (TimeSpan.Zero, repeat, loop, callback)
+		public TimerWatcher (TimeSpan repeat, BaseLoop loop, TimerWatcherCallback callback) : this (TimeSpan.Zero, repeat, loop, callback)
 		{
 		}
 		
-		public TimerWatcher (TimeSpan after, TimeSpan repeat, Loop loop, TimerWatcherCallback callback) : base (loop)
+		public TimerWatcher (TimeSpan after, TimeSpan repeat, BaseLoop loop, TimerWatcherCallback callback) : base (loop)
 		{	
 			this.callback = callback;
 			

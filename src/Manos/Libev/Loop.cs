@@ -7,24 +7,17 @@ using System.Net.Sockets;
 
 namespace Libev {
 
-	public class Loop : IDisposable {
+	public class Loop: Manos.BaseLoop {
 
 		private IntPtr _native;
         private static readonly bool _isV4;
-        private static readonly bool _windows;
 
         static Loop()
         {
             _isV4 = ev_version_major() >= 4;
-            _windows =
-                Environment.OSVersion.Platform == PlatformID.Win32NT ||
-                Environment.OSVersion.Platform == PlatformID.Win32S ||
-                Environment.OSVersion.Platform == PlatformID.Win32Windows ||
-                Environment.OSVersion.Platform == PlatformID.WinCE;
         }
 
         public static bool IsV4 { get { return _isV4; } }
-        public static bool IsWindows { get { return _windows; } }
 
 		internal Loop (IntPtr native)
 		{
@@ -47,7 +40,7 @@ namespace Libev {
 			}	
 		}
 		
-		public void Dispose () 
+		public override void Dispose () 
 		{
 			if (_native == IntPtr.Zero)
 				return;

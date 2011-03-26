@@ -26,6 +26,7 @@ using System;
 using System.Runtime.InteropServices;
 
 using Libev;
+using Manos;
 
 namespace Libeio {
 
@@ -66,7 +67,7 @@ namespace Libeio {
 			}
 		}
 
-		private void OnIdle (Loop loop, IdleWatcher watcher, EventTypes revents)
+		private void OnIdle (BaseLoop loop, IdleWatcher watcher, EventTypes revents)
 		{
 			Console.WriteLine ("ON IDLE");
 
@@ -76,7 +77,7 @@ namespace Libeio {
 			}
 		}
 
-		private void OnWantPoll (Loop loop, AsyncWatcher watcher, EventTypes revents)
+        private void OnWantPoll(BaseLoop loop, AsyncWatcher watcher, EventTypes revents)
 		{
 			if (eio_poll () == -1) {
 				Console.WriteLine ("OnWantPoll: starting idle watcher");
@@ -84,7 +85,7 @@ namespace Libeio {
 			}
 		}
 
-		private void OnDonePoll (Loop loop, AsyncWatcher watcher, EventTypes revents)
+        private void OnDonePoll(BaseLoop loop, AsyncWatcher watcher, EventTypes revents)
 		{
 			if (eio_poll () != -1) {
 				Console.WriteLine ("OnDonePoll: starting idle watcher");

@@ -2,40 +2,27 @@
 
 using System;
 using System.Runtime.InteropServices;
+using Manos;
 
 namespace Libev {
 
-	public abstract class Watcher : IDisposable {
+	public abstract class Watcher : BaseWatcher {
 
 		protected IntPtr watcher_ptr;
 
-		private bool running;
 		protected GCHandle gc_handle;
 
-		internal Watcher (Loop loop)
+		internal Watcher (BaseLoop loop): base(loop)
 		{
-			Loop = loop;
 		}
 		
-		public bool IsRunning {
-		       get { return running; }
-		}
-
-		public Loop Loop {
-			get;
-			private set;
-		}
-
-		public object UserData {
-		       get;
-		       set;
-		}		
+				
 
 		protected IntPtr WatcherPtr {
 			get { return watcher_ptr; }
 		}
 		
-		public virtual void Dispose ()
+		public override void Dispose ()
 		{
 			Stop ();
 			
@@ -49,9 +36,9 @@ namespace Libev {
 			Marshal.StructureToPtr (unmanaged_watcher, watcher_ptr, true);
 		}
 
-		
 
-		public void Start ()
+
+        public override void Start()
 		{
 			if (running)
 			   return;
@@ -62,7 +49,7 @@ namespace Libev {
 			StartImpl ();
 		}
 
-		public void Stop ()
+		public override void Stop ()
 		{
 			if (!running)
 			   return;
@@ -72,6 +59,11 @@ namespace Libev {
 
 			StopImpl ();
 		}
+
+        public new Loop Loop
+        {
+            get { return (Loop)base.Loop; }
+        }
 
 		protected abstract void StartImpl ();
 		protected abstract void StopImpl ();		

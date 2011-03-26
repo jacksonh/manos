@@ -28,7 +28,7 @@ using Manos.IO;
 using System.Runtime.InteropServices;
 using System.Net;
 
-namespace Manos
+namespace Manos.IO.Libev
 {
     public class UdpReceiver
     {

@@ -28,6 +28,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using Manos.Collections;
 
 
 // WARNING: This whole file is just a hack so people can develop/debug
@@ -50,7 +51,7 @@ namespace Manos.IO {
 		
 		public SendFileOperation (string filename, WriteCallback callback)
 		{
-			this.file = new FileStream (file_name, FileMode.Open, FileAccess.Read)
+            this.file = new FileStream (filename, FileMode.Open, FileAccess.Read);
 			this.callback = callback;
 
 			file_length = (int) file.Length;
@@ -101,13 +102,16 @@ namespace Manos.IO {
 			while (bytes_index < file_length) {
 				int len = -1;
 				try {
-					len = sstream.socket.Send (bytes, bytes_index, file_length, SocketFlags.None);
-				} catch (SocketException se) {
-					if (se.SocketErrorCode == SocketError.WouldBlock || se.SocketErrorCode == SocketError.TryAgain)
-						return;
-					sstream.Close ();
-				} catch (Exception e) {
-					sstream.Close ();
+                    int err;
+                    
+					len = sstream.Send (new ByteBufferS[] {new ByteBufferS(bytes, bytes_index, file_length)}, 1, out err);
+                    if (err != 0)
+                    {
+
+                        if (err == (int)SocketError.WouldBlock || err == (int)SocketError.TryAgain)
+                            return;
+                        sstream.Close();
+                    }
 				} finally {
 					if (len != -1)
 						bytes_index += len;
@@ -138,6 +142,10 @@ namespace Manos.IO {
 			file.Read (bytes, 0, bytes.Length);
 		}
 
+        public void SetLength(long l)
+        {
+            Length = l;
+        }
 		
 		private void OnComplete ()
 		{

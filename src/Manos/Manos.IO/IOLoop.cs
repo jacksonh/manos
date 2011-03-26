@@ -38,69 +38,29 @@ using Libeio;
 
 namespace Manos.IO {
 
-	public class IOLoop {
-	       
-		private static IOLoop instance = new IOLoop ();
-		
-		private bool running;
+    public abstract class IOLoop
+    {
+        private static IOLoop instance = new Libev.IOLoop();
 
-		private Loop evloop;
-		private Libeio.Libeio eio;
-		private IntPtr libmanos_data;
+        public static IOLoop Instance
+        {
+            get { return instance; }
+        }
 
-		public IOLoop ()
-		{
-			evloop = Loop.CreateDefaultLoop (0);
-			eio = new Libeio.Libeio ();
+        public abstract BaseLoop EventLoop
+        {
+            get;
+        }
 
-//			eio.Initialize (evloop);
+        public abstract void Start();
 
-			libmanos_data = manos_init (evloop.Handle);
-		}
+        public abstract void Stop();
 
-		public static IOLoop Instance {
-			get { return instance; }
-		}
+        public abstract void AddTimeout(Timeout timeout);
 
-		public Loop EventLoop {
-		       get { return evloop; }
-		}
+        public abstract IAsyncWatcher NewAsyncWatcher(AsyncWatcherCallback cb);
 
-		public Libeio.Libeio Eio {
-			get { return eio; }
-		}
-
-		public void Start ()
-		{
-			running = true;
-			
-			evloop.RunBlocking ();
-		}
-
-		public void Stop ()
-		{
-			running = false;
-		}
-
-		public void AddTimeout (Timeout timeout)
-		{
-			TimerWatcher t = new TimerWatcher (timeout.begin, timeout.span, evloop, HandleTimeout);
-			t.UserData = timeout;
-			t.Start ();
-		}
-
-		private void HandleTimeout (Loop loop, TimerWatcher timeout, EventTypes revents)
-		{
-			Timeout t = (Timeout) timeout.UserData;
-
-			AppHost.RunTimeout (t);
-			if (!t.ShouldContinueToRepeat ())
-			   timeout.Stop ();
-		}
-
-		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
-		private static extern IntPtr manos_init (IntPtr handle);
-
-	}
+        public abstract SocketStream CreateSocketStream();
+    }
 }
 

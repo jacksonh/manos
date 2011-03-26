@@ -2,6 +2,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using Manos;
 
 
 namespace Libev {
@@ -21,7 +22,7 @@ namespace Libev {
 			unmanaged_callback_ptr = Marshal.GetFunctionPointerForDelegate (unmanaged_callback);
 		}
 
-		public CheckWatcher (Loop loop, CheckWatcherCallback callback) : base (loop)
+		public CheckWatcher (BaseLoop loop, CheckWatcherCallback callback) : base (loop)
 		{ 
 			this.callback = callback;
 			
