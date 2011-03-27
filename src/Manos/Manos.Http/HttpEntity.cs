@@ -390,7 +390,7 @@ namespace Manos.Http {
 		public void Read ()
 		{
 			Reset ();
-			Socket.Read += OnBytesRead;
+			Socket.ReadBytes (OnBytesRead);
 		}
 
 		private void OnBytesRead (IOStream stream, byte [] data, int offset, int count)

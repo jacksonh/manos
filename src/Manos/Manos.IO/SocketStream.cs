@@ -98,7 +98,7 @@ namespace Manos.IO
 
 		protected abstract int ReadOneChunk (out int error);
 
-		protected void ReadFunction ()
+		private void Read ()
 		{
 			int size;
 			int error;
@@ -110,12 +110,14 @@ namespace Manos.IO
 			}
 
 			if (size == 0) {
-				FireReadEvent (this, ReadChunk, 0, 0);
+				read_callback (this, ReadChunk, 0, 0);
 				Close ();
 				return;
 			} else if (size > 0) {
-				FireReadEvent (this, ReadChunk, 0, size);
+				read_callback (this, ReadChunk, 0, size);
 			}
+
+			read_callback (this, ReadChunk, 0, size);
 		}
 
 		protected override void HandleRead ()
@@ -126,7 +128,7 @@ namespace Manos.IO
 			}
 
 			if (state == SocketState.Open) {
-				ReadFunction ();
+				Read ();
 				return;
 			}
 		}
