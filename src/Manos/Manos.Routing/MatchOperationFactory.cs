@@ -41,31 +41,26 @@ namespace Manos.Routing
 			'{', '}',	
 		};
 		
-		public static IMatchOperation Create (string pattern)
+		public static IMatchOperation Create (string pattern, MatchType type)
 		{
 			if (pattern == null)
 				throw new ArgumentNullException ("pattern");
 			
 			if (pattern.Length == 0)
 				return new NopMatchOperation ();	
-			
-			if (pattern.IndexOfAny (REGEX_CHARS) >= 0) {
+
+			switch (type) {
+			case MatchType.Simple:
+				return new SimpleMatchOperation (pattern);
+			case MatchType.String:
+				return new StringMatchOperation (pattern);
+			case MatchType.Regex:
 				Regex r = new Regex (pattern);
 				return new RegexMatchOperation (r);
+			default:
+				throw new InvalidOperationException ("unknown match operation type.");
 			}
 			
-			// Must contain { and } chars, and those chars must not be escaped ie {{ }}
-			int cls;
-			int idx = pattern.IndexOf ('{');
-			if (idx >= 0 && 
-			    idx < pattern.Length - 1 && pattern [idx + 1] != '{' && 
-			    (cls = pattern.IndexOf ('}', idx)) > 0 && 
-				(cls == pattern.Length - 1 || pattern [cls + 1] != '}')) {
-				
-				return new SimpleMatchOperation (pattern);	
-			}
-			
-			return new StringMatchOperation (pattern);
 		}
 	}
 }

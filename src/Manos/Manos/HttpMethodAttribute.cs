@@ -27,6 +27,7 @@ using System;
 using System.Reflection;
 
 using Manos.Http;
+using Manos.Routing;
 
 namespace Manos {
 
@@ -55,6 +56,11 @@ namespace Manos {
 		public string [] Patterns {
 			get;
 			private set;
+		}
+
+		public MatchType MatchType {
+			get;
+			set;
 		}
 	}
 }

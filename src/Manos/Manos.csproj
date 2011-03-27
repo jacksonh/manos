@@ -112,6 +112,7 @@
     <Compile Include="Manos.Routing\MatchOperationFactory.cs" />
     <Compile Include="Manos.Routing\StringMatchOperation.cs" />
     <Compile Include="Manos.Routing\NopMatchOperation.cs" />
+    <Compile Include="Manos.Routing\MatchType.cs" />
     <Compile Include="Manos\HttpMethods.cs" />
     <Compile Include="Assembly\AssemblyInfo.cs" />
     <Compile Include="Manos\IRepeatBehavior.cs" />
