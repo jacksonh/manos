@@ -106,13 +106,11 @@ namespace Manos.IO {
 				timeout_watcher.Stop ();
 		}
 
-		public void ReadBytes (ReadCallback callback)
+		public virtual void FireReadEvent (IOStream stream, byte [] data, int offset, int count)
 		{
-			EnableReading ();
-
-			read_callback = callback;
-
-			UpdateExpires ();
+			if (ReadEvent != null) {
+				ReadEvent (stream, data, offset, count);
+			}
 		}
 
 		public void QueueWriteOperation (IWriteOperation op)
@@ -292,6 +290,16 @@ namespace Manos.IO {
 		public event EventHandler Error;
 		public event EventHandler Closed;
 		public event EventHandler TimedOut;
+		
+		protected event ReadCallback ReadEvent;
+		public event ReadCallback Read {
+       		add {
+				EnableReading ();
+				ReadEvent += value;
+				UpdateExpires ();
+			}
+			remove { ReadEvent -= value; }
+		}
 	}
 
 }
