@@ -45,7 +45,6 @@ int manos_socket_receive (int fd, char* data, int len, int *err);
 int manos_socket_receive_from (int fd, char* buffer, int len, int flags, manos_socket_info_t *info, int *err );
 int manos_socket_send (int fd, bytebuffer_t *buffers, int len, int *err);
 int manos_socket_close (int fd, int *err);
-int manos_socket_send_file (int socket, char *name, int chunked, size_t length, length_cb cb, void *gchandle);
 
 int manos_file_get_length (char *path, length_cb cb, void *gchandle);
 

@@ -413,159 +413,18 @@ manos_socket_send (int fd, bytebuffer_t* buffers, int len, int* err)
 
 
 
-enum {
-	NO_FLAGS,
-	SEND_LENGTH = 0x2
-};
-
-
 typedef struct {
-	int fd;
-	int socket;
-	int flags;
-	size_t length;
-	size_t offset;
 	length_cb cb;
 	void *gchandle;
-	ev_io *watcher;
 } callback_data_t;
-
-static int sendfile_complete_cb (eio_req *req);
 
 
 
 static void
 free_callback_data (callback_data_t *data)
 {
-	if (data->watcher)
-		free (data->watcher);
 	free (data);
 }
-
-static void
-sendfile_on_ready (EV_P_ ev_io *watcher, int revents)
-{
-	callback_data_t *data = (callback_data_t *) watcher->data;
-
-	eio_sendfile (data->socket, data->fd, data->offset, data->length - data->offset, 0, sendfile_complete_cb, data);
-
-	ev_io_stop (EV_DEFAULT_UC_ watcher);
-}
-
-void
-queue_sendfile (callback_data_t *data)
-{
-	if (!data->watcher) {
-		data->watcher = malloc (sizeof (ev_io));
-		memset (data->watcher, 0, sizeof (ev_io));
-
-		ev_io_init (data->watcher, sendfile_on_ready, data->socket, EV_WRITE);
-		data->watcher->data = data;
-	}
-
-	ev_io_start (EV_DEFAULT_UC_ data->watcher);
-}
-
-
-static int
-sendfile_close_cb (eio_req *req)
-{
-	callback_data_t *data = (callback_data_t *) req->data;
-
-	data->cb (data->gchandle, data->length, 0);
-
-	free_callback_data (data);
-	return 0;
-}
-
-static int
-sendfile_complete_cb (eio_req *req)
-{
-	callback_data_t *data = (callback_data_t *) req->data;
-	ssize_t length = req->result;
-
-	if (length == -1) {
-		if (req->errorno == EAGAIN ||  req->errorno == EINTR) {
-			queue_sendfile (data);
-			return 0;
-		}
-
-		eio_close (data->fd, 0, sendfile_close_cb, data);
-		return 0;
-	}
-
-	if (length + data->offset < data->length) {
-		data->offset += length;
-		eio_sendfile (data->socket, data->fd, data->offset, data->length - data->offset, 0, sendfile_complete_cb, data);
-		return 0;
-	}
-
-	eio_close (data->fd, 0, sendfile_close_cb, data);
-	return 0;
-}
-
-static int
-sendfile_stat_cb (eio_req *req)
-{
-	struct stat *buf = EIO_STAT_BUF (req);
-	callback_data_t *data = (callback_data_t *) req->data;
-	static char buffer [24];
-	int buffer_len;
-
-	data->length = buf->st_size;
-
-	buffer_len = snprintf (buffer, 10, "%x\r\n", data->length);
-
-	/* send the chunk length */
-	if (send (data->socket, buffer, buffer_len, 0) != buffer_len) {
-		data->cb (data->gchandle, -1, errno);
-		return 0;
-	}
-
-	eio_sendfile (data->socket, data->fd, 0, data->length, 0, sendfile_complete_cb, data);
-
-	return 0;
-}
-
-static int
-sendfile_open_cb (eio_req *req)
-{
-	callback_data_t *data = (callback_data_t *) req->data;
-	data->fd = EIO_RESULT (req);
-
-	if (data->flags & SEND_LENGTH) 
-		eio_fstat (data->fd, 0, sendfile_stat_cb, data);
-	else
-		eio_sendfile (data->socket, data->fd, 0, data->length, 0, sendfile_complete_cb, data);
-
-	return 0;
-}
-
-
-static int
-sendfile_internal (int socket, char *name, size_t length, int flags, length_cb cb, void *gchandle)
-{
-	callback_data_t *data = malloc (sizeof (callback_data_t));
-
-	memset (data, 0, sizeof (callback_data_t));
-
-	data->socket = socket;
-	data->flags = flags;
-	data->length = length;
-	data->cb = cb;
-	data->gchandle = gchandle;
-
-	eio_open (name, O_RDONLY, 0777, 0, sendfile_open_cb, data);
-
-	return 0;
-}
-
-int
-manos_socket_send_file (int socket, char *name, int chunked, size_t length, length_cb cb, void *gchandle)
-{
-	return sendfile_internal (socket, name, length, chunked ? SEND_LENGTH : NO_FLAGS, cb, gchandle);
-}
-
 
 int
 manos_socket_close (int fd, int *err)
