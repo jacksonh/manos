@@ -45,15 +45,11 @@ namespace Manos.IO {
 		private bool running;
 
 		private Loop evloop;
-		private Libeio.Libeio eio;
 		private IntPtr libmanos_data;
 
 		public IOLoop ()
 		{
 			evloop = Loop.CreateDefaultLoop (0);
-			eio = new Libeio.Libeio ();
-
-//			eio.Initialize (evloop);
 
 			libmanos_data = manos_init (evloop.Handle);
 		}
@@ -64,10 +60,6 @@ namespace Manos.IO {
 
 		public Loop EventLoop {
 		       get { return evloop; }
-		}
-
-		public Libeio.Libeio Eio {
-			get { return eio; }
 		}
 
 		public void Start ()
