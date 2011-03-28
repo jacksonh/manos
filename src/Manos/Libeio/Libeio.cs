@@ -15,6 +15,34 @@ namespace Libeio
 	{
 		delegate void eio_cb (ref eio_req req);
 
+		[StructLayout (LayoutKind.Sequential)]
+		struct eio_req
+		{
+			public IntPtr next;
+			public IntPtr result;
+			public IntPtr offs;
+			public UIntPtr size;
+			public IntPtr ptr1;
+			public IntPtr ptr2;
+			public double nv1;
+			public double nv2;
+			public int type;
+			public int int1;
+			public long int2;
+			public long int3;
+			public int errorno;
+			public byte flags;
+			public byte pri;
+			public IntPtr data;
+			public IntPtr finish;
+			public IntPtr destroy;
+			public IntPtr feed;
+			public IntPtr grp;
+			public IntPtr grp_prev;
+			public IntPtr grp_next;
+			public IntPtr grp_first;
+		};
+
 //		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
 //		static extern IntPtr eio_nop (int pri, eio_cb cb, IntPtr data);
 //
@@ -77,12 +105,12 @@ namespace Libeio
 
 //		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
 //		static extern IntPtr eio_write (int fd, IntPtr buf, size_t length, off_t offset, int pri, eio_cb cb, IntPtr data);
-		public static void fstat (int fd, Action<Stat, int> callback)
+		public static void fstat (int fd, Action<int, Stat, int> callback)
 		{
 			eio_fstat (fd, 0, delegate (ref eio_req req) {
 				var handle = GCHandle.FromIntPtr (req.data);
 				Stat result = (Stat) Marshal.PtrToStructure (req.ptr2, typeof(Stat));
-				((Action<Stat, int>) handle.Target) (result, req.errorno);
+				((Action<int, Stat, int>) handle.Target) (req.result.ToInt32(), result, req.errorno);
 				handle.Free ();
 			}, GCHandle.ToIntPtr (GCHandle.Alloc (callback)));
 		}
@@ -182,33 +210,5 @@ namespace Libeio
 //		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
 //		static extern IntPtr eio_custom (eio_cb execute, int pri, eio_cb cb, IntPtr data);
 	}
-
-	[StructLayout (LayoutKind.Sequential)]
-	internal struct eio_req
-	{
-		public IntPtr next;
-		public IntPtr result;
-		public IntPtr offs;
-		public UIntPtr size;
-		public IntPtr ptr1;
-		public IntPtr ptr2;
-		public double nv1;
-		public double nv2;
-		public int type;
-		public int int1;
-		public long int2;
-		public long int3;
-		public int errorno;
-		public byte flags;
-		public byte pri;
-		public IntPtr data;
-		public IntPtr finish;
-		public IntPtr destroy;
-		public IntPtr feed;
-		public IntPtr grp;
-		public IntPtr grp_prev;
-		public IntPtr grp_next;
-		public IntPtr grp_first;
-	};
 }
 
