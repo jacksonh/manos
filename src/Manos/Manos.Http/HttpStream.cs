@@ -141,10 +141,10 @@ namespace Manos.Http
 
 			if (!chunk_encode) {
 				pending_length_cbs++;
-				FileSystem.GetFileLength (file_name, (l, e) => {
-					if (l != -1)
-						write_file.SetLength (l);
-					LengthCallback (l, e);
+				Libeio.Libeio.stat(file_name, (r, stat, err) => {
+					if (r != -1)
+						write_file.SetLength (stat.st_size);
+					LengthCallback (stat.st_size, err);
 				});
 			} else {
 				write_file.Completed += delegate {

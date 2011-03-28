@@ -412,20 +412,6 @@ manos_socket_send (int fd, bytebuffer_t* buffers, int len, int* err)
 }
 
 
-
-typedef struct {
-	length_cb cb;
-	void *gchandle;
-} callback_data_t;
-
-
-
-static void
-free_callback_data (callback_data_t *data)
-{
-	free (data);
-}
-
 int
 manos_socket_close (int fd, int *err)
 {
@@ -435,31 +421,3 @@ manos_socket_close (int fd, int *err)
 	return rc;
 }
 
-
-static int
-file_get_length_stat_cb (eio_req *req)
-{
-	struct stat *buf = EIO_STAT_BUF (req);
-	callback_data_t *data = (callback_data_t *) req->data;
-
-	data->cb (data->gchandle, buf->st_size, 0);
-
-	free_callback_data (data);
-	return 0;
-}
-
-
-int
-manos_file_get_length (char *path, length_cb cb, void *gchandle)
-{
-	callback_data_t *data = malloc (sizeof (callback_data_t));
-
-	memset (data, 0, sizeof (callback_data_t));
-
-	data->cb = cb;
-	data->gchandle = gchandle;
-
-	eio_stat (path, 0, file_get_length_stat_cb, data);
-
-	return 0;
-}

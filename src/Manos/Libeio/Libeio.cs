@@ -110,7 +110,7 @@ namespace Libeio
 			eio_fstat (fd, 0, delegate (ref eio_req req) {
 				var handle = GCHandle.FromIntPtr (req.data);
 				Stat result = (Stat) Marshal.PtrToStructure (req.ptr2, typeof(Stat));
-				((Action<int, Stat, int>) handle.Target) (req.result.ToInt32(), result, req.errorno);
+				((Action<int, Stat, int>) handle.Target) (req.result.ToInt32 (), result, req.errorno);
 				handle.Free ();
 			}, GCHandle.ToIntPtr (GCHandle.Alloc (callback)));
 		}
@@ -185,9 +185,18 @@ namespace Libeio
 //
 //		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
 //		static extern IntPtr eio_readlink (string path, int pri, eio_cb cb, IntPtr data);
-//
-//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
-//		static extern IntPtr eio_stat (string path, int pri, eio_cb cb, IntPtr data); 
+		public static void stat (string path, Action<int, Stat, int> callback)
+		{
+			eio_stat (path, 0, delegate (ref eio_req req) {
+				var handle = GCHandle.FromIntPtr (req.data);
+				Stat result = (Stat) Marshal.PtrToStructure (req.ptr2, typeof(Stat));
+				((Action<int, Stat, int>) handle.Target) (req.result.ToInt32 (), result, req.errorno);
+				handle.Free ();
+			}, GCHandle.ToIntPtr (GCHandle.Alloc (callback)));
+		}
+
+		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+		static extern IntPtr eio_stat (string path, int pri, eio_cb cb, IntPtr data); 
 //
 //		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
 //		static extern IntPtr eio_lstat (string path, int pri, eio_cb cb, IntPtr data);
