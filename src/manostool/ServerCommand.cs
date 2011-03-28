@@ -103,17 +103,25 @@ namespace Manos.Tool
 		
 		public void Run ()
 		{
+			// Load the config.
+			ManosConfig.Load ();
+			
 			app = Loader.LoadLibrary<ManosApp> (ApplicationAssembly, Arguments);
-
+	
 			Console.WriteLine ("Running {0} on port {1}.", app, Port);
 
 			if (User != null)
 				SetServerUser (User);
+			
+			var listenAddress = System.Net.IPAddress.Any;
+			
 			if (IPAddress != null)
-				AppHost.IPAddress = System.Net.IPAddress.Parse (IPAddress);
+				listenAddress = System.Net.IPAddress.Parse (IPAddress);
 
 			app.StartInternal();
-			AppHost.Port = Port;
+
+			AppHost.ListenAt (new System.Net.IPEndPoint (listenAddress, Port));
+
 			AppHost.Start (app);
 		}
 		

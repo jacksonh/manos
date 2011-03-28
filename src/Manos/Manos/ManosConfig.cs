@@ -24,166 +24,137 @@
 //
 
 using System;
+using Nini.Config;
 using System.IO;
-using System.Collections.Generic;
-using System.Reflection;
-
-using Manos.Logging;
-
-#if ENABLE_CONFIG
-using Mono.CSharp;
-using System.Threading;
-using System.Runtime.Remoting.Messaging;
-#endif
-
-
 
 namespace Manos
 {
-	public class ManosConfigException : Exception
-	{
-		public ManosConfigException (string msg) 
-		: base (msg)
+	/// <summary>
+	/// Manos config. The config file being loaded is in .ini format that
+	/// contains of one or more sections, the main section is what this
+	/// API uses. However if wanting to access different sections, one can
+	/// go through the Source to access the nini IConfigSource.
+	/// 
+	/// The configs are loaded from $MANOS_CONFIG first, but if that variable
+	/// is not set it will look for manos.config within the current directory.
+	/// If neither are found, the config is left empty.
+	/// 
+	/// Here is an example config:
+	/// 
+	/// [manos]
+	/// database_user = ahall
+	/// database_password = temp123
+	/// database_name = mydb
+	/// database_hostname = localhost
+	/// database_type = postgresql
+	/// 
+	/// Getting the db user is as simple as ManosConfig.GetString("database_user");
+	/// </summary>
+	public static class ManosConfig {
+		public static IConfigSource Source { get; private set; }
+		public static IConfig Main { get; private set; }
+		private const string MAIN_SECTION = "manos";
+		
+		public static void Load ()
 		{
-		}
-		
-		public ManosConfigException (string fmt, params object[] args) 
-		: base (String.Format (fmt, args))
-		{
-		}
-	}
-	
-	public static class ManosConfig
-	{
-		delegate bool AsyncParseWorker(string path);
-	
-		// Property storage
-		private static Dictionary<string, object> cfg = new Dictionary<string, object> ();
-			
-		
-		
-		static ManosConfig ()
-		{
-			cfg.Add ("Manos.Version", Assembly.GetExecutingAssembly ().ToString());	
-		}
-				
-#region Public methods
-		
-		// Load configuration from file
-		// Search path:
-		//	1.<app_folder>/manos.config
-		
-		// TODO: because execution of config scripts is async, we can run into race conditions if application
-		// code requests a config variable before we're done executing the script. We should add a callback
-		// parameter, so we can notify the ManosApp that config is ready for business.
-		
-		public static void Load (ManosApp app)
-		{
-#if ENABLE_CONFIG		
-			
-			Evaluator.Init (new string[0]);
-			
-			string [] sources =
-			{
-				Path.Combine (Environment.CurrentDirectory, "manos.config"),
-			};
-			
-			foreach (string src in sources)
-			{
-				try
-				{
-					if (File.Exists (src)) 
-					{
-						AsyncParseWorker w = new AsyncParseWorker (ParseFile);
-						w.BeginInvoke (src, ir =>
-							{
-								AsyncResult res = (AsyncResult) ir;
-								AsyncParseWorker cw = (AsyncParseWorker) res.AsyncDelegate;
-								
-								cw.EndInvoke (ir);
-							},
-						null);
-					}
-				}
-				catch (Exception ex)
-				{
-					AppHost.Log.Error ("Error processing configuration: {0}", ex.Message);
-					AppHost.Log.Error ("Trace: {0}", ex.StackTrace);
-					continue; 
-				}
-			}
-#endif				
-		}
-		
-		public static void Add<T> (string key, T val)
-		{		
-			lock (cfg)
-			{
-				cfg.Remove (key);
-					
-				cfg.Add (key, val);	
-			}
-		}
-		
-		public static void Add (string key, object val)
-		{
-			Add<object> (key, val);
-		}
-		
-		
-		public static T Get<T> (string key)
-		{
-			object tmp;
-			
-			if (cfg.TryGetValue (key, out tmp))
-				return (T)tmp;
-			else
-				return default(T);
-		}
-		
-		public static object Get (string key)
-		{
-			return Get<object> (key);
-		}
-		
-#endregion
-		
-#region Private methods		
-		private static bool ParseFile (string path)
-		{
-#if ENABLE_CONFIG		
-			try
-			{	
-				using (StreamReader sr = new StreamReader (path))
-				{
-					string txt = sr.ReadToEnd ();
-					
-					if (String.IsNullOrEmpty (txt))
-						return true;		
-											
-					Evaluator.ReferenceAssembly (Assembly.GetExecutingAssembly ());
-					Evaluator.Run ("using Manos;");
-					Evaluator.Run (txt);
-								
-					AppHost.Log.Info ("Read configuration from '{0}'", path);
-					
-					return true;
-				}
-			}
-			catch (Exception ex)
-			{
-				AppHost.Log.Error ("Error processing config file '{0}': {1}", path, ex.Message);
-				AppHost.Log.Error ("Trace: {0}", ex.StackTrace);
-				
-				return false;
-			}
-#else
-		return false;	
-#endif		
+			string source = Environment.GetEnvironmentVariable ("MANOS_CONFIG") ??
+                    Path.Combine (Environment.CurrentDirectory, "manos.config");
+			if (!File.Exists(source))
+				return;
 
+			Source = new IniConfigSource(source);
+			Main = Source.Configs[MAIN_SECTION];
 		}
 		
-#endregion		
-	}	
+		public static void Set (string key, object value)
+		{
+			Main.Set(key, value);
+		}
+		
+		public static string Get (string key)
+		{
+			return Main.Get (key);
+		}
+		
+		public static string Get (string key, string defaultValue)
+		{
+			return Main.Get (key, defaultValue);
+		}
+		
+		public static string GetString (string key)
+		{
+			return Main.GetString (key);
+		}
+		
+		public static string GetString (string key, string defaultValue)
+		{
+			return Main.GetString (key, defaultValue);
+		}
+		
+		public static double GetDouble (string key)
+		{
+			return Main.GetDouble (key);
+		}
+		
+		public static double GetDouble (string key, double defaultValue)
+		{
+			return Main.GetDouble (key, defaultValue);
+		}
+		
+		public static string GetExpanded (string key)
+		{
+			return Main.GetExpanded (key);
+		}
+		
+		public static float GetFloat (string key)
+		{
+			return Main.GetFloat (key);
+		}
+		
+		public static float GetFloat (string key, float defaultValue)
+		{
+			return Main.GetFloat (key, defaultValue);
+		}
+		
+		public static int GetInt (string key)
+		{
+			return Main.GetInt (key);
+		}
+		
+		public static int GetInt (string key, int defaultValue)
+		{
+			return Main.GetInt (key, defaultValue);
+		}
+		
+		public static bool GetBoolean (string key)
+		{
+			return Main.GetBoolean (key);
+		}
+		
+		public static bool GetBoolean (string key, bool defaultValue)
+		{
+			return Main.GetBoolean (key, defaultValue);
+		}
+		
+		public static string[] GetKeys ()
+		{
+			return Main.GetKeys();
+		}
+		
+		public static string[] GetValues ()
+		{
+			return Main.GetValues();
+		}
+		
+		public static long GetLong (string key)
+		{
+			return Main.GetLong (key);
+		}
+		
+		public static long GetLong (string key, long defaultValue)
+		{
+			return Main.GetLong (key, defaultValue);
+		}
+    }
 }
 

@@ -41,6 +41,10 @@
     <Reference Include="Mono.Posix" />
     <Reference Include="Mono.CSharp" />
     <Reference Include="Mono.C5" />
+    <Reference Include="Nini, Version=1.1.0.0, Culture=neutral, PublicKeyToken=c9892194e1b9ec1b">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\Nini.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Manos\DeleteAttribute.cs" />
@@ -51,7 +55,7 @@
     <Compile Include="Manos\ManosApp.cs" />
     <Compile Include="Manos\ManosContext.cs" />
     <Compile Include="Manos\IManosModule.cs" />
-	<Compile Include="Manos\ManosModule.cs" />
+    <Compile Include="Manos\ManosModule.cs" />
     <Compile Include="Manos\ManosMimeTypes.cs" />
     <Compile Include="Manos\OptionsAttribute.cs" />
     <Compile Include="Manos\PostAttribute.cs" />
@@ -108,6 +112,7 @@
     <Compile Include="Manos.Routing\MatchOperationFactory.cs" />
     <Compile Include="Manos.Routing\StringMatchOperation.cs" />
     <Compile Include="Manos.Routing\NopMatchOperation.cs" />
+    <Compile Include="Manos.Routing\MatchType.cs" />
     <Compile Include="Manos\HttpMethods.cs" />
     <Compile Include="Assembly\AssemblyInfo.cs" />
     <Compile Include="Manos\IRepeatBehavior.cs" />
@@ -164,9 +169,11 @@
     <Compile Include="Libev\UnmanagedWatcherCallback.cs" />
     <Compile Include="Libev\Watcher.cs" />
     <Compile Include="Manos.Http.Testing\MockHttpResponse.cs" />
-    <Compile Include="Manos\ManosConfig.cs" />
     <Compile Include="Manos.Http\HttpBufferedBodyHandler.cs" />
     <Compile Include="Manos\IManosRun.cs" />
+    <Compile Include="Manos.IO\UdpReceiver.cs" />
+    <Compile Include="Manos\ManosConfig.cs" />
+    <Compile Include="Manos\SynchronizedBlock.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

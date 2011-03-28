@@ -2,7 +2,6 @@
 obj
 bin/
 *.pidb
-*.dll
 *.mdb
 build/
 config.log

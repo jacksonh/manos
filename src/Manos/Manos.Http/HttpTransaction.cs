@@ -41,22 +41,24 @@ namespace Manos.Http {
 
 	public class HttpTransaction : IHttpTransaction, IDisposable {
 
-		public static HttpTransaction BeginTransaction (HttpServer server, SocketStream stream, HttpConnectionCallback cb)
+		public static HttpTransaction BeginTransaction (HttpServer server, SocketStream stream, HttpConnectionCallback cb, bool closeOnEnd = false)
 		{
-			HttpTransaction transaction = new HttpTransaction (server, stream, cb);
+			HttpTransaction transaction = new HttpTransaction (server, stream, cb, closeOnEnd);
 
 			return transaction;
 		}
 
 		private bool aborted;
-
+        private bool closeOnEnd;
+		
 		private GCHandle gc_handle;
 		
-		public HttpTransaction (HttpServer server, SocketStream stream, HttpConnectionCallback callback)
+		public HttpTransaction (HttpServer server, SocketStream stream, HttpConnectionCallback callback, bool closeOnEnd = false)
 		{
 			Server = server;
 			Stream = stream;
-
+			this.closeOnEnd = closeOnEnd;
+			
 			ConnectionCallback = callback;
 
 			gc_handle = GCHandle.Alloc (this);
@@ -108,6 +110,11 @@ namespace Manos.Http {
 			get { return aborted; }	
 		}
 
+		public bool ResponseReady {
+			get;
+			private set;
+		}
+
 		// Force the server to disconnect
 		public bool NoKeepAlive {
 			get;
@@ -144,7 +151,8 @@ namespace Manos.Http {
 		{
 			try {
 				Response = new HttpResponse (Request, Stream);
-
+				ResponseReady = true;
+				if( closeOnEnd ) Response.OnEnd += () => Response.Complete( OnResponseFinished );
 				Server.RunTransaction (this);
 			} catch (Exception e) {
 				Console.WriteLine ("Exception while running transaction");

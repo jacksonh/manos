@@ -77,5 +77,7 @@ namespace Manos
 		RouteHandler Trace (string pattern, ManosAction action);
 		RouteHandler Trace (ManosAction action, params string [] patterns);
 		RouteHandler Trace (IManosModule module, params string [] patterns);
+
+		void StartInternal ();
 	}
 }

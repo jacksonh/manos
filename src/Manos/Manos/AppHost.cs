@@ -27,12 +27,15 @@
 using System;
 using System.Net;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 using Manos.IO;
 using Manos.Http;
 using Manos.Caching;
 using Manos.Logging;
+
+using Libev;
 
 namespace Manos
 {
@@ -44,22 +47,20 @@ namespace Manos
 		private static ManosApp app;
 		private static bool started;
 		
-		private static int port = 8080;
-		private static IPAddress ip_address = IPAddress.Parse ("0.0.0.0");
+		private static List<IPEndPoint> listenEndPoints = new List<IPEndPoint> ();
 		
-		private static HttpServer server;
+		private static List<HttpServer> servers = new List<HttpServer> ();
 		private static IManosCache cache;
 		private static IManosLogger log;
 		private static List<IManosPipe> pipes;
+
+		private static ConcurrentQueue<SynchronizedBlock> waitingSyncBlocks = new ConcurrentQueue<SynchronizedBlock> ();
+		private static AsyncWatcher syncBlockWatcher;
 
 		private static IOLoop ioloop = IOLoop.Instance;
 		
 		public static ManosApp App {
 			get { return app; }	
-		}
-		
-		public static HttpServer Server {
-			get { return server; }	
 		}
 		
 		public static IManosCache Cache {
@@ -86,26 +87,21 @@ namespace Manos
 			get { return pipes; }
 		}
 		
-		public static IPAddress IPAddress {
-			get { return ip_address; }
-			set {
-				if (started)
-					throw new InvalidOperationException ("IPAddress can not be changed once the server has been started.");
-				if (value == null)
-					throw new ArgumentNullException ("value");
-				ip_address = value;
+		public static ICollection<IPEndPoint> ListenEndPoints {
+			get {
+				return listenEndPoints.AsReadOnly ();
 			}
 		}
 		
-		public static int Port {
-			get { return port; }
-			set {
-				if (started)
-					throw new InvalidOperationException ("Port can not be changed once the server has been started.");
-				if (port <= 0)
-					throw new ArgumentOutOfRangeException ("Invalid port specified, port must be a positive integer.");
-				port = value;
-			}
+		public static void ListenAt (IPEndPoint endPoint)
+		{
+			if (endPoint == null)
+				throw new ArgumentNullException ("endPoint");
+			
+			if (listenEndPoints.Contains (endPoint))
+				throw new InvalidOperationException ("Endpoint already registered");
+			
+			listenEndPoints.Add (endPoint);
 		}
 		
 		public static void Start (ManosApp application)
@@ -114,11 +110,20 @@ namespace Manos
 				throw new ArgumentNullException ("application");
 			
 			app = application;
-			
+
+			app.StartInternal ();
+
 			started = true;
-			server = new HttpServer (HandleTransaction, ioloop);
 			
-			server.Listen (IPAddress.ToString (), port);
+			foreach (var ep in listenEndPoints) {
+				var server = new HttpServer (HandleTransaction, ioloop);
+				server.Listen (ep.Address.ToString (), ep.Port);
+				
+				servers.Add (server);
+			}
+			
+			syncBlockWatcher = new AsyncWatcher (IOLoop.EventLoop, HandleSynchronizationEvent);
+			syncBlockWatcher.Start ();
 
 			ioloop.Start ();
 		}
@@ -157,6 +162,56 @@ namespace Manos
 		public static void RunTimeout (Timeout t)
 		{
 			t.Run (app);	
+		}
+
+		public static void Synchronize<T> (Action<IManosContext, T> action,
+			IManosContext context, T arg)
+		{
+			if (action == null) {
+				throw new ArgumentNullException ("action");
+			}
+			if (context == null) {
+				throw new ArgumentNullException ("context");
+			}
+			
+			if (context.Transaction.ResponseReady && context.Transaction.Response == null) {
+				throw new InvalidOperationException ("Response stream has been closed");
+			}
+			
+			waitingSyncBlocks.Enqueue (new SynchronizedBlock<T> (action, context, arg));
+			syncBlockWatcher.Send ();
+		}
+		
+		private static void HandleSynchronizationEvent (Loop loop, AsyncWatcher watcher, EventTypes revents)
+		{
+			// we don't want to empty the whole queue here, as any number of threads can enqueue
+			// sync blocks at will while we try to empty it. only process a fixed number of blocks
+			// to not starve other events.
+			int pendingBlocks = waitingSyncBlocks.Count;
+			
+			while (pendingBlocks-- > 0) {
+				SynchronizedBlock oneBlock;
+				// perhaps we should bail here instead, as a result of 'false' would indicate that
+				// somebody is stealing our events.
+				if (waitingSyncBlocks.TryDequeue (out oneBlock)) {
+					oneBlock.Run ();
+				}
+			}
+		}
+	}
+	
+	public static class SynchronizedExtension
+	{
+		public static void Synchronize<T> (this IManosContext context,
+			Action<IManosContext, T> action, T arg)
+		{
+			AppHost.Synchronize (action, context, arg);
+		}
+		
+		public static void Synchronize (this IManosContext context,
+			Action<IManosContext, object> action, object arg)
+		{
+			AppHost.Synchronize (action, context, arg);
 		}
 	}
 }

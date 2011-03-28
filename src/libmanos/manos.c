@@ -27,25 +27,6 @@
 #include "manos.h"
 
 
-#define PARSE_ADDR(host, port, addr, addrlen) 	{					\
-		static struct sockaddr_in in;						\
-		static struct sockaddr_in6 in6;						\
-	        memset (&in, 0, sizeof (in));						\
-		memset (&in6, 0, sizeof (in6));						\
-	        in.sin_port = in6.sin6_port = htons (port); 				\
-		in.sin_family = AF_INET;  		  				\
-		in6.sin6_family = AF_INET6;             				\
-		int is_ipv4 = 1; 		           				\
-		if (inet_pton (AF_INET, host, &(in.sin_addr)) <= 0) { 			\
-			is_ipv4 = 0; 							\
-			if (inet_pton(AF_INET6, host, &(in6.sin6_addr)) <= 0) { 	\
-				return -1; 						\
-			} 								\
-		} 									\
-		addr = is_ipv4 ? (struct sockaddr*)&in : (struct sockaddr*)&in6; 	\
-		addrlen = is_ipv4 ? sizeof in : sizeof in6;   				\
-	}
-
 
 /*
  * I want these to be part of the manos_data_t but then how do i get them in
@@ -137,9 +118,52 @@ setup_socket (int fd)
 	return (fcntl (fd, F_SETFL, O_NONBLOCK) != -1);
 }
 
-int create_socket (int *err)
+static
+int create_any_socket (char *host, int port, int type,
+		int (socket_alive_cb)(int fd, struct sockaddr *addr, int addrlen))
 {
-	int fd = socket (PF_INET, SOCK_STREAM, 0);
+	struct sockaddr_in in;
+	struct sockaddr_in6 in6;
+	int fd, ipv4;
+	
+	memset (&in, 0, sizeof (in));
+	memset (&in6, 0, sizeof (in6));
+	
+	in.sin_port = in6.sin6_port = htons (port);
+	in.sin_family = AF_INET;
+	in6.sin6_family = AF_INET6;
+
+	if (inet_pton (AF_INET, host, &(in.sin_addr)) > 0) {
+		ipv4 = 1;
+		fd = socket (PF_INET, type, 0);
+	} else if (inet_pton(AF_INET6, host, &(in6.sin6_addr)) > 0) {
+		ipv4 = 0;
+		fd = socket (PF_INET6, type, 0);
+	} else {
+		return -1;
+	}
+
+	if (!setup_socket (fd)) {
+		close (fd);
+		return -1;
+	}
+
+	if (socket_alive_cb) {
+		int r = socket_alive_cb (fd,
+				ipv4 ? (struct sockaddr*) &in : (struct sockaddr*) &in6,
+				ipv4 ? sizeof (in) : sizeof (in6));
+		if (r != 0) {
+			close (fd);
+			return -1;
+		}
+	}
+
+	return fd;
+}
+
+int create_dgram_socket (int ipv4, int *err)
+{
+	int fd = socket (ipv4 ? PF_INET : PF_INET6, SOCK_DGRAM, 0);
 	if (fd < 0) {
 		*err = errno;
 		return -1;
@@ -154,22 +178,23 @@ int create_socket (int *err)
 	return fd;
 }
 
+static int
+connect_async (int fd, struct sockaddr *addr, int addrlen)
+{
+	int r = connect (fd, addr, addrlen);
+	
+	if (r < 0 && errno != EINPROGRESS) {
+		return -1;
+	}
+	return 0;
+}
+
 int
 manos_socket_connect (char *host, int port, int *err)
 {
-	struct sockaddr* addr;
-	ssize_t addrlen;
-	int fd;
+	int fd = create_any_socket (host, port, SOCK_STREAM, &connect_async);
 
-	
-	fd = create_socket (err);
-	if (fd < 0)
-		return -1;
-
-	PARSE_ADDR (host, port, addr, addrlen);
-
-	int r = connect (fd, addr, addrlen);
-	if (r < 0 && errno != EINPROGRESS) {
+	if (fd < 0) {
 		*err = errno;
 		return -1;
 	}
@@ -177,22 +202,35 @@ manos_socket_connect (char *host, int port, int *err)
 	return fd;
 }	
 
+static int
+bind_async (int fd, struct sockaddr *addr, int addrlen)
+{
+	return bind (fd, addr, addrlen);
+}
+
+int
+manos_dgram_socket_listen (char *host, int port, int *err)
+{
+	int fd, r;
+
+	fd = create_any_socket (host, port, SOCK_DGRAM, &bind_async);
+
+	if (fd < 0) {
+		*err = errno;
+		return -1;
+	}
+
+	return fd;
+}
+
 int
 manos_socket_listen (char *host, int port, int backlog, int *err)
 {
-	struct sockaddr* addr;
-	ssize_t addrlen;
 	int fd, r;
 
-	
-	fd = create_socket (err);
-	if (fd < 0)
-		return -1;
+	fd = create_any_socket (host, port, SOCK_STREAM, &bind_async);
 
-	PARSE_ADDR (host, port, addr, addrlen);
-
-	r = bind (fd, addr, addrlen);
-	if (r < 0) {
+	if (fd < 0) {
 		*err = errno;
 		return -1;
 	}
@@ -229,6 +267,7 @@ manos_socket_accept (int fd, manos_socket_info_t *info, int *err)
 		return -1;
 	}
 
+	memset (info, 0, sizeof (*info));
 	info->fd = res;
 
 	struct sockaddr_in *in4;
@@ -238,13 +277,14 @@ manos_socket_accept (int fd, manos_socket_info_t *info, int *err)
 	case AF_INET:
 		in4 = (struct sockaddr_in *) &addr;
 		info->port = ntohs (in4->sin_port);
-		info->addr1 = in4->sin_addr.s_addr;
-		info->addr2 = 0;
-
+		info->ipv4addr = in4->sin_addr.s_addr;
+		info->is_ipv4 = 1;
 		break;
 	case AF_INET6:
 		in6 = (struct sockaddr_in6 *) &addr;
 		info->port = ntohs (in6->sin6_port);
+		memcpy (info->address_bytes, in6->sin6_addr.s6_addr, 16);
+		info->is_ipv4 = 0;
 		break;
 	}
 	
@@ -267,6 +307,45 @@ manos_socket_accept_many (int fd, manos_socket_info_t *infos, int len, int *err)
 	}
 
 	return i;
+}
+
+int
+manos_socket_receive_from (int fd, char* buffer, int len, int flags, manos_socket_info_t *info, int *err )
+{
+    ssize_t rc;
+       
+    struct sockaddr_storage addr;
+    socklen_t addrlen = sizeof (struct sockaddr_storage);
+
+    rc = recvfrom( fd, buffer, len, flags, (struct sockaddr*)&addr, &addrlen );
+    if (rc < 0 ) {
+        if (errno == EAGAIN || errno == EINTR) {
+        *err = 0;
+        return -1;
+        }
+        *err = errno;
+        return -1;
+    }
+
+    struct sockaddr_in *in4;
+    struct sockaddr_in6 *in6;
+
+    switch (addr.ss_family) {
+    case AF_INET:
+        in4 = (struct sockaddr_in *) &addr;
+        info->port = ntohs (in4->sin_port);
+        info->ipv4addr = in4->sin_addr.s_addr;
+		info->is_ipv4 = 1;
+    break;
+    case AF_INET6:
+        in6 = (struct sockaddr_in6 *) &addr;
+        info->port = ntohs (in6->sin6_port);
+		memcpy (info->address_bytes, in6->sin6_addr.s6_addr, 16);
+		info->is_ipv4 = 0;
+    break;
+    }
+
+    return rc;
 }
 
 

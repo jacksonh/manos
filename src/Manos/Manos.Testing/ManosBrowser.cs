@@ -144,5 +144,17 @@ namespace Manos.Testing
 		public string RedirectedUrl {
 			get { return Response.RedirectedUrl; }
 		}
+		
+		public string ContentType {
+			get { 
+				string value;
+				
+				if(Response.Headers.TryGetValue("Content-Type", out value)) {
+					return value;
+				}
+				
+				return string.Empty;
+			}
+		}
 	}
 }
