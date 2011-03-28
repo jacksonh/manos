@@ -273,6 +273,7 @@ namespace Manos.IO {
 				return;
 
 			current_write_op.EndWrite (this);
+			current_write_op.Dispose ();
 
 			if (write_ops.Count > 0) {
 				IWriteOperation op = write_ops.Dequeue ();
