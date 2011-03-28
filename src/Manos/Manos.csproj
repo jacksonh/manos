@@ -173,6 +173,7 @@
     <Compile Include="Manos.IO\UdpReceiver.cs" />
     <Compile Include="Manos\ManosConfig.cs" />
     <Compile Include="Manos\SynchronizedBlock.cs" />
+    <Compile Include="Manos.IO\ManagedSendFileOperation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -135,7 +135,7 @@ namespace Manos.Http
 		{
 			EnsureMetadata ();
 
-			var write_file = new SendFileOperation (file_name, null) {
+			var write_file = new ManagedSendFileOperation (file_name, null) {
 				Chunked = chunk_encode,
 			};
 
