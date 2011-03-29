@@ -24,11 +24,6 @@ namespace Manos.IO
 			fd = -1;
 		}
 
-		~SendFileOperation ()
-		{
-			Dispose ();
-		}
-
 		public bool Chunked {
 			get;
 			set;

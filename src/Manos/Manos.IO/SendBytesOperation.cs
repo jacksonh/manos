@@ -39,6 +39,7 @@ namespace Manos.IO {
 	public class SendBytesOperation : IWriteOperation {
 
 		private List<ByteBuffer> buffers;
+		private int bufferOffset;
 		private WriteCallback callback;
 
 		private class CallbackInfo {
@@ -103,9 +104,9 @@ namespace Manos.IO {
 
 		private ByteBufferS [] CreateBufferSArray ()
 		{
-			ByteBufferS [] b = new ByteBufferS [buffers.Count];
+			ByteBufferS [] b = new ByteBufferS [buffers.Count - bufferOffset];
 
-			for (int i = 0; i < buffers.Count; i++) {
+			for (int i = bufferOffset; i < buffers.Count; i++) {
 				b [i] = buffers [i].buffer;
 			}
 
@@ -116,7 +117,7 @@ namespace Manos.IO {
 		{
 			SocketStream sstream = (SocketStream) stream;
 			
-			while (this.buffers.Count > 0) {
+			while (this.buffers.Count > bufferOffset) {
 				int len = -1;
 				int error;
 				ByteBufferS [] bs = CreateBufferSArray ();
@@ -126,14 +127,31 @@ namespace Manos.IO {
 					return;
 
 				if (len != -1) {
-					int num_segments = buffers.Count;
-					IOStream.AdjustSegments (len, buffers);
-					segments_written = num_segments - buffers.Count;
+					int num_segments = buffers.Count - bufferOffset;
+					AdjustSegments (len);
+					segments_written = num_segments - buffers.Count - bufferOffset;
 				}
 			}
 
 			FireCallbacks ();
-			IsComplete = (buffers.Count == 0);
+			IsComplete = (buffers.Count == bufferOffset);
+		}
+
+		void AdjustSegments (int len)
+		{
+			while (len > 0 && bufferOffset < buffers.Count) {
+				int seg_len = buffers [bufferOffset].Length;
+				if (seg_len <= len) {
+					buffers [bufferOffset] = null;
+					bufferOffset++;
+				} else {
+					int offset = buffers [bufferOffset].Position + len;
+					buffers [bufferOffset].Position = offset;
+					buffers [bufferOffset].Length = buffers [bufferOffset].Bytes.Length - offset;
+					break;
+				}
+				len -= seg_len;
+			}
 		}
 
 		public void EndWrite (IOStream stream)
@@ -142,7 +160,7 @@ namespace Manos.IO {
 
 		private void FireCallbacks ()
 		{
-			if (buffers.Count == 0) {
+			if (buffers.Count == bufferOffset) {
 				FireAllCallbacks ();
 				return;
 			}
