@@ -88,20 +88,16 @@ namespace Libeio
 //		static extern IntPtr eio_readahead (int fd, off_t offset, size_t length, int pri, eio_cb cb, IntPtr data);
 		public static void read (int fd, byte[] buffer, long offset, long length, Action<int, byte[], int> callback)
 		{
-			var handles = Tuple.Create (GCHandle.Alloc (buffer, GCHandleType.Pinned), callback);
-			
-			eio_read (fd, handles.Item1.AddrOfPinnedObject (), (UIntPtr) length, (IntPtr) offset, 0, delegate (ref eio_req req) {
+			eio_read (fd, buffer, (UIntPtr) length, (IntPtr) offset, 0, delegate (ref eio_req req) {
 				var handle = GCHandle.FromIntPtr (req.data);
-				var tuple = (Tuple<GCHandle, Action<int, byte [], int>>) handle.Target;
-				var bytes = (byte []) tuple.Item1.Target;
-				tuple.Item2 (req.result.ToInt32 (), bytes, req.errorno);
-				tuple.Item1.Free ();
+				var tuple = (Tuple<byte [], Action<int, byte [], int>>) handle.Target;
+				tuple.Item2 (req.result.ToInt32 (), tuple.Item1, req.errorno);
 				handle.Free ();
-			}, GCHandle.ToIntPtr (GCHandle.Alloc (handles)));
+			}, GCHandle.ToIntPtr (GCHandle.Alloc (Tuple.Create (buffer, callback))));
 		}
 
 		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
-		static extern IntPtr eio_read (int fd, IntPtr buf, size_t length, off_t offset, int pri, eio_cb cb, IntPtr data);
+		static extern IntPtr eio_read (int fd, byte [] buf, size_t length, off_t offset, int pri, eio_cb cb, IntPtr data);
 
 //		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
 //		static extern IntPtr eio_write (int fd, IntPtr buf, size_t length, off_t offset, int pri, eio_cb cb, IntPtr data);
