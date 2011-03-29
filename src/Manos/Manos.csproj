@@ -171,9 +171,9 @@
     <Compile Include="Manos.IO\UdpReceiver.cs" />
     <Compile Include="Manos\ManosConfig.cs" />
     <Compile Include="Manos\SynchronizedBlock.cs" />
-    <Compile Include="Manos.Http\CopyingSendFileOperation.cs" />
     <Compile Include="Manos.IO\PosixSendFileOperation.cs" />
     <Compile Include="Manos.IO\SendFileOperation.cs" />
+    <Compile Include="Manos.IO\CopyingSendFileOperation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
