@@ -95,6 +95,8 @@ manos_init (struct ev_loop *loop)
 	eio_done_poll_watcher.data = data;
 	
 	eio_init (eio_want_poll, eio_done_poll);
+
+	return data;
 }
 
 void
@@ -227,6 +229,28 @@ manos_socket_listen (char *host, int port, int backlog, int *err)
 	return fd;
 }
 
+static void
+parse_sockaddr (struct sockaddr_storage *addr, manos_socket_info_t *info)
+{
+	struct sockaddr_in *in4;
+	struct sockaddr_in6 *in6;
+
+	switch (addr->ss_family) {
+	case AF_INET:
+		in4 = (struct sockaddr_in *) addr;
+		info->port = ntohs (in4->sin_port);
+		info->ipv4addr = in4->sin_addr.s_addr;
+		info->is_ipv4 = 1;
+		break;
+	case AF_INET6:
+		in6 = (struct sockaddr_in6 *) addr;
+		info->port = ntohs (in6->sin6_port);
+		memcpy (info->address_bytes, in6->sin6_addr.s6_addr, 16);
+		info->is_ipv4 = 0;
+		break;
+	}
+}
+
 int
 manos_socket_accept (int fd, manos_socket_info_t *info, int *err)
 {
@@ -253,27 +277,10 @@ manos_socket_accept (int fd, manos_socket_info_t *info, int *err)
 	memset (info, 0, sizeof (*info));
 	info->fd = res;
 
-	struct sockaddr_in *in4;
-	struct sockaddr_in6 *in6;
-
-	switch (addr.ss_family) {
-	case AF_INET:
-		in4 = (struct sockaddr_in *) &addr;
-		info->port = ntohs (in4->sin_port);
-		info->ipv4addr = in4->sin_addr.s_addr;
-		info->is_ipv4 = 1;
-		break;
-	case AF_INET6:
-		in6 = (struct sockaddr_in6 *) &addr;
-		info->port = ntohs (in6->sin6_port);
-		memcpy (info->address_bytes, in6->sin6_addr.s6_addr, 16);
-		info->is_ipv4 = 0;
-		break;
-	}
+	parse_sockaddr (&addr, info);
 	
 	return res;
 }
-
 
 int
 manos_socket_accept_many (int fd, manos_socket_info_t *infos, int len, int *err)
@@ -293,7 +300,7 @@ manos_socket_accept_many (int fd, manos_socket_info_t *infos, int len, int *err)
 }
 
 int
-manos_socket_receive_from (int fd, char* buffer, int len, int flags, manos_socket_info_t *info, int *err )
+manos_socket_receive_from (int fd, char* buffer, int len, int flags, manos_socket_info_t *info, int *err)
 {
     ssize_t rc;
        
@@ -310,23 +317,9 @@ manos_socket_receive_from (int fd, char* buffer, int len, int flags, manos_socke
         return -1;
     }
 
-    struct sockaddr_in *in4;
-    struct sockaddr_in6 *in6;
-
-    switch (addr.ss_family) {
-    case AF_INET:
-        in4 = (struct sockaddr_in *) &addr;
-        info->port = ntohs (in4->sin_port);
-        info->ipv4addr = in4->sin_addr.s_addr;
-		info->is_ipv4 = 1;
-    break;
-    case AF_INET6:
-        in6 = (struct sockaddr_in6 *) &addr;
-        info->port = ntohs (in6->sin6_port);
-		memcpy (info->address_bytes, in6->sin6_addr.s6_addr, 16);
-		info->is_ipv4 = 0;
-    break;
-    }
+	if (info) {
+		parse_sockaddr (&addr, info);
+	}
 
     return rc;
 }
@@ -335,29 +328,7 @@ manos_socket_receive_from (int fd, char* buffer, int len, int flags, manos_socke
 int
 manos_socket_receive (int fd, char* buffer, int len, int *err)
 {
-	ssize_t rc;
-	struct iovec iov [1];
-	struct msghdr msg;
-
-	memset (&msg, 0, sizeof (msg));
-	memset (iov, 0, sizeof (iov));
-
-	iov [0].iov_base = buffer;
-	iov [0].iov_len = len;
-	msg.msg_iov = iov;
-	msg.msg_iovlen = 1;
-
-	rc = recvmsg (fd, &msg, 0);
-	if (rc == -1) {
-		if (errno == EAGAIN || errno == EINTR) {
-			*err = 0;
-			return -1;
-		}
-		*err = errno;
-		return -1;
-	}
-
-	return rc;
+	return manos_socket_receive_from (fd, buffer, len, 0, NULL, err);
 }
 
 
