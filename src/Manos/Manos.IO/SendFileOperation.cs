@@ -6,15 +6,14 @@ using System.Collections.Generic;
 
 namespace Manos.IO
 {
-#if !DISABLE_POSIX
-	public class SendFileOperation : IWriteOperation
+	public abstract class SendFileOperation : IWriteOperation
 	{
 		string fileName;
 		WriteCallback callback;
-		int fd;
-		SocketStream stream;
-		long position = 0;
-		IWriteOperation headerWrite;
+		protected int fd;
+		protected SocketStream stream;
+		protected long position = 0;
+		protected IWriteOperation currentPrefixBlock;
 
 		public SendFileOperation (string filename, WriteCallback callback)
 		{
@@ -55,7 +54,7 @@ namespace Manos.IO
 
 		public void EndWrite (IOStream stream)
 		{
-			Libeio.Libeio.close(fd, err => { });
+			Libeio.Libeio.close (fd, err => { });
 			if (callback != null) {
 				callback ();
 			}
@@ -85,24 +84,26 @@ namespace Manos.IO
 					Length = stat.st_size;
 					var chunkHeader = string.Format ("{0:x}\r\n", Length);
 					var headerBytes = Encoding.ASCII.GetBytes (chunkHeader);
-					headerWrite = new SendBytesOperation (new List<ByteBuffer> {
+					currentPrefixBlock = new SendBytesOperation (new List<ByteBuffer> {
 						new ByteBuffer (headerBytes, 0, headerBytes.Length)
 					}, null);
 					stream.EnableWriting ();
-					headerWrite.BeginWrite (stream);
+					currentPrefixBlock.BeginWrite (stream);
 				}
 			});
 		}
 
+		protected abstract void SendNextBlock ();
+
 		public void HandleWrite (IOStream stream)
 		{
 			this.stream = (SocketStream) stream;
-			if (headerWrite != null && !headerWrite.IsComplete) {
-				headerWrite.HandleWrite (stream);
-				if (headerWrite.IsComplete) {
-					headerWrite.EndWrite (stream);
-					headerWrite.Dispose ();
-					headerWrite = null;
+			if (currentPrefixBlock != null && !currentPrefixBlock.IsComplete) {
+				currentPrefixBlock.HandleWrite (stream);
+				if (currentPrefixBlock.IsComplete) {
+					currentPrefixBlock.EndWrite (stream);
+					currentPrefixBlock.Dispose ();
+					currentPrefixBlock = null;
 				}
 			}
 			if (fd == -1) {
@@ -114,18 +115,9 @@ namespace Manos.IO
 					InitializeTransfer ();
 				}
 			} else if (position != Length) {
-				stream.DisableWriting ();
-				Libeio.Libeio.sendfile (stream.Handle.ToInt32 (), fd, position, Length - position, (len, err) => {
-					if (len >= 0) {
-						position += len;
-					} else {
-						OnComplete (Length, err);
-					}
-					if (position == Length) {
-						OnComplete (Length, err);
-					}
-					stream.EnableWriting ();
-				});
+				SendNextBlock ();
+			} else {
+				OnComplete (0, 0);
 			}
 		}
 
@@ -141,14 +133,13 @@ namespace Manos.IO
 				stream.EnableWriting ();
 		}
 
-		private void OnComplete (long length, int error)
+		protected void OnComplete (long length, int error)
 		{
 			if (length == -1) {
 				// hmmm, how best to propogate this?
 				Console.Error.WriteLine ("Error sending file '{0}' errno: '{1}'", fileName, error);
 				// Let it at least complete.
-			} else
-				Length = length;
+			}
 			
 			IsComplete = true;
 
@@ -158,6 +149,5 @@ namespace Manos.IO
 
 		public event EventHandler Completed;
 	}
-#endif
 }
 

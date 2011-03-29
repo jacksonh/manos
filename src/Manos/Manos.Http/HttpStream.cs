@@ -130,14 +130,25 @@ namespace Manos.Http
 		{
 			Write (buffer, offset, count, chunk_encode);
 		}
-
+		
+		SendFileOperation MakeSendfile (string filename)
+		{
+#if DISABLE_POSIX
+			return new PosixSendFileOperation (filename, null) {
+				Chunked = chunk_encode
+			};
+#else
+			return new CopyingSendFileOperation (filename, null) {
+				Chunked = chunk_encode
+			};
+#endif
+		}
+		
 		public void SendFile (string file_name)
 		{
 			EnsureMetadata ();
 
-			var write_file = new SendFileOperation (file_name, null) {
-				Chunked = chunk_encode,
-			};
+			var write_file = MakeSendfile (file_name);
 
 			if (!chunk_encode) {
 				pending_length_cbs++;
