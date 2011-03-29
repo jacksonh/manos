@@ -161,23 +161,6 @@ int create_any_socket (char *host, int port, int type,
 	return fd;
 }
 
-int create_dgram_socket (int ipv4, int *err)
-{
-	int fd = socket (ipv4 ? PF_INET : PF_INET6, SOCK_DGRAM, 0);
-	if (fd < 0) {
-		*err = errno;
-		return -1;
-	}
-
-	if (!setup_socket (fd)) {
-		*err = errno;
-		close (fd);
-		return -1;
-	}
-
-	return fd;
-}
-
 static int
 connect_async (int fd, struct sockaddr *addr, int addrlen)
 {
