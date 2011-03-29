@@ -6,17 +6,17 @@ using System.Collections.Generic;
 
 namespace Manos.IO
 {
-#if !DISABLE_POSIX
-	public class SendFileOperation : IWriteOperation
+	public class CopyingSendFileOperation : IWriteOperation
 	{
 		string fileName;
 		WriteCallback callback;
 		int fd;
+		byte [] transferBuffer = new byte[8192];
 		SocketStream stream;
 		long position = 0;
-		IWriteOperation headerWrite;
+		IWriteOperation currentBlock;
 
-		public SendFileOperation (string filename, WriteCallback callback)
+		public CopyingSendFileOperation (string filename, WriteCallback callback)
 		{
 			this.fileName = filename;
 			this.callback = callback;
@@ -25,7 +25,7 @@ namespace Manos.IO
 			fd = -1;
 		}
 
-		~SendFileOperation ()
+		~CopyingSendFileOperation ()
 		{
 			Dispose ();
 		}
@@ -55,7 +55,7 @@ namespace Manos.IO
 
 		public void EndWrite (IOStream stream)
 		{
-			Libeio.Libeio.close(fd, err => { });
+			Libeio.Libeio.close (fd, err => { });
 			if (callback != null) {
 				callback ();
 			}
@@ -85,11 +85,11 @@ namespace Manos.IO
 					Length = stat.st_size;
 					var chunkHeader = string.Format ("{0:x}\r\n", Length);
 					var headerBytes = Encoding.ASCII.GetBytes (chunkHeader);
-					headerWrite = new SendBytesOperation (new List<ByteBuffer> {
+					currentBlock = new SendBytesOperation (new List<ByteBuffer> {
 						new ByteBuffer (headerBytes, 0, headerBytes.Length)
 					}, null);
 					stream.EnableWriting ();
-					headerWrite.BeginWrite (stream);
+					currentBlock.BeginWrite (stream);
 				}
 			});
 		}
@@ -97,12 +97,12 @@ namespace Manos.IO
 		public void HandleWrite (IOStream stream)
 		{
 			this.stream = (SocketStream) stream;
-			if (headerWrite != null && !headerWrite.IsComplete) {
-				headerWrite.HandleWrite (stream);
-				if (headerWrite.IsComplete) {
-					headerWrite.EndWrite (stream);
-					headerWrite.Dispose ();
-					headerWrite = null;
+			if (currentBlock != null && !currentBlock.IsComplete) {
+				currentBlock.HandleWrite (stream);
+				if (currentBlock.IsComplete) {
+					currentBlock.EndWrite (stream);
+					currentBlock.Dispose ();
+					currentBlock = null;
 				}
 			}
 			if (fd == -1) {
@@ -115,13 +115,16 @@ namespace Manos.IO
 				}
 			} else if (position != Length) {
 				stream.DisableWriting ();
-				Libeio.Libeio.sendfile (stream.Handle.ToInt32 (), fd, position, Length - position, (len, err) => {
-					if (len >= 0) {
-						position += len;
-					} else {
+				Libeio.Libeio.read (fd, transferBuffer, position, 8192, (len, buf, err) => {
+					if (position == Length) {
 						OnComplete (Length, err);
 					}
-					if (position == Length) {
+					if (len > 0) {
+						position += len;
+						currentBlock = new SendBytesOperation (new List<ByteBuffer> {
+							new ByteBuffer (transferBuffer, 0, len)
+						}, null);
+					} else {
 						OnComplete (Length, err);
 					}
 					stream.EnableWriting ();
@@ -158,6 +161,5 @@ namespace Manos.IO
 
 		public event EventHandler Completed;
 	}
-#endif
 }
 
