@@ -19,23 +19,11 @@
 
 #include <gnutls/gnutls.h>
 
-#ifdef HAVE_SYS_SENDFILE_H
-#include <sys/sendfile.h>
-#endif
-
-
-#include "manos_tls.h"
+#include "manos.h"
 
 
 gnutls_priority_t	priority_cache;
 gnutls_dh_params_t	dh_params;
-
-struct manos_tls_socket {
-	gnutls_certificate_credentials_t		credentials;
-	gnutls_session_t						tls_session;
-	int										handshake_done;
-	int										socket;
-};
 
 
 static int
@@ -78,6 +66,7 @@ void
 manos_tls_global_end ()
 {
 	gnutls_priority_deinit (priority_cache);
+	gnutls_dh_params_deinit (dh_params);
 	gnutls_global_deinit ();
 }
 
@@ -89,13 +78,13 @@ manos_tls_regenerate_dhparams (int bits)
 
 	err = gnutls_dh_params_init (&params);
 	if (err != 0) {
-		return -1;
+		return err;
 	}
 
 	err = gnutls_dh_params_generate2 (params, bits);
 	if (err != 0) {
 		gnutls_dh_params_deinit (params);
-		return -2;
+		return err;
 	}
 
 	oldparams = dh_params;
@@ -116,19 +105,19 @@ manos_tls_init (manos_tls_socket_t *tls, const char *cert, const char *key)
 
 	socket = malloc (sizeof (*socket));
 	if (socket == NULL) {
-		return -1;
+		return ENOMEM;
 	}
 
 	memset (socket, 0, sizeof (*socket));
 
 	err = gnutls_certificate_allocate_credentials (&socket->credentials);
 	if (err != 0) {
-		return -2;
+		return err;
 	}
 
 	err = gnutls_certificate_set_x509_key_file (socket->credentials, cert, key, GNUTLS_X509_FMT_PEM);
 	if (err != 0) {
-		return -3;
+		return err;
 	}
 
 	gnutls_certificate_set_params_function(socket->credentials, get_dh_params);
@@ -177,7 +166,7 @@ manos_tls_accept (manos_tls_socket_t server, manos_tls_socket_t *client, manos_s
 	err = manos_socket_accept (server->socket, info, &inner_err);
 	if (err < 0) {
 		if (inner_err == 0) {
-			return -1;
+			return EAGAIN;
 		} else {
 			return inner_err;
 		}
@@ -186,22 +175,23 @@ manos_tls_accept (manos_tls_socket_t server, manos_tls_socket_t *client, manos_s
 	client_socket = malloc (sizeof (*client_socket));
 	if (client == NULL) {
 		close (info->fd);
-		return -1;
+		return ENOMEM;
 	}
 
 	memset (client_socket, 0, sizeof (*client_socket));
 
 	client_socket->socket = info->fd;
-	client_socket->credentials = server->credentials;
 
 	err = gnutls_init (&(client_socket->tls_session), GNUTLS_SERVER);
 	if (err != 0) {
 		close (info->fd);
 		if (err != GNUTLS_E_MEMORY_ERROR) {
 			gnutls_deinit (client_socket->tls_session);
+		} else {
+			err = ENOMEM;
 		}
 		free (client_socket);
-		return -2;
+		return err;
 	}
 
 	gnutls_priority_set (client_socket->tls_session, priority_cache);
@@ -215,46 +205,54 @@ manos_tls_accept (manos_tls_socket_t server, manos_tls_socket_t *client, manos_s
 }
 
 static int
-tls_errno_or_default (int tlserror, int def, int again)
+tls_errno_or_again (int tlserror)
 {
 	if (tlserror == GNUTLS_E_AGAIN || tlserror == GNUTLS_E_INTERRUPTED) {
-		return again;
+		return EAGAIN;
 	} else {
-		return def;
+		return tlserror;
 	}
 }
 
 int
-manos_tls_receive (manos_tls_socket_t tls, char *data, int len)
+manos_tls_receive (manos_tls_socket_t tls, char *data, int len, int *reserr)
 {
 	int recvd, err;
 
+	*reserr = 0;
+
 	err = do_handshake (tls);
 	if (err != 0) {
-		return tls_errno_or_default (err, -2, -1);
+		*reserr = tls_errno_or_again (err);
+		return -1;
 	}
 
 	recvd = gnutls_record_recv (tls->tls_session, data, len);
 	if (recvd < 0) {
-		return tls_errno_or_default (recvd, -3, -1);
+		*reserr = tls_errno_or_again (recvd);
+		return -1;
 	}
 
 	return recvd;
 }
 
 int
-manos_tls_send (manos_tls_socket_t tls, const char *data, int len)
+manos_tls_send (manos_tls_socket_t tls, const char *data, int len, int *reserr)
 {
 	int sent, err;
 
+	*reserr = 0;
+
 	err = do_handshake (tls);
 	if (err != 0) {
-		return tls_errno_or_default (err, -2, -1);
+		*reserr = tls_errno_or_again (err);
+		return -1;
 	}
 
 	sent = gnutls_record_send (tls->tls_session, data, len);
 	if (sent < 0) {
-		return tls_errno_or_default (sent, -3, -1);
+		*reserr = tls_errno_or_again (sent);
+		return -1;
 	}
 
 	return sent;
@@ -267,7 +265,7 @@ manos_tls_redo_handshake (manos_tls_socket_t tls)
 
 	err = gnutls_rehandshake (tls->tls_session);
 	if (err != 0) {
-		return -1;
+		return err;
 	}
 
 	tls->handshake_done = 0;
@@ -281,6 +279,10 @@ manos_tls_close (manos_tls_socket_t tls)
 
 	err = gnutls_bye (tls->tls_session, GNUTLS_SHUT_RDWR);
 	close (tls->socket);
+	if (tls->credentials) {
+		gnutls_certificate_free_credentials (tls->credentials);
+	}
+	gnutls_deinit (tls->tls_session);
 	free (tls);
 
 	return 0;
