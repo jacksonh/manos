@@ -45,13 +45,12 @@ namespace Manos.IO {
 		private bool running;
 
 		private Loop evloop;
-		private IntPtr libmanos_data;
 
-		public IOLoop ()
+		IOLoop ()
 		{
 			evloop = Loop.CreateDefaultLoop (0);
 
-			libmanos_data = manos_init (evloop.Handle);
+			manos_init (evloop.Handle);
 		}
 
 		public static IOLoop Instance {
@@ -91,7 +90,7 @@ namespace Manos.IO {
 		}
 
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
-		private static extern IntPtr manos_init (IntPtr handle);
+		private static extern void manos_init (IntPtr handle);
 
 	}
 }
