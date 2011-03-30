@@ -81,7 +81,6 @@ namespace Manos {
 		
 		private RouteHandler AddRouteHandler (IManosModule module, string [] patterns, HttpMethod [] methods)
 		{
-			Log.Debug("AddRouteHandler?3");
 			if (module == null)
 				throw new ArgumentNullException ("module");
 			if (patterns == null)
