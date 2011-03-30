@@ -57,7 +57,6 @@ int
 manos_tls_global_init (const char *priorities)
 {
 	int err;
-	const char *err_pos;
 
 	priority_cache = NULL;
 	dh_params = NULL;
@@ -67,7 +66,7 @@ manos_tls_global_init (const char *priorities)
 		return -1;
 	}
 
-	err = gnutls_priority_init (&priority_cache, priorities, &err_pos);
+	err = gnutls_priority_init (&priority_cache, priorities, NULL);
 	if (err != 0) {
 		return -2;
 	}
@@ -144,48 +143,9 @@ manos_tls_listen (manos_tls_socket_t tls, const char *host, int port, int backlo
 	int err;
 
 	tls->socket = manos_socket_listen (host, port, backlog, &err);
-	if (tls->socket != 0) {
+	if (tls->socket == -1) {
 		return err;
 	}
-
-	return 0;
-}
-
-int
-manos_tls_accept (manos_tls_socket_t server, manos_tls_socket_t *client, manos_socket_info_t *info)
-{
-	int err, inner_err;
-	manos_tls_socket_t client_socket;
-	
-	err = manos_socket_accept (server->socket, info, &inner_err);
-	if (err != 0) {
-		return inner_err;
-	}
-
-	client_socket = malloc (sizeof (*client_socket));
-	if (client == NULL) {
-		close (info->fd);
-		return -1;
-	}
-
-	memset (*client, 0, sizeof (*client_socket));
-
-	client_socket->socket = info->fd;
-	client_socket->credentials = server->credentials;
-
-	err = gnutls_init (&(client_socket->tls_session), GNUTLS_SERVER);
-	if (err != 0) {
-		close (info->fd);
-		if (err != GNUTLS_E_MEMORY_ERROR) {
-			gnutls_deinit (client_socket->tls_session);
-		}
-		free (client_socket);
-		return -2;
-	}
-
-	gnutls_transport_set_ptr (client_socket->tls_session, (gnutls_transport_ptr_t) info->fd);
-
-	*client = client_socket;
 
 	return 0;
 }
@@ -208,11 +168,57 @@ do_handshake (manos_tls_socket_t tls)
 	}
 }
 
+int
+manos_tls_accept (manos_tls_socket_t server, manos_tls_socket_t *client, manos_socket_info_t *info)
+{
+	int err, inner_err;
+	manos_tls_socket_t client_socket;
+	
+	err = manos_socket_accept (server->socket, info, &inner_err);
+	if (err < 0) {
+		if (inner_err == 0) {
+			return -1;
+		} else {
+			return inner_err;
+		}
+	}
+
+	client_socket = malloc (sizeof (*client_socket));
+	if (client == NULL) {
+		close (info->fd);
+		return -1;
+	}
+
+	memset (client_socket, 0, sizeof (*client_socket));
+
+	client_socket->socket = info->fd;
+	client_socket->credentials = server->credentials;
+
+	err = gnutls_init (&(client_socket->tls_session), GNUTLS_SERVER);
+	if (err != 0) {
+		close (info->fd);
+		if (err != GNUTLS_E_MEMORY_ERROR) {
+			gnutls_deinit (client_socket->tls_session);
+		}
+		free (client_socket);
+		return -2;
+	}
+
+	gnutls_priority_set (client_socket->tls_session, priority_cache);
+	gnutls_credentials_set (client_socket->tls_session, GNUTLS_CRD_CERTIFICATE, server->credentials);
+	gnutls_transport_set_ptr (client_socket->tls_session, (gnutls_transport_ptr_t) info->fd);
+
+	*client = client_socket;
+	do_handshake(client_socket);
+
+	return 0;
+}
+
 static int
-tls_errno_or_default (int tlserror, int def)
+tls_errno_or_default (int tlserror, int def, int again)
 {
 	if (tlserror == GNUTLS_E_AGAIN || tlserror == GNUTLS_E_INTERRUPTED) {
-		return EAGAIN;
+		return again;
 	} else {
 		return def;
 	}
@@ -225,12 +231,12 @@ manos_tls_receive (manos_tls_socket_t tls, char *data, int len)
 
 	err = do_handshake (tls);
 	if (err != 0) {
-		return tls_errno_or_default (err, -1);
+		return tls_errno_or_default (err, -2, -1);
 	}
 
 	recvd = gnutls_record_recv (tls->tls_session, data, len);
 	if (recvd < 0) {
-		return tls_errno_or_default (recvd, -2);
+		return tls_errno_or_default (recvd, -3, -1);
 	}
 
 	return recvd;
@@ -243,12 +249,12 @@ manos_tls_send (manos_tls_socket_t tls, const char *data, int len)
 
 	err = do_handshake (tls);
 	if (err != 0) {
-		return tls_errno_or_default (err, -1);
+		return tls_errno_or_default (err, -2, -1);
 	}
 
 	sent = gnutls_record_send (tls->tls_session, data, len);
 	if (sent < 0) {
-		return tls_errno_or_default (sent, -2);
+		return tls_errno_or_default (sent, -3, -1);
 	}
 
 	return sent;
