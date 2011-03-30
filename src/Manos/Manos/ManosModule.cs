@@ -81,6 +81,7 @@ namespace Manos {
 		
 		private RouteHandler AddRouteHandler (IManosModule module, string [] patterns, HttpMethod [] methods)
 		{
+			Log.Debug("AddRouteHandler?3");
 			if (module == null)
 				throw new ArgumentNullException ("module");
 			if (patterns == null)
@@ -95,9 +96,32 @@ namespace Manos {
 			return module.Routes;
 		}
 
+
+		private RouteHandler AddRouteHandler (ManosAction action, IMatchOperation[] matchOperations, HttpMethod [] methods)
+		{
+			return AddRouteHandler (new ActionTarget (action), matchOperations, methods);
+		}
+
 		private RouteHandler AddRouteHandler (ManosAction action, string [] patterns, HttpMethod [] methods)
 		{
 			return AddRouteHandler (new ActionTarget (action), patterns, methods);
+		}
+		
+		private RouteHandler AddRouteHandler (IManosTarget target, IMatchOperation[] matchOperations, HttpMethod [] methods)
+		{
+			// TODO: Need to decide if this is a good or bad idea
+			// RemoveImplicitHandlers (action);
+
+			if (target == null)
+				throw new ArgumentNullException ("action");
+			if (matchOperations == null)
+				throw new ArgumentNullException ("matchOperations");
+			if (methods == null)
+				throw new ArgumentNullException ("methods");
+			
+			RouteHandler res = new RouteHandler (matchOperations, methods, target);
+			Routes.Children.Add (res);
+			return res;
 		}
 		
 		private RouteHandler AddRouteHandler (IManosTarget target, string [] patterns, HttpMethod [] methods)
@@ -116,7 +140,7 @@ namespace Manos {
 			Routes.Children.Add (res);
 			return res;
 		}
-
+		
 		private RouteHandler AddImplicitRouteHandler (IManosModule module, string [] patterns, HttpMethod [] methods)
 		{
 			return AddImplicitRouteHandler (module, StringOpsForPatterns (patterns), methods);
@@ -178,6 +202,13 @@ namespace Manos {
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.RouteMethods);
 		}
 
+		public RouteHandler Route (string pattern, ManosAction action, Manos.Routing.MatchType matchType)
+		{
+			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
+
+			return AddRouteHandler (action, ops, HttpMethods.GetMethods);
+		}
+
 		public RouteHandler Route (ManosAction action, params string [] patterns)
 		{
 			return AddRouteHandler (action, patterns, HttpMethods.RouteMethods);
@@ -196,6 +227,13 @@ namespace Manos {
 		public RouteHandler Get (string pattern, ManosAction action)
 		{
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.GetMethods);
+		}
+
+		public RouteHandler Get (string pattern, ManosAction action, Manos.Routing.MatchType matchType)
+		{
+			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
+
+			return AddRouteHandler (action, ops, HttpMethods.GetMethods);
 		}
 
 		public RouteHandler Get (ManosAction action, params string [] patterns)
@@ -225,6 +263,13 @@ namespace Manos {
 			return AddRouteHandler (action, patterns, HttpMethods.PutMethods);
 		}
 
+		public RouteHandler Put (string pattern, ManosAction action, Manos.Routing.MatchType matchType)
+		{
+			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
+
+			return AddRouteHandler (action, ops, HttpMethods.GetMethods);
+		}
+
 		public RouteHandler Put (IManosModule module, params string [] patterns)
 		{
 			return AddRouteHandler (module, patterns, HttpMethods.PutMethods);
@@ -238,6 +283,13 @@ namespace Manos {
 		public RouteHandler Post (string pattern, ManosAction action)
 		{
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.PostMethods);
+		}
+
+		public RouteHandler Post (string pattern, ManosAction action, Manos.Routing.MatchType matchType)
+		{
+			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
+
+			return AddRouteHandler (action, ops, HttpMethods.GetMethods);
 		}
 
 		public RouteHandler Post (ManosAction action, params string [] patterns)
@@ -262,6 +314,13 @@ namespace Manos {
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.DeleteMethods);
 		}
 
+		public RouteHandler Delete (string pattern, ManosAction action, Manos.Routing.MatchType matchType)
+		{
+			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
+
+			return AddRouteHandler (action, ops, HttpMethods.GetMethods);
+		}
+
 		public RouteHandler Delete (ManosAction action, params string [] patterns)
 		{
 			return AddRouteHandler (action, patterns, HttpMethods.DeleteMethods);
@@ -282,6 +341,13 @@ namespace Manos {
 		public RouteHandler Head (string pattern, ManosAction action)
 		{
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.HeadMethods);
+		}
+
+		public RouteHandler Head (string pattern, ManosAction action, Manos.Routing.MatchType matchType)
+		{
+			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
+
+			return AddRouteHandler (action, ops, HttpMethods.GetMethods);
 		}
 
 		public RouteHandler Head (ManosAction action, params string [] patterns)
@@ -306,6 +372,13 @@ namespace Manos {
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.OptionsMethods);
 		}
 
+		public RouteHandler Options (string pattern, ManosAction action, Manos.Routing.MatchType matchType)
+		{
+			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
+
+			return AddRouteHandler (action, ops, HttpMethods.GetMethods);
+		}
+
 		public RouteHandler Options (ManosAction action, params string [] patterns)
 		{
 			return AddRouteHandler (action, patterns, HttpMethods.OptionsMethods);
@@ -326,6 +399,13 @@ namespace Manos {
 		public RouteHandler Trace (string pattern, ManosAction action)
 		{
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.TraceMethods);
+		}
+
+		public RouteHandler Trace (string pattern, ManosAction action, Manos.Routing.MatchType matchType)
+		{
+			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
+
+			return AddRouteHandler (action, ops, HttpMethods.GetMethods);
 		}
 
 		public RouteHandler Trace (ManosAction action, params string [] patterns)
