@@ -24,6 +24,8 @@ fi
 AC_SUBST(DMCS)
 
 
+PKG_CHECK_MODULES([GNUTLS], [gnutls >= 2.10])
+
 
 AC_PATH_PROG(XBUILD, xbuild, no)
 if test "x$XBUILD" = "xno" ; then

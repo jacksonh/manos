@@ -130,21 +130,20 @@ namespace Manos.Http
 		{
 			Write (buffer, offset, count, chunk_encode);
 		}
-
+		
 		public void SendFile (string file_name)
 		{
 			EnsureMetadata ();
 
-			var write_file = new SendFileOperation (file_name, null) {
-				Chunked = chunk_encode,
-			};
+			var write_file = SocketStream.MakeSendFile (file_name);
+			write_file.Chunked = chunk_encode;
 
 			if (!chunk_encode) {
 				pending_length_cbs++;
-				FileSystem.GetFileLength (file_name, (l, e) => {
-					if (l != -1)
-						write_file.SetLength (l);
-					LengthCallback (l, e);
+				Libeio.Libeio.stat(file_name, (r, stat, err) => {
+					if (r != -1)
+						write_file.SetLength (stat.st_size);
+					LengthCallback (stat.st_size, err);
 				});
 			} else {
 				write_file.Completed += delegate {
