@@ -174,6 +174,8 @@
     <Compile Include="Manos.IO\PosixSendFileOperation.cs" />
     <Compile Include="Manos.IO\SendFileOperation.cs" />
     <Compile Include="Manos.IO\CopyingSendFileOperation.cs" />
+    <Compile Include="Manos.IO\SecureSocketStream.cs" />
+    <Compile Include="Manos.IO\PlainSocketStream.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -183,4 +185,13 @@
   <Target Name="ListSources">
     <Message Text="@(Compile)" Importance="High" />
   </Target>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="Hierarchical" ResourceNamePolicy="FileFormatDefault" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>

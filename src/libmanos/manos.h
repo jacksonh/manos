@@ -8,8 +8,6 @@
 #include "ev.h"
 #include "eio.h"
 
-#include "manos_socket.h"
-#include "manos_tls.h"
 
 
 void manos_init (struct ev_loop *loop);
@@ -70,7 +68,7 @@ int manos_tls_regenerate_dhparams (int bits);
 
 int manos_tls_init (manos_tls_socket_t *tls, const char *cert, const char *key);
 
-int manos_tls_listen (manos_tls_socket_t tls, const char *host, int port, int backlog);
+int manos_tls_listen (manos_tls_socket_t tls, const char *host, int port, int backlog, int *err);
 
 int manos_tls_accept (manos_tls_socket_t tls, manos_tls_socket_t *client, manos_socket_info_t *info);
 
@@ -78,7 +76,7 @@ int manos_tls_receive (manos_tls_socket_t tls, char *data, int len, int *err);
 
 int manos_tls_redo_handshake (manos_tls_socket_t tls);
 
-int manos_tls_send (manos_tls_socket_t tls, const char *data, int len, int *err);
+int manos_tls_send (manos_tls_socket_t tls, const bytebuffer_t *buffers, int len, int *err);
 
 int manos_tls_close (manos_tls_socket_t tls);
 

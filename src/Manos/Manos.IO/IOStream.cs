@@ -43,7 +43,7 @@ namespace Manos.IO {
 	public abstract class IOStream {
 
 		protected static int ReadChunkSize = 3072;
-		protected static byte [] ReadChunk = new byte [3072];
+		protected static byte [] ReadChunk = new byte [ReadChunkSize];
 
 		protected ReadCallback read_callback;
 
