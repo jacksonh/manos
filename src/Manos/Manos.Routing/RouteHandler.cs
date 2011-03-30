@@ -39,7 +39,6 @@ namespace Manos.Routing {
 
 	public class RouteHandler : IEnumerable<RouteHandler> {
 
-		private C5.IList<string> patterns;
 		private List<HttpMethod> methods;
 
 		private IMatchOperation [] match_ops;
@@ -55,31 +54,31 @@ namespace Manos.Routing {
 				throw new InvalidOperationException ("Can not add Children to a RouteHandler that has a Target set.");	
 		}
 
-		public RouteHandler (string pattern, HttpMethod [] methods) : this (new string [] { pattern }, methods)
+		public RouteHandler (IMatchOperation op, HttpMethod [] methods) : this (new IMatchOperation [] { op }, methods)
 		{
 		}
 		
-		public RouteHandler (string pattern, HttpMethod [] methods, IManosTarget target) : this (new string [] { pattern }, methods, target)
+		public RouteHandler (IMatchOperation op, HttpMethod [] methods, IManosTarget target) : this (new IMatchOperation [] { op }, methods, target)
 		{
 		}
 		
-		public RouteHandler (string pattern, HttpMethod method) : this (new string [] { pattern }, new HttpMethod [] { method })
+		public RouteHandler (IMatchOperation op, HttpMethod method) : this (new IMatchOperation [] { op }, new HttpMethod [] { method })
 		{
 		}
 		
-		public RouteHandler (string pattern, HttpMethod method, IManosTarget target) : this (new string [] { pattern }, new HttpMethod [] { method }, target)
+		public RouteHandler (IMatchOperation op, HttpMethod method, IManosTarget target) : this (new IMatchOperation [] { op }, new HttpMethod [] { method }, target)
 		{
 		}
 		
-		public RouteHandler (string [] patterns, HttpMethod [] methods) : this (patterns, methods, null)
+		public RouteHandler (IMatchOperation [] ops, HttpMethod [] methods) : this (ops, methods, null)
 		{
 		}
 
-		public RouteHandler (string [] patterns, HttpMethod [] methods, IManosTarget target)
+		public RouteHandler (IMatchOperation [] ops, HttpMethod [] methods, IManosTarget target)
 		{
 			Target = target;
 
-			Patterns = new List<string> (patterns);
+			match_ops = ops;
 			this.methods = new List<HttpMethod> (methods);
 
 			SetupChildrenCollection ();
@@ -101,35 +100,9 @@ namespace Manos.Routing {
 			internal set;
 		}
 
-		public IList<string> Patterns {
-			get { return patterns; }
-			set {
-				if (value == null)
-				{
-					patterns = null;
-				}
-				else 
-				{
-					patterns = new C5.ArrayList<string> ();
-					//
-					// TODO: ObservableCollection (IList) isn't implemented yet.
-					//
-					foreach (string s in value)
-					{
-						patterns.Add (s);
-					}
-					EventHandler handler = delegate(object sender, EventArgs e) 
-					{
-						UpdateMatchOps ();
-					};
-
-					patterns.ItemInserted += new C5.ItemInsertedHandler<string> (handler);
-					patterns.ItemsAdded += new C5.ItemsAddedHandler<string> (handler);
-					patterns.ItemRemovedAt += new C5.ItemRemovedAtHandler<string> (handler);
-					patterns.ItemsRemoved += new C5.ItemsRemovedHandler<string> (handler);
-				}
-				UpdateMatchOps ();
-			}
+		public IMatchOperation [] MatchOps {
+			get { return match_ops; }
+			set { match_ops = value; }
 		}
 
 		public IList<HttpMethod> Methods {
@@ -159,7 +132,7 @@ namespace Manos.Routing {
 
 		public bool HasPatterns {
 			get { 
-				return patterns != null && patterns.Count > 0;
+				return match_ops != null && match_ops.Length > 0;
 			}
 		}
 		
@@ -249,20 +222,6 @@ namespace Manos.Routing {
 				return methods.Contains (request.Method);
 
 			return true;
-		}
-		
-		private void UpdateMatchOps ()
-		{
-			if (patterns == null) {
-				match_ops = null;
-				return;
-			}
-			
-			match_ops = new IMatchOperation [patterns.Count];
-			
-			for (int i = 0; i < patterns.Count; i++) {
-				match_ops [i] = MatchOperationFactory.Create (patterns [i]);	
-			}
 		}
 	}
 }

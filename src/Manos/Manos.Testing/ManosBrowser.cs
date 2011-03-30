@@ -66,6 +66,11 @@ namespace Manos.Testing
 		{
 			_request.Cookies[name] = value;
 		}
+
+		public void PostBody (string value)
+		{
+			_request.PostBody = value;
+		}
 	}
 	
 	public class ManosBrowser
