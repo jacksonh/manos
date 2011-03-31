@@ -58,7 +58,7 @@ namespace Manos.IO
 		
 		internal override SendFileOperation MakeSendFile(string file)
 		{
-#if DISABLE_POSIX
+#if !DISABLE_POSIX
 			return new PosixSendFileOperation (file, null);
 #else
 			return new CopyingSendFileOperation (file, null);
