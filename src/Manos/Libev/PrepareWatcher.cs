@@ -28,9 +28,14 @@ namespace Libev
 
 		private static void StaticCallback (IntPtr data, EventTypes revents)
 		{
-			var handle = GCHandle.FromIntPtr (data);
-			var watcher = (PrepareWatcher) handle.Target;
-			watcher.callback (watcher.Loop, watcher, revents);
+			try {
+				var handle = GCHandle.FromIntPtr (data);
+				var watcher = (PrepareWatcher) handle.Target;
+				watcher.callback (watcher.Loop, watcher, revents);
+			} catch (Exception e) {
+				Console.Error.WriteLine ("Error handling prepare event: {0}", e.Message);
+				Console.Error.WriteLine (e.StackTrace);
+			}
 		}
 
 		protected override void StartImpl ()

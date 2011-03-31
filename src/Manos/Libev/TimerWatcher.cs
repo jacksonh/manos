@@ -24,20 +24,25 @@ namespace Libev
 			watcher_ptr = manos_timer_watcher_create (after.TotalSeconds, repeat.TotalSeconds,
 				unmanaged_callback, GCHandle.ToIntPtr (gc_handle));
 		}
-		
-		public override void Dispose()
+
+		public override void Dispose ()
 		{
-			base.Dispose();
+			base.Dispose ();
 			manos_timer_watcher_destroy (watcher_ptr);
 		}
 
 		private static void StaticCallback (IntPtr data, EventTypes revents)
 		{
-			var handle = GCHandle.FromIntPtr (data);
-			var watcher = (TimerWatcher) handle.Target;
-			watcher.callback (watcher.Loop, watcher, revents);
+			try {
+				var handle = GCHandle.FromIntPtr (data);
+				var watcher = (TimerWatcher) handle.Target;
+				watcher.callback (watcher.Loop, watcher, revents);
+			} catch (Exception e) {
+				Console.Error.WriteLine ("Error handling timer event: {0}", e.Message);
+				Console.Error.WriteLine (e.StackTrace);
+			}
 		}
-		
+
 		protected override void StartImpl ()
 		{
 			ev_timer_start (Loop.Handle, watcher_ptr);

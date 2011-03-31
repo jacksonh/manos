@@ -32,9 +32,14 @@ namespace Libev
 
 		private static void StaticCallback (IntPtr data, EventTypes revents)
 		{
-			var handle = GCHandle.FromIntPtr (data);
-			var watcher = (IOWatcher) handle.Target;
-			watcher.callback (watcher.Loop, watcher, revents);
+			try {
+				var handle = GCHandle.FromIntPtr (data);
+				var watcher = (IOWatcher) handle.Target;
+				watcher.callback (watcher.Loop, watcher, revents);
+			} catch (Exception e) {
+				Console.Error.WriteLine ("Error handling IO readyness event: {0}", e.Message);
+				Console.Error.WriteLine (e.StackTrace);
+			}
 		}
 
 		public IntPtr FileHandle {
