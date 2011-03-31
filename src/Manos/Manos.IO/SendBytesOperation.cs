@@ -107,7 +107,7 @@ namespace Manos.IO {
 			ByteBufferS [] b = new ByteBufferS [buffers.Count - bufferOffset];
 
 			for (int i = bufferOffset; i < buffers.Count; i++) {
-				b [i] = buffers [i].buffer;
+				b [i - bufferOffset] = buffers [i].buffer;
 			}
 
 			return b;
