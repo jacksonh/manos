@@ -47,7 +47,7 @@ namespace Manos.Routing
 					throw new ArgumentNullException ("value");
 				if (value.Length == 0)
 					throw new ArgumentException ("StringMatch operations should not use empty strings.");
-				str = value;
+				str = value.ToLower();
 			}
 		}
 	
@@ -66,11 +66,13 @@ namespace Manos.Routing
 
 		public static bool StartsWith (string input, int start, string str)
 		{
-			if (input.Length < str.Length + start)
+			string lowerInput = input.ToLower ();
+			
+			if (lowerInput.Length < str.Length + start)
 				return false;
 
 			for (int i = 0; i < str.Length; i++) {
-				if (input [start + i] != str [i])
+				if (lowerInput [start + i] != str [i])
 					return false;
 			}
 
