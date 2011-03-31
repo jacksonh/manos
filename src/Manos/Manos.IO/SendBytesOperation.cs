@@ -38,7 +38,7 @@ namespace Manos.IO {
 
 	public class SendBytesOperation : IWriteOperation {
 
-		private List<ByteBuffer> buffers;
+		private ByteBuffer[] buffers;
 		private int bufferOffset;
 		private WriteCallback callback;
 
@@ -56,7 +56,7 @@ namespace Manos.IO {
 		private int segments_written;
 		private List<CallbackInfo> callbacks;
 
-		public SendBytesOperation (List<ByteBuffer> buffers, WriteCallback callback)
+		public SendBytesOperation (ByteBuffer[] buffers, WriteCallback callback)
 		{
 			this.buffers = buffers;
 			this.callback = callback;
@@ -73,29 +73,7 @@ namespace Manos.IO {
 
 		public bool Combine (IWriteOperation other)
 		{
-			SendBytesOperation send_op = other as SendBytesOperation;
-			if (send_op == null)
-				return false;
-
-			int offset = buffers.Count;
-			foreach (var op in send_op.buffers) {
-				buffers.Add (op);
-			}
-
-			if (send_op.callback != null) {
-				if (callback == null && callbacks == null)
-					callback = send_op.callback;
-				else {
-					if (callbacks == null) {
-						callbacks = new List<CallbackInfo> ();
-						callbacks.Add (new CallbackInfo (offset - 1, callback));
-						callback = null;
-					}
-					callbacks.Add (new CallbackInfo (buffers.Count - 1, send_op.callback));
-				}
-			}
-
-			return true;
+			return false;
 		}
 
 		public void BeginWrite (IOStream stream)
@@ -104,9 +82,9 @@ namespace Manos.IO {
 
 		private ByteBufferS [] CreateBufferSArray ()
 		{
-			ByteBufferS [] b = new ByteBufferS [buffers.Count - bufferOffset];
+			ByteBufferS [] b = new ByteBufferS [buffers.Length - bufferOffset];
 
-			for (int i = bufferOffset; i < buffers.Count; i++) {
+			for (int i = bufferOffset; i < buffers.Length; i++) {
 				b [i - bufferOffset] = buffers [i].buffer;
 			}
 
@@ -117,7 +95,7 @@ namespace Manos.IO {
 		{
 			SocketStream sstream = (SocketStream) stream;
 			
-			while (this.buffers.Count > bufferOffset) {
+			while (this.buffers.Length > bufferOffset) {
 				int len = -1;
 				int error;
 				ByteBufferS [] bs = CreateBufferSArray ();
@@ -127,19 +105,19 @@ namespace Manos.IO {
 					return;
 
 				if (len != -1) {
-					int num_segments = buffers.Count - bufferOffset;
+					int num_segments = buffers.Length - bufferOffset;
 					AdjustSegments (len);
-					segments_written = num_segments - buffers.Count - bufferOffset;
+					segments_written = num_segments - buffers.Length - bufferOffset;
 				}
 			}
 
 			FireCallbacks ();
-			IsComplete = (buffers.Count == bufferOffset);
+			IsComplete = (buffers.Length == bufferOffset);
 		}
 
 		void AdjustSegments (int len)
 		{
-			while (len > 0 && bufferOffset < buffers.Count) {
+			while (len > 0 && bufferOffset < buffers.Length) {
 				int seg_len = buffers [bufferOffset].Length;
 				if (seg_len <= len) {
 					buffers [bufferOffset] = null;
@@ -160,7 +138,7 @@ namespace Manos.IO {
 
 		private void FireCallbacks ()
 		{
-			if (buffers.Count == bufferOffset) {
+			if (buffers.Length == bufferOffset) {
 				FireAllCallbacks ();
 				return;
 			}

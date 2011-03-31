@@ -85,10 +85,9 @@ namespace Manos.IO
 
 		public void Write (byte [] data, int offset, int count, WriteCallback callback)
 		{
-			var bytes = new List<ByteBuffer> ();
-			bytes.Add (new ByteBuffer (data, offset, count));
-
-			var write_bytes = new SendBytesOperation (bytes, callback);
+			var write_bytes = new SendBytesOperation (new[] {
+				new ByteBuffer (data, offset, count)
+			}, callback);
 			QueueWriteOperation (write_bytes);
 		}
 

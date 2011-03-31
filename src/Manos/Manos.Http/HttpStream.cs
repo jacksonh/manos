@@ -176,7 +176,7 @@ namespace Manos.Http
 			if (chunked)
 				WriteChunk (bytes, -1, false);
 
-			var write_bytes = new SendBytesOperation (bytes, null);
+			var write_bytes = new SendBytesOperation (bytes.ToArray (), null);
 			QueueWriteOperation (write_bytes);
 		}
 
@@ -215,7 +215,7 @@ namespace Manos.Http
 
 			WriteChunk (bytes, 0, true);
 
-			var write_bytes = new SendBytesOperation (bytes, callback);
+			var write_bytes = new SendBytesOperation (bytes.ToArray (), callback);
 			QueueWriteOperation (write_bytes);
 		}
 
@@ -255,7 +255,7 @@ namespace Manos.Http
 
 			var bytes = new List<ByteBuffer> ();
 			bytes.Add (new ByteBuffer (data, 0, data.Length));
-			var write_bytes = new SendBytesOperation (bytes, callback);
+			var write_bytes = new SendBytesOperation (bytes.ToArray (), callback);
 
 			SocketStream.QueueWriteOperation (write_bytes);
 		}
@@ -287,7 +287,7 @@ namespace Manos.Http
 
 			WriteChunk (bytes, l, last);
 
-			var write_bytes = new SendBytesOperation (bytes, null);
+			var write_bytes = new SendBytesOperation (bytes.ToArray (), null);
 			QueueWriteOperation (write_bytes);
 		}
 
