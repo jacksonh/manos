@@ -18,6 +18,29 @@ void manos_init (struct ev_loop *loop);
 void manos_shutdown ();
 
 
+
+typedef void (manos_watcher_cb)(const void *data, int revents);
+
+void* manos_io_watcher_create (int fd, int events, manos_watcher_cb callback, const void *data);
+void manos_io_watcher_destroy (void *watcher);
+
+void* manos_async_watcher_create (manos_watcher_cb callback, const void *data);
+void manos_async_watcher_destroy (void *watcher);
+
+void* manos_check_watcher_create (manos_watcher_cb callback, const void *data);
+void manos_check_watcher_destroy (void *watcher);
+
+void* manos_idle_watcher_create (manos_watcher_cb callback, const void *data);
+void manos_idle_watcher_destroy (void *watcher);
+
+void* manos_prepare_watcher_create (manos_watcher_cb callback, const void *data);
+void manos_prepare_watcher_destroy (void *watcher);
+
+void* manos_timer_watcher_create (ev_tstamp after, ev_tstamp repeat, manos_watcher_cb callback, const void *data);
+void manos_timer_watcher_destroy (void *watcher);
+
+
+
 typedef struct {
 	int offset;
 	int length;

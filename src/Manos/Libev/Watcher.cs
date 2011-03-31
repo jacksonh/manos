@@ -1,24 +1,22 @@
-
-
 using System;
 using System.Runtime.InteropServices;
 
-namespace Libev {
-
-	public abstract class Watcher : IDisposable {
-
+namespace Libev
+{
+	public abstract class Watcher : IDisposable
+	{
 		protected IntPtr watcher_ptr;
-
-		private bool running;
+		private bool running, disposed;
 		protected GCHandle gc_handle;
 
 		internal Watcher (Loop loop)
 		{
 			Loop = loop;
+			gc_handle = GCHandle.Alloc (this);
 		}
-		
+
 		public bool IsRunning {
-		       get { return running; }
+			get { return running; }
 		}
 
 		public Loop Loop {
@@ -27,37 +25,36 @@ namespace Libev {
 		}
 
 		public object UserData {
-		       get;
-		       set;
-		}		
-
-		protected IntPtr WatcherPtr {
-			get { return watcher_ptr; }
+			get;
+			set;
 		}
-		
+
+		~Watcher ()
+		{
+			Dispose ();
+		}
+
 		public virtual void Dispose ()
 		{
+			if (disposed) {
+				throw new ObjectDisposedException (GetType().Name);
+			}
+			
 			Stop ();
 			
-			Marshal.FreeHGlobal (watcher_ptr);
-			watcher_ptr = IntPtr.Zero;			
-		}	
-
-		protected void InitializeUnmanagedWatcher (object unmanaged_watcher)
-		{
-			watcher_ptr = Marshal.AllocHGlobal (Marshal.SizeOf (unmanaged_watcher.GetType ()));
-			Marshal.StructureToPtr (unmanaged_watcher, watcher_ptr, true);
+			watcher_ptr = IntPtr.Zero;
+			gc_handle.Free ();
+			
+			GC.SuppressFinalize (this);
+			disposed = true;
 		}
-
-		
 
 		public void Start ()
 		{
 			if (running)
-			   return;
+				return;
 
 			running = true;
-			gc_handle = GCHandle.Alloc (this);
 			
 			StartImpl ();
 		}
@@ -65,16 +62,17 @@ namespace Libev {
 		public void Stop ()
 		{
 			if (!running)
-			   return;
+				return;
 
 			running = false;
-			gc_handle.Free ();
 
 			StopImpl ();
 		}
 
 		protected abstract void StartImpl ();
-		protected abstract void StopImpl ();		
+
+		protected abstract void StopImpl ();
+
 		protected abstract void UnmanagedCallbackHandler (IntPtr loop, IntPtr watcher, EventTypes revents);
 	}
 }
