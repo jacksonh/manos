@@ -230,7 +230,7 @@ namespace Manos.Managed
             {
                 sending = true;
             }
-            socket.BeginSend(buffers.Select(a => new ArraySegment<byte>(a.Bytes, a.Position, a.Length)).ToArray(), SocketFlags.None, out er, (ar) =>
+            socket.BeginSend(buffers.Select(a => new ArraySegment<byte>(a.Bytes, a.Position, a.Length)).Take(length).ToArray(), SocketFlags.None, out er, (ar) =>
             {
                 StartTimeout();
                 socket.EndSend(ar, out er);
@@ -238,14 +238,22 @@ namespace Manos.Managed
                 {
                     if (Error != null) Error(this, EventArgs.Empty);
                 }
-                lock (write_ops)
+                if (ar.CompletedSynchronously)
                 {
-                    StartSending();
+                    lock (write_ops)
+                    {
+                        sending = false;
+                    }
+                } else {
+                    lock (write_ops)
+                    {
+                        StartSending();
+                    }
                 }
             }, null);
             error = (int)er;
 
-            return buffers.Sum(a => a.Length);
+            return buffers.Take(length).Sum(a => a.Length);
         }
 
 
@@ -268,8 +276,11 @@ namespace Manos.Managed
                         op.BeginWrite(this);
                         current_write_op = op;
                         current_write_op.HandleWrite(this);
-                        if (!sending)
-                            cont = true;
+                        lock (this)
+                        {
+                            if (!sending)
+                                cont = true;
+                        }
                     }
                     else
                     {
@@ -279,6 +290,11 @@ namespace Manos.Managed
                 else
                 {
                     current_write_op.HandleWrite(this);
+                    lock (this)
+                    {
+                        if (!sending)
+                            cont = true;
+                    }
                 }
             }
             
@@ -296,23 +312,31 @@ namespace Manos.Managed
         {
             if (receiveBuffer == null) receiveBuffer = new byte[4096];
             SocketError se;
-            socket.BeginReceive(receiveBuffer, 0, receiveBuffer.Length, SocketFlags.None, out se, (ar) =>
-            {
-                StartTimeout();
-                int len = socket.EndReceive(ar, out se);
-                if (se != SocketError.Success)
-                {
-                    if (Error != null)
-                        Error(this, EventArgs.Empty);
-                }
-                else
-                {
-                    callback(this, receiveBuffer, 0, len);
-                }
-            }, null);
+            socket.BeginReceive(receiveBuffer, 0, receiveBuffer.Length, SocketFlags.None, out se, ReadCallback, callback);
             if (se != SocketError.Success)
                 if (Error != null)
                     Error(this, EventArgs.Empty);
+        }
+
+        private void ReadCallback(IAsyncResult ar)
+        {
+            StartTimeout();
+            SocketError se;
+            var callback = ((IO.ReadCallback)ar.AsyncState);
+            int len = socket.EndReceive(ar, out se);
+            if (se != SocketError.Success)
+            {
+                if (Error != null)
+                    Error(this, EventArgs.Empty);
+            }
+            else
+            {
+                callback(this, receiveBuffer, 0, len);
+                socket.BeginReceive(receiveBuffer, 0, receiveBuffer.Length, SocketFlags.None, out se, ReadCallback, callback);
+                if (se != SocketError.Success)
+                    if (Error != null)
+                        Error(this, EventArgs.Empty);
+            }
         }
 
         public void Close()
