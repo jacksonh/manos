@@ -148,8 +148,11 @@ namespace Manos.Managed
                 };
             }
             if (timer.Enabled)
-                timer.Stop();
-            timer.Start();
+            {
+                timer.Interval
+                timer.Enabled = false;
+            } else
+                timer.Enabled = true;
             
         }
 
@@ -347,12 +350,14 @@ namespace Manos.Managed
                 {
                     try
                     {
+                        socket.EndDisconnect(ar);
                         if (timer != null)
                         {
-                            timer.Dispose();
+                            var t = timer;
                             timer = null;
+                            t.Enabled = false;
+                            t.Dispose();
                         }
-                        socket.EndDisconnect(ar);
                         if (Closed != null)
                             Closed(this, EventArgs.Empty);
                     }
@@ -369,8 +374,13 @@ namespace Manos.Managed
 
         public void Dispose()
         {
-            if (timer != null) timer.Dispose();
             socket.Dispose();
+            var t = timer;
+            if (t != null)
+            {
+                timer = null;
+                t.Dispose();
+            }
         }
     }
 }
