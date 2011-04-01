@@ -24,7 +24,7 @@ fi
 AC_SUBST(DMCS)
 
 
-PKG_CHECK_MODULES([GNUTLS], [gnutls >= 2.10])
+PKG_CHECK_MODULES([GNUTLS], [gnutls >= 2.8])
 
 
 AC_PATH_PROG(XBUILD, xbuild, no)
