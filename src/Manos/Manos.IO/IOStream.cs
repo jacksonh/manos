@@ -126,8 +126,10 @@ namespace Manos.IO {
 			if (write_ops.Count < 1 || !write_ops.Last ().Combine (op))
 				write_ops.Enqueue (op);
 
-			if (current_write_op == null)
+			if (current_write_op == null) {
 				current_write_op = write_ops.Dequeue ();
+				current_write_op.BeginWrite (this);
+			}
 		}
 
 		public void EnableReading ()

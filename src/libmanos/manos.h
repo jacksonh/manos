@@ -71,7 +71,7 @@ int manos_socket_accept_many (int fd, manos_socket_info_t *infos, int len, int *
 int manos_socket_receive (int fd, char* data, int len, int *err);
 int manos_socket_receive_from (int fd, char* buffer, int len, int flags, manos_socket_info_t *info, int *err );
 
-int manos_socket_send (int fd, bytebuffer_t *buffers, int len, int *err);
+int manos_socket_send (int fd, const char *buffers, int offset, int len, int *err);
 
 int manos_socket_close (int fd, int *err);
 
@@ -105,7 +105,7 @@ int manos_tls_receive (manos_tls_socket_t tls, char *data, int len, int *err);
 
 int manos_tls_redo_handshake (manos_tls_socket_t tls);
 
-int manos_tls_send (manos_tls_socket_t tls, const bytebuffer_t *buffers, int len, int *err);
+int manos_tls_send (manos_tls_socket_t tls, const char *buffer, int offset, int len, int *err);
 
 int manos_tls_close (manos_tls_socket_t tls);
 

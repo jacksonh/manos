@@ -248,35 +248,17 @@ manos_socket_receive (int fd, char* buffer, int len, int *err)
 
 
 int
-manos_socket_send (int fd, bytebuffer_t* buffers, int len, int* err)
+manos_socket_send (int fd, const char *buffer, int offset, int len, int* err)
 {
-	int i;
 	ssize_t rc;
-	struct msghdr msg;
 
-	memset (&msg, 0, sizeof (msg));
+	rc = send (fd, buffer + offset, len, 0);
 
-	msg.msg_iovlen = len;
-	msg.msg_iov = malloc (sizeof (struct iovec) * len);
-	memset (msg.msg_iov, 0, sizeof (msg.msg_iov));
-
-	for (i = 0; i < len; i++) {
-		msg.msg_iov [i].iov_base = buffers [i].bytes + buffers [i].offset;
-		msg.msg_iov [i].iov_len  = buffers [i].length;
-	}
-
-	rc = sendmsg (fd, &msg, 0);
-	if ((int) rc < 0) {
-		if (errno == EAGAIN || errno == EINTR) {
-			*err = 0;
-			return -1;
-		}
+	if (rc < 0 && (errno == EAGAIN || errno == EINTR)) {
+		*err = 0;
+	} else {
 		*err = errno;
-		return -1;
 	}
-
-	free (msg.msg_iov);
-
 	return rc;
 }
 

@@ -21,8 +21,6 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 //
-
-
 using System;
 using System.Net.Sockets;
 using System.Collections;
@@ -31,30 +29,14 @@ using System.Collections.Generic;
 using Manos;
 using Manos.Collections;
 
+namespace Manos.IO
+{
+	public class SendBytesOperation : IWriteOperation
+	{
 
-namespace Manos.IO {
-
-	
-
-	public class SendBytesOperation : IWriteOperation {
-
-		private ByteBuffer[] buffers;
+		private ByteBuffer [] buffers;
 		private int bufferOffset;
 		private WriteCallback callback;
-
-		private class CallbackInfo {
-			public int Index;
-			public WriteCallback Callback;
-
-			public CallbackInfo (int index, WriteCallback callback)
-			{
-				Index = index;
-				Callback = callback;
-			}
-		}
-
-		private int segments_written;
-		private List<CallbackInfo> callbacks;
 
 		public SendBytesOperation (ByteBuffer[] buffers, WriteCallback callback)
 		{
@@ -76,38 +58,24 @@ namespace Manos.IO {
 			return false;
 		}
 
+		SocketStream sstream;
+
 		public void BeginWrite (IOStream stream)
 		{
-		}
-
-		private ByteBufferS [] CreateBufferSArray ()
-		{
-			ByteBufferS [] b = new ByteBufferS [buffers.Length - bufferOffset];
-
-			for (int i = bufferOffset; i < buffers.Length; i++) {
-				b [i - bufferOffset] = buffers [i].buffer;
-			}
-
-			return b;
+			sstream = (SocketStream) stream;
 		}
 
 		public void HandleWrite (IOStream stream)
 		{
-			SocketStream sstream = (SocketStream) stream;
-			
 			while (this.buffers.Length > bufferOffset) {
 				int len = -1;
 				int error;
-				ByteBufferS [] bs = CreateBufferSArray ();
-				len = sstream.Send (bs, bs.Length, out error);
+				len = sstream.Send (buffers [bufferOffset], out error);
 
-				if (len < 0 && error == 0)
-					return;
-
-				if (len != -1) {
-					int num_segments = buffers.Length - bufferOffset;
+				if (len > 0) {
 					AdjustSegments (len);
-					segments_written = num_segments - buffers.Length - bufferOffset;
+				} else {
+					return;
 				}
 			}
 
@@ -117,18 +85,16 @@ namespace Manos.IO {
 
 		void AdjustSegments (int len)
 		{
-			while (len > 0 && bufferOffset < buffers.Length) {
+			if (len > 0) {
 				int seg_len = buffers [bufferOffset].Length;
-				if (seg_len <= len) {
+				if (seg_len == len) {
 					buffers [bufferOffset] = null;
 					bufferOffset++;
 				} else {
-					int offset = buffers [bufferOffset].Position + len;
-					buffers [bufferOffset].Position = offset;
-					buffers [bufferOffset].Length = buffers [bufferOffset].Bytes.Length - offset;
-					break;
+					var buf = buffers [bufferOffset];
+					buf.Position += len;
+					buf.Length -= len;
 				}
-				len -= seg_len;
 			}
 		}
 
@@ -138,35 +104,9 @@ namespace Manos.IO {
 
 		private void FireCallbacks ()
 		{
-			if (buffers.Length == bufferOffset) {
-				FireAllCallbacks ();
-				return;
-			}
-
-			if (callbacks == null)
-				return;
-
-			while (callbacks.Count > 0) {
-				CallbackInfo c = callbacks [0];
-				if (c.Index < segments_written)
-					break;
-				c.Callback ();
-
-				callbacks.RemoveAt (0);
-			}
-		}
-
-		private void FireAllCallbacks ()
-		{
-			if (callback != null) {
+			if (buffers.Length == bufferOffset && callback != null) {
 				callback ();
-				return;
 			}
-
-			if (callbacks == null)
-				return;
-
-			callbacks.ForEach (c => c.Callback ());
 		}
 	}
 }

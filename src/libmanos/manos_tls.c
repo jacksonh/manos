@@ -242,8 +242,8 @@ manos_tls_receive (manos_tls_socket_t tls, char *data, int len, int *reserr)
 	return recvd;
 }
 
-static int
-manos_tls_send_simple (manos_tls_socket_t tls, const char *data, int len, int *reserr)
+int
+manos_tls_send (manos_tls_socket_t tls, const char *data, int offset, int len, int *reserr)
 {
 	int sent, err;
 
@@ -255,37 +255,13 @@ manos_tls_send_simple (manos_tls_socket_t tls, const char *data, int len, int *r
 		return -1;
 	}
 
-	sent = gnutls_record_send (tls->tls_session, data, len);
+	sent = gnutls_record_send (tls->tls_session, data + offset, len);
 	if (sent < 0) {
 		*reserr = tls_errno_or_again (sent);
 		return -1;
 	}
 
 	return sent;
-}
-
-int
-manos_tls_send (manos_tls_socket_t tls, const bytebuffer_t *buffers, int len, int *err)
-{
-	int i;
-	int sent_total;
-
-	sent_total = 0;
-
-	for (i = 0; i < len; i++) {
-		int senderr;
-		int sent;
-	   
-		sent = manos_tls_send_simple (tls, buffers[i].bytes + buffers[i].offset, buffers[i].length, &senderr);
-		if (sent < 0) {
-			*err = senderr;
-			break;
-		}
-
-		sent_total += sent;
-	}
-
-	return sent_total;
 }
 
 int

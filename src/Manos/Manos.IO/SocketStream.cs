@@ -132,7 +132,7 @@ namespace Manos.IO
 			}
 		}
 
-		internal abstract int Send (ByteBufferS [] buffers, int length, out int error);
+		internal abstract int Send (ByteBuffer buffer, out int error);
 
 		protected void OnConnectionAccepted (SocketStream stream)
 		{

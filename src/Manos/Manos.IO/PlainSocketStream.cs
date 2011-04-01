@@ -137,10 +137,10 @@ namespace Manos.IO
 		{
 			return manos_socket_receive (fd, ReadChunk, ReadChunk.Length, out error);
 		}
-
-		internal override int Send (ByteBufferS [] buffers, int length, out int error)
+		
+		internal override int Send(ByteBuffer buffer, out int error)
 		{
-			return manos_socket_send (fd, buffers, length, out error);
+			return manos_socket_send (fd, buffer.Bytes, buffer.Position, buffer.Length, out error);
 		}
 
 		public event Action<SocketStream> Connected;
@@ -161,7 +161,7 @@ namespace Manos.IO
 		private static extern int manos_socket_receive (int fd, byte [] buffer, int max, out int err);
 
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
-		internal static extern int manos_socket_send (int fd, ByteBufferS [] buffers, int len, out int err);
+		internal static extern int manos_socket_send (int fd, byte [] buffer, int offset, int len, out int err);
 	}
 }
 

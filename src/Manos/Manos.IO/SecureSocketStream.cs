@@ -86,10 +86,10 @@ namespace Manos.IO
 		{
 			return manos_tls_receive (tls, ReadChunk, ReadChunk.Length, out error);
 		}
-
-		internal override int Send (ByteBufferS [] buffers, int length, out int error)
+		
+		internal override int Send(ByteBuffer buffer, out int error)
 		{
-			return manos_tls_send (tls, buffers, length, out error);
+			return manos_tls_send (tls, buffer.Bytes, buffer.Position, buffer.Length, out error);
 		}
 
 		public void RedoHandshake ()
@@ -113,7 +113,7 @@ namespace Manos.IO
 		private static extern int manos_tls_redo_handshake (IntPtr tls);
 
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
-		private static extern int manos_tls_send (IntPtr tls, ByteBufferS [] buffers, int len, out int error);
+		private static extern int manos_tls_send (IntPtr tls, byte [] buffer, int offset, int len, out int error);
 
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
 		private static extern int manos_tls_close (IntPtr tls);
