@@ -107,6 +107,8 @@ namespace Manos.IO
 			if (size < 0 && error != 0) {
 				Close ();
 				return;
+			} else if (size < 0) {
+				return;
 			}
 
 			if (size == 0) {
