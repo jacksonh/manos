@@ -3,11 +3,15 @@
 #define MANOS_H
 
 #include <stdint.h>
-#include <gnutls/gnutls.h>
-		
+
 #include "ev.h"
 #include "eio.h"
+#include "config.h"
 
+#ifdef HAVE_LIBGNUTLS
+# include <gnutls/gnutls.h>
+#endif
+		
 
 
 void manos_init (struct ev_loop *loop);
@@ -50,6 +54,8 @@ int manos_socket_close (int fd, int *err);
 
 
 
+#ifdef HAVE_LIBGNUTLS
+
 struct manos_tls_socket {
 	gnutls_certificate_credentials_t		credentials;
 	gnutls_session_t						tls_session;
@@ -80,7 +86,7 @@ int manos_tls_send (manos_tls_socket_t tls, const bytebuffer_t *buffers, int len
 
 int manos_tls_close (manos_tls_socket_t tls);
 
-
+#endif
 
 
 #endif

@@ -1,3 +1,5 @@
+#ifdef HAVE_LIBGNUTLS
+
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -314,3 +316,5 @@ manos_tls_close (manos_tls_socket_t tls)
 	return 0;
 }
 
+
+#endif
