@@ -118,8 +118,6 @@ namespace Manos.IO
 			} else if (size > 0) {
 				read_callback (this, ReadChunk, 0, size);
 			}
-
-			read_callback (this, ReadChunk, 0, size);
 		}
 
 		protected override void HandleRead ()
