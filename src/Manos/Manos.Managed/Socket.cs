@@ -337,6 +337,7 @@ namespace Manos.Managed
             SocketError se;
             var callback = ((IO.ReadCallback)ar.AsyncState);
             int len = socket.EndReceive(ar, out se);
+            
             if (se != SocketError.Success)
             {
                 OnError();
@@ -345,10 +346,18 @@ namespace Manos.Managed
             {
                 loop.NonBlockInvoke(delegate
                 {
-                    callback(this, receiveBuffer, 0, len);
-                    socket.BeginReceive(receiveBuffer, 0, receiveBuffer.Length, SocketFlags.None, out se, ReadCallback, callback);
-                    if (se != SocketError.Success)
-                        OnError();
+                    if (len == 0)
+                    {
+                        if (Closed != null)
+                            Closed(this, EventArgs.Empty);
+                    }
+                    else
+                    {
+                        callback(this, receiveBuffer, 0, len);
+                        socket.BeginReceive(receiveBuffer, 0, receiveBuffer.Length, SocketFlags.None, out se, ReadCallback, callback);
+                        if (se != SocketError.Success)
+                            OnError();
+                    }
                 });
             }
             if (len == 0)
