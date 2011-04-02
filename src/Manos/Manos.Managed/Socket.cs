@@ -15,9 +15,14 @@ namespace Manos.Managed
         private string address;
         private int port;
         private System.Timers.Timer timer;
+        private IOLoop loop;
 
-        public SocketStream() { }
-        public SocketStream(Socket sock)
+        public SocketStream(IOLoop loop)
+        {
+            this.loop = loop;
+        }
+
+        public SocketStream(IOLoop loop, Socket sock):this(loop)
         {
             socket = sock;
             StartTimeout();
@@ -26,10 +31,6 @@ namespace Manos.Managed
                         
         }
 
-        void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            
-        }
         public void Connect(string host, int port)
         {
             address = host;
@@ -46,8 +47,7 @@ namespace Manos.Managed
                     }
                     catch
                     {
-                        if (Error != null)
-                            Error(this, EventArgs.Empty);
+                        OnError();
                     }
                 }, null);
             }
@@ -78,8 +78,7 @@ namespace Manos.Managed
                     }
                     catch
                     {
-                        if (Error != null)
-                            Error(this, EventArgs.Empty);
+                        OnError();
                     }
                 }, null);
             } else {
@@ -100,8 +99,7 @@ namespace Manos.Managed
             }
             catch
             {
-                if (Error != null)
-                    Error(this, EventArgs.Empty);
+                OnError();
             }
         }
 
@@ -119,19 +117,20 @@ namespace Manos.Managed
                     {
                         socket.EndConnect(ar);
                         if (Connected != null)
-                            Connected(this);
+                            loop.NonBlockInvoke(delegate
+                            {
+                                Connected(this);
+                            });
                     }
                     catch
                     {
-                        if (Error != null)
-                            Error(this, EventArgs.Empty);
+                        OnError();
                     }
                 }, null);
             }
             catch
             {
-                if (Error != null)
-                    Error(this, EventArgs.Empty);
+                OnError();
             }
         }
 
@@ -143,14 +142,18 @@ namespace Manos.Managed
                 timer.Elapsed += (s, e) =>
                 {
                     if (TimedOut != null)
-                        TimedOut(this, EventArgs.Empty);
+                    {
+                        loop.BlockInvoke(delegate
+                        {
+                            TimedOut(this, EventArgs.Empty);
+                        });
+                    }
                     Close();
                 };
             }
             if (timer.Enabled)
             {
-                timer.Interval
-                timer.Enabled = false;
+                timer.Interval = timer.Interval;
             } else
                 timer.Enabled = true;
             
@@ -164,7 +167,10 @@ namespace Manos.Managed
 
                 if (this.ConnectionAccepted != null)
                 {
-                    ConnectionAccepted(this, new IO.ConnectionAcceptedEventArgs(new SocketStream(sock)));
+                    loop.NonBlockInvoke(delegate
+                    {
+                        ConnectionAccepted(this, new IO.ConnectionAcceptedEventArgs(new SocketStream(loop, sock)));
+                    });
                 }
                 else
                 {
@@ -174,8 +180,7 @@ namespace Manos.Managed
             }
             catch
             {
-                if (Error != null)
-                    Error(this, EventArgs.Empty);
+                OnError();
             }
         }
         public string Address
@@ -239,7 +244,7 @@ namespace Manos.Managed
                 socket.EndSend(ar, out er);
                 if (er != SocketError.Success)
                 {
-                    if (Error != null) Error(this, EventArgs.Empty);
+                    OnError();
                 }
                 if (ar.CompletedSynchronously)
                 {
@@ -248,10 +253,7 @@ namespace Manos.Managed
                         sending = false;
                     }
                 } else {
-                    lock (write_ops)
-                    {
-                        StartSending();
-                    }
+                    loop.NonBlockInvoke(StartSending);
                 }
             }, null);
             error = (int)er;
@@ -309,6 +311,15 @@ namespace Manos.Managed
 
         public event EventHandler TimedOut;
 
+        private void OnError()
+        {
+            if (Error != null)
+                loop.NonBlockInvoke(delegate
+                {
+                    Error(this, EventArgs.Empty);
+                });
+        }
+
         
         byte[] receiveBuffer;
         public void ReadBytes(IO.ReadCallback callback)
@@ -317,8 +328,7 @@ namespace Manos.Managed
             SocketError se;
             socket.BeginReceive(receiveBuffer, 0, receiveBuffer.Length, SocketFlags.None, out se, ReadCallback, callback);
             if (se != SocketError.Success)
-                if (Error != null)
-                    Error(this, EventArgs.Empty);
+                OnError();
         }
 
         private void ReadCallback(IAsyncResult ar)
@@ -329,16 +339,27 @@ namespace Manos.Managed
             int len = socket.EndReceive(ar, out se);
             if (se != SocketError.Success)
             {
-                if (Error != null)
-                    Error(this, EventArgs.Empty);
+                OnError();
             }
             else
             {
-                callback(this, receiveBuffer, 0, len);
-                socket.BeginReceive(receiveBuffer, 0, receiveBuffer.Length, SocketFlags.None, out se, ReadCallback, callback);
-                if (se != SocketError.Success)
-                    if (Error != null)
-                        Error(this, EventArgs.Empty);
+                loop.NonBlockInvoke(delegate
+                {
+                    callback(this, receiveBuffer, 0, len);
+                    socket.BeginReceive(receiveBuffer, 0, receiveBuffer.Length, SocketFlags.None, out se, ReadCallback, callback);
+                    if (se != SocketError.Success)
+                        OnError();
+                });
+            }
+            if (len == 0)
+            {
+                if (Closed != null)
+                {
+                    loop.NonBlockInvoke(delegate
+                    {
+                        Closed(this, EventArgs.Empty);
+                    });
+                }
             }
         }
 
@@ -358,14 +379,19 @@ namespace Manos.Managed
                             t.Enabled = false;
                             t.Dispose();
                         }
+
+
                         if (Closed != null)
-                            Closed(this, EventArgs.Empty);
+                        {
+                            loop.NonBlockInvoke(delegate
+                            {
+                                Closed(this, EventArgs.Empty);
+                            });
+                        }
                     }
                     catch
                     {
-
-                        if (Error != null)
-                            Error(this, EventArgs.Empty);
+                        OnError();
 
                     }
                 }, null);

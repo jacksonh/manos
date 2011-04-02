@@ -7,6 +7,7 @@ using System.Net;
 using System.Threading;
 using Libev;
 using System.Net.Sockets;
+using System.Collections.Concurrent;
 
 namespace Manos.Managed
 {
@@ -27,34 +28,82 @@ namespace Manos.Managed
 
         public IOLoop()
         {
+            Synchronize = true;
             loop = new Loop(this);
         }
-    
+
+
+        public bool Synchronize { get; set; }
+        private volatile bool stop;
+        private ConcurrentQueue<Action> actions = new  ConcurrentQueue<Action>();
+        private AutoResetEvent ev = new AutoResetEvent(false);
 
         public override BaseLoop EventLoop
         {
             get { return loop; }
         }
 
-        private AutoResetEvent ev = new AutoResetEvent(false);
 
         public override void Start()
         {
-            ev.WaitOne();
+            while (!stop)
+            {
+                ev.WaitOne();
+                Action act;
+                while (actions.TryDequeue(out act))
+                {
+                    act();
+                }
+            }
         }
 
         public override void Stop()
         {
+            stop = true;
             ev.Set();
+        }
+
+        public void BlockInvoke(Action t)
+        {
+            if (Synchronize)
+            {
+                object o = new object();
+                bool done = false;
+                NonBlockInvoke(delegate()
+                {
+                    done = true;
+                    Monitor.Pulse(o);
+                });
+                while (!done)
+                    Monitor.Wait(o);
+            }
+            else
+                t();
+        }
+
+        public void NonBlockInvoke(Action t)
+        {
+            if (Synchronize)
+            {
+                actions.Enqueue(t);
+                ev.Set();
+            }
+            else
+            {
+                t();
+            }
         }
 
         public override void AddTimeout(Timeout timeout) 
         {
             new Timer((a) =>
             {
-                timeout.Run(null);
-                if (!timeout.ShouldContinueToRepeat())
-                    ((Timer)a).Dispose();
+                BlockInvoke(delegate()
+                {
+                    timeout.Run(null);
+                    if (!timeout.ShouldContinueToRepeat())
+                        ((Timer)a).Dispose();
+                });
             }, null, timeout.begin, timeout.span);
         }
 
@@ -65,7 +114,7 @@ namespace Manos.Managed
 
         public override ISocketStream CreateSocketStream()
         {
-            return new SocketStream();
+            return new SocketStream(this);
         }
     }
 }

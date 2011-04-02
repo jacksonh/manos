@@ -25,6 +25,11 @@ namespace Manos.Managed
 
         public void Send()
         {
+            ((Loop)Loop).Owner.NonBlockInvoke(DoSend);
+        }
+
+        private void DoSend()
+        {
             cb.Invoke(Loop, this, EventTypes.None);
         }
     }

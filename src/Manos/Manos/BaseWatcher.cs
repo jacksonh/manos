@@ -9,6 +9,7 @@ namespace Manos
     {
         public BaseWatcher(BaseLoop loop)
         {
+            this.Loop = loop;
         }
         protected bool running;
 		
