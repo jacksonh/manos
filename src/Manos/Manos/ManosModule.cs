@@ -202,7 +202,7 @@ namespace Manos {
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.RouteMethods);
 		}
 
-		public RouteHandler Route (string pattern, Manos.Routing.MatchType matchType, ManosAction action)
+		public RouteHandler Route (string pattern, MatchType matchType, ManosAction action)
 		{
 			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
 
@@ -229,7 +229,7 @@ namespace Manos {
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.GetMethods);
 		}
 
-		public RouteHandler Get (string pattern, Manos.Routing.MatchType matchType, ManosAction action)
+		public RouteHandler Get (string pattern, MatchType matchType, ManosAction action)
 		{
 			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
 
@@ -263,7 +263,7 @@ namespace Manos {
 			return AddRouteHandler (action, patterns, HttpMethods.PutMethods);
 		}
 
-		public RouteHandler Put (string pattern, Manos.Routing.MatchType matchType, ManosAction action)
+		public RouteHandler Put (string pattern, MatchType matchType, ManosAction action)
 		{
 			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
 
@@ -285,7 +285,7 @@ namespace Manos {
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.PostMethods);
 		}
 
-		public RouteHandler Post (string pattern, Manos.Routing.MatchType matchType, ManosAction action)
+		public RouteHandler Post (string pattern, MatchType matchType, ManosAction action)
 		{
 			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
 
@@ -314,7 +314,7 @@ namespace Manos {
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.DeleteMethods);
 		}
 
-		public RouteHandler Delete (string pattern, Manos.Routing.MatchType matchType, ManosAction action)
+		public RouteHandler Delete (string pattern, MatchType matchType, ManosAction action)
 		{
 			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
 
@@ -343,7 +343,7 @@ namespace Manos {
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.HeadMethods);
 		}
 
-		public RouteHandler Head (string pattern, Manos.Routing.MatchType matchType, ManosAction action)
+		public RouteHandler Head (string pattern, MatchType matchType, ManosAction action)
 		{
 			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
 
@@ -372,7 +372,7 @@ namespace Manos {
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.OptionsMethods);
 		}
 
-		public RouteHandler Options (string pattern, Manos.Routing.MatchType matchType, ManosAction action)
+		public RouteHandler Options (string pattern, MatchType matchType, ManosAction action)
 		{
 			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
 
@@ -401,7 +401,7 @@ namespace Manos {
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.TraceMethods);
 		}
 
-		public RouteHandler Trace (string pattern, Manos.Routing.MatchType matchType, ManosAction action)
+		public RouteHandler Trace (string pattern, MatchType matchType, ManosAction action)
 		{
 			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
 
