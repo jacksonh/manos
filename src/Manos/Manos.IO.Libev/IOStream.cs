@@ -66,7 +66,7 @@ namespace Manos.IO.Libev {
 			Close ();
 		}
 
-		public IOLoop IOLoop {
+		public Manos.IO.IOLoop IOLoop {
 			get { return ioloop; }
 		}
 

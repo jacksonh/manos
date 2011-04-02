@@ -266,7 +266,7 @@ namespace Manos.IO.Libev {
 //			Console.WriteLine ("Accepted: '{0}' connections.", amount);
 			for (int i = 0; i < amount; i++) {
 //				Console.WriteLine ("Accepted: '{0}'", accept_infos [i]);
-				SocketStream iostream = new SocketStream (accept_infos [i], IOLoop);
+				SocketStream iostream = new SocketStream (accept_infos [i], (IOLoop)IOLoop);
 				OnConnectionAccepted (iostream);
 			}
 		}

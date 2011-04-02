@@ -29,6 +29,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using Manos.Collections;
+using System.Threading;
 
 
 // WARNING: This whole file is just a hack so people can develop/debug
@@ -39,123 +40,112 @@ using Manos.Collections;
 namespace Manos.IO {
 
 #if DISABLE_POSIX
-	public class SendFileOperation : IWriteOperation {
 
-		private WriteCallback callback;
-
-		private byte [] bytes;
-		private int bytes_index;
-
-		private FileStream file;
-		private int file_length;
-		
-		public SendFileOperation (string filename, WriteCallback callback)
-		{
-            this.file = new FileStream (filename, FileMode.Open, FileAccess.Read);
-			this.callback = callback;
-
-			file_length = (int) file.Length;
-			ReadFile ();
-		}
-
-		
-		public void Dispose ()
-		{
-			if (file != null) {
-				file.Close ();
-				file = null;
-			}
-		}
-
-		public WriteCallback Callback {
-			get { return callback; }
-			set {
-				if (value == null)
-					throw new ArgumentNullException ("value");
-				callback = value;
-			}
-		}
-
-		public bool Chunked {
-			get;
-			set;
-		}
-				
-		public long Length {
-			get { return file_length; }
-			set { /* NOOP on windows because we set in the ctor */ }
-		}
-
-		public bool IsComplete {
-			get;
-			private set;
-		}
-
-		public void BeginWrite (IOStream stream)
-		{
-		}
-
-		public void HandleWrite (IOStream stream)
-		{
-			ISocketStream sstream = (ISocketStream) stream;
-
-			while (bytes_index < file_length) {
-				int len = -1;
-				try {
-                    int err;
-                    
-					len = sstream.Send (new ByteBufferS[] {new ByteBufferS(bytes, bytes_index, file_length)}, 1, out err);
-                    if (err != 0)
-                    {
-
-                        if (err == (int)SocketError.WouldBlock || err == (int)SocketError.TryAgain)
-                            return;
-                        sstream.Close();
-                    }
-				} finally {
-					if (len != -1)
-						bytes_index += len;
-				}
-			}
-
-			IsComplete = (bytes_index == file_length);
-
-			if (IsComplete)
-				OnComplete ();
-		}
-
-		public void EndWrite (IOStream stream)
-		{
-			if (Callback != null)
-				Callback ();
-		}
-
-		public bool Combine (IWriteOperation other)
-		{
-			return false;
-		}
-
-		private void ReadFile ()
-		{
-			bytes = new byte [file_length];
-
-			file.Read (bytes, 0, bytes.Length);
-		}
-
-        public void SetLength(long l)
+        public class SendFileOperation : IWriteOperation
         {
-            Length = l;
-        }
-		
-		private void OnComplete ()
-		{
-			if (Completed != null)
-				Completed (this, EventArgs.Empty);
-		}
+            string fileName;
+            WriteCallback callback;
+            FileStream fd;
+            byte[] transferBuffer = new byte[8192];
 
-		public event EventHandler Completed;
-	}
+            public SendFileOperation(string filename, WriteCallback callback)
+            {
+                this.fileName = filename;
+                this.callback = callback;
+
+                Length = -1;
+                fd = null;
+            }
+
+            public bool Chunked
+            {
+                get;
+                set;
+            }
+
+            public long Length
+            {
+                get { if (fd == null) return -1; else return fd.Length; }
+                set {}
+            }
+
+            public void Dispose()
+            {
+            }
+
+            public void BeginWrite(IOStream stream)
+            {
+            }
+
+            public bool Combine(IWriteOperation other)
+            {
+                return false;
+            }
+
+            public void EndWrite(IOStream stream)
+            {
+                fd.Close();
+                if (callback != null)
+                {
+                    callback();
+                }
+            }
+
+            public void HandleWrite(IOStream stream)
+            {
+                if (fd == null)
+                {
+                    fd = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                }
+                int len = fd.Read(transferBuffer, 0, transferBuffer.Length);
+                ISocketStream sstream = (ISocketStream) stream;
+                int err;
+                int sent = 0;
+                
+                var lendata = Chunked ? System.Text.Encoding.ASCII.GetBytes(len.ToString("X") + "\r\n") : null;
+                if (len > 0)
+                {
+                    if (Chunked)
+                        sent = sstream.Send(new ByteBufferS[] { new ByteBufferS(lendata, 0, lendata.Length), new ByteBufferS(transferBuffer, 0, len) }, 2, out err);
+                    else
+                        sent = sstream.Send(new ByteBufferS[] { new ByteBufferS(transferBuffer, 0, len) }, 1, out err);
+                }
+                else
+                {
+                    sent = 0;
+                    err = 0;
+                }
+
+                if (err == 0)
+                {
+                    if (sent < (lendata == null? 0 :lendata.Length) - len)
+                        fd.Seek(sent - len, SeekOrigin.Current);
+                    else if (len < transferBuffer.Length)
+                    {
+                        this.IsComplete = true;
+                        if (Completed != null)
+                            Completed(this, EventArgs.Empty);
+                    }
+                }
+            }
+
+            public bool IsComplete
+            {
+                get;
+                private set;
+            }
+
+            
+            public event EventHandler Completed;
+
+            internal void SetLength(long l)
+            {
+                // not really needed
+            }
+        }
 
 #endif
-}
+    }
+
+
 

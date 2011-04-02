@@ -17,6 +17,7 @@ namespace Manos.IO
         event EventHandler Closed;
         event EventHandler TimedOut;
 
+        IOLoop IOLoop { get; }
         void QueueWriteOperation (IWriteOperation op);
         void ReadBytes (ReadCallback callback);
 

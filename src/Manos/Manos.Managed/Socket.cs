@@ -31,6 +31,10 @@ namespace Manos.Managed
                         
         }
 
+
+        public Manos.IO.IOLoop IOLoop { get { return loop; } }
+
+
         public void Connect(string host, int port)
         {
             address = host;
