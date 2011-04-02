@@ -43,6 +43,7 @@ namespace Manos.Tool
 		private ManosApp app;
 		
 		private int? port;
+		private int? securePort;
 		private string application_assembly;
 		
 		public ServerCommand (Environment env) : this (env, new List<string> ())
@@ -90,6 +91,17 @@ namespace Manos.Tool
 				port = value;	
 			}
 		}
+		
+		public int? SecurePort {
+			get { 
+				return securePort;
+			}
+			set {
+				if (securePort <= 0)
+					throw new ArgumentException ("port", "port must be greater than zero.");
+				securePort = value;
+			}
+		}
 
 		public string User {
 			get;
@@ -97,6 +109,16 @@ namespace Manos.Tool
 		}
 
 		public string IPAddress {
+			get;
+			set;
+		}
+
+		public string CertificateFile {
+			get;
+			set;
+		}
+
+		public string KeyFile {
 			get;
 			set;
 		}
@@ -119,6 +141,11 @@ namespace Manos.Tool
 				listenAddress = System.Net.IPAddress.Parse (IPAddress);
 
 			AppHost.ListenAt (new System.Net.IPEndPoint (listenAddress, Port));
+			if (SecurePort != null) {
+				AppHost.InitializeTLS ("NORMAL");
+				AppHost.SecureListenAt (new System.Net.IPEndPoint (listenAddress, SecurePort.Value), CertificateFile, KeyFile);
+				Console.WriteLine ("Running {0} on secure port {1}.", app, SecurePort);
+			}
 			AppHost.Start (app);
 		}
 		

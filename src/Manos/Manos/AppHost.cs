@@ -126,7 +126,12 @@ namespace Manos
 		public static void InitializeTLS (string priorities)
 		{
 			manos_tls_global_init (priorities);
-			manos_tls_regenerate_dhparams (1024);
+			RegenerateDHParams (1024);
+		}
+
+		public static void RegenerateDHParams (int bits)
+		{
+			manos_tls_regenerate_dhparams (bits);
 		}
 		
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
