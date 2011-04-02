@@ -156,9 +156,10 @@ namespace Manos {
 			return module.Routes;
 		}
 
-		private RouteHandler AddImplicitRouteHandlerForTarget (IManosTarget target, string [] patterns, HttpMethod [] methods)
+		private RouteHandler AddImplicitRouteHandlerForTarget (IManosTarget target, string[] patterns, HttpMethod[] methods, MatchType matchType)
 		{
-			return AddImplicitRouteHandlerForTarget (target, StringOpsForPatterns (patterns), methods);
+			return AddImplicitRouteHandlerForTarget (target, OpsForPatterns (patterns, matchType), methods);
+			//return AddImplicitRouteHandlerForTarget (target, StringOpsForPatterns (patterns), methods);
 		}
 
 		private RouteHandler AddImplicitRouteHandlerForTarget (IManosTarget target, IMatchOperation [] ops, HttpMethod [] methods)
@@ -544,7 +545,7 @@ namespace Manos {
 			ManosAction action = ActionForMethod (info);
 
 			ActionTarget target = new ActionTarget (action);
-			AddImplicitRouteHandlerForTarget (target, new string [] { "/" + info.Name }, HttpMethods.RouteMethods);
+			AddImplicitRouteHandlerForTarget (target, new string [] { "/" + info.Name }, HttpMethods.RouteMethods, MatchType.String);
 		}
 
 		private void AddHandlerForAction (RouteHandler routes, HttpMethodAttribute att, MethodInfo info)
@@ -588,7 +589,7 @@ namespace Manos {
 			ParameterizedAction action = ParameterizedActionFactory.CreateAction (info);
 			ParameterizedActionTarget target = new ParameterizedActionTarget (this, info, action);
 			
-			AddImplicitRouteHandlerForTarget (target, new string [] { "/" + info.Name }, HttpMethods.RouteMethods);
+			AddImplicitRouteHandlerForTarget (target, new string [] { "/" + info.Name }, HttpMethods.RouteMethods, MatchType.String);
 		}
 		
 		private void AddHandlerForParameterizedAction (RouteHandler routes, HttpMethodAttribute att, MethodInfo info)
@@ -596,7 +597,7 @@ namespace Manos {
 			ParameterizedAction action = ParameterizedActionFactory.CreateAction (info);
 			ParameterizedActionTarget target = new ParameterizedActionTarget (this, info, action);
 			
-			AddImplicitRouteHandlerForTarget (target, att.Patterns, att.Methods);
+			AddImplicitRouteHandlerForTarget (target, att.Patterns, att.Methods, att.MatchType);
 		}
 		
 		private void AddImplicitModule (PropertyInfo prop)
