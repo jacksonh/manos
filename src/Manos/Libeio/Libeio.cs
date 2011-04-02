@@ -36,7 +36,7 @@ namespace Libeio {
 		private AsyncWatcher want_poll_watcher;
 		private AsyncWatcher done_poll_watcher;
 		
-		public void Initialize (Loop loop)
+		public void Initialize (LibEvLoop loop)
 		{
 /*
 			idle_watcher = new IdleWatcher (loop, OnIdle);
@@ -67,7 +67,7 @@ namespace Libeio {
 			}
 		}
 
-		private void OnIdle (BaseLoop loop, IdleWatcher watcher, EventTypes revents)
+		private void OnIdle (Loop loop, IdleWatcher watcher, EventTypes revents)
 		{
 			Console.WriteLine ("ON IDLE");
 
@@ -77,7 +77,7 @@ namespace Libeio {
 			}
 		}
 
-        private void OnWantPoll(BaseLoop loop, AsyncWatcher watcher, EventTypes revents)
+        private void OnWantPoll(Loop loop, AsyncWatcher watcher, EventTypes revents)
 		{
 			if (eio_poll () == -1) {
 				Console.WriteLine ("OnWantPoll: starting idle watcher");
@@ -85,7 +85,7 @@ namespace Libeio {
 			}
 		}
 
-        private void OnDonePoll(BaseLoop loop, AsyncWatcher watcher, EventTypes revents)
+        private void OnDonePoll(Loop loop, AsyncWatcher watcher, EventTypes revents)
 		{
 			if (eio_poll () != -1) {
 				Console.WriteLine ("OnDonePoll: starting idle watcher");

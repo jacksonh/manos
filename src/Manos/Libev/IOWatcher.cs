@@ -24,7 +24,7 @@ namespace Libev {
 			unmanaged_callback_ptr = Marshal.GetFunctionPointerForDelegate (unmanaged_callback);
 		}
 		
-		public IOWatcher (IntPtr fd, EventTypes types, BaseLoop loop, IOWatcherCallback callback) : base (loop)
+		public IOWatcher (IntPtr fd, EventTypes types, Loop loop, IOWatcherCallback callback) : base (loop)
 		{
 			this.fd = fd;
 			this.callback = callback;
@@ -51,7 +51,7 @@ namespace Libev {
 		}
         
         public static IntPtr GetHandle(Socket handle) {
-            if (BaseLoop.IsWindows) {
+            if (Manos.Loop.IsWindows) {
                 return EV_WIN32_HANDLE_TO_FD (handle.Handle, 0);
             } else
                 return handle.Handle;
@@ -59,7 +59,7 @@ namespace Libev {
 
         public static void ReleaseHandle(Socket socket, IntPtr handle)
         {
-            if (BaseLoop.IsWindows)
+            if (Manos.Loop.IsWindows)
             {
                 EV_WIN32_CLOSE_FD(handle);
             }
@@ -106,7 +106,7 @@ namespace Libev {
 	}
 	
     [UnmanagedFunctionPointer (System.Runtime.InteropServices.CallingConvention.Cdecl)]
-	public delegate void IOWatcherCallback (Loop loop, IOWatcher watcher, EventTypes revents);
+	public delegate void IOWatcherCallback (LibEvLoop loop, IOWatcher watcher, EventTypes revents);
 	
 	[StructLayout (LayoutKind.Sequential)]
 	internal struct UnmanagedIOWatcher {

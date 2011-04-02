@@ -20,11 +20,11 @@ namespace Libev {
 			unmanaged_callback_ptr = Marshal.GetFunctionPointerForDelegate (unmanaged_callback);
 		}
 
-		public TimerWatcher (TimeSpan repeat, BaseLoop loop, TimerWatcherCallback callback) : this (TimeSpan.Zero, repeat, loop, callback)
+		public TimerWatcher (TimeSpan repeat, Loop loop, TimerWatcherCallback callback) : this (TimeSpan.Zero, repeat, loop, callback)
 		{
 		}
 		
-		public TimerWatcher (TimeSpan after, TimeSpan repeat, BaseLoop loop, TimerWatcherCallback callback) : base (loop)
+		public TimerWatcher (TimeSpan after, TimeSpan repeat, Loop loop, TimerWatcherCallback callback) : base (loop)
 		{	
 			this.callback = callback;
 			
@@ -84,7 +84,7 @@ namespace Libev {
 	}
 	
     [UnmanagedFunctionPointer (System.Runtime.InteropServices.CallingConvention.Cdecl)]
-	public delegate void TimerWatcherCallback (Loop loop, TimerWatcher watcher, EventTypes revents);
+	public delegate void TimerWatcherCallback (LibEvLoop loop, TimerWatcher watcher, EventTypes revents);
 	
 	[StructLayout (LayoutKind.Sequential)]
 	internal struct UnmanagedTimerWatcher {

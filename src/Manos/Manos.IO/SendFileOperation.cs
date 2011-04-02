@@ -91,7 +91,7 @@ namespace Manos.IO {
 			if (!Chunked && Length == -1) {
 				waiting_stream = sstream;
 				sstream.DisableWriting ();
-				return;
+				return;z
 			}
 			
 			sstream.SendFile (filename, Chunked, Length, (length, error) => {

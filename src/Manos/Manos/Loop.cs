@@ -5,11 +5,11 @@ using System.Text;
 
 namespace Manos
 {
-    public abstract class BaseLoop: IDisposable
+    public abstract class Loop: IDisposable
     {
         private static readonly bool _windows;
 
-        static BaseLoop()
+        static Loop()
         {
             _windows =
                 Environment.OSVersion.Platform == PlatformID.Win32NT ||

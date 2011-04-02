@@ -12,7 +12,7 @@ namespace Libev {
 
 		protected GCHandle gc_handle;
 
-		internal Watcher (BaseLoop loop): base(loop)
+		internal Watcher (Loop loop): base(loop)
 		{
 		}
 		
@@ -60,9 +60,9 @@ namespace Libev {
 			StopImpl ();
 		}
 
-        public new Loop Loop
+        public new LibEvLoop Loop
         {
-            get { return (Loop)base.Loop; }
+            get { return (LibEvLoop)base.Loop; }
         }
 
 		protected abstract void StartImpl ();

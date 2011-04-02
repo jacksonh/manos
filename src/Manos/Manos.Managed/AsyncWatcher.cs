@@ -9,7 +9,7 @@ namespace Manos.Managed
     class AsyncWatcher: BaseWatcher, IAsyncWatcher
     {
         private AsyncWatcherCallback cb;
-        public AsyncWatcher(BaseLoop loop, AsyncWatcherCallback cb)
+        public AsyncWatcher(Loop loop, AsyncWatcherCallback cb)
             : base(loop)
         {
             this.cb = cb;
@@ -25,7 +25,7 @@ namespace Manos.Managed
 
         public void Send()
         {
-            ((Loop)Loop).Owner.NonBlockInvoke(DoSend);
+            ((ManagedLoop)Loop).Owner.NonBlockInvoke(DoSend);
         }
 
         private void DoSend()

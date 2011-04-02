@@ -11,13 +11,13 @@ namespace Manos.IO.Libev
     {
         private bool running;
 
-        private Loop evloop;
+        private LibEvLoop evloop;
         private Libeio.Libeio eio;
         private IntPtr libmanos_data;
 
         public IOLoop()
         {
-            evloop = Loop.CreateDefaultLoop(0);
+            evloop = LibEvLoop.CreateDefaultLoop(0);
             eio = new Libeio.Libeio();
 
             //			eio.Initialize (evloop);
@@ -26,7 +26,7 @@ namespace Manos.IO.Libev
         }
 
 
-        public override BaseLoop EventLoop
+        public override Loop EventLoop
         {
             get { return evloop; }
         }
@@ -55,7 +55,7 @@ namespace Manos.IO.Libev
             t.Start();
         }
 
-        private void HandleTimeout(Loop loop, TimerWatcher timeout, EventTypes revents)
+        private void HandleTimeout(LibEvLoop loop, TimerWatcher timeout, EventTypes revents)
         {
             Timeout t = (Timeout)timeout.UserData;
 

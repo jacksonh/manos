@@ -42,7 +42,7 @@ namespace Manos.Tool
 			
 			string exe_path = new Uri (typeof (Driver).Assembly.GetName ().CodeBase).LocalPath;
 
-			if (Libev.Loop.IsWindows) {
+			if (Loop.IsWindows) {
 				ManosDirectory = Path.GetDirectoryName(Path.GetDirectoryName(exe_path));
                 DataDirectory = Path.Combine(ManosDirectory, "..");
                 DocsDirectory = Path.Combine(ManosDirectory, "docs");

@@ -47,7 +47,7 @@ namespace Manos.IO {
             get
             {
                 if (instance == null)
-                    if (Loop.IsWindows)
+                    if (LibEvLoop.IsWindows)
                         instance = new Managed.IOLoop();
                     else
                         instance = new Libev.IOLoop();
@@ -60,7 +60,7 @@ namespace Manos.IO {
             }
         }
 
-        public abstract BaseLoop EventLoop
+        public abstract Loop EventLoop
         {
             get;
         }

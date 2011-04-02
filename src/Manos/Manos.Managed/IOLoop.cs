@@ -11,12 +11,12 @@ using System.Collections.Concurrent;
 
 namespace Manos.Managed
 {
-    class Loop : BaseLoop {
+    class ManagedLoop : Loop {
 
         private IOLoop owner;
         public IOLoop Owner { get { return owner; } }
 
-        public Loop(IOLoop owner)
+        public ManagedLoop(IOLoop owner)
         {
             this.owner = owner;
         }
@@ -29,7 +29,7 @@ namespace Manos.Managed
         public IOLoop()
         {
             Synchronize = true;
-            loop = new Loop(this);
+            loop = new ManagedLoop(this);
         }
 
 
@@ -38,7 +38,7 @@ namespace Manos.Managed
         private ConcurrentQueue<Action> actions = new  ConcurrentQueue<Action>();
         private AutoResetEvent ev = new AutoResetEvent(false);
 
-        public override BaseLoop EventLoop
+        public override Loop EventLoop
         {
             get { return loop; }
         }

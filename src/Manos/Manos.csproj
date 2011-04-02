@@ -52,7 +52,7 @@
     <Compile Include="Manos.Managed\AsyncWatcher.cs" />
     <Compile Include="Manos.Managed\IOLoop.cs" />
     <Compile Include="Manos.Managed\Socket.cs" />
-    <Compile Include="Manos\BaseLoop.cs" />
+    <Compile Include="Manos\Loop.cs" />
     <Compile Include="Manos\BaseWatcher.cs" />
     <Compile Include="Manos\DeleteAttribute.cs" />
     <Compile Include="Manos\GetAttribute.cs" />

@@ -22,7 +22,7 @@ namespace Libev {
 			unmanaged_callback_ptr = Marshal.GetFunctionPointerForDelegate (unmanaged_callback);
 		}
 
-		public CheckWatcher (BaseLoop loop, CheckWatcherCallback callback) : base (loop)
+		public CheckWatcher (Loop loop, CheckWatcherCallback callback) : base (loop)
 		{ 
 			this.callback = callback;
 			
@@ -71,7 +71,7 @@ namespace Libev {
 	}
 	
     [UnmanagedFunctionPointer (System.Runtime.InteropServices.CallingConvention.Cdecl)]
-	public delegate void CheckWatcherCallback (Loop loop, CheckWatcher watcher, EventTypes revents);
+	public delegate void CheckWatcherCallback (LibEvLoop loop, CheckWatcher watcher, EventTypes revents);
 	
 	[StructLayout (LayoutKind.Sequential)]
 	internal struct UnmanagedCheckWatcher {

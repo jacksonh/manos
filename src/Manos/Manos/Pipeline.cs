@@ -66,7 +66,7 @@ namespace Manos {
 
 			pending = AppHost.Pipes == null ? 1 : AppHost.Pipes.Count;
 			step = PipelineStep.PreProcess;
-			handle = GCHandle.Alloc (this);
+			//handle = GCHandle.Alloc (this);
 
 			transaction.Response.OnEnd += HandleEnd;
 		}
@@ -206,7 +206,7 @@ namespace Manos {
 		{
 			transaction.Response.Complete (transaction.OnResponseFinished);
 
-			handle.Free ();
+			//handle.Free ();
 		}
 
 		private void StepCompleted ()

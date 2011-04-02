@@ -48,7 +48,7 @@ namespace Libev {
 			unmanaged_callback_ptr = Marshal.GetFunctionPointerForDelegate (unmanaged_callback);
 		}
 		
-		public AsyncWatcher (BaseLoop loop, AsyncWatcherCallback callback) : base (loop)
+		public AsyncWatcher (Loop loop, AsyncWatcherCallback callback) : base (loop)
 		{
 			this.callback = callback;
 			
@@ -104,7 +104,7 @@ namespace Libev {
 	}
 	
 	[UnmanagedFunctionPointer (System.Runtime.InteropServices.CallingConvention.Cdecl)]
-    public delegate void AsyncWatcherCallback(BaseLoop loop, IAsyncWatcher watcher, EventTypes revents);
+    public delegate void AsyncWatcherCallback(Loop loop, IAsyncWatcher watcher, EventTypes revents);
 	
 	[StructLayout (LayoutKind.Sequential)]
 	internal struct UnmanagedAsyncWatcher {

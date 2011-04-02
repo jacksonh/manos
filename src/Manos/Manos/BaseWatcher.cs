@@ -7,7 +7,7 @@ namespace Manos
 {
     public abstract class BaseWatcher: IBaseWatcher, IDisposable
     {
-        public BaseWatcher(BaseLoop loop)
+        public BaseWatcher(Loop loop)
         {
             this.Loop = loop;
         }
@@ -18,7 +18,7 @@ namespace Manos
             get { return running; }
         }
 
-        public BaseLoop Loop
+        public Loop Loop
         {
             get;
             private set;
@@ -46,7 +46,7 @@ namespace Manos
             get;
             set;
         }
-        BaseLoop Loop
+        Loop Loop
         {
             get;
         }

@@ -184,7 +184,7 @@ namespace Manos.IO.Libev {
 			read_callback = null;
 		}
 
-		private void HandleIOReadEvent (Loop loop, IOWatcher watcher, EventTypes revents)
+		private void HandleIOReadEvent (LibEvLoop loop, IOWatcher watcher, EventTypes revents)
 		{
 			Expires = DateTime.UtcNow + TimeOut;
 
@@ -196,7 +196,7 @@ namespace Manos.IO.Libev {
 		}
 
 		
-		private void HandleIOWriteEvent (Loop loop, IOWatcher watcher, EventTypes revents)
+		private void HandleIOWriteEvent (LibEvLoop loop, IOWatcher watcher, EventTypes revents)
 		{
 			// Happens after a close
 			if (handle == IntPtr.Zero)
@@ -206,7 +206,7 @@ namespace Manos.IO.Libev {
 			HandleWrite ();
 		}
 
-		private void HandleTimeoutEvent (Loop loop, TimerWatcher watcher, EventTypes revents)
+		private void HandleTimeoutEvent (LibEvLoop loop, TimerWatcher watcher, EventTypes revents)
 		{
 			if (Expires <= DateTime.UtcNow) {
 				if (TimedOut != null)
