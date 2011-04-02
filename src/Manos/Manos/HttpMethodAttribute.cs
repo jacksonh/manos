@@ -36,11 +36,13 @@ namespace Manos {
 
 		public HttpMethodAttribute ()
 		{
+			MatchType = MatchType.String;
 		}
 
-		public HttpMethodAttribute (string [] patterns)
+		public HttpMethodAttribute (string[] patterns)
 		{
 			Patterns = patterns;
+			MatchType = MatchType.String;
 		}
 
 		public string Name {
