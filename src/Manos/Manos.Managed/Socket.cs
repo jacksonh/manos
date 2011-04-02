@@ -376,6 +376,19 @@ namespace Manos.Managed
             }
         }
 
+        public void EnableWriting()
+        {
+        }
+
+        public void DisableWriting()
+        {
+        }
+
+        public int SendFile (string name, bool chunked, long length, Action<long, int> callback)
+        {
+            throw new NotSupportedException();
+        }
+
         public void Close()
         {
             if (socket.Connected)

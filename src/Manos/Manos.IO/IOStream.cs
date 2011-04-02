@@ -78,6 +78,11 @@ namespace Manos.IO
         void Write (byte[] data, WriteCallback callback);
         void Write (byte[] data, int offset, int count, WriteCallback callback);
         int Send (ByteBufferS[] buffers, int length, out int error);
-        
+
+
+        int SendFile (string name, bool chunked, long length, Action<long, int> callback);
+        void DisableWriting ();
+
+        void EnableWriting ();
     }
 }

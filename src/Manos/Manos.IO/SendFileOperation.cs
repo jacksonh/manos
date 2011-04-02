@@ -82,16 +82,16 @@ namespace Manos.IO {
 		{
 		}
 
-		private SocketStream waiting_stream = null;
+		private ISocketStream waiting_stream = null;
 
 		public void HandleWrite (IOStream stream)
 		{
-			SocketStream sstream = (SocketStream) stream;
+			ISocketStream sstream = (ISocketStream) stream;
 
 			if (!Chunked && Length == -1) {
 				waiting_stream = sstream;
 				sstream.DisableWriting ();
-				return;z
+				return;
 			}
 			
 			sstream.SendFile (filename, Chunked, Length, (length, error) => {
