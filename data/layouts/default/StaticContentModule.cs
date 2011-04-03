@@ -4,7 +4,7 @@ using System;
 using System.IO;
 
 using Manos;
-
+using Manos.Routing;
 
 //
 //  This the default StaticContentModule that comes with all Manos apps
@@ -22,7 +22,7 @@ namespace $APPNAME {
 
 		public StaticContentModule ()
 		{
-			Get (".*", Content);
+			Get (".*", MatchType.Regex, Content);
 
 		}
 
@@ -43,12 +43,11 @@ namespace $APPNAME {
 		}
 
 		
-		private bool ValidFile (string path)
+		private static bool ValidFile (string path)
 		{
 			try {
 				string full = Path.GetFullPath (path);
-				if (full.StartsWith (basedir))
-					return File.Exists (full);
+				return File.Exists (full);
 			} catch {
 				return false;
 			}
