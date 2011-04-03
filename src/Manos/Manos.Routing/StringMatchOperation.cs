@@ -66,17 +66,10 @@ namespace Manos.Routing
 
 		public static bool StartsWith (string input, int start, string str)
 		{
-			string lowerInput = input.ToLower ();
-			
-			if (lowerInput.Length < str.Length + start)
+			if (input.Length < str.Length + start)
 				return false;
-
-			for (int i = 0; i < str.Length; i++) {
-				if (lowerInput [start + i] != str [i])
-					return false;
-			}
-
-			return true;
+				
+			return String.Compare (input, 0, str, 0, str.Length, StringComparison.OrdinalIgnoreCase) == 0;
 		}
 		
 	}
