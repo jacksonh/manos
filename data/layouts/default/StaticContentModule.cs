@@ -4,7 +4,7 @@ using System;
 using System.IO;
 
 using Manos;
-
+using Manos.Routing;
 
 //
 //  This the default StaticContentModule that comes with all Manos apps
@@ -20,13 +20,16 @@ namespace $APPNAME {
 
 	public class StaticContentModule : ManosModule {
 
+		private string basedir;
+
 		public StaticContentModule ()
 		{
-			Get (".*", Content);
+			Get (".*", MatchType.Regex, Content);
 
+			basedir = Path.GetFullPath ("Content");
 		}
 
-		public static void Content (IManosContext ctx)
+		public void Content (IManosContext ctx)
 		{
 			string path = ctx.Request.Path;
 
