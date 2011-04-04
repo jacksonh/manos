@@ -33,7 +33,7 @@ namespace Manos {
 	/// Indicates that the decorated method should not be used to respond to requests (even if a route would otherwise select it.)
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-	public class IgnoreAttribute : Attribute {
+	public class IgnoreHandlerAttribute : Attribute {
 
 
 	}
