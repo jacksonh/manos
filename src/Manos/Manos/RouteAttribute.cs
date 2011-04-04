@@ -37,6 +37,7 @@ namespace Manos {
 		/// </summary>
 		public RouteAttribute ()
 		{
+			Methods = HttpMethods.RouteMethods;
 		}
 		
 		/// <summary>

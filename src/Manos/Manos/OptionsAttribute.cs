@@ -38,6 +38,7 @@ namespace Manos {
 
 		public OptionsAttribute ()
 		{
+			Methods = new HttpMethod[] { HttpMethod.HTTP_OPTIONS };
 		}
 
 		public OptionsAttribute (params string [] patterns) : base (patterns)

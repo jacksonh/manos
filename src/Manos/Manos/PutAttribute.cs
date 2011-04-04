@@ -37,6 +37,11 @@ namespace Manos {
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 	public class PutAttribute : HttpMethodAttribute {
 		
+		public PutAttribute ()
+		{
+			Methods = new HttpMethod[] { HttpMethod.HTTP_PUT };
+		}
+		
 		/// <summary>
 		/// 
 		/// </summary>

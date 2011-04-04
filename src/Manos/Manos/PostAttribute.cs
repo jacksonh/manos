@@ -45,6 +45,7 @@ namespace Manos {
 		/// </remarks>
 		public PostAttribute ()
 		{
+			Methods = new HttpMethod[] { HttpMethod.HTTP_POST };
 		}
 		
 		/// <summary>

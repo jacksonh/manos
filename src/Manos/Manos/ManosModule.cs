@@ -553,8 +553,10 @@ namespace Manos {
 			ManosAction action = ActionForMethod (info);
 			
 			ActionTarget target = new ActionTarget (action);
+			
+			string[] patterns = null == att.Patterns ? new string [] { "/" + info.Name } : att.Patterns;
 
-			AddImplicitRouteHandlerForTarget (target, OpsForPatterns (att.Patterns, att.MatchType), att.Methods);
+			AddImplicitRouteHandlerForTarget (target, OpsForPatterns (patterns, att.MatchType), att.Methods);
 		}
 		
 		private ManosAction ActionForMethod (MethodInfo info)
