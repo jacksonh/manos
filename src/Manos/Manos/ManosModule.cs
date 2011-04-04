@@ -455,12 +455,12 @@ namespace Manos {
 
 		private void AddImplicitRoutes ()
 		{
-			MethodInfo [] methods = GetType ().GetMethods ();
+			MethodInfo[] methods = GetType ().GetMethods ();
 
 			foreach (MethodInfo meth in methods) {
-				if (meth.ReturnType != typeof (void))
+				if (meth.ReturnType != typeof(void))
 					continue;
-				
+
 				if (IsIgnored (meth))
 					continue;
 				
@@ -520,7 +520,7 @@ namespace Manos {
 		
 		private bool IsIgnored (MemberInfo info)
 		{
-			var atts = info.GetCustomAttributes (typeof (IgnoreAttribute), false);
+			object [] atts = info.GetCustomAttributes (typeof (IgnoreHandlerAttribute), false);
 
 			return atts.Length > 0;
 		}
