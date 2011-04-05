@@ -25,9 +25,8 @@ namespace Libev
 				unmanaged_callback, GCHandle.ToIntPtr (gc_handle));
 		}
 
-		public override void Dispose ()
+		protected override void DestroyWatcher ()
 		{
-			base.Dispose ();
 			manos_timer_watcher_destroy (watcher_ptr);
 		}
 

@@ -19,10 +19,9 @@ namespace Libev
 			
 			watcher_ptr = manos_idle_watcher_create (unmanaged_callback, GCHandle.ToIntPtr (gc_handle));
 		}
-		
-		public override void Dispose()
+
+		protected override void DestroyWatcher ()
 		{
-			base.Dispose();
 			manos_idle_watcher_destroy (watcher_ptr);
 		}
 

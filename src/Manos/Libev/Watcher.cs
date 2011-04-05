@@ -44,6 +44,8 @@ namespace Libev
 			
 			Stop ();
 			
+			DestroyWatcher ();
+			
 			watcher_ptr = IntPtr.Zero;
 			gc_handle.Free ();
 			
@@ -74,6 +76,8 @@ namespace Libev
 		protected abstract void StartImpl ();
 
 		protected abstract void StopImpl ();
+
+		protected abstract void DestroyWatcher ();
 
 		protected abstract void UnmanagedCallbackHandler (IntPtr loop, IntPtr watcher, EventTypes revents);
 	}
