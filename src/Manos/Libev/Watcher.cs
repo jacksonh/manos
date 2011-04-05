@@ -31,13 +31,15 @@ namespace Libev
 
 		~Watcher ()
 		{
-			Dispose ();
+			if (watcher_ptr != IntPtr.Zero) {
+				Dispose ();
+			}
 		}
 
 		public virtual void Dispose ()
 		{
 			if (disposed) {
-				throw new ObjectDisposedException (GetType().Name);
+				throw new ObjectDisposedException (GetType ().Name);
 			}
 			
 			Stop ();
