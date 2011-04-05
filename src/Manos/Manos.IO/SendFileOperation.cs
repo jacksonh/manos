@@ -34,8 +34,19 @@ namespace Manos.IO
 			set;
 		}
 
+		~SendFileOperation ()
+		{
+			if (fd != 0) {
+				Dispose ();
+			}
+		}
+
 		public void Dispose ()
 		{
+			if (fd != 0) {
+				Libeio.Libeio.close (fd, err => { });
+			}
+			GC.SuppressFinalize (this);
 		}
 
 		public void BeginWrite (IOStream stream)
@@ -49,7 +60,9 @@ namespace Manos.IO
 
 		public void EndWrite (IOStream stream)
 		{
-			Libeio.Libeio.close (fd, err => { });
+			Libeio.Libeio.close (fd, err => {
+				fd = 0;
+			});
 			if (callback != null) {
 				callback ();
 			}

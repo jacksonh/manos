@@ -72,13 +72,18 @@ namespace Libeio
 //
 //		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
 //		static extern IntPtr eio_sync_file_range (int fd, IntPtr offset, UIntPtr nbytes, uint flags, int pri, eio_cb cb, IntPtr data);
+		static eio_cb closeCB = CloseCallback;
+
+		static void CloseCallback (ref eio_req req)
+		{
+			var handle = GCHandle.FromIntPtr (req.data);
+			((Action<int>) handle.Target) (req.result.ToInt32 ());
+			handle.Free ();
+		}
+
 		public static void close (int fd, Action<int> callback)
 		{
-			eio_close (fd, 0, delegate (ref eio_req req) {
-				var handle = GCHandle.FromIntPtr (req.data);
-				((Action<int>) handle.Target) (req.result.ToInt32 ());
-				handle.Free ();
-			}, GCHandle.ToIntPtr (GCHandle.Alloc (callback)));
+			eio_close (fd, 0, closeCB, GCHandle.ToIntPtr (GCHandle.Alloc (callback)));
 		}
 
 		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
@@ -86,14 +91,20 @@ namespace Libeio
 //
 //		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
 //		static extern IntPtr eio_readahead (int fd, off_t offset, size_t length, int pri, eio_cb cb, IntPtr data);
+		
+		static eio_cb readCB = ReadCallback;
+
+		static void ReadCallback (ref eio_req req)
+		{
+			var handle = GCHandle.FromIntPtr (req.data);
+			var tuple = (Tuple<byte [], Action<int, byte [], int>>) handle.Target;
+			tuple.Item2 (req.result.ToInt32 (), tuple.Item1, req.errorno);
+			handle.Free ();
+		}
+
 		public static void read (int fd, byte[] buffer, long offset, long length, Action<int, byte[], int> callback)
 		{
-			eio_read (fd, buffer, (UIntPtr) length, (IntPtr) offset, 0, delegate (ref eio_req req) {
-				var handle = GCHandle.FromIntPtr (req.data);
-				var tuple = (Tuple<byte [], Action<int, byte [], int>>) handle.Target;
-				tuple.Item2 (req.result.ToInt32 (), tuple.Item1, req.errorno);
-				handle.Free ();
-			}, GCHandle.ToIntPtr (GCHandle.Alloc (Tuple.Create (buffer, callback))));
+			eio_read (fd, buffer, (UIntPtr) length, (IntPtr) offset, 0, readCB, GCHandle.ToIntPtr (GCHandle.Alloc (Tuple.Create (buffer, callback))));
 		}
 
 		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
@@ -101,14 +112,19 @@ namespace Libeio
 
 //		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
 //		static extern IntPtr eio_write (int fd, IntPtr buf, size_t length, off_t offset, int pri, eio_cb cb, IntPtr data);
+		static eio_cb fstatCB = FstatCallback;
+
+		static void FstatCallback (ref eio_req req)
+		{
+			var handle = GCHandle.FromIntPtr (req.data);
+			Stat result = (Stat) Marshal.PtrToStructure (req.ptr2, typeof(Stat));
+			((Action<int, Stat, int>) handle.Target) (req.result.ToInt32 (), result, req.errorno);
+			handle.Free ();
+		}
+
 		public static void fstat (int fd, Action<int, Stat, int> callback)
 		{
-			eio_fstat (fd, 0, delegate (ref eio_req req) {
-				var handle = GCHandle.FromIntPtr (req.data);
-				Stat result = (Stat) Marshal.PtrToStructure (req.ptr2, typeof(Stat));
-				((Action<int, Stat, int>) handle.Target) (req.result.ToInt32 (), result, req.errorno);
-				handle.Free ();
-			}, GCHandle.ToIntPtr (GCHandle.Alloc (callback)));
+			eio_fstat (fd, 0, fstatCB, GCHandle.ToIntPtr (GCHandle.Alloc (callback)));
 		}
 
 		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
@@ -131,25 +147,35 @@ namespace Libeio
 //
 //		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
 //		static extern IntPtr eio_dup2 (int fd, int fd2, int pri, eio_cb cb, IntPtr data);
+		static eio_cb sendfileCB = SendfileCallback;
+
+		static void SendfileCallback (ref eio_req req)
+		{
+			var handle = GCHandle.FromIntPtr (req.data);
+			((Action<long, int>) handle.Target) (req.result.ToInt64 (), req.errorno);
+			handle.Free ();
+		}
+
 		public static void sendfile (int out_fd, int in_fd, long offset, long length, Action<long, int> callback)
 		{
-			eio_sendfile (out_fd, in_fd, (IntPtr) offset, (UIntPtr) length, 0, delegate (ref eio_req req) {
-				var handle = GCHandle.FromIntPtr (req.data);
-				((Action<long, int>) handle.Target) (req.result.ToInt64 (), req.errorno);
-				handle.Free ();
-			}, GCHandle.ToIntPtr (GCHandle.Alloc (callback)));
+			eio_sendfile (out_fd, in_fd, (IntPtr) offset, (UIntPtr) length, 0, sendfileCB, GCHandle.ToIntPtr (GCHandle.Alloc (callback)));
 		}
 
 		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
 		static extern IntPtr eio_sendfile (int out_fd, int in_fd, off_t in_offset, size_t length, int pri, eio_cb cb, IntPtr data);
 
+		static eio_cb openCB = OpenCallback;
+
+		static void OpenCallback (ref eio_req req)
+		{
+			var handle = GCHandle.FromIntPtr (req.data);
+			((Action<int, int>) handle.Target) (req.result.ToInt32 (), req.errorno);
+			handle.Free ();
+		}
+
 		public static void open (string path, OpenFlags flags, FilePermissions mode, Action<int, int> callback)
 		{
-			eio_open (path, flags, mode, 0, delegate (ref eio_req req) {
-				var handle = GCHandle.FromIntPtr (req.data);
-				((Action<int, int>) handle.Target) (req.result.ToInt32 (), req.errorno);
-				handle.Free ();
-			}, GCHandle.ToIntPtr (GCHandle.Alloc (callback)));
+			eio_open (path, flags, mode, 0, openCB, GCHandle.ToIntPtr (GCHandle.Alloc (callback)));
 		}
 
 		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
@@ -181,14 +207,19 @@ namespace Libeio
 //
 //		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
 //		static extern IntPtr eio_readlink (string path, int pri, eio_cb cb, IntPtr data);
+		static eio_cb statCB = StatCallback;
+
+		static void StatCallback (ref eio_req req)
+		{
+			var handle = GCHandle.FromIntPtr (req.data);
+			Stat result = (Stat) Marshal.PtrToStructure (req.ptr2, typeof(Stat));
+			((Action<int, Stat, int>) handle.Target) (req.result.ToInt32 (), result, req.errorno);
+			handle.Free ();
+		}
+
 		public static void stat (string path, Action<int, Stat, int> callback)
 		{
-			eio_stat (path, 0, delegate (ref eio_req req) {
-				var handle = GCHandle.FromIntPtr (req.data);
-				Stat result = (Stat) Marshal.PtrToStructure (req.ptr2, typeof(Stat));
-				((Action<int, Stat, int>) handle.Target) (req.result.ToInt32 (), result, req.errorno);
-				handle.Free ();
-			}, GCHandle.ToIntPtr (GCHandle.Alloc (callback)));
+			eio_stat (path, 0, statCB, GCHandle.ToIntPtr (GCHandle.Alloc (callback)));
 		}
 
 		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
