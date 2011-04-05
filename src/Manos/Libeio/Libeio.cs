@@ -28,8 +28,8 @@ namespace Libeio
 			public double nv2;
 			public int type;
 			public int int1;
-			public long int2;
-			public long int3;
+			public IntPtr int2;
+			public IntPtr int3;
 			public int errorno;
 			public byte flags;
 			public byte pri;
