@@ -140,12 +140,12 @@ namespace Manos {
 			return res;
 		}
 		
-		private RouteHandler AddImplicitRouteHandler (IManosModule module, string [] patterns, HttpMethod [] methods)
+		private RouteHandler AddImplicitRouteHandlerForModule (IManosModule module, string [] patterns, HttpMethod [] methods)
 		{
-			return AddImplicitRouteHandler (module, StringOpsForPatterns (patterns), methods);
+			return AddImplicitRouteHandlerForModule (module, StringOpsForPatterns (patterns), methods);
 		}
 
-		private RouteHandler AddImplicitRouteHandler (IManosModule module, IMatchOperation [] ops, HttpMethod [] methods)
+		private RouteHandler AddImplicitRouteHandlerForModule (IManosModule module, IMatchOperation [] ops, HttpMethod [] methods)
 		{
 			module.StartInternal ();
 
@@ -156,12 +156,13 @@ namespace Manos {
 			return module.Routes;
 		}
 
-		private RouteHandler AddImplicitRouteHandler (IManosTarget target, string [] patterns, HttpMethod [] methods)
+		private RouteHandler AddImplicitRouteHandlerForTarget (IManosTarget target, string[] patterns, HttpMethod[] methods, MatchType matchType)
 		{
-			return AddImplicitRouteHandler (target, StringOpsForPatterns (patterns), methods);
+			return AddImplicitRouteHandlerForTarget (target, OpsForPatterns (patterns, matchType), methods);
+			//return AddImplicitRouteHandlerForTarget (target, StringOpsForPatterns (patterns), methods);
 		}
 
-		private RouteHandler AddImplicitRouteHandler (IManosTarget target, IMatchOperation [] ops, HttpMethod [] methods)
+		private RouteHandler AddImplicitRouteHandlerForTarget (IManosTarget target, IMatchOperation [] ops, HttpMethod [] methods)
 		{
 			RouteHandler res = new RouteHandler (ops, methods, target) {
 				IsImplicit = true,
@@ -454,12 +455,12 @@ namespace Manos {
 
 		private void AddImplicitRoutes ()
 		{
-			MethodInfo [] methods = GetType ().GetMethods ();
+			MethodInfo[] methods = GetType ().GetMethods ();
 
 			foreach (MethodInfo meth in methods) {
-				if (meth.ReturnType != typeof (void))
+				if (meth.ReturnType != typeof(void))
 					continue;
-				
+
 				if (IsIgnored (meth))
 					continue;
 				
@@ -519,7 +520,7 @@ namespace Manos {
 		
 		private bool IsIgnored (MemberInfo info)
 		{
-			var atts = info.GetCustomAttributes (typeof (IgnoreAttribute), false);
+			object [] atts = info.GetCustomAttributes (typeof (IgnoreHandlerAttribute), false);
 
 			return atts.Length > 0;
 		}
@@ -544,7 +545,7 @@ namespace Manos {
 			ManosAction action = ActionForMethod (info);
 
 			ActionTarget target = new ActionTarget (action);
-			AddImplicitRouteHandler (target, new string [] { "/" + info.Name }, HttpMethods.RouteMethods);
+			AddImplicitRouteHandlerForTarget (target, new string [] { "/" + info.Name }, HttpMethods.RouteMethods, MatchType.String);
 		}
 
 		private void AddHandlerForAction (RouteHandler routes, HttpMethodAttribute att, MethodInfo info)
@@ -552,8 +553,10 @@ namespace Manos {
 			ManosAction action = ActionForMethod (info);
 			
 			ActionTarget target = new ActionTarget (action);
+			
+			string[] patterns = null == att.Patterns ? new string [] { "/" + info.Name } : att.Patterns;
 
-			AddImplicitRouteHandler (target, OpsForPatterns (att.Patterns, att.MatchType), att.Methods);
+			AddImplicitRouteHandlerForTarget (target, OpsForPatterns (patterns, att.MatchType), att.Methods);
 		}
 		
 		private ManosAction ActionForMethod (MethodInfo info)
@@ -588,7 +591,7 @@ namespace Manos {
 			ParameterizedAction action = ParameterizedActionFactory.CreateAction (info);
 			ParameterizedActionTarget target = new ParameterizedActionTarget (this, info, action);
 			
-			AddImplicitRouteHandler (target, new string [] { "/" + info.Name }, HttpMethods.RouteMethods);
+			AddImplicitRouteHandlerForTarget (target, new string [] { "/" + info.Name }, HttpMethods.RouteMethods, MatchType.String);
 		}
 		
 		private void AddHandlerForParameterizedAction (RouteHandler routes, HttpMethodAttribute att, MethodInfo info)
@@ -596,7 +599,7 @@ namespace Manos {
 			ParameterizedAction action = ParameterizedActionFactory.CreateAction (info);
 			ParameterizedActionTarget target = new ParameterizedActionTarget (this, info, action);
 			
-			AddImplicitRouteHandler (target, att.Patterns, att.Methods);
+			AddImplicitRouteHandlerForTarget (target, att.Patterns, att.Methods, att.MatchType);
 		}
 		
 		private void AddImplicitModule (PropertyInfo prop)
@@ -613,7 +616,7 @@ namespace Manos {
 				prop.SetValue (this, value, null);
 			}
 			
-			AddImplicitRouteHandler (value, new string [] { "/" + prop.Name }, HttpMethods.RouteMethods);
+			AddImplicitRouteHandlerForModule (value, new string [] { "/" + prop.Name }, HttpMethods.RouteMethods);
 		}
 		
 		private static string default404 = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"" +

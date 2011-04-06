@@ -43,6 +43,7 @@ namespace Manos {
 		/// </summary>
 		public GetAttribute ()
 		{
+			Methods = new HttpMethod[] { HttpMethod.HTTP_GET };
 		}
 		
 		/// <summary>

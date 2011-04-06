@@ -43,6 +43,7 @@ namespace Manos {
 		/// </summary>
 		public HeadAttribute ()
 		{
+			Methods = new HttpMethod[] { HttpMethod.HTTP_HEAD };
 		}
 		
 		/// <summary>
