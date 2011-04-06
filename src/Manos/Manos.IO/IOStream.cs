@@ -43,7 +43,7 @@ namespace Manos.IO {
 	public abstract class IOStream {
 
 		protected static int ReadChunkSize = 3072;
-		protected static byte [] ReadChunk = new byte [3072];
+		protected static byte [] ReadChunk = new byte [ReadChunkSize];
 
 		protected ReadCallback read_callback;
 
@@ -185,6 +185,8 @@ namespace Manos.IO {
 				Closed (this, EventArgs.Empty);
 			Closed = null;
 			read_callback = null;
+			
+			GC.SuppressFinalize (this);
 		}
 
 		private void HandleIOReadEvent (Loop loop, IOWatcher watcher, EventTypes revents)
@@ -237,44 +239,13 @@ namespace Manos.IO {
 				FinishCurrentWrite ();
 		}
 
-		/// This could use some tuning, but the basic idea is that we need to remove
-		/// all of the data that has been sent already.
-		public static void AdjustSegments (int len, IList<ByteBuffer> write_data)
-		{
-			var remove = new List<ByteBuffer>  ();
-			int total = 0;
-			for (int i = 0; i < write_data.Count; i++) {
-				int seg_len = write_data [i].Length;
-				if (total + seg_len <= len) {
-					// The entire segment was written so we can pop it 
-					remove.Add (write_data [i]);
-
-					// If we finished exactly at the end of this segment we are done adjusting
-					if (total + seg_len == len)
-						break;
-				} else if (total + seg_len > len) {
-					// Move to the point in the segment where we stopped writing
-
-					int offset = write_data [i].Position + (len - total);
-					write_data [i].Position = offset;
-					write_data [i].Length = write_data [i].Bytes.Length - offset;
-					break;
-				}
-					
-				total += seg_len;
-			}
-
-			foreach (var segment in remove) {
-				write_data.Remove (segment);
-			}
-		}
-
 		private void FinishCurrentWrite ()
 		{
 			if (current_write_op == null)
 				return;
 
 			current_write_op.EndWrite (this);
+			current_write_op.Dispose ();
 
 			if (write_ops.Count > 0) {
 				IWriteOperation op = write_ops.Dequeue ();

@@ -172,12 +172,18 @@ namespace Manos.Tool
 		public void RunServer (IList<string> args)
 		{
 			string port = null;
+			string securePort = null;
+			string certFile = null;
+			string keyFile = null;
 			string user = null;
 			string assembly = null;
 			string ipaddress = null;
 			
 			var p = new OptionSet () {
 				{ "p|port=", v => port = v },
+				{ "P|secureport=", v => securePort = v },
+				{ "c|certfile=", v => certFile = v },
+				{ "k|keyfile=", v => keyFile = v },
 				{ "u|user=", v => user = v },
 				{ "a|assembly=", v=> assembly = v},
 				{ "l|listen=", v => ipaddress = v }
@@ -198,6 +204,21 @@ namespace Manos.Tool
 				if (pt <= 0)
 					throw new ArgumentOutOfRangeException ("port", "Port must be a positive integer.");
 				cmd.Port = pt;
+			}
+			
+			if (securePort != null) {
+				if (certFile == null)
+					throw new ArgumentException ("Certificate file required for TLS.");
+				if (keyFile == null)
+					throw new ArgumentException ("Certificate private key required for TLS.");
+				int pt;
+				if (!Int32.TryParse (securePort, out pt))
+					throw new ArgumentException ("Secure port value is not an integer.");
+				if (pt <= 0)
+					throw new ArgumentOutOfRangeException ("secureport", "Secure port must be a positive integer.");
+				cmd.SecurePort = pt;
+				cmd.CertificateFile = certFile;
+				cmd.KeyFile = keyFile;
 			}
 
 			if (user != null)

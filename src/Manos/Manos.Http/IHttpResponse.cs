@@ -29,6 +29,8 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 
+using Manos.IO;
+
 namespace Manos.Http {
 
 	public interface IHttpResponse : IDisposable {
@@ -93,7 +95,7 @@ namespace Manos.Http {
 		void End (byte [] data, int offset, int length);
 		void End (string str, params object [] prms);
 
-		void Complete (Manos.IO.WriteCallback callback);
+		void Complete (WriteCallback callback);
 
 		void SendFile (string file);
 		

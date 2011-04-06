@@ -3,9 +3,12 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 
+using Manos.Http;
+using Manos.IO;
+
 namespace Manos.Http.Testing
 {
-	public class MockHttpResponse : Manos.Http.IHttpResponse
+	public class MockHttpResponse : IHttpResponse
 	{
 		StringBuilder builder = new StringBuilder ();
 		Dictionary<string, HttpCookie> cookies = new Dictionary<string, HttpCookie> ();
@@ -188,7 +191,7 @@ namespace Manos.Http.Testing
 			SetCookie (name, cookie);
 		}
 		
-		public void Complete (Manos.IO.WriteCallback callback)
+		public void Complete (WriteCallback callback)
 		{
 			
 		}

@@ -29,6 +29,7 @@ using System.Net;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 using Manos.IO;
 using Manos.Http;
@@ -48,6 +49,8 @@ namespace Manos
 		private static bool started;
 		
 		private static List<IPEndPoint> listenEndPoints = new List<IPEndPoint> ();
+		private static Dictionary<IPEndPoint, Tuple<string, string>> secureListenEndPoints =
+			new Dictionary<IPEndPoint, Tuple<string, string>> ();
 		
 		private static List<HttpServer> servers = new List<HttpServer> ();
 		private static IManosCache cache;
@@ -98,11 +101,44 @@ namespace Manos
 			if (endPoint == null)
 				throw new ArgumentNullException ("endPoint");
 			
-			if (listenEndPoints.Contains (endPoint))
+			if (listenEndPoints.Contains (endPoint) || secureListenEndPoints.ContainsKey (endPoint))
 				throw new InvalidOperationException ("Endpoint already registered");
 			
 			listenEndPoints.Add (endPoint);
 		}
+		
+		public static void SecureListenAt (IPEndPoint endPoint, string cert, string key)
+		{
+			if (endPoint == null)
+				throw new ArgumentNullException ("endPoint");
+			if (cert == null)
+				throw new ArgumentNullException ("cert");
+			if (key == null)
+				throw new ArgumentNullException ("key");
+			
+			if (secureListenEndPoints.ContainsKey (endPoint) || listenEndPoints.Contains (endPoint))
+				throw new InvalidOperationException ("Endpoint already registered");
+			
+			secureListenEndPoints.Add (endPoint,
+				Tuple.Create (cert, key));
+		}
+		
+		public static void InitializeTLS (string priorities)
+		{
+			manos_tls_global_init (priorities);
+			RegenerateDHParams (1024);
+		}
+
+		public static void RegenerateDHParams (int bits)
+		{
+			manos_tls_regenerate_dhparams (bits);
+		}
+		
+		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
+		private static extern int manos_tls_global_init (string priorities);
+		
+		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
+		private static extern int manos_tls_regenerate_dhparams (int bits);
 		
 		public static void Start (ManosApp application)
 		{
@@ -116,7 +152,15 @@ namespace Manos
 			started = true;
 			
 			foreach (var ep in listenEndPoints) {
-				var server = new HttpServer (HandleTransaction, ioloop);
+				var server = new HttpServer (HandleTransaction, new PlainSocketStream (ioloop));
+				server.Listen (ep.Address.ToString (), ep.Port);
+				
+				servers.Add (server);
+			}
+			foreach (var ep in secureListenEndPoints.Keys) {
+				var keypair = secureListenEndPoints [ep];
+				var socket = new SecureSocketStream (keypair.Item1, keypair.Item2, ioloop);
+				var server = new HttpServer (HandleTransaction, socket);
 				server.Listen (ep.Address.ToString (), ep.Port);
 				
 				servers.Add (server);
@@ -161,7 +205,7 @@ namespace Manos
 		
 		public static void RunTimeout (Timeout t)
 		{
-			t.Run (app);	
+			t.Run (app);
 		}
 
 		public static void Synchronize<T> (Action<IManosContext, T> action,

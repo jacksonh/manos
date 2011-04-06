@@ -1,193 +1,250 @@
-//
-// Copyright (C) 2010 Jackson Harper (jackson@manosdemono.com)
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
-// 
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
-//
-
 using System;
 using System.Runtime.InteropServices;
+using Mono.Unix.Native;
 
-using Libev;
+using size_t = System.UIntPtr;
+using off_t = System.IntPtr;
+using mode_t = Mono.Unix.Native.FilePermissions;
+using eio_tstamp = System.Double;
+using uid_t = System.Int32;
+using gid_t = System.Int32;
 
-namespace Libeio {
+namespace Libeio
+{
+	static class Libeio
+	{
+		delegate void eio_cb (ref eio_req req);
 
-	public class Libeio : IDisposable {
+		[StructLayout (LayoutKind.Sequential)]
+		struct eio_req
+		{
+			public IntPtr next;
+			public IntPtr result;
+			public IntPtr offs;
+			public UIntPtr size;
+			public IntPtr ptr1;
+			public IntPtr ptr2;
+			public double nv1;
+			public double nv2;
+			public int type;
+			public int int1;
+			public IntPtr int2;
+			public IntPtr int3;
+			public int errorno;
+			public byte flags;
+			public byte pri;
+			public IntPtr data;
+			public IntPtr finish;
+			public IntPtr destroy;
+			public IntPtr feed;
+			public IntPtr grp;
+			public IntPtr grp_prev;
+			public IntPtr grp_next;
+			public IntPtr grp_first;
+		};
 
-		private IdleWatcher idle_watcher;
-		private AsyncWatcher want_poll_watcher;
-		private AsyncWatcher done_poll_watcher;
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_nop (int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_busy (eio_tstamp delay, int pri, eio_cb cb, IntPtr data); 
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_sync (int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_fsync (int fd, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_fdatasync (int fd, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_msync (IntPtr addr, UIntPtr length, MsyncFlags flags, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_mtouch (IntPtr addr, size_t length, int flags, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_mlock (IntPtr addr, size_t length, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_mlockall (int flags, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_sync_file_range (int fd, IntPtr offset, UIntPtr nbytes, uint flags, int pri, eio_cb cb, IntPtr data);
+		static eio_cb closeCB = CloseCallback;
+
+		static void CloseCallback (ref eio_req req)
+		{
+			var handle = GCHandle.FromIntPtr (req.data);
+			((Action<int>) handle.Target) (req.result.ToInt32 ());
+			handle.Free ();
+		}
+
+		public static void close (int fd, Action<int> callback)
+		{
+			eio_close (fd, 0, closeCB, GCHandle.ToIntPtr (GCHandle.Alloc (callback)));
+		}
+
+		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+		static extern IntPtr eio_close (int fd, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_readahead (int fd, off_t offset, size_t length, int pri, eio_cb cb, IntPtr data);
 		
-		public void Initialize (Loop loop)
-		{
-/*
-			idle_watcher = new IdleWatcher (loop, OnIdle);
-			want_poll_watcher = new AsyncWatcher (loop, OnWantPoll);
-			done_poll_watcher = new AsyncWatcher (loop, OnDonePoll);
+		static eio_cb readCB = ReadCallback;
 
-			idle_watcher.Start ();
-			want_poll_watcher.Start ();
-			done_poll_watcher.Start ();
-*/
+		static void ReadCallback (ref eio_req req)
+		{
+			var handle = GCHandle.FromIntPtr (req.data);
+			var tuple = (Tuple<byte [], Action<int, byte [], int>>) handle.Target;
+			tuple.Item2 (req.result.ToInt32 (), tuple.Item1, req.errorno);
+			handle.Free ();
 		}
 
-		public void Dispose ()
+		public static void read (int fd, byte[] buffer, long offset, long length, Action<int, byte[], int> callback)
 		{
-			if (idle_watcher != null) {
-				idle_watcher.Dispose ();
-				idle_watcher = null;
-			}
-
-			if (want_poll_watcher != null) {
-				want_poll_watcher.Dispose ();
-				want_poll_watcher = null;
-			}
-
-			if (done_poll_watcher != null) {
-				want_poll_watcher.Dispose ();
-				done_poll_watcher = null;
-			}
-		}
-
-		private void OnIdle (Loop loop, IdleWatcher watcher, EventTypes revents)
-		{
-			Console.WriteLine ("ON IDLE");
-
-			if (eio_poll () != -1) {
-				Console.WriteLine ("OnIdle: Stopping idle watcher");
-				idle_watcher.Stop ();
-			}
-		}
-
-		private void OnWantPoll (Loop loop, AsyncWatcher watcher, EventTypes revents)
-		{
-			if (eio_poll () == -1) {
-				Console.WriteLine ("OnWantPoll: starting idle watcher");
-				idle_watcher.Start ();
-			}
-		}
-
-		private void OnDonePoll (Loop loop, AsyncWatcher watcher, EventTypes revents)
-		{
-			if (eio_poll () != -1) {
-				Console.WriteLine ("OnDonePoll: starting idle watcher");
-				idle_watcher.Stop ();
-			}
-		}
-
-		private void EIOWantPoll ()
-		{
-			Console.WriteLine ("want poll");
-			want_poll_watcher.Send ();
-		}
-
-		private void EIODonePoll ()
-		{
-			Console.WriteLine ("done poll");
-			done_poll_watcher.Send ();
-		}
-
-		public void stat (string path, Action callback)
-		{
-			eio_stat (path, 1, unmanaged_eio_callback, IntPtr.Zero);
-		}
-
-		public void rename (string path, string new_path, Action<bool> callback)
-		{
-			eio_rename (path, new_path, 1, unmanaged_eio_callback, IntPtr.Zero);
-		}
-
-		public void symlink (string path, string new_path, Action<bool> callback)
-		{
-			eio_symlink (path, new_path, 1, unmanaged_eio_callback, IntPtr.Zero);
-		}
-
-		public void unlink (string path, Action<bool> callback)
-		{
-			eio_unlink (path, 1, unmanaged_eio_callback, IntPtr.Zero);
-		}
-
-		private static int unmanaged_eio_callback (IntPtr req)
-		{
-			Console.WriteLine ("GOT THE EIO CALLBACK!");
-
-			return 0;
+			eio_read (fd, buffer, (UIntPtr) length, (IntPtr) offset, 0, readCB, GCHandle.ToIntPtr (GCHandle.Alloc (Tuple.Create (buffer, callback))));
 		}
 
 		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
-		private static extern int eio_poll ();
+		static extern IntPtr eio_read (int fd, byte [] buf, size_t length, off_t offset, int pri, eio_cb cb, IntPtr data);
+
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_write (int fd, IntPtr buf, size_t length, off_t offset, int pri, eio_cb cb, IntPtr data);
+		static eio_cb fstatCB = FstatCallback;
+
+		static void FstatCallback (ref eio_req req)
+		{
+			var handle = GCHandle.FromIntPtr (req.data);
+			Stat result = (Stat) Marshal.PtrToStructure (req.ptr2, typeof(Stat));
+			((Action<int, Stat, int>) handle.Target) (req.result.ToInt32 (), result, req.errorno);
+			handle.Free ();
+		}
+
+		public static void fstat (int fd, Action<int, Stat, int> callback)
+		{
+			eio_fstat (fd, 0, fstatCB, GCHandle.ToIntPtr (GCHandle.Alloc (callback)));
+		}
 
 		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
-		private static extern int eio_init (eio_want_poll want_poll, eio_done_poll done_poll);
+		static extern IntPtr eio_fstat (int fd, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_fstatvfs (int fd, int pri, eio_cb cb, IntPtr data); 
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_futime (int fd, eio_tstamp atime, eio_tstamp mtime, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_ftruncate (int fd, off_t offset, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_fchmod (int fd, mode_t mode, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_fchown (int fd, uid_t uid, gid_t gid, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_dup2 (int fd, int fd2, int pri, eio_cb cb, IntPtr data);
+		static eio_cb sendfileCB = SendfileCallback;
+
+		static void SendfileCallback (ref eio_req req)
+		{
+			var handle = GCHandle.FromIntPtr (req.data);
+			((Action<long, int>) handle.Target) (req.result.ToInt64 (), req.errorno);
+			handle.Free ();
+		}
+
+		public static void sendfile (int out_fd, int in_fd, long offset, long length, Action<long, int> callback)
+		{
+			eio_sendfile (out_fd, in_fd, (IntPtr) offset, (UIntPtr) length, 0, sendfileCB, GCHandle.ToIntPtr (GCHandle.Alloc (callback)));
+		}
 
 		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
-		private static extern IntPtr eio_stat (string path, int pri, eio_cb cb, IntPtr data); /* stat buffer=ptr2 allocated dynamically */
+		static extern IntPtr eio_sendfile (int out_fd, int in_fd, off_t in_offset, size_t length, int pri, eio_cb cb, IntPtr data);
+
+		static eio_cb openCB = OpenCallback;
+
+		static void OpenCallback (ref eio_req req)
+		{
+			var handle = GCHandle.FromIntPtr (req.data);
+			((Action<int, int>) handle.Target) (req.result.ToInt32 (), req.errorno);
+			handle.Free ();
+		}
+
+		public static void open (string path, OpenFlags flags, FilePermissions mode, Action<int, int> callback)
+		{
+			eio_open (path, flags, mode, 0, openCB, GCHandle.ToIntPtr (GCHandle.Alloc (callback)));
+		}
 
 		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
-		private static extern IntPtr eio_rename (string path, string new_path, int pri, eio_cb cb, IntPtr data);
+		static extern IntPtr eio_open (string path, OpenFlags flags, mode_t mode, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_utime (string path, eio_tstamp atime, eio_tstamp mtime, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_truncate (string path, off_t offset, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_chown (string path, uid_t uid, gid_t gid, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_chmod (string path, mode_t mode, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_mkdir (string path, mode_t mode, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_readdir (string path, int flags, int pri, eio_cb cb, IntPtr data); 
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_rmdir (string path, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_unlink (string path, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_readlink (string path, int pri, eio_cb cb, IntPtr data);
+		static eio_cb statCB = StatCallback;
+
+		static void StatCallback (ref eio_req req)
+		{
+			var handle = GCHandle.FromIntPtr (req.data);
+			Stat result = (Stat) Marshal.PtrToStructure (req.ptr2, typeof(Stat));
+			((Action<int, Stat, int>) handle.Target) (req.result.ToInt32 (), result, req.errorno);
+			handle.Free ();
+		}
+
+		public static void stat (string path, Action<int, Stat, int> callback)
+		{
+			eio_stat (path, 0, statCB, GCHandle.ToIntPtr (GCHandle.Alloc (callback)));
+		}
 
 		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
-		private static extern IntPtr eio_symlink (string path, string new_path, int pri, eio_cb cb, IntPtr data);
-
-		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
-		private static extern IntPtr eio_unlink (string path, int pri, eio_cb cb, IntPtr data);
+		static extern IntPtr eio_stat (string path, int pri, eio_cb cb, IntPtr data); 
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_lstat (string path, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_statvfs (string path, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_mknod (string path, mode_t mode, dev_t dev, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_link (string path, string new_path, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_symlink (string path, string new_path, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_rename (string path, string new_path, int pri, eio_cb cb, IntPtr data);
+//
+//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+//		static extern IntPtr eio_custom (eio_cb execute, int pri, eio_cb cb, IntPtr data);
 	}
-
-	internal delegate int eio_cb (IntPtr req);
-	internal delegate void eio_req_destroy (ref eio_req req);
-
-	internal delegate void eio_poll ();
-	internal delegate void eio_want_poll ();
-	internal delegate void eio_done_poll ();
-	
-	[StructLayout (LayoutKind.Sequential)]
-	internal struct eio_req {
-
-		public IntPtr next;  /* private ETP */
-
-		public int result;  /* result of syscall, e.g. result = read (... */
-		public long offs;      /* read, write, truncate, readahead, sync_file_range: file offset */
-		public uint size;     /* read, write, readahead, sendfile, msync, mlock, sync_file_range: length */
-		public IntPtr ptr1;      /* all applicable requests: pathname, old name; readdir: optional eio_dirents */
-		public IntPtr ptr2;      /* all applicable requests: new name or memory buffer; readdir: name strings */
-		public double nv1;  /* utime, futime: atime; busy: sleep time */
-		public double nv2;  /* utime, futime: mtime */
-
-		public int type;        /* EIO_xxx constant ETP */
-		public int int1;        /* all applicable requests: file descriptor; sendfile: output fd; open, msync, mlockall, readdir: flags */
-		public long int2;       /* chown, fchown: uid; sendfile: input fd; open, chmod, mkdir, mknod: file mode, sync_file_range: flags */
-		public long int3;       /* chown, fchown: gid; mknod: dev_t */
-		public int errorno;     /* errno value on syscall return */
-
-		public byte flags; /* private */
-		public byte pri;     /* the priority */
-
-		public IntPtr data;
-		public eio_cb finish;
-		public eio_req_destroy destroy;
-		public IntPtr feed; // void (*feed)(eio_req *req);    /* only used for group requests */
-
-		public IntPtr grp;
-		public IntPtr grp_prev;
-		public IntPtr grp_next;
-		public IntPtr grp_first;
-	};
 }
 
