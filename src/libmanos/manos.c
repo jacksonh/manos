@@ -17,8 +17,6 @@
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 
-#include <gnutls/gnutls.h>
-
 #ifdef HAVE_SYS_SENDFILE_H
 #include <sys/sendfile.h>
 #endif
