@@ -10,4 +10,4 @@ libmanos_la_SOURCES = manos.c manos_socket.c manos_tls.c
 
 libmanos_la_LIBADD = ../libev/libev.la ../libeio/libeio.la
 
-libmanos_la_LDFLAGS = -no-undefined -lgnutls
+libmanos_la_LDFLAGS = -no-undefined $(libmanos_ldflags)
