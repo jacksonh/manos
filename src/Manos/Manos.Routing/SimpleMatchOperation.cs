@@ -82,11 +82,8 @@ namespace Manos.Routing
 				// scan until start
 				int g_start = start + g.Start;
 
-				if (g_start > pattern.Length)
-					return false;
-
 				int len = g_start - pattern_pos;
-				for (int i = 0; i < len; i++) {
+				for (int i = start; i < len; i++) {
 					if (input [input_pos] != pattern [pattern_pos])
 						return false;
 					
