@@ -69,7 +69,7 @@ namespace Manos.Routing
 			if (input.Length < str.Length + start)
 				return false;
 				
-			return String.Compare (input, 0, str, 0, str.Length, StringComparison.OrdinalIgnoreCase) == 0;
+			return String.Compare (input, start, str, 0, str.Length, StringComparison.OrdinalIgnoreCase) == 0;
 		}
 		
 	}
