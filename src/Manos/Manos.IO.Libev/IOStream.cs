@@ -35,230 +35,254 @@ using Libev;
 using Manos.Collections;
 
 
-namespace Manos.IO.Libev {
+namespace Manos.IO.Libev
+{
 
-	public abstract class IOStream: Manos.IO.IOStream {
 
-		protected static int ReadChunkSize = 3072;
-		protected static byte [] ReadChunk = new byte [3072];
+    public abstract class IOStream : Manos.IO.IIOStream
+    {
 
-		protected ReadCallback read_callback;
+        protected static int ReadChunkSize = 3072;
+        protected static byte[] ReadChunk = new byte[ReadChunkSize];
 
-		private IOLoop ioloop;
-		private IOWatcher read_watcher;
-		private IOWatcher write_watcher;
-		private TimerWatcher timeout_watcher;
-		private IntPtr handle;
+        protected ReadCallback read_callback;
 
-		private IWriteOperation current_write_op;
-		private Queue<IWriteOperation> write_ops = new Queue<IWriteOperation> ();
+        private Manos.IO.Libev.IOLoop ioloop;
+        private IOWatcher read_watcher;
+        private IOWatcher write_watcher;
+        private TimerWatcher timeout_watcher;
+        private IntPtr handle;
 
-		public IOStream (IOLoop ioloop)
-		{
-			this.ioloop = ioloop;
+        private IWriteOperation current_write_op;
+        private Queue<IWriteOperation> write_ops = new Queue<IWriteOperation>();
 
-			TimeOut = TimeSpan.FromMinutes (1);
-			Expires = DateTime.UtcNow + TimeOut;
-		}
+        public IOStream(Manos.IO.Libev.IOLoop ioloop)
+        {
+            this.ioloop = ioloop;
 
-		~IOStream ()
-		{
-			Close ();
-		}
+            TimeOut = TimeSpan.FromMinutes(1);
+            Expires = DateTime.UtcNow + TimeOut;
+        }
 
-		public Manos.IO.IOLoop IOLoop {
-			get { return ioloop; }
-		}
+        ~IOStream()
+        {
+            Close();
+        }
 
-		public IntPtr Handle {
-			get { return handle; }
-		}
+        public Manos.IO.IOLoop IOLoop
+        {
+            get { return ioloop; }
+        }
 
-		public DateTime Expires {
-			get;
-			set;
-		}
+        public Manos.IO.Libev.IOLoop EVIOLoop
+        {
+            get { return ioloop; }
+        }
 
-		public TimeSpan TimeOut {
-			get;
-			private set;
-		}
+        public IntPtr Handle
+        {
+            get { return handle; }
+        }
 
-		public void SetHandle (IntPtr handle)
-		{
-			if (this.handle != IntPtr.Zero && this.handle != handle)
-				Close ();
+        public DateTime Expires
+        {
+            get;
+            set;
+        }
 
-			this.handle = handle;
-			read_watcher = new IOWatcher (handle, EventTypes.Read, ioloop.EventLoop, HandleIOReadEvent);
-			write_watcher = new IOWatcher (handle, EventTypes.Write, ioloop.EventLoop, HandleIOWriteEvent);
-			timeout_watcher = new TimerWatcher (TimeOut, TimeOut, ioloop.EventLoop, HandleTimeoutEvent);
+        public TimeSpan TimeOut
+        {
+            get;
+            private set;
+        }
 
-			timeout_watcher.Start ();
-		}
+        public void SetHandle(IntPtr handle)
+        {
+            if (this.handle != IntPtr.Zero && this.handle != handle)
+                Close();
 
-		public void DisableTimeout ()
-		{
-			if (timeout_watcher != null)
-				timeout_watcher.Stop ();
-		}
+            this.handle = handle;
+            read_watcher = new IOWatcher(handle, EventTypes.Read, ioloop.EVLoop, HandleIOReadEvent);
+            write_watcher = new IOWatcher(handle, EventTypes.Write, ioloop.EVLoop, HandleIOWriteEvent);
+            timeout_watcher = new TimerWatcher(TimeOut, TimeOut, ioloop.EVLoop, HandleTimeoutEvent);
 
-		public void ReadBytes (ReadCallback callback)
-		{
-			EnableReading ();
+            timeout_watcher.Start();
+        }
 
-			read_callback = callback;
+        public void DisableTimeout()
+        {
+            if (timeout_watcher != null)
+                timeout_watcher.Stop();
+        }
 
-			UpdateExpires ();
-		}
+        public void ReadBytes(ReadCallback callback)
+        {
+            EnableReading();
 
-		public void QueueWriteOperation (IWriteOperation op)
-		{
-			EnableWriting ();
+            read_callback = callback;
 
-			UpdateExpires ();
+            UpdateExpires();
+        }
 
-			// We try to combine the op in case they are both byte buffers
-			// that could be sent as a single scatter/gather operation
-			if (write_ops.Count < 1 || !write_ops.Last ().Combine (op))
-				write_ops.Enqueue (op);
+        public void QueueWriteOperation(IWriteOperation op)
+        {
+            EnableWriting();
 
-			if (current_write_op == null)
-				current_write_op = write_ops.Dequeue ();
-		}
+            UpdateExpires();
 
-		public void EnableReading ()
-		{
-			if (read_watcher != null)
-				read_watcher.Start ();
-		}
+            // We try to combine the op in case they are both byte buffers
+            // that could be sent as a single scatter/gather operation
+            if (write_ops.Count < 1 || !write_ops.Last().Combine(op))
+                write_ops.Enqueue(op);
 
-		public void EnableWriting ()
-		{
-			if (write_watcher != null)
-				write_watcher.Start ();
-		}
+            if (current_write_op == null)
+            {
+                current_write_op = write_ops.Dequeue();
+                current_write_op.BeginWrite(this);
+            }
+        }
 
-		public void DisableReading ()
-		{
-			if (read_watcher != null)
-				read_watcher.Stop ();
-		}
+        public void EnableReading()
+        {
+            if (read_watcher != null)
+                read_watcher.Start();
+        }
 
-		public void DisableWriting ()
-		{
-			if (write_watcher != null)
-				write_watcher.Stop ();
-		}
+        public void EnableWriting()
+        {
+            if (write_watcher != null)
+                write_watcher.Start();
+        }
 
-		private void UpdateExpires ()
-		{
-			Expires = DateTime.UtcNow + TimeOut;
-		}
+        public void DisableReading()
+        {
+            if (read_watcher != null)
+                read_watcher.Stop();
+        }
 
-		public virtual void Close ()
-		{
-			if (handle == IntPtr.Zero)
-				return;			
+        public void DisableWriting()
+        {
+            if (write_watcher != null)
+                write_watcher.Stop();
+        }
 
-			DisableReading ();
-			DisableWriting ();
+        private void UpdateExpires()
+        {
+            Expires = DateTime.UtcNow + TimeOut;
+        }
 
-			read_watcher.Dispose ();
-			write_watcher.Dispose ();
-			timeout_watcher.Dispose ();
+        public virtual void Close()
+        {
+            if (handle == IntPtr.Zero)
+                return;
 
-			read_watcher = null;
-			write_watcher = null;
-			timeout_watcher = null;
-			handle = IntPtr.Zero;
+            DisableReading();
+            DisableWriting();
 
-			foreach (IWriteOperation op in write_ops) {
-				op.Dispose ();
-			}
-			write_ops.Clear ();
-			
-			if (Closed != null)
-				Closed (this, EventArgs.Empty);
-			Closed = null;
-			read_callback = null;
-		}
+            read_watcher.Dispose();
+            write_watcher.Dispose();
+            timeout_watcher.Dispose();
 
-		private void HandleIOReadEvent (LibEvLoop loop, IOWatcher watcher, EventTypes revents)
-		{
-			Expires = DateTime.UtcNow + TimeOut;
+            read_watcher = null;
+            write_watcher = null;
+            timeout_watcher = null;
+            handle = IntPtr.Zero;
 
-			// Happens after a close
-			if (handle == IntPtr.Zero)
-				return;
-			
-			HandleRead ();
-		}
+            foreach (IWriteOperation op in write_ops)
+            {
+                op.Dispose();
+            }
+            write_ops.Clear();
 
-		
-		private void HandleIOWriteEvent (LibEvLoop loop, IOWatcher watcher, EventTypes revents)
-		{
-			// Happens after a close
-			if (handle == IntPtr.Zero)
-				return;
+            if (Closed != null)
+                Closed(this, EventArgs.Empty);
+            Closed = null;
+            read_callback = null;
 
-			Expires = DateTime.UtcNow + TimeOut;
-			HandleWrite ();
-		}
+            GC.SuppressFinalize(this);
+        }
 
-		private void HandleTimeoutEvent (LibEvLoop loop, TimerWatcher watcher, EventTypes revents)
-		{
-			if (Expires <= DateTime.UtcNow) {
-				if (TimedOut != null)
-					TimedOut (this, EventArgs.Empty);
-				Close ();
-			}
-		}
+        private void HandleIOReadEvent(Loop loop, IOWatcher watcher, EventTypes revents)
+        {
+            Expires = DateTime.UtcNow + TimeOut;
 
-		protected virtual void HandleWrite ()
-		{
-			if (current_write_op == null) {
-				// Kinda shouldn't happen...
-				DisableWriting ();
-				return;
-			}
+            // Happens after a close
+            if (handle == IntPtr.Zero)
+                return;
 
-			if (current_write_op.IsComplete) {
-				FinishCurrentWrite ();
-				return;
-			}
+            HandleRead();
+        }
 
-			current_write_op.HandleWrite (this);
 
-			if (current_write_op.IsComplete)
-				FinishCurrentWrite ();
-		}
+        private void HandleIOWriteEvent(Loop loop, IOWatcher watcher, EventTypes revents)
+        {
+            // Happens after a close
+            if (handle == IntPtr.Zero)
+                return;
 
-		
-		private void FinishCurrentWrite ()
-		{
-			if (current_write_op == null)
-				return;
+            Expires = DateTime.UtcNow + TimeOut;
+            HandleWrite();
+        }
 
-			current_write_op.EndWrite (this);
+        private void HandleTimeoutEvent(Loop loop, TimerWatcher watcher, EventTypes revents)
+        {
+            if (Expires <= DateTime.UtcNow)
+            {
+                if (TimedOut != null)
+                    TimedOut(this, EventArgs.Empty);
+                Close();
+            }
+        }
 
-			if (write_ops.Count > 0) {
-				IWriteOperation op = write_ops.Dequeue ();
-				op.BeginWrite (this);
-				current_write_op = op;
-			} else {
-				current_write_op = null;
-				DisableWriting ();
-			}
-			
-		}
+        protected virtual void HandleWrite()
+        {
+            if (current_write_op == null)
+            {
+                // Kinda shouldn't happen...
+                DisableWriting();
+                return;
+            }
 
-		protected abstract void HandleRead ();
+            if (current_write_op.IsComplete)
+            {
+                FinishCurrentWrite();
+                return;
+            }
 
-		public event EventHandler Error;
-		public event EventHandler Closed;
-		public event EventHandler TimedOut;
-	}
+            current_write_op.HandleWrite(this);
+
+            if (current_write_op.IsComplete)
+                FinishCurrentWrite();
+        }
+
+        private void FinishCurrentWrite()
+        {
+            if (current_write_op == null)
+                return;
+
+            current_write_op.EndWrite(this);
+            current_write_op.Dispose();
+
+            if (write_ops.Count > 0)
+            {
+                IWriteOperation op = write_ops.Dequeue();
+                op.BeginWrite(this);
+                current_write_op = op;
+            }
+            else
+            {
+                current_write_op = null;
+                DisableWriting();
+            }
+
+        }
+
+        protected abstract void HandleRead();
+
+        public event EventHandler Error;
+        public event EventHandler Closed;
+        public event EventHandler TimedOut;
+    }
 
 }
 

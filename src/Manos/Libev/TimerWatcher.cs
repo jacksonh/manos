@@ -1,103 +1,81 @@
 using System;
 using System.Runtime.InteropServices;
-using Manos;
 
-namespace Libev {
+namespace Libev
+{
+    public class TimerWatcher : Watcher
+    {
+        private TimerWatcherCallback callback;
+        private static UnmanagedWatcherCallback unmanaged_callback;
 
-	public class TimerWatcher : Watcher {
+        static TimerWatcher()
+        {
+            unmanaged_callback = StaticCallback;
+        }
 
-		private TimerWatcherCallback callback;
-		private UnmanagedTimerWatcher unmanaged_watcher;
+        public TimerWatcher(TimeSpan repeat, LibEvLoop loop, TimerWatcherCallback callback)
+            : this(TimeSpan.Zero, repeat, loop, callback)
+        {
+        }
 
-		
-		
-		private static IntPtr unmanaged_callback_ptr;
-		private static UnmanagedWatcherCallback unmanaged_callback;
+        public TimerWatcher(TimeSpan after, TimeSpan repeat, LibEvLoop loop, TimerWatcherCallback callback)
+            : base(loop)
+        {
+            this.callback = callback;
 
-		static TimerWatcher ()
-		{
-			unmanaged_callback = new UnmanagedWatcherCallback (StaticCallback);
-			unmanaged_callback_ptr = Marshal.GetFunctionPointerForDelegate (unmanaged_callback);
-		}
+            watcher_ptr = manos_timer_watcher_create(after.TotalSeconds, repeat.TotalSeconds,
+                unmanaged_callback, GCHandle.ToIntPtr(gc_handle));
+        }
 
-		public TimerWatcher (TimeSpan repeat, Loop loop, TimerWatcherCallback callback) : this (TimeSpan.Zero, repeat, loop, callback)
-		{
-		}
-		
-		public TimerWatcher (TimeSpan after, TimeSpan repeat, Loop loop, TimerWatcherCallback callback) : base (loop)
-		{	
-			this.callback = callback;
-			
-			unmanaged_watcher = new UnmanagedTimerWatcher ();
-			
-			unmanaged_watcher.callback = unmanaged_callback_ptr;
-			unmanaged_watcher.after = after.TotalSeconds;
-			unmanaged_watcher.repeat = repeat.TotalSeconds;
-			
-			InitializeUnmanagedWatcher (unmanaged_watcher);
-		}
+        protected override void DestroyWatcher()
+        {
+            manos_timer_watcher_destroy(watcher_ptr);
+        }
 
-		private static void StaticCallback (IntPtr loop, IntPtr watcher, EventTypes revents)
-		{
-			UnmanagedTimerWatcher iow = (UnmanagedTimerWatcher) Marshal.PtrToStructure (watcher, typeof (UnmanagedTimerWatcher));
+        private static void StaticCallback(IntPtr data, EventTypes revents)
+        {
+            try
+            {
+                var handle = GCHandle.FromIntPtr(data);
+                var watcher = (TimerWatcher)handle.Target;
+                watcher.callback(watcher.Loop, watcher, revents);
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine("Error handling timer event: {0}", e.Message);
+                Console.Error.WriteLine(e.StackTrace);
+            }
+        }
 
-			GCHandle gchandle = GCHandle.FromIntPtr (iow.data);
-			TimerWatcher w = (TimerWatcher) gchandle.Target;
+        protected override void StartImpl()
+        {
+            ev_timer_start(Loop.Handle, watcher_ptr);
+        }
 
-			w.callback (w.Loop, w, revents);
-		}
+        protected override void StopImpl()
+        {
+            ev_timer_stop(Loop.Handle, watcher_ptr);
+        }
 
-		/*
-		public TimeSpan Repeat {
-			get {
-				return TimeSpan.FromSeconds (unmanaged_watcher.repeat);	
-			}
-			set {
-				unmanaged_watcher.repeat = value.TotalSeconds;	
-			}
-		}
-		*/
-		
-		protected override void StartImpl ()
-		{
-			unmanaged_watcher.data = GCHandle.ToIntPtr (gc_handle);
-			Marshal.StructureToPtr (unmanaged_watcher, watcher_ptr, false);
+        protected override void UnmanagedCallbackHandler(IntPtr loop, IntPtr watcher, EventTypes revents)
+        {
+            callback(Loop, this, revents);
+        }
 
-			ev_timer_start (Loop.Handle, WatcherPtr);
-		}
-		
-		protected override void StopImpl ()
-		{
-			ev_timer_stop (Loop.Handle, WatcherPtr);
-		}
-		
-		protected override void UnmanagedCallbackHandler (IntPtr loop, IntPtr watcher, EventTypes revents)
-		{
-			callback (Loop, this, revents);
-		}
+        [DllImport("libev", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void ev_timer_start(IntPtr loop, IntPtr watcher);
 
-        [DllImport ("libev", CallingConvention = CallingConvention.Cdecl)]
-		private static extern void ev_timer_start (IntPtr loop, IntPtr watcher);
+        [DllImport("libev", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void ev_timer_stop(IntPtr loop, IntPtr watcher);
 
-        [DllImport ("libev", CallingConvention = CallingConvention.Cdecl)]
-		private static extern void ev_timer_stop (IntPtr loop, IntPtr watcher);
-	}
-	
-    [UnmanagedFunctionPointer (System.Runtime.InteropServices.CallingConvention.Cdecl)]
-	public delegate void TimerWatcherCallback (LibEvLoop loop, TimerWatcher watcher, EventTypes revents);
-	
-	[StructLayout (LayoutKind.Sequential)]
-	internal struct UnmanagedTimerWatcher {
-		
-		public int active;
-		public int pending;
-		public int priority;
-		
-		public IntPtr data;
-		public IntPtr callback;
-				
-		public double after;
-		public double repeat;
-	}
+        [DllImport("libmanos", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr manos_timer_watcher_create(double after, double repeat, UnmanagedWatcherCallback callback, IntPtr data);
+
+        [DllImport("libmanos", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void manos_timer_watcher_destroy(IntPtr watcher);
+    }
+
+    [UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.Cdecl)]
+    public delegate void TimerWatcherCallback(Manos.Loop loop, TimerWatcher watcher, EventTypes revents);
 }
 

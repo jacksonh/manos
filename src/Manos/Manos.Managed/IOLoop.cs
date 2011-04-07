@@ -116,5 +116,10 @@ namespace Manos.Managed
         {
             return new SocketStream(this);
         }
+
+        public override ISocketStream CreateSecureSocket(string certFile, string keyFile)
+        {
+            throw new NotSupportedException ();
+        }
     }
 }

@@ -37,62 +37,63 @@ using Libev;
 
 using Manos.IO;
 
-namespace Manos.Http {
+namespace Manos.Http
+{
 
-	public delegate void HttpConnectionCallback (IHttpTransaction transaction);
+    public delegate void HttpConnectionCallback(IHttpTransaction transaction);
 
-	public class HttpServer: IDisposable {
+    public class HttpServer : IDisposable
+    {
 
-		public static readonly string ServerVersion;
+        public static readonly string ServerVersion;
 
-		private HttpConnectionCallback callback;
-		private IOLoop ioloop;
-		ISocketStream socket;
-		private bool closeOnEnd;
-		
-		static HttpServer ()
-		{
-			Version v = Assembly.GetExecutingAssembly ().GetName ().Version;
-			ServerVersion = "Manos/" + v.ToString ();
-		}
+        private HttpConnectionCallback callback;
+        ISocketStream socket;
+        private bool closeOnEnd;
 
-		public HttpServer (HttpConnectionCallback callback, IOLoop ioloop, bool closeOnEnd = false )			
-		{
-			this.callback = callback;
-			this.ioloop = ioloop;
-			this.closeOnEnd = closeOnEnd;
-		}
+        static HttpServer()
+        {
+            Version v = Assembly.GetExecutingAssembly().GetName().Version;
+            ServerVersion = "Manos/" + v.ToString();
+        }
 
-		public IOLoop IOLoop {
-			get { return ioloop; }
-		}
+        public HttpServer(HttpConnectionCallback callback, ISocketStream socket, bool closeOnEnd = false)
+        {
+            this.callback = callback;
+            this.socket = socket;
+            this.closeOnEnd = closeOnEnd;
+        }
 
-		public void Listen (string host, int port)
-		{
-            ISocketStream socket = ioloop.CreateSocketStream();
+        public IOLoop IOLoop
+        {
+            get { return socket.IOLoop; }
+        }
 
-			socket.Listen (host, port);
-			socket.ConnectionAccepted += ConnectionAccepted;
-		}
+        public void Listen(string host, int port)
+        {
+            socket.Listen(host, port);
+            socket.ConnectionAccepted += ConnectionAccepted;
+        }
 
-		public void Dispose () 
-		{
-			if (socket != null) {
-				socket.Dispose ();
-				socket = null;
-			}
-		}
+        public void Dispose()
+        {
+            if (socket != null)
+            {
+                socket.Dispose();
+                socket = null;
+            }
+        }
 
-		public void RunTransaction (HttpTransaction trans)
-		{
-			trans.Run ();
-		}
+        public void RunTransaction(HttpTransaction trans)
+        {
+            trans.Run();
+        }
 
-		private void ConnectionAccepted (object sender, ConnectionAcceptedEventArgs args)
-		{
-			var t = HttpTransaction.BeginTransaction (this, args.Stream, callback, closeOnEnd);
-		}
-	}
+        private void ConnectionAccepted(object sender, ConnectionAcceptedEventArgs args)
+        {
+            var t = HttpTransaction.BeginTransaction(this, args.Stream, callback, closeOnEnd);
+        }
+    }
 }
 
 

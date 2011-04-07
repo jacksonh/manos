@@ -1,5 +1,3 @@
-
-
 using System;
 using System.Runtime.InteropServices;
 using System.Net.Sockets;
@@ -30,7 +28,7 @@ namespace Libev {
 		{
 			Dispose ();	
 		}
-		
+
 		public IntPtr Handle {
 			get { 
 				
@@ -51,46 +49,46 @@ namespace Libev {
 			// ev_loop_destroy (_native);
 			_native = IntPtr.Zero;
 		}
-		
+
 		public void RunBlocking ()
 		{
 			ThrowIfDisposed ();
 			
 			Run (LoopType.Blocking);	
 		}
-		
+
 		public void RunNonBlocking ()
 		{
 			ThrowIfDisposed ();
 			
 			Run (LoopType.NonBlocking);	
 		}
-		
+
 		public void RunOneShot ()
 		{
 			ThrowIfDisposed ();
 			
 			Run (LoopType.Oneshot);	
 		}
-		
+
 		public void Run (LoopType type)
 		{
 			ThrowIfDisposed ();
 
-            if (IsV4)
-                ev_run (_native, type);
-            else
-			    ev_loop (_native, type);
+			if (IsV4)
+				ev_run (_native, type);
+			else
+				ev_loop (_native, type);
 		}
-		
+
 		public void Unloop (UnloopType type)
 		{
 			ThrowIfDisposed ();
 
-            if (IsV4)
-                ev_break (_native, type);
-            else 
-			    ev_unloop (_native, type);	
+			if (IsV4)
+				ev_break (_native, type);
+			else 
+				ev_unloop (_native, type);	
 		}
 		
 		public static LibEvLoop CreateDefaultLoop ()
@@ -115,7 +113,7 @@ namespace Libev {
 			
 			return new LibEvLoop (native);
 		}
-		
+
 		private void ThrowIfDisposed ()
 		{
 			if (_native == IntPtr.Zero)
@@ -123,16 +121,16 @@ namespace Libev {
 		}
 
         [DllImport ("libev", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int ev_version_major ();
+		private static extern int ev_version_major ();
 
         [DllImport ("libev", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int ev_version_minor ();
+		private static extern int ev_version_minor ();
 
 		[DllImport ("libev", CallingConvention = CallingConvention.Cdecl)]
 		private static extern IntPtr ev_default_loop (uint flags);
 
         [DllImport("libev", CallingConvention = CallingConvention.Cdecl)]
-        private static extern IntPtr ev_default_loop_init (uint flags);
+		private static extern IntPtr ev_default_loop_init (uint flags);
 
         [DllImport ("libev", CallingConvention = CallingConvention.Cdecl)]
 		private static extern void ev_loop (IntPtr loop, LoopType type);
@@ -144,13 +142,13 @@ namespace Libev {
 		private static extern void ev_unloop (IntPtr loop, UnloopType flags);
 
         [DllImport("libev", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void ev_run (IntPtr loop, LoopType type);
+		private static extern void ev_run (IntPtr loop, LoopType type);
 
         [DllImport("libev", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void ev_break (IntPtr loop, UnloopType flags);
+		private static extern void ev_break (IntPtr loop, UnloopType flags);
 
         [DllImport("libev", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int ev_supported_backends ();
+		private static extern int ev_supported_backends ();
 
 	}
 }

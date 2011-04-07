@@ -47,7 +47,7 @@ namespace Manos.Routing
 					throw new ArgumentNullException ("value");
 				if (value.Length == 0)
 					throw new ArgumentException ("StringMatch operations should not use empty strings.");
-				str = value;
+				str = value.ToLower();
 			}
 		}
 	
@@ -68,13 +68,8 @@ namespace Manos.Routing
 		{
 			if (input.Length < str.Length + start)
 				return false;
-
-			for (int i = 0; i < str.Length; i++) {
-				if (input [start + i] != str [i])
-					return false;
-			}
-
-			return true;
+				
+			return String.Compare (input, start, str, 0, str.Length, StringComparison.OrdinalIgnoreCase) == 0;
 		}
 		
 	}

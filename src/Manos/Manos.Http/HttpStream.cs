@@ -130,21 +130,28 @@ namespace Manos.Http
 		{
 			Write (buffer, offset, count, chunk_encode);
 		}
-
+		
 		public void SendFile (string file_name)
 		{
 			EnsureMetadata ();
 
-			var write_file = new SendFileOperation (file_name, null) {
-				Chunked = chunk_encode,
-			};
+			var write_file = SocketStream.MakeSendFile (file_name);
+			write_file.Chunked = chunk_encode;
 
 			if (!chunk_encode) {
 				pending_length_cbs++;
-				FileSystem.GetFileLength (file_name, (l, e) => {
-					if (l != -1)
-						write_file.SetLength (l);
-					LengthCallback (l, e);
+                if (Loop.IsWindows)
+                    Manos.Managed.Libeio.stat(file_name, (stat, err) =>
+                    {
+                        if (err != null)
+                            write_file.SetLength(stat.Length);
+                        LengthCallback(stat.Length, err == null ? 0 : -1);
+                    });
+                else 
+				Libeio.Libeio.stat(file_name, (r, stat, err) => {
+					if (r != -1)
+						write_file.SetLength (stat.st_size);
+					LengthCallback (stat.st_size, err);
 				});
 			} else {
 				write_file.Completed += delegate {
@@ -177,7 +184,7 @@ namespace Manos.Http
 			if (chunked)
 				WriteChunk (bytes, -1, false);
 
-			var write_bytes = new SendBytesOperation (bytes, null);
+			var write_bytes = new SendBytesOperation (bytes.ToArray (), null);
 			QueueWriteOperation (write_bytes);
 		}
 
@@ -216,7 +223,7 @@ namespace Manos.Http
 
 			WriteChunk (bytes, 0, true);
 
-			var write_bytes = new SendBytesOperation (bytes, callback);
+			var write_bytes = new SendBytesOperation (bytes.ToArray (), callback);
 			QueueWriteOperation (write_bytes);
 		}
 
@@ -256,7 +263,7 @@ namespace Manos.Http
 
 			var bytes = new List<ByteBuffer> ();
 			bytes.Add (new ByteBuffer (data, 0, data.Length));
-			var write_bytes = new SendBytesOperation (bytes, callback);
+			var write_bytes = new SendBytesOperation (bytes.ToArray (), callback);
 
 			SocketStream.QueueWriteOperation (write_bytes);
 		}
@@ -288,7 +295,7 @@ namespace Manos.Http
 
 			WriteChunk (bytes, l, last);
 
-			var write_bytes = new SendBytesOperation (bytes, null);
+			var write_bytes = new SendBytesOperation (bytes.ToArray (), null);
 			QueueWriteOperation (write_bytes);
 		}
 

@@ -33,6 +33,22 @@ fi
 AC_SUBST(XBUILD)
 
 
+AC_ARG_WITH([gnutls],
+	[AS_HELP_STRING([--with-gnutls],
+		[support SSL/TLS with GnuTLS @<:@default: check@:>@])],
+	[],
+	[with_gnutls=check])
+
+AS_IF([test "x$with_gnutls" != xno],
+	[AC_CHECK_LIB([gnutls], [gnutls_global_init],
+		[AC_DEFINE([HAVE_LIBGNUTLS], [1], [Define if you have libgnutls])
+		 PKG_CHECK_MODULES([GNUTLS], [gnutls >= 2.8])
+		],
+		[if test "x$with_gnutls" != xcheck; then
+			AC_MSG_FAILURE([--with-gnutls was given, but test for gnutls failed])
+		 fi],
+		[])])
+
 
 case "$host" in
 	*-*-linux*)

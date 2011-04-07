@@ -21,102 +21,89 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 //
-
-
 using System;
 using System.Runtime.InteropServices;
 using System.Net.Sockets;
 using Manos;
 
+namespace Libev
+{
+    public class AsyncWatcher : Watcher, IAsyncWatcher
+    {
+        private AsyncWatcherCallback callback;
+        private static UnmanagedWatcherCallback unmanaged_callback;
 
-namespace Libev {
+        static AsyncWatcher()
+        {
+            unmanaged_callback = StaticCallback;
+        }
 
-	public class AsyncWatcher : Watcher, IAsyncWatcher {
+        public AsyncWatcher(LibEvLoop loop, AsyncWatcherCallback callback)
+            : base(loop)
+        {
+            this.callback = callback;
 
-		private IntPtr fd;
-		private AsyncWatcherCallback callback;
+            watcher_ptr = manos_async_watcher_create(unmanaged_callback, GCHandle.ToIntPtr(gc_handle));
+        }
 
-		private UnmanagedAsyncWatcher unmanaged_watcher;
+        protected override void DestroyWatcher()
+        {
+            manos_async_watcher_destroy(watcher_ptr);
+        }
 
-		
-		private static IntPtr unmanaged_callback_ptr;
-		private static UnmanagedWatcherCallback unmanaged_callback;
+        private static void StaticCallback(IntPtr data, EventTypes revents)
+        {
+            try
+            {
+                var handle = GCHandle.FromIntPtr(data);
+                var watcher = (AsyncWatcher)handle.Target;
+                watcher.callback(watcher.Loop, watcher, revents);
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine("Error handling async event: {0}", e.Message);
+                Console.Error.WriteLine(e.StackTrace);
+            }
+        }
 
-		static AsyncWatcher ()
-		{
-			unmanaged_callback = new UnmanagedWatcherCallback (StaticCallback);
-			unmanaged_callback_ptr = Marshal.GetFunctionPointerForDelegate (unmanaged_callback);
-		}
-		
-		public AsyncWatcher (Loop loop, AsyncWatcherCallback callback) : base (loop)
-		{
-			this.callback = callback;
-			
-			unmanaged_watcher = new UnmanagedAsyncWatcher ();
-			unmanaged_watcher.callback = unmanaged_callback_ptr;
+        public void Send()
+        {
+            ev_async_send(Loop.Handle, watcher_ptr);
+        }
 
-			InitializeUnmanagedWatcher (unmanaged_watcher);
-		}
+        protected override void StartImpl()
+        {
+            ev_async_start(Loop.Handle, watcher_ptr);
+        }
 
-		
-		private static void StaticCallback (IntPtr loop, IntPtr watcher, EventTypes revents)
-		{
-			UnmanagedAsyncWatcher iow = (UnmanagedAsyncWatcher) Marshal.PtrToStructure (watcher, typeof (UnmanagedAsyncWatcher));
+        protected override void StopImpl()
+        {
+            ev_async_stop(Loop.Handle, watcher_ptr);
+        }
 
-			GCHandle gchandle = GCHandle.FromIntPtr (iow.data);
-			AsyncWatcher w = (AsyncWatcher) gchandle.Target;
+        protected override void UnmanagedCallbackHandler(IntPtr _loop, IntPtr _watcher, EventTypes revents)
+        {
+            // Maybe I should verify the pointers?
+            callback(Loop, this, revents);
+        }
 
-			w.callback (w.Loop, w, revents);
-		}
+        [DllImport("libev", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void ev_async_start(IntPtr loop, IntPtr watcher);
 
-		public void Send ()
-		{
-			ev_async_send (Loop.Handle, WatcherPtr);
-		}
+        [DllImport("libev", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void ev_async_stop(IntPtr loop, IntPtr watcher);
 
-		protected override void StartImpl ()
-		{
-			unmanaged_watcher.data = GCHandle.ToIntPtr (gc_handle);
-			Marshal.StructureToPtr (unmanaged_watcher, watcher_ptr, false);
+        [DllImport("libev", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void ev_async_send(IntPtr loop, IntPtr watcher);
 
-			ev_async_start (Loop.Handle, WatcherPtr);
-		}
-		
-		protected override void StopImpl ()
-		{
-			ev_async_stop (Loop.Handle, WatcherPtr);	
-		}
-		
-		protected override void UnmanagedCallbackHandler (IntPtr _loop, IntPtr _watcher, EventTypes revents)
-		{
-			// Maybe I should verify the pointers?
-			callback (Loop, this, revents);
-		}
+        [DllImport("libmanos", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr manos_async_watcher_create(UnmanagedWatcherCallback callback, IntPtr data);
 
-		[DllImport ("libev", CallingConvention = CallingConvention.Cdecl)]
-		private static extern void ev_async_start (IntPtr loop, IntPtr watcher);
+        [DllImport("libmanos", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void manos_async_watcher_destroy(IntPtr watcher);
+    }
 
-		[DllImport ("libev", CallingConvention = CallingConvention.Cdecl)]
-		private static extern void ev_async_stop (IntPtr loop, IntPtr watcher);
-
-		[DllImport ("libev", CallingConvention = CallingConvention.Cdecl)]
-		private static extern void ev_async_send (IntPtr loop, IntPtr watcher);
-	}
-	
-	[UnmanagedFunctionPointer (System.Runtime.InteropServices.CallingConvention.Cdecl)]
+    [UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.Cdecl)]
     public delegate void AsyncWatcherCallback(Loop loop, IAsyncWatcher watcher, EventTypes revents);
-	
-	[StructLayout (LayoutKind.Sequential)]
-	internal struct UnmanagedAsyncWatcher {
-		
-		public int active;
-		public int pending;
-		public int priority;
-		
-		public IntPtr data;
-		public IntPtr callback;
-
-		public volatile IntPtr atomic;
-	}
 }
 

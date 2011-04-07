@@ -12,14 +12,12 @@ namespace Manos.IO.Libev
         private bool running;
 
         private LibEvLoop evloop;
-        private Libeio.Libeio eio;
         private IntPtr libmanos_data;
 
         public IOLoop()
         {
             evloop = LibEvLoop.CreateDefaultLoop(0);
-            eio = new Libeio.Libeio();
-
+            
             //			eio.Initialize (evloop);
 
             libmanos_data = manos_init(evloop.Handle);
@@ -31,9 +29,9 @@ namespace Manos.IO.Libev
             get { return evloop; }
         }
 
-        public Libeio.Libeio Eio
+        public LibEvLoop EVLoop
         {
-            get { return eio; }
+            get { return evloop; }
         }
 
         public override void Start()
@@ -55,7 +53,7 @@ namespace Manos.IO.Libev
             t.Start();
         }
 
-        private void HandleTimeout(LibEvLoop loop, TimerWatcher timeout, EventTypes revents)
+        private void HandleTimeout(Loop loop, TimerWatcher timeout, EventTypes revents)
         {
             Timeout t = (Timeout)timeout.UserData;
 
@@ -69,12 +67,17 @@ namespace Manos.IO.Libev
 
         public override IAsyncWatcher NewAsyncWatcher(AsyncWatcherCallback cb)
         {
-            return new AsyncWatcher(EventLoop, cb);
+            return new AsyncWatcher (evloop, cb);
         }
 
         public override IO.ISocketStream CreateSocketStream()
         {
-            return new Manos.IO.Libev.SocketStream (this);
+            return new PlainSocketStream (this);
+        }
+
+        public override ISocketStream CreateSecureSocket(string certFile, string keyFile)
+        {
+            return new SecureSocketStream (certFile, keyFile, this);
         }
     }
 }

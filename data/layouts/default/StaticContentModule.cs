@@ -4,7 +4,7 @@ using System;
 using System.IO;
 
 using Manos;
-
+using Manos.Routing;
 
 //
 //  This the default StaticContentModule that comes with all Manos apps
@@ -20,26 +20,43 @@ namespace $APPNAME {
 
 	public class StaticContentModule : ManosModule {
 
+		private string basedir;
+
 		public StaticContentModule ()
 		{
-			Get (".*", Content);
+			Get (".*", MatchType.Regex, Content);
 
+			basedir = Path.GetFullPath ("Content");
 		}
 
-		public static void Content (IManosContext ctx)
+		public void Content (IManosContext ctx)
 		{
 			string path = ctx.Request.Path;
 
 			if (path.StartsWith ("/"))
 				path = path.Substring (1);
 
-			if (File.Exists (path)) {
+			if (ValidFile (path)) {
 				ctx.Response.Headers.SetNormalizedHeader ("Content-Type", ManosMimeTypes.GetMimeType (path));
 				ctx.Response.SendFile (path);
 			} else
 				ctx.Response.StatusCode = 404;
 
 			ctx.Response.End ();
+		}
+
+		
+		private bool ValidFile (string path)
+		{
+			try {
+				string full = Path.GetFullPath (path);
+				if (full.StartsWith (basedir))
+					return File.Exists (full);
+			} catch {
+				return false;
+			}
+
+			return false;
 		}
 	}
 }

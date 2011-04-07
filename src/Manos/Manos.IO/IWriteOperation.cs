@@ -36,9 +36,9 @@ namespace Manos.IO {
 
 		bool Combine (IWriteOperation other);
 
-		void BeginWrite (IOStream stream);
-		void HandleWrite (IOStream stream);
-		void EndWrite (IOStream stream);
+        void BeginWrite(IIOStream stream);
+        void HandleWrite(IIOStream stream);
+        void EndWrite(IIOStream stream);
 	}
 
 }

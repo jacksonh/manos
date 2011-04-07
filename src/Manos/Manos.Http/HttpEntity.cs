@@ -393,7 +393,7 @@ namespace Manos.Http {
 			Socket.ReadBytes (OnBytesRead);
 		}
 
-		private void OnBytesRead (IOStream stream, byte [] data, int offset, int count)
+		private void OnBytesRead (IIOStream stream, byte [] data, int offset, int count)
 		{
 			ByteBuffer bytes = new ByteBuffer (data, offset, count);
 

@@ -30,6 +30,9 @@
 /* Define to 1 if you have the `kqueue' function. */
 #undef HAVE_KQUEUE
 
+/* Define if you have libgnutls */
+#undef HAVE_LIBGNUTLS
+
 /* Define to 1 if you have the `m' library (-lm). */
 #undef HAVE_LIBM
 

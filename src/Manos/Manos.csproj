@@ -16,7 +16,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\build\</OutputPath>
-    <DefineConstants>DEBUG;DISABLE_POSIX;WINDOWS</DefineConstants>
+    <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -49,8 +49,11 @@
   <ItemGroup>
     <Compile Include="Manos.IO.Libev\IOLoop.cs" />
     <Compile Include="Manos.IO\IOStream.cs" />
+    <Compile Include="Manos.IO\SendFileOperation.cs" />
     <Compile Include="Manos.Managed\AsyncWatcher.cs" />
     <Compile Include="Manos.Managed\IOLoop.cs" />
+    <Compile Include="Manos.Managed\Libeio.cs" />
+    <Compile Include="Manos.Managed\SendFileOperation.cs" />
     <Compile Include="Manos.Managed\Socket.cs" />
     <Compile Include="Manos\Loop.cs" />
     <Compile Include="Manos\BaseWatcher.cs" />
@@ -100,11 +103,8 @@
     <Compile Include="Manos.IO\ConnectionAcceptedEventArgs.cs" />
     <Compile Include="Manos.IO\IOLoop.cs" />
     <Compile Include="Manos.IO.Libev\IOStream.cs" />
-    <Compile Include="Manos.IO\FileSystem.cs" />
     <Compile Include="Manos.IO\NopWriteOperation.cs" />
     <Compile Include="Manos.IO\SendBytesOperation.cs" />
-    <Compile Include="Manos.IO\SendFileOperation.cs" />
-    <Compile Include="Manos.IO\SendFileOperation_NO_SENDFILE.cs" />
     <Compile Include="Manos.IO.Libev\SocketStream.cs" />
     <Compile Include="Manos.IO\IWriteOperation.cs" />
     <Compile Include="Manos\IManosContext.cs" />
@@ -119,6 +119,7 @@
     <Compile Include="Manos.Routing\MatchOperationFactory.cs" />
     <Compile Include="Manos.Routing\StringMatchOperation.cs" />
     <Compile Include="Manos.Routing\NopMatchOperation.cs" />
+    <Compile Include="Manos.Routing\MatchType.cs" />
     <Compile Include="Manos\HttpMethods.cs" />
     <Compile Include="Assembly\AssemblyInfo.cs" />
     <Compile Include="Manos\IRepeatBehavior.cs" />
@@ -180,13 +181,25 @@
     <Compile Include="Manos.IO.Libev\UdpReceiver.cs" />
     <Compile Include="Manos\ManosConfig.cs" />
     <Compile Include="Manos\SynchronizedBlock.cs" />
+    <Compile Include="Manos.IO\PosixSendFileOperation.cs" />
+    <Compile Include="Manos.IO\CopyingSendFileOperation.cs" />
+    <Compile Include="Manos.IO.Libev\SecureSocketStream.cs" />
+    <Compile Include="Manos.IO.Libev\PlainSocketStream.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <None Include="Manos.Template\codegen.cs" />
     <None Include="Manos.Templates.Testing\ManosTemplateStub.cs" />
   </ItemGroup>
   <Target Name="ListSources">
     <Message Text="@(Compile)" Importance="High" />
   </Target>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="Hierarchical" ResourceNamePolicy="FileFormatDefault" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>

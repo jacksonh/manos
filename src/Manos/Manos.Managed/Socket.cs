@@ -17,6 +17,19 @@ namespace Manos.Managed
         private System.Timers.Timer timer;
         private IOLoop loop;
 
+        public ISendFileOperation MakeSendFile(string fn)
+        {
+            return new SendFileOperation (fn, null);
+        }
+
+        public IntPtr Handle
+        {
+            get
+            {
+                return socket.Handle;
+            }
+        }
+
         public SocketStream(IOLoop loop)
         {
             this.loop = loop;
@@ -208,10 +221,7 @@ namespace Manos.Managed
 
         public void Write(byte[] data, int offset, int count, IO.WriteCallback callback)
         {
-            var bytes = new List<ByteBuffer>();
-            bytes.Add(new ByteBuffer(data, offset, count));
-
-            var write_bytes = new SendBytesOperation(bytes, callback);
+            var write_bytes = new SendBytesOperation(new ByteBuffer[] {new ByteBuffer(data, offset, count)}, callback);
             QueueWriteOperation(write_bytes);
         }
 
@@ -228,6 +238,7 @@ namespace Manos.Managed
                 if (current_write_op == null)
                 {
                     current_write_op = write_ops.Dequeue();
+                    op.BeginWrite(this);
 
                     StartSending();
                 }
@@ -235,14 +246,14 @@ namespace Manos.Managed
         }
 
         private bool sending;
-        public int Send(Collections.ByteBufferS[] buffers, int length, out int error)
+        public int Send(Collections.ByteBuffer buffer, out int error)
         {
             SocketError er;
             lock (write_ops)
             {
                 sending = true;
             }
-            socket.BeginSend(buffers.Select(a => new ArraySegment<byte>(a.Bytes, a.Position, a.Length)).Take(length).ToArray(), SocketFlags.None, out er, (ar) =>
+            socket.BeginSend(buffer.buffer.Bytes, buffer.buffer.Position, buffer.buffer.Length, SocketFlags.None, out er, (ar) =>
             {
                 StartTimeout();
                 socket.EndSend(ar, out er);
@@ -257,13 +268,17 @@ namespace Manos.Managed
                         sending = false;
                     }
                 } else {
-                    loop.NonBlockInvoke(StartSending);
+                    lock (write_ops)
+                    {
+                        loop.NonBlockInvoke(StartSending);
+                    }
                 }
             }, null);
             error = (int)er;
 
-            return buffers.Take(length).Sum(a => a.Length);
+            return buffer.Length;
         }
+
 
 
 
@@ -273,6 +288,11 @@ namespace Manos.Managed
             bool cont = true;
             while (cont)
             {
+                if (disabledsending)
+                {
+                    sending = false;
+                    return;
+                }
                 cont = false;
                 if (current_write_op.IsComplete)
                 {
@@ -376,13 +396,28 @@ namespace Manos.Managed
             }
         }
 
+        private bool disabledsending;
+
         public void EnableWriting()
         {
+            if (disabledsending)
+            {
+                disabledsending = false;
+                if (!sending)
+                    loop.NonBlockInvoke(() => {
+                        lock (write_ops)
+                        {
+                            StartSending();
+                        }
+                    });
+            }
         }
 
         public void DisableWriting()
         {
+            disabledsending = true;
         }
+
 
         public int SendFile (string name, bool chunked, long length, Action<long, int> callback)
         {

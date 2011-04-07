@@ -1,73 +1,82 @@
-
-
 using System;
 using System.Runtime.InteropServices;
 using Manos;
 
-namespace Libev {
+namespace Libev
+{
+    public abstract class Watcher : BaseWatcher
+    {
+        protected IntPtr watcher_ptr;
+        private bool disposed;
+        protected GCHandle gc_handle;
 
-	public abstract class Watcher : BaseWatcher {
-
-		protected IntPtr watcher_ptr;
-
-		protected GCHandle gc_handle;
-
-		internal Watcher (Loop loop): base(loop)
-		{
-		}
-		
-				
-
-		protected IntPtr WatcherPtr {
-			get { return watcher_ptr; }
-		}
-		
-		public override void Dispose ()
-		{
-			Stop ();
-			
-			Marshal.FreeHGlobal (watcher_ptr);
-			watcher_ptr = IntPtr.Zero;			
-		}	
-
-		protected void InitializeUnmanagedWatcher (object unmanaged_watcher)
-		{
-			watcher_ptr = Marshal.AllocHGlobal (Marshal.SizeOf (unmanaged_watcher.GetType ()));
-			Marshal.StructureToPtr (unmanaged_watcher, watcher_ptr, true);
-		}
-
-
-
-        public override void Start()
-		{
-			if (running)
-			   return;
-
-			running = true;
-			gc_handle = GCHandle.Alloc (this);
-			
-			StartImpl ();
-		}
-
-		public override void Stop ()
-		{
-			if (!running)
-			   return;
-
-			running = false;
-			gc_handle.Free ();
-
-			StopImpl ();
-		}
-
-        public new LibEvLoop Loop
+        internal Watcher(LibEvLoop loop) : base(loop)
         {
-            get { return (LibEvLoop)base.Loop; }
+            Loop = loop;
+            gc_handle = GCHandle.Alloc(this);
         }
 
-		protected abstract void StartImpl ();
-		protected abstract void StopImpl ();		
-		protected abstract void UnmanagedCallbackHandler (IntPtr loop, IntPtr watcher, EventTypes revents);
-	}
+        
+        public new LibEvLoop Loop
+        {
+            get;
+            private set;
+        }
+
+        
+        ~Watcher()
+        {
+            if (watcher_ptr != IntPtr.Zero)
+            {
+                Dispose();
+            }
+        }
+
+        public override void Dispose()
+        {
+            if (disposed)
+            {
+                throw new ObjectDisposedException(GetType().Name);
+            }
+
+            Stop();
+
+            DestroyWatcher();
+
+            watcher_ptr = IntPtr.Zero;
+            gc_handle.Free();
+
+            GC.SuppressFinalize(this);
+            disposed = true;
+        }
+
+        public override void Start()
+        {
+            if (running)
+                return;
+
+            running = true;
+
+            StartImpl();
+        }
+
+        public override void Stop()
+        {
+            if (!running)
+                return;
+
+            running = false;
+
+            StopImpl();
+        }
+
+        protected abstract void StartImpl();
+
+        protected abstract void StopImpl();
+
+        protected abstract void DestroyWatcher();
+
+        protected abstract void UnmanagedCallbackHandler(IntPtr loop, IntPtr watcher, EventTypes revents);
+    }
 }
 

@@ -53,15 +53,15 @@ namespace Manos.IO {
 			return false;
 		}
 
-		public void BeginWrite (IOStream stream)
+        public void BeginWrite (IIOStream stream)
 		{
 		}
 
-		public void HandleWrite (IOStream stream)
+        public void HandleWrite (IIOStream stream)
 		{
 		}
 
-		public void EndWrite (IOStream stream)
+		public void EndWrite (IIOStream stream)
 		{
 			if (callback != null)
 				callback ();

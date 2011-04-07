@@ -73,7 +73,9 @@ namespace Manos.IO {
 
         public abstract IAsyncWatcher NewAsyncWatcher(AsyncWatcherCallback cb);
 
-        public abstract ISocketStream CreateSocketStream();
+        public abstract ISocketStream CreateSocketStream ();
+
+        public abstract ISocketStream CreateSecureSocket (string certFile, string keyFile);
     }
 }
 
