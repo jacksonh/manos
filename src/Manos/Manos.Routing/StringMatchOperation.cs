@@ -54,9 +54,19 @@ namespace Manos.Routing
 		public bool IsMatch (string input, int start, out DataDictionary data, out int end)
 		{
 			if (!StartsWith (input, start, String)) {
-				data = null;
-				end = start;
-				return false;
+				
+				// some special processing - ugh
+				// route to '/' when the parent app has Route("/test", new SubModule)
+				// and sub module has [Get("/")]
+				if ("/" == String && (input.Length + 1 == str.Length + start)) {
+					data = null;
+					end = input.Length; // force acceptance
+					return true;					
+				} else {				
+					data = null;
+					end = start;
+					return false;
+				}
 			}
 
 			data = null;
