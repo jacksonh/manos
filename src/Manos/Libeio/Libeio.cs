@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using Mono.Unix.Native;
 
 using size_t = System.UIntPtr;
-using off_t = System.IntPtr;
+using off_t = System.Int64;
 using mode_t = Mono.Unix.Native.FilePermissions;
 using eio_tstamp = System.Double;
 using uid_t = System.Int32;
@@ -20,7 +20,7 @@ namespace Libeio
 		{
 			public IntPtr next;
 			public IntPtr result;
-			public IntPtr offs;
+			public Int64 offs;  // We are forcing 64bit off_t's by using -D_FILE_OFFSET_BITS=64
 			public UIntPtr size;
 			public IntPtr ptr1;
 			public IntPtr ptr2;
@@ -104,7 +104,7 @@ namespace Libeio
 
 		public static void read (int fd, byte[] buffer, long offset, long length, Action<int, byte[], int> callback)
 		{
-			eio_read (fd, buffer, (UIntPtr) length, (IntPtr) offset, 0, readCB, GCHandle.ToIntPtr (GCHandle.Alloc (Tuple.Create (buffer, callback))));
+			eio_read (fd, buffer, (UIntPtr) length, offset, 0, readCB, GCHandle.ToIntPtr (GCHandle.Alloc (Tuple.Create (buffer, callback))));
 		}
 
 		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
@@ -117,8 +117,16 @@ namespace Libeio
 		static void FstatCallback (ref eio_req req)
 		{
 			var handle = GCHandle.FromIntPtr (req.data);
-			Stat result = (Stat) Marshal.PtrToStructure (req.ptr2, typeof(Stat));
-			((Action<int, Stat, int>) handle.Target) (req.result.ToInt32 (), result, req.errorno);
+
+			Stat result;
+			int errno = req.errorno;
+
+			if (!NativeConvert.TryCopy (req.ptr2, out result)) {
+				Console.Error.WriteLine ("Error converting stat structure.");
+				errno = 0xFF;
+			}
+
+			((Action<int, Stat, int>) handle.Target) (req.result.ToInt32 (), result, errno);
 			handle.Free ();
 		}
 
@@ -158,7 +166,7 @@ namespace Libeio
 
 		public static void sendfile (int out_fd, int in_fd, long offset, long length, Action<long, int> callback)
 		{
-			eio_sendfile (out_fd, in_fd, (IntPtr) offset, (UIntPtr) length, 0, sendfileCB, GCHandle.ToIntPtr (GCHandle.Alloc (callback)));
+			eio_sendfile (out_fd, in_fd, offset, (UIntPtr) length, 0, sendfileCB, GCHandle.ToIntPtr (GCHandle.Alloc (callback)));
 		}
 
 		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
@@ -211,9 +219,16 @@ namespace Libeio
 
 		static void StatCallback (ref eio_req req)
 		{
+			Stat result;
+			int errno = req.errorno;
+
+			if (!NativeConvert.TryCopy (req.ptr2, out result)) {
+				Console.Error.WriteLine ("Error converting stat structure.");
+				errno = 0xFF;
+			}
+
 			var handle = GCHandle.FromIntPtr (req.data);
-			Stat result = (Stat) Marshal.PtrToStructure (req.ptr2, typeof(Stat));
-			((Action<int, Stat, int>) handle.Target) (req.result.ToInt32 (), result, req.errorno);
+			((Action<int, Stat, int>) handle.Target) (req.result.ToInt32 (), result, errno);
 			handle.Free ();
 		}
 

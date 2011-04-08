@@ -50,6 +50,54 @@ AS_IF([test "x$with_gnutls" != xno],
 		[])])
 
 
+
+	dnl ******************************************************************
+	dnl *** Check for large file support                               ***
+	dnl *** (If we were using autoconf 2.50 we'd use AC_SYS_LARGEFILE) ***
+	dnl ******************************************************************
+	
+	# Check that off_t can represent 2**63 - 1 correctly, working around
+	# potential compiler bugs.  Defines LARGE_FILE_SUPPORT, adds $1 to
+	# CPPFLAGS and sets $large_offt to yes if the test succeeds
+	large_offt=no
+	AC_DEFUN([LARGE_FILES], [
+		large_CPPFLAGS=$CPPFLAGS
+		CPPFLAGS="$CPPFLAGS $1"
+		AC_TRY_RUN([
+			#include <sys/types.h>
+
+			#define BIG_OFF_T (((off_t)1<<62)-1+((off_t)1<<62))
+
+			int main(void) {
+				int big_off_t=((BIG_OFF_T%2147483629==721) &&
+					       (BIG_OFF_T%2147483647==1));
+				if(big_off_t) {
+					exit(0);
+				} else {
+					exit(1);
+				}
+			}
+		], [
+			AC_MSG_RESULT(ok)
+			AC_DEFINE(HAVE_LARGE_FILE_SUPPORT, 1, [Have large file support])
+			large_CPPFLAGS="$large_CPPFLAGS $1"
+			large_offt=yes
+		], [
+			AC_MSG_RESULT(no)
+		], "")
+		CPPFLAGS=$large_CPPFLAGS
+	])
+	
+	AC_MSG_CHECKING(if off_t is 64 bits wide)
+	LARGE_FILES("")
+	if test $large_offt = no; then
+		AC_MSG_CHECKING(if _FILE_OFFSET_BITS=64 gives 64 bit off_t)
+		LARGE_FILES("-D_FILE_OFFSET_BITS=64")
+	fi
+	if test $large_offt = no; then
+		AC_MSG_WARN([No 64 bit file size support available])
+	fi
+	
 case "$host" in
 	*-*-linux*)
 		CPPFLAGS="$CPPFLAGS -DGC_LINUX_THREADS -D_GNU_SOURCE -D_REENTRANT -DUSE_MMAP"
