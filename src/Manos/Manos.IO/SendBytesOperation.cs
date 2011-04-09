@@ -31,83 +31,93 @@ using Manos.Collections;
 
 namespace Manos.IO
 {
-	public class SendBytesOperation : IWriteOperation
-	{
+    public class SendBytesOperation : IWriteOperation
+    {
 
-		private ByteBuffer [] buffers;
-		private int bufferOffset;
-		private WriteCallback callback;
+        private ByteBuffer[] buffers;
+        private int bufferOffset;
+        private WriteCallback callback;
 
-		public SendBytesOperation (ByteBuffer[] buffers, WriteCallback callback)
-		{
-			this.buffers = buffers;
-			this.callback = callback;
-		}
+        public SendBytesOperation(ByteBuffer[] buffers, WriteCallback callback)
+        {
+            this.buffers = buffers;
+            this.callback = callback;
+        }
 
-		public void Dispose ()
-		{
-		}
+        public void Dispose()
+        {
+        }
 
-		public bool IsComplete {
-			get;
-			private set;
-		}
+        public bool IsComplete
+        {
+            get;
+            private set;
+        }
 
-		public bool Combine (IWriteOperation other)
-		{
-			return false;
-		}
+        public bool Combine(IWriteOperation other)
+        {
+            return false;
+        }
 
-		SocketStream sstream;
+        ISocketStream sstream;
 
-		public void BeginWrite (IOStream stream)
-		{
-			sstream = (SocketStream) stream;
-		}
+        public void BeginWrite(IIOStream stream)
+        {
+            sstream = (ISocketStream)stream;
+        }
 
-		public void HandleWrite (IOStream stream)
-		{
-			while (this.buffers.Length > bufferOffset) {
-				int len = -1;
-				int error;
-				len = sstream.Send (buffers [bufferOffset], out error);
+        public void HandleWrite(IIOStream stream)
+        {
+            while (this.buffers.Length > bufferOffset)
+            {
+                int len = -1;
+                int error;
+                len = sstream.Send(buffers[bufferOffset], out error);
 
-				if (len > 0) {
-					AdjustSegments (len);
-				} else {
-					return;
-				}
-			}
+                if (len > 0)
+                {
+                    AdjustSegments(len);
+                }
+                else
+                {
+                    return;
+                }
+            }
 
-			FireCallbacks ();
-			IsComplete = (buffers.Length == bufferOffset);
-		}
+            FireCallbacks();
+            IsComplete = (buffers.Length == bufferOffset);
+        }
 
-		void AdjustSegments (int len)
-		{
-			if (len > 0) {
-				int seg_len = buffers [bufferOffset].Length;
-				if (seg_len == len) {
-					buffers [bufferOffset] = null;
-					bufferOffset++;
-				} else {
-					var buf = buffers [bufferOffset];
-					buf.Position += len;
-					buf.Length -= len;
-				}
-			}
-		}
+        void AdjustSegments(int len)
+        {
+            if (len > 0)
+            {
+                int seg_len = buffers[bufferOffset].Length;
+                if (seg_len == len)
+                {
+                    buffers[bufferOffset] = null;
+                    bufferOffset++;
+                }
+                else
+                {
+                    var buf = buffers[bufferOffset];
+                    buf.Position += len;
+                    buf.Length -= len;
+                }
+            }
+        }
 
-		public void EndWrite (IOStream stream)
-		{
-		}
+        public void EndWrite(IIOStream stream)
+        {
+        }
 
-		private void FireCallbacks ()
-		{
-			if (buffers.Length == bufferOffset && callback != null) {
-				callback ();
-			}
-		}
-	}
+        private void FireCallbacks()
+        {
+            if (buffers.Length == bufferOffset && callback != null)
+            {
+                callback();
+            }
+        }
+    }
 }
 

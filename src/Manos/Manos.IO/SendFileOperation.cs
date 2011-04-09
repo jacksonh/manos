@@ -6,12 +6,30 @@ using System.Collections.Generic;
 
 namespace Manos.IO
 {
-	public abstract class SendFileOperation : IWriteOperation
+    public interface ISendFileOperation : IWriteOperation
+    {
+        bool Chunked
+        {
+            get;
+            set;
+        }
+
+        long Length
+        {
+            get;
+            set;
+        }
+        void SetLength(long l);
+
+        event EventHandler Completed;
+    }
+
+    public abstract class SendFileOperation : ISendFileOperation, IWriteOperation
 	{
 		string fileName;
 		WriteCallback callback;
 		protected int fd;
-		protected SocketStream stream;
+		protected ISocketStream stream;
 		protected long position = 0;
 		protected IWriteOperation currentPrefixBlock;
 
@@ -49,7 +67,7 @@ namespace Manos.IO
 			GC.SuppressFinalize (this);
 		}
 
-		public void BeginWrite (IOStream stream)
+		public void BeginWrite (IIOStream stream)
 		{
 		}
 
@@ -58,7 +76,7 @@ namespace Manos.IO
 			return false;
 		}
 
-		public void EndWrite (IOStream stream)
+		public void EndWrite (IIOStream stream)
 		{
 			Libeio.Libeio.close (fd, err => {
 				fd = 0;
@@ -103,9 +121,9 @@ namespace Manos.IO
 
 		protected abstract void SendNextBlock ();
 
-		public void HandleWrite (IOStream stream)
+		public void HandleWrite (IIOStream stream)
 		{
-			this.stream = (SocketStream) stream;
+			this.stream = (ISocketStream) stream;
 			if (currentPrefixBlock != null && !currentPrefixBlock.IsComplete) {
 				currentPrefixBlock.HandleWrite (stream);
 				if (currentPrefixBlock.IsComplete) {

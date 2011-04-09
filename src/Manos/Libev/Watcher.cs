@@ -1,85 +1,82 @@
 using System;
 using System.Runtime.InteropServices;
+using Manos;
 
 namespace Libev
 {
-	public abstract class Watcher : IDisposable
-	{
-		protected IntPtr watcher_ptr;
-		private bool running, disposed;
-		protected GCHandle gc_handle;
+    public abstract class Watcher : BaseWatcher
+    {
+        protected IntPtr watcher_ptr;
+        private bool disposed;
+        protected GCHandle gc_handle;
 
-		internal Watcher (Loop loop)
-		{
-			Loop = loop;
-			gc_handle = GCHandle.Alloc (this);
-		}
+        internal Watcher(LibEvLoop loop) : base(loop)
+        {
+            Loop = loop;
+            gc_handle = GCHandle.Alloc(this);
+        }
 
-		public bool IsRunning {
-			get { return running; }
-		}
+        
+        public new LibEvLoop Loop
+        {
+            get;
+            private set;
+        }
 
-		public Loop Loop {
-			get;
-			private set;
-		}
+        
+        ~Watcher()
+        {
+            if (watcher_ptr != IntPtr.Zero)
+            {
+                Dispose();
+            }
+        }
 
-		public object UserData {
-			get;
-			set;
-		}
+        public override void Dispose()
+        {
+            if (disposed)
+            {
+                throw new ObjectDisposedException(GetType().Name);
+            }
 
-		~Watcher ()
-		{
-			if (watcher_ptr != IntPtr.Zero) {
-				Dispose ();
-			}
-		}
+            Stop();
 
-		public virtual void Dispose ()
-		{
-			if (disposed) {
-				throw new ObjectDisposedException (GetType ().Name);
-			}
-			
-			Stop ();
-			
-			DestroyWatcher ();
-			
-			watcher_ptr = IntPtr.Zero;
-			gc_handle.Free ();
-			
-			GC.SuppressFinalize (this);
-			disposed = true;
-		}
+            DestroyWatcher();
 
-		public void Start ()
-		{
-			if (running)
-				return;
+            watcher_ptr = IntPtr.Zero;
+            gc_handle.Free();
 
-			running = true;
-			
-			StartImpl ();
-		}
+            GC.SuppressFinalize(this);
+            disposed = true;
+        }
 
-		public void Stop ()
-		{
-			if (!running)
-				return;
+        public override void Start()
+        {
+            if (running)
+                return;
 
-			running = false;
+            running = true;
 
-			StopImpl ();
-		}
+            StartImpl();
+        }
 
-		protected abstract void StartImpl ();
+        public override void Stop()
+        {
+            if (!running)
+                return;
 
-		protected abstract void StopImpl ();
+            running = false;
 
-		protected abstract void DestroyWatcher ();
+            StopImpl();
+        }
 
-		protected abstract void UnmanagedCallbackHandler (IntPtr loop, IntPtr watcher, EventTypes revents);
-	}
+        protected abstract void StartImpl();
+
+        protected abstract void StopImpl();
+
+        protected abstract void DestroyWatcher();
+
+        protected abstract void UnmanagedCallbackHandler(IntPtr loop, IntPtr watcher, EventTypes revents);
+    }
 }
 

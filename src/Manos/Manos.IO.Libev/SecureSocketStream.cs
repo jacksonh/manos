@@ -3,11 +3,21 @@ using Manos.Collections;
 using System.Runtime.InteropServices;
 using Libev;
 
-namespace Manos.IO
+namespace Manos.IO.Libev
 {
 	public class SecureSocketStream : SocketStream
 	{
 		private IntPtr tls;
+
+        public override void Connect(int port)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override void Connect(string host, int port)
+        {
+            throw new NotImplementedException();
+        }
 
 		public SecureSocketStream (string certFile, string keyFile, IOLoop ioloop) : base (ioloop)
 		{
@@ -19,7 +29,7 @@ namespace Manos.IO
 			}
 		}
 
-		SecureSocketStream (IntPtr tls, SocketInfo info, IOLoop ioloop) : base (info, ioloop)
+		SecureSocketStream (IntPtr tls, SocketInfo info, Manos.IO.Libev.IOLoop ioloop) : base (info, ioloop)
 		{
 			this.tls = tls;
 			
@@ -42,8 +52,8 @@ namespace Manos.IO
 			
 			tls = IntPtr.Zero;
 		}
-		
-		internal override SendFileOperation MakeSendFile(string file)
+
+        public override ISendFileOperation MakeSendFile (string file)
 		{
 			return new CopyingSendFileOperation (file, null);
 		}
@@ -76,18 +86,20 @@ namespace Manos.IO
 				
 				error = manos_tls_accept (tls, out client, out accept_info);
 				if (error == 0) {
-					var clientStream = new SecureSocketStream (client, accept_info, IOLoop);
+					var clientStream = new SecureSocketStream (client, accept_info, EVIOLoop);
 					OnConnectionAccepted (clientStream);
 				}
 			}
 		}
+
+        public override event Action<ISocketStream> Connected;
 
 		protected override int ReadOneChunk (out int error)
 		{
 			return manos_tls_receive (tls, ReadChunk, ReadChunk.Length, out error);
 		}
 		
-		internal override int Send(ByteBuffer buffer, out int error)
+		public override int Send(ByteBuffer buffer, out int error)
 		{
 			return manos_tls_send (tls, buffer.Bytes, buffer.Position, buffer.Length, out error);
 		}

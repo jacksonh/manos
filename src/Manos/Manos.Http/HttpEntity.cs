@@ -65,11 +65,11 @@ namespace Manos.Http {
 		private IHttpBodyHandler body_handler;
 		private bool finished_reading;
 
-		private AsyncWatcher end_watcher;
+		private IAsyncWatcher end_watcher;
 
 		public HttpEntity ()
 		{
-			end_watcher = new AsyncWatcher (IOLoop.Instance.EventLoop, HandleEnd);
+			end_watcher = IOLoop.Instance.NewAsyncWatcher (HandleEnd);
 			end_watcher.Start ();
 		}
 
@@ -93,7 +93,7 @@ namespace Manos.Http {
 			}
 		}
 
-		public SocketStream Socket {
+		public ISocketStream Socket {
 			get;
 			protected set;
 		}
@@ -393,7 +393,7 @@ namespace Manos.Http {
 			Socket.ReadBytes (OnBytesRead);
 		}
 
-		private void OnBytesRead (IOStream stream, byte [] data, int offset, int count)
+		private void OnBytesRead (IIOStream stream, byte [] data, int offset, int count)
 		{
 			ByteBuffer bytes = new ByteBuffer (data, offset, count);
 
@@ -499,7 +499,7 @@ namespace Manos.Http {
 			end_watcher.Send ();
 		}
 
-		internal virtual void HandleEnd (Loop loop, AsyncWatcher watcher, EventTypes revents)
+		internal virtual void HandleEnd (Loop loop, IAsyncWatcher watcher, EventTypes revents)
 		{
 			if (OnEnd != null)
 				OnEnd ();

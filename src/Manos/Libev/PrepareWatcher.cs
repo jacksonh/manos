@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using Manos;
 
 namespace Libev
 {
@@ -13,7 +14,7 @@ namespace Libev
 			unmanaged_callback = StaticCallback;
 		}
 
-		public PrepareWatcher (Loop loop, PrepareWatcherCallback callback) : base (loop)
+		public PrepareWatcher (LibEvLoop loop, PrepareWatcherCallback callback) : base (loop)
 		{
 			this.callback = callback;
 			

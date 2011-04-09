@@ -28,13 +28,13 @@ using Manos.IO;
 using System.Runtime.InteropServices;
 using System.Net;
 
-namespace Manos
+namespace Manos.IO.Libev
 {
     public class UdpReceiver
     {
         public delegate void ReadCallback( UdpReceiver receiver, byte [] data, int count, IPEndPoint remoteEndPoint );
 
-        private IOLoop loop;
+        private Manos.IO.Libev.IOLoop loop;
         private IOWatcher watcher;
 
         private int fd = -1;
@@ -43,8 +43,8 @@ namespace Manos
 
         private ReadCallback readCallback;
 
-        public UdpReceiver( IOLoop loop ) : this( loop, 128*1024 ) {}
-        public UdpReceiver( IOLoop loop, int maxMessageSize )
+        public UdpReceiver( Manos.IO.Libev.IOLoop loop) : this(loop, 128 * 1024) { }
+        public UdpReceiver( Manos.IO.Libev.IOLoop loop, int maxMessageSize )
         {
             this.loop = loop;
 
@@ -60,7 +60,7 @@ namespace Manos
             if (fd < 0)
                 throw new Exception (String.Format ("An error occurred while trying to connect to {0}:{1} errno: {2}", host, port, error));
 
-            watcher = new IOWatcher( new IntPtr( fd ), EventTypes.Read, loop.EventLoop, (l, w, r) => onRead() );
+            watcher = new IOWatcher( new IntPtr( fd ), EventTypes.Read, loop.EVLoop, (l, w, r) => onRead() );
             watcher.Start();
         }
 

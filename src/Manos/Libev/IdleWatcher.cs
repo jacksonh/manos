@@ -1,10 +1,12 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Net.Sockets;
+using Manos;
 
-namespace Libev
-{
-	public class IdleWatcher : Watcher
-	{
+
+namespace Libev {
+
+	public class IdleWatcher : Watcher {
 		private IdleWatcherCallback callback;
 		private static UnmanagedWatcherCallback unmanaged_callback;
 
@@ -13,7 +15,7 @@ namespace Libev
 			unmanaged_callback = StaticCallback;
 		}
 
-		public IdleWatcher (Loop loop, IdleWatcherCallback callback) : base (loop)
+		public IdleWatcher (LibEvLoop loop, IdleWatcherCallback callback) : base (loop)
 		{
 			this.callback = callback;
 			

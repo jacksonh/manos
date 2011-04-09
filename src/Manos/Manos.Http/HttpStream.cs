@@ -49,7 +49,7 @@ namespace Manos.Http
 
 		private Queue<IWriteOperation> write_ops;
 
-		public HttpStream (HttpEntity entity, SocketStream stream)
+		public HttpStream (HttpEntity entity, ISocketStream stream)
 		{
 			HttpEntity = entity;
 			SocketStream = stream;
@@ -61,7 +61,7 @@ namespace Manos.Http
 			private set;
 		}
 
-		public SocketStream SocketStream {
+		public ISocketStream SocketStream {
 			get;
 			private set;
 		}
@@ -140,6 +140,14 @@ namespace Manos.Http
 
 			if (!chunk_encode) {
 				pending_length_cbs++;
+                if (Loop.IsWindows)
+                    Manos.Managed.Libeio.stat(file_name, (stat, err) =>
+                    {
+                        if (err != null)
+                            write_file.SetLength(stat.Length);
+                        LengthCallback(stat.Length, err == null ? 0 : -1);
+                    });
+                else 
 				Libeio.Libeio.stat(file_name, (r, stat, err) => {
 					if (r != -1)
 						write_file.SetLength (stat.st_size);

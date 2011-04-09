@@ -8,7 +8,7 @@ using Libev;
 using Manos.Collections;
 using System.Net;
 
-namespace Manos.IO
+namespace Manos.IO.Libev
 {
 	public class PlainSocketStream : SocketStream
 	{
@@ -55,8 +55,8 @@ namespace Manos.IO
 
 			fd = -1;
 		}
-		
-		internal override SendFileOperation MakeSendFile(string file)
+
+        public override ISendFileOperation MakeSendFile (string file)
 		{
 #if !DISABLE_POSIX
 			return new PosixSendFileOperation (file, null);
@@ -65,7 +65,7 @@ namespace Manos.IO
 #endif
 		}
 
-		public void Connect (string host, int port)
+		public override void Connect (string host, int port)
 		{
 			int error;
 			fd = manos_socket_connect (host, port, out error);
@@ -74,7 +74,7 @@ namespace Manos.IO
 				throw new Exception (String.Format ("An error occurred while trying to connect to {0}:{1} errno: {2}", host, port, error));
 			
 			
-			IOWatcher iowatcher = new IOWatcher (new IntPtr (fd), EventTypes.Write, IOLoop.EventLoop, (l, w, r) => {
+			IOWatcher iowatcher = new IOWatcher (new IntPtr (fd), EventTypes.Write, (LibEvLoop)IOLoop.EventLoop, (l, w, r) => {
 				w.Stop ();
 
 				this.host = host;
@@ -84,7 +84,7 @@ namespace Manos.IO
 			iowatcher.Start ();
 		}
 
-		public void Connect (int port)
+		public override void Connect (int port)
 		{
 			Connect ("127.0.0.1", port);
 		}
@@ -128,7 +128,7 @@ namespace Manos.IO
 //			Console.WriteLine ("Accepted: '{0}' connections.", amount);
 			for (int i = 0; i < amount; i++) {
 //				Console.WriteLine ("Accepted: '{0}'", accept_infos [i]);
-				SocketStream iostream = new PlainSocketStream (accept_infos [i], IOLoop);
+				SocketStream iostream = new PlainSocketStream (accept_infos [i], EVIOLoop);
 				OnConnectionAccepted (iostream);
 			}
 		}
@@ -138,12 +138,12 @@ namespace Manos.IO
 			return manos_socket_receive (fd, ReadChunk, ReadChunk.Length, out error);
 		}
 		
-		internal override int Send(ByteBuffer buffer, out int error)
+		public override int Send(ByteBuffer buffer, out int error)
 		{
 			return manos_socket_send (fd, buffer.Bytes, buffer.Position, buffer.Length, out error);
 		}
 
-		public event Action<SocketStream> Connected;
+		public override event Action<ISocketStream> Connected;
 
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
 		private static extern int manos_socket_connect (string host, int port, out int err);

@@ -4,77 +4,82 @@ using System.Net.Sockets;
 
 namespace Libev
 {
-	public class IOWatcher : Watcher
-	{
-		private IntPtr fd;
-		private IOWatcherCallback callback;
-		private static UnmanagedWatcherCallback watcherCallback;
+    public class IOWatcher : Watcher
+    {
+        private IntPtr fd;
+        private IOWatcherCallback callback;
+        private static UnmanagedWatcherCallback watcherCallback;
 
-		static IOWatcher ()
-		{
-			watcherCallback = StaticCallback;
-		}
+        static IOWatcher()
+        {
+            watcherCallback = StaticCallback;
+        }
 
-		public IOWatcher (IntPtr fd, EventTypes types, Loop loop, IOWatcherCallback callback) : base (loop)
-		{
-			this.fd = fd;
-			this.callback = callback;
-			
-			watcher_ptr = manos_io_watcher_create (fd.ToInt32 (), types | EventTypes.EV__IOFDSET,
-				watcherCallback, GCHandle.ToIntPtr (gc_handle));
-		}
+        public IOWatcher(IntPtr fd, EventTypes types, LibEvLoop loop, IOWatcherCallback callback)
+            : base(loop)
+        {
+            this.fd = fd;
+            this.callback = callback;
 
-		protected override void DestroyWatcher ()
-		{
-			manos_io_watcher_destroy (watcher_ptr);
-		}
+            watcher_ptr = manos_io_watcher_create(fd.ToInt32(), types | EventTypes.EV__IOFDSET,
+                watcherCallback, GCHandle.ToIntPtr(gc_handle));
+        }
 
-		private static void StaticCallback (IntPtr data, EventTypes revents)
-		{
-			try {
-				var handle = GCHandle.FromIntPtr (data);
-				var watcher = (IOWatcher) handle.Target;
-				watcher.callback (watcher.Loop, watcher, revents);
-			} catch (Exception e) {
-				Console.Error.WriteLine ("Error handling IO readyness event: {0}", e.Message);
-				Console.Error.WriteLine (e.StackTrace);
-			}
-		}
+        protected override void DestroyWatcher()
+        {
+            manos_io_watcher_destroy(watcher_ptr);
+        }
 
-		public IntPtr FileHandle {
-			get { return fd; }
-		}
+        private static void StaticCallback(IntPtr data, EventTypes revents)
+        {
+            try
+            {
+                var handle = GCHandle.FromIntPtr(data);
+                var watcher = (IOWatcher)handle.Target;
+                watcher.callback(watcher.Loop, watcher, revents);
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine("Error handling IO readyness event: {0}", e.Message);
+                Console.Error.WriteLine(e.StackTrace);
+            }
+        }
 
-		protected override void StartImpl ()
-		{
-			ev_io_start (Loop.Handle, watcher_ptr);
-		}
+        public IntPtr FileHandle
+        {
+            get { return fd; }
+        }
 
-		protected override void StopImpl ()
-		{
-			ev_io_stop (Loop.Handle, watcher_ptr);
-		}
+        protected override void StartImpl()
+        {
+            ev_io_start(Loop.Handle, watcher_ptr);
+        }
 
-		protected override void UnmanagedCallbackHandler (IntPtr _loop, IntPtr _watcher, EventTypes revents)
-		{
-			// Maybe I should verify the pointers?
-			callback (Loop, this, revents);
-		}
+        protected override void StopImpl()
+        {
+            ev_io_stop(Loop.Handle, watcher_ptr);
+        }
 
-		[DllImport ("libev", CallingConvention = CallingConvention.Cdecl)]
-		private static extern void ev_io_start (IntPtr loop, IntPtr watcher);
+        protected override void UnmanagedCallbackHandler(IntPtr _loop, IntPtr _watcher, EventTypes revents)
+        {
+            // Maybe I should verify the pointers?
+            callback(Loop, this, revents);
+        }
 
-		[DllImport ("libev", CallingConvention = CallingConvention.Cdecl)]
-		private static extern void ev_io_stop (IntPtr loop, IntPtr watcher);
+        [DllImport("libev", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void ev_io_start(IntPtr loop, IntPtr watcher);
 
-		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
-		private static extern IntPtr manos_io_watcher_create (int fd, EventTypes revents, UnmanagedWatcherCallback callback, IntPtr data);
+        [DllImport("libev", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void ev_io_stop(IntPtr loop, IntPtr watcher);
 
-		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
-		private static extern void manos_io_watcher_destroy (IntPtr watcher);
-	}
+        [DllImport("libmanos", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr manos_io_watcher_create(int fd, EventTypes revents, UnmanagedWatcherCallback callback, IntPtr data);
 
-	[UnmanagedFunctionPointer (System.Runtime.InteropServices.CallingConvention.Cdecl)]
-	public delegate void IOWatcherCallback (Loop loop, IOWatcher watcher, EventTypes revents);
+        [DllImport("libmanos", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void manos_io_watcher_destroy(IntPtr watcher);
+    }
+
+    [UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.Cdecl)]
+    public delegate void IOWatcherCallback(Manos.Loop loop, IOWatcher watcher, EventTypes revents);
 }
 

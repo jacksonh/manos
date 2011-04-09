@@ -36,12 +36,12 @@ namespace Manos.IO {
 
 	public class ConnectionAcceptedEventArgs : EventArgs {
 
-		public ConnectionAcceptedEventArgs (SocketStream stream)
+		public ConnectionAcceptedEventArgs (ISocketStream stream)
 		{
 			Stream = stream;
 		}
 
-		public SocketStream Stream {
+		public ISocketStream Stream {
 			get;
 			private set;
 		}

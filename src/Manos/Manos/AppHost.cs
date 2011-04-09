@@ -58,7 +58,7 @@ namespace Manos
 		private static List<IManosPipe> pipes;
 
 		private static ConcurrentQueue<SynchronizedBlock> waitingSyncBlocks = new ConcurrentQueue<SynchronizedBlock> ();
-		private static AsyncWatcher syncBlockWatcher;
+		private static IAsyncWatcher syncBlockWatcher;
 
 		private static IOLoop ioloop = IOLoop.Instance;
 		
@@ -122,24 +122,30 @@ namespace Manos
 			secureListenEndPoints.Add (endPoint,
 				Tuple.Create (cert, key));
 		}
-		
+
 		public static void InitializeTLS (string priorities)
 		{
-			manos_tls_global_init (priorities);
+#if !DISABLETLS
+            manos_tls_global_init(priorities);
 			RegenerateDHParams (1024);
-		}
+#endif
+        }
 
 		public static void RegenerateDHParams (int bits)
 		{
+#if !DISABLETLS
 			manos_tls_regenerate_dhparams (bits);
+#endif
 		}
 		
+#if !DISABLETLS
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
 		private static extern int manos_tls_global_init (string priorities);
 		
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
 		private static extern int manos_tls_regenerate_dhparams (int bits);
-		
+#endif
+
 		public static void Start (ManosApp application)
 		{
 			if (application == null)
@@ -152,21 +158,22 @@ namespace Manos
 			started = true;
 			
 			foreach (var ep in listenEndPoints) {
-				var server = new HttpServer (HandleTransaction, new PlainSocketStream (ioloop));
+
+                var server = new HttpServer (HandleTransaction, IOLoop.CreateSocketStream());
 				server.Listen (ep.Address.ToString (), ep.Port);
 				
 				servers.Add (server);
 			}
 			foreach (var ep in secureListenEndPoints.Keys) {
 				var keypair = secureListenEndPoints [ep];
-				var socket = new SecureSocketStream (keypair.Item1, keypair.Item2, ioloop);
+				var socket = IOLoop.CreateSecureSocket (keypair.Item1, keypair.Item2);
 				var server = new HttpServer (HandleTransaction, socket);
 				server.Listen (ep.Address.ToString (), ep.Port);
 				
 				servers.Add (server);
 			}
 			
-			syncBlockWatcher = new AsyncWatcher (IOLoop.EventLoop, HandleSynchronizationEvent);
+			syncBlockWatcher = IOLoop.NewAsyncWatcher (HandleSynchronizationEvent);
 			syncBlockWatcher.Start ();
 
 			ioloop.Start ();
@@ -225,8 +232,21 @@ namespace Manos
 			waitingSyncBlocks.Enqueue (new SynchronizedBlock<T> (action, context, arg));
 			syncBlockWatcher.Send ();
 		}
+
+        public static void Synchronize<T>(Action<T> action,
+            T arg)
+        {
+            if (action == null)
+            {
+                throw new ArgumentNullException("action");
+            }
+           
+
+            waitingSyncBlocks.Enqueue(new SimpleSynchronizedBlock<T>(action, arg));
+            syncBlockWatcher.Send();
+        }
 		
-		private static void HandleSynchronizationEvent (Loop loop, AsyncWatcher watcher, EventTypes revents)
+		private static void HandleSynchronizationEvent (Loop loop, IAsyncWatcher watcher, EventTypes revents)
 		{
 			// we don't want to empty the whole queue here, as any number of threads can enqueue
 			// sync blocks at will while we try to empty it. only process a fixed number of blocks

@@ -2,37 +2,29 @@ using System;
 using System.Runtime.InteropServices;
 using System.Net.Sockets;
 
-namespace Libev
-{
-	public class Loop : IDisposable
-	{
+
+namespace Libev {
+
+	public class LibEvLoop: Manos.Loop {
 
 		private IntPtr _native;
-		private static readonly bool _isV4;
-		private static readonly bool _windows;
+        private static readonly bool _isV4;
 
-		static Loop ()
-		{
-			_isV4 = ev_version_major () >= 4;
-			_windows =
-                Environment.OSVersion.Platform == PlatformID.Win32NT ||
-                Environment.OSVersion.Platform == PlatformID.Win32S ||
-                Environment.OSVersion.Platform == PlatformID.Win32Windows ||
-                Environment.OSVersion.Platform == PlatformID.WinCE;
-		}
+        static LibEvLoop()
+        {
+            _isV4 = ev_version_major() >= 4;
+        }
 
-		public static bool IsV4 { get { return _isV4; } }
+        public static bool IsV4 { get { return _isV4; } }
 
-		public static bool IsWindows { get { return _windows; } }
-
-		internal Loop (IntPtr native)
+		internal LibEvLoop (IntPtr native)
 		{
 			if (native == IntPtr.Zero)
 				throw new InvalidOperationException ("Unable to create native libev loop object.");
 			_native = native;
 		}
-
-		~Loop ()
+		
+		~LibEvLoop ()
 		{
 			Dispose ();	
 		}
@@ -45,8 +37,8 @@ namespace Libev
 				return _native; 
 			}	
 		}
-
-		public void Dispose ()
+		
+		public override void Dispose () 
 		{
 			if (_native == IntPtr.Zero)
 				return;
@@ -98,13 +90,13 @@ namespace Libev
 			else 
 				ev_unloop (_native, type);	
 		}
-
-		public static Loop CreateDefaultLoop ()
+		
+		public static LibEvLoop CreateDefaultLoop ()
 		{
 			return CreateDefaultLoop (0);	
 		}
-
-		public static Loop CreateDefaultLoop (uint flags)
+		
+		public static LibEvLoop CreateDefaultLoop (uint flags)
 		{
 			IntPtr native;
 			int backends = ev_supported_backends ();
@@ -119,7 +111,7 @@ namespace Libev
 			if (native == IntPtr.Zero)
 				throw new Exception ("Unable to create default loop");
 			
-			return new Loop (native);
+			return new LibEvLoop (native);
 		}
 
 		private void ThrowIfDisposed ()

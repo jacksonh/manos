@@ -34,48 +34,53 @@ using System.Runtime.InteropServices;
 
 using Libev;
 using Libeio;
+using System.IO;
 
 
 namespace Manos.IO {
 
-    public abstract class IOLoop
-    {
-        private static IOLoop instance;
-
-        public static IOLoop Instance
+	public static class FileSystem {
+#if WINDOWS
+        public static void GetFileLength(string path, Action<long, int> cb)
         {
-            get
+            long l = 0;
+            int e = 0;
+            try
             {
-                if (instance == null)
-                    if (LibEvLoop.IsWindows)
-                        instance = new Managed.IOLoop();
-                    else
-                        instance = new Libev.IOLoop();
-                return instance;
+                l = new System.IO.FileInfo(path).Length;
             }
-            set
+            catch (FileNotFoundException)
             {
-                if (instance != null) throw new ArgumentException("Cannot set the instance once it''s been used");
-                instance = value;
+                e = 1;
             }
+            catch (IOException)
+            {
+                e = 2;
+            }
+            cb(l, e);
         }
 
-        public abstract Loop EventLoop
-        {
-            get;
-        }
+#else
+		public static void GetFileLength (string path, Action<long,int> cb)
+		{
+			GCHandle handle = GCHandle.Alloc (cb);
+			manos_file_get_length (path, LengthCallbackHandler, GCHandle.ToIntPtr (handle));
 
-        public abstract void Start();
+		}
 
-        public abstract void Stop();
+		public static void LengthCallbackHandler (IntPtr gchandle, IntPtr length, int error)
+		{
+			GCHandle handle = GCHandle.FromIntPtr (gchandle);
+			Action<long,int> cb = (Action<long,int>) handle.Target;
 
-        public abstract void AddTimeout(Timeout timeout);
+			handle.Free ();
 
-        public abstract IAsyncWatcher NewAsyncWatcher(AsyncWatcherCallback cb);
-
-        public abstract ISocketStream CreateSocketStream ();
-
-        public abstract ISocketStream CreateSecureSocket (string certFile, string keyFile);
-    }
+			cb (length.ToInt64 (), error);
+		}
+		
+		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
+		private static extern void manos_file_get_length (string path, Action<IntPtr,IntPtr,int> cb, IntPtr gchandle);
+#endif
+	}
 }
 
