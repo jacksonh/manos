@@ -39,7 +39,7 @@ AC_ARG_WITH([gnutls],
 	[],
 	[with_gnutls=check])
 
-AS_IF([test "x$with_gnutls" != xno],
+AS_IF([test "x$with_gnutls" = xyes],
 	[AC_CHECK_LIB([gnutls], [gnutls_global_init],
 		[AC_DEFINE([HAVE_LIBGNUTLS], [1], [Define if you have libgnutls])
 		 PKG_CHECK_MODULES([GNUTLS], [gnutls >= 2.8])
