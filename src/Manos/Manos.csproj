@@ -186,6 +186,7 @@
     <Compile Include="Manos.IO.Libev\PlainSocketStream.cs" />
     <Compile Include="Manos.Threading\Boundary.cs" />
     <Compile Include="Manos.Threading\BoundaryExtensions.cs" />
+    <Compile Include="Manos.Threading\IBoundary.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
