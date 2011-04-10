@@ -23,16 +23,8 @@ namespace Manos
 		/// </summary>
         public override void Run()
         {
-            try
-            {
-                callback(data);
-            }
-            catch (Exception e)
-            {
-                Console.Error.WriteLine("Exception in synchronous block.");
-                Console.Error.WriteLine(e);
-            }
-        }
+            callback(data);
+	    }
     }
 	
 	public class SynchronizedBlock<T> : SynchronizedBlock
@@ -55,12 +47,7 @@ namespace Manos
 		public override void Run ()
 		{
 			if (context.Response != null) {
-				try {
 					callback (context, data);
-				} catch (Exception e) {
-					Console.Error.WriteLine ("Exception in synchronous block.");
-					Console.Error.WriteLine (e);
-				}
 			}
 		}
 	}

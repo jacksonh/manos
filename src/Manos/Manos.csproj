@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -185,6 +185,7 @@
     <Compile Include="Manos.IO\CopyingSendFileOperation.cs" />
     <Compile Include="Manos.IO.Libev\SecureSocketStream.cs" />
     <Compile Include="Manos.IO.Libev\PlainSocketStream.cs" />
+    <Compile Include="Manos.Threading\Boundary.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -202,4 +203,7 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <Folder Include="Manos.Threading\" />
+  </ItemGroup>
 </Project>

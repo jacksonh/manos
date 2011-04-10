@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Text;
 using Mono.Unix.Native;
+using Manos.Threading;
 
 namespace Manos.Managed
 {
@@ -17,16 +18,11 @@ namespace Manos.Managed
                 try
                 {
                     fd.Close();
-                    AppHost.Synchronize<Action<int>>(cb => {
-                       cb(0);
-                    } ,callback);
+                    Boundary.Instance.ExecuteOnTargetLoop( () => callback( 0 ));
                 }
                 catch
                 {
-                    AppHost.Synchronize<Action<int>>(cb =>
-                    {
-                        cb(-1);
-                    }, callback);
+                    Boundary.Instance.ExecuteOnTargetLoop( () => callback( -1 ));
                 }
             });
         }
@@ -39,15 +35,9 @@ namespace Manos.Managed
                     try
                     {
                         int len = fd.EndRead(ar);
-                        AppHost.Synchronize<Object>(cb =>
-                        {
-                            callback(len, buffer, null);
-                        }, null);
+	                    Boundary.Instance.ExecuteOnTargetLoop( () => callback( len, buffer, null ));
                     } catch (Exception e){
-                        AppHost.Synchronize<Object>(cb =>
-                        {
-                            callback(0, buffer, e);
-                        }, null);
+	                    Boundary.Instance.ExecuteOnTargetLoop( () => callback( 0, buffer, null ));
                     }
                 }, null);
             }
@@ -80,17 +70,11 @@ namespace Manos.Managed
                     
 
                     var stream = new FileStream(path, fm, fa, fs);
-                    AppHost.Synchronize<Object>(cb =>
-                    {
-                        callback(stream, null);
-                    }, null);
+					Boundary.Instance.ExecuteOnTargetLoop (() => callback (stream, null));
                 }
                 catch(Exception e)
                 {
-                    AppHost.Synchronize<Object>(cb =>
-                    {
-                        callback(null, e);
-                    }, null);
+					Boundary.Instance.ExecuteOnTargetLoop (() => callback (null, e));
                 }
             });
         }
@@ -106,18 +90,11 @@ namespace Manos.Managed
                 {
                     FileInfo info = new FileInfo(fd.Name);
                     info.Refresh();
-
-                    AppHost.Synchronize<Object>(cb =>
-                    {
-                        callback(info, null);
-                    }, null);
+					Boundary.Instance.ExecuteOnTargetLoop (() => callback (info, null));
                 }
                 catch (Exception e)
                 {
-                    AppHost.Synchronize<Object>(cb =>
-                    {
-                        callback(null, e);
-                    }, null);
+					Boundary.Instance.ExecuteOnTargetLoop (() => callback (null, e));
                 }
             });
         }

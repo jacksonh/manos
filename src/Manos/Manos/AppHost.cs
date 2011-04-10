@@ -37,6 +37,7 @@ using Manos.Caching;
 using Manos.Logging;
 
 using Libev;
+using Manos.Threading;
 
 namespace Manos
 {
@@ -57,9 +58,8 @@ namespace Manos
 		private static IManosLogger log;
 		private static List<IManosPipe> pipes;
 
-		private static ConcurrentQueue<SynchronizedBlock> waitingSyncBlocks = new ConcurrentQueue<SynchronizedBlock> ();
-		private static IAsyncWatcher syncBlockWatcher;
-
+		private static Boundary boundary = Boundary.Instance;
+		
 		private static IOLoop ioloop = IOLoop.Instance;
 		
 		public static ManosApp App {
@@ -172,9 +172,6 @@ namespace Manos
 				
 				servers.Add (server);
 			}
-			
-			syncBlockWatcher = IOLoop.NewAsyncWatcher (HandleSynchronizationEvent);
-			syncBlockWatcher.Start ();
 
 			ioloop.Start ();
 		}
@@ -215,68 +212,7 @@ namespace Manos
 			t.Run (app);
 		}
 
-		public static void Synchronize<T> (Action<IManosContext, T> action,
-			IManosContext context, T arg)
-		{
-			if (action == null) {
-				throw new ArgumentNullException ("action");
-			}
-			if (context == null) {
-				throw new ArgumentNullException ("context");
-			}
-			
-			if (context.Transaction.ResponseReady && context.Transaction.Response == null) {
-				throw new InvalidOperationException ("Response stream has been closed");
-			}
-			
-			waitingSyncBlocks.Enqueue (new SynchronizedBlock<T> (action, context, arg));
-			syncBlockWatcher.Send ();
-		}
 
-        public static void Synchronize<T>(Action<T> action,
-            T arg)
-        {
-            if (action == null)
-            {
-                throw new ArgumentNullException("action");
-            }
-           
-
-            waitingSyncBlocks.Enqueue(new SimpleSynchronizedBlock<T>(action, arg));
-            syncBlockWatcher.Send();
-        }
-		
-		private static void HandleSynchronizationEvent (Loop loop, IAsyncWatcher watcher, EventTypes revents)
-		{
-			// we don't want to empty the whole queue here, as any number of threads can enqueue
-			// sync blocks at will while we try to empty it. only process a fixed number of blocks
-			// to not starve other events.
-			int pendingBlocks = waitingSyncBlocks.Count;
-			
-			while (pendingBlocks-- > 0) {
-				SynchronizedBlock oneBlock;
-				// perhaps we should bail here instead, as a result of 'false' would indicate that
-				// somebody is stealing our events.
-				if (waitingSyncBlocks.TryDequeue (out oneBlock)) {
-					oneBlock.Run ();
-				}
-			}
-		}
-	}
-	
-	public static class SynchronizedExtension
-	{
-		public static void Synchronize<T> (this IManosContext context,
-			Action<IManosContext, T> action, T arg)
-		{
-			AppHost.Synchronize (action, context, arg);
-		}
-		
-		public static void Synchronize (this IManosContext context,
-			Action<IManosContext, object> action, object arg)
-		{
-			AppHost.Synchronize (action, context, arg);
-		}
 	}
 }
 

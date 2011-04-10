@@ -29,6 +29,7 @@ using Manos.Http;
 using System;
 using System.IO;
 using System.Text;
+using Manos.Threading;
 
 
 namespace HelloWorld {
@@ -123,14 +124,16 @@ namespace HelloWorld {
 			try {
 				for (var count = 0; count < 60; count++) {
 					System.Threading.Thread.Sleep (1000);
-					ctx.Synchronize ((c, o) => {
+					
+					Boundary.Instance.ExecuteOnTargetLoop (() => {
 						var line = "Alive " + count + " seconds";
-						c.Response.WriteLine (line);
-					}, null);
+						ctx.Response.WriteLine (line);
+					} );
 				}
-				ctx.Synchronize ((c, o) => {
-					c.Response.End ();
-				}, null);
+
+				Boundary.Instance.ExecuteOnTargetLoop (() => {
+					ctx.Response.End();
+				} );
 			} catch (InvalidOperationException e) {
 				Console.WriteLine ("Sync block died:");
 				Console.WriteLine (e);
