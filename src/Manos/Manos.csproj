@@ -180,7 +180,6 @@
     <Compile Include="Manos\IManosRun.cs" />
     <Compile Include="Manos.IO.Libev\UdpReceiver.cs" />
     <Compile Include="Manos\ManosConfig.cs" />
-    <Compile Include="Manos\SynchronizedBlock.cs" />
     <Compile Include="Manos.IO\PosixSendFileOperation.cs" />
     <Compile Include="Manos.IO\CopyingSendFileOperation.cs" />
     <Compile Include="Manos.IO.Libev\SecureSocketStream.cs" />
