@@ -27,6 +27,7 @@ using Manos.IO;
 using Libev;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace Manos.Threading
 {
@@ -36,7 +37,7 @@ namespace Manos.Threading
         
         private readonly AsyncWatcher asyncWatcher;
 
-        private readonly Queue<Action> workQueue;
+        private readonly ConcurrentQueue<Action> workQueue;
 
         private int maxWorkPerLoop;
 
@@ -46,49 +47,39 @@ namespace Manos.Threading
             asyncWatcher = new AsyncWatcher ((LibEvLoop)loop.EventLoop, ( l, w, et ) => processWork());
             asyncWatcher.Start ();
 
-            workQueue = new Queue<Action> ();
+            workQueue = new ConcurrentQueue<Action> ();
             this.maxWorkPerLoop = maxWorkPerLoop;
         }
 
         public void ExecuteOnTargetLoop (Action action)
         {
-            int count;
+            workQueue.Enqueue (action);
 
-            lock (workQueue) {
-                workQueue.Enqueue (action);
-
-                count = workQueue.Count;
-            }
-
-            if (count < 2) asyncWatcher.Send ();
+            asyncWatcher.Send ();
         }
 
-        private readonly List<Action> scratch = new List<Action> ();
         private void processWork ()
         {
-            int remaining;
+            int remaining = maxWorkPerLoop;
+            while( remaining-- > 0 )
+			{
+				Action action;
+				if( workQueue.TryDequeue( out action ))
+				{
+	                try {
+	                    action();
+	                }
+	                catch (Exception ex) 
+					{
+						Console.WriteLine( "Error in processing synchronized action" );
+	                    Console.WriteLine (ex);
+	                }
+					
+				}
+				else break;
+			}
 
-            lock (workQueue) {
-                while ((remaining = workQueue.Count) > 0 &&
-                         scratch.Count < maxWorkPerLoop) {
-                    scratch.Add (workQueue.Dequeue ());
-                }
-            }
-
-            int count = scratch.Count;
-            for (int i = 0; i< count; i++)
-            {
-                try {
-                    scratch[i]();
-                }
-                catch (Exception ex) {
-                    Console.WriteLine (ex);
-                }
-            }
-
-            scratch.Clear ();
-
-            if (remaining > 0) asyncWatcher.Send ();
+            if (remaining == 0) asyncWatcher.Send ();
         }
     }
 }

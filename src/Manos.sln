@@ -5,8 +5,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manos", "Manos\Manos.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "manostool", "manostool\manostool.csproj", "{482384E3-EB97-4A8E-9ED9-EACC31350B5E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test", "test\test.csproj", "{EFA3BD6C-05D0-4AE5-BB51-6933C9D78845}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,18 +35,6 @@ Global
 		{482384E3-EB97-4A8E-9ED9-EACC31350B5E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{482384E3-EB97-4A8E-9ED9-EACC31350B5E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{482384E3-EB97-4A8E-9ED9-EACC31350B5E}.Release|Win32.ActiveCfg = Release|Any CPU
-		{EFA3BD6C-05D0-4AE5-BB51-6933C9D78845}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EFA3BD6C-05D0-4AE5-BB51-6933C9D78845}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EFA3BD6C-05D0-4AE5-BB51-6933C9D78845}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{EFA3BD6C-05D0-4AE5-BB51-6933C9D78845}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{EFA3BD6C-05D0-4AE5-BB51-6933C9D78845}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{EFA3BD6C-05D0-4AE5-BB51-6933C9D78845}.Debug|Win32.Build.0 = Debug|Any CPU
-		{EFA3BD6C-05D0-4AE5-BB51-6933C9D78845}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EFA3BD6C-05D0-4AE5-BB51-6933C9D78845}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EFA3BD6C-05D0-4AE5-BB51-6933C9D78845}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{EFA3BD6C-05D0-4AE5-BB51-6933C9D78845}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{EFA3BD6C-05D0-4AE5-BB51-6933C9D78845}.Release|Win32.ActiveCfg = Release|Any CPU
-		{EFA3BD6C-05D0-4AE5-BB51-6933C9D78845}.Release|Win32.Build.0 = Release|Any CPU
 		{9F5B878D-A04B-4F97-8722-1BCB698EF4E4}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{9F5B878D-A04B-4F97-8722-1BCB698EF4E4}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
 		{9F5B878D-A04B-4F97-8722-1BCB698EF4E4}.Debug|Mixed Platforms.Build.0 = Debug|Win32
