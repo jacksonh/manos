@@ -31,7 +31,7 @@ using System.Collections.Concurrent;
 
 namespace Manos.Threading
 {
-    public class Boundary
+    public class Boundary : IBoundary
     {
         public static readonly Boundary Instance = new Boundary (IOLoop.Instance);
         
@@ -61,17 +61,15 @@ namespace Manos.Threading
         private void processWork ()
         {
             int remaining = maxWorkPerLoop;
-            while( remaining-- > 0 )
-			{
+            while( remaining-- > 0 ) {
+				
 				Action action;
-				if( workQueue.TryDequeue( out action ))
-				{
+				if( workQueue.TryDequeue (out action)) {
 	                try {
 	                    action();
 	                }
-	                catch (Exception ex) 
-					{
-						Console.WriteLine( "Error in processing synchronized action" );
+	                catch (Exception ex) {
+						Console.WriteLine ("Error in processing synchronized action");
 	                    Console.WriteLine (ex);
 	                }
 					
@@ -79,7 +77,7 @@ namespace Manos.Threading
 				else break;
 			}
 
-            if (remaining == 0) asyncWatcher.Send ();
+            if (remaining < 0) asyncWatcher.Send ();
         }
     }
 }
