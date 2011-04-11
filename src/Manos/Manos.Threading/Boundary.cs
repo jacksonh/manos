@@ -44,7 +44,7 @@ namespace Manos.Threading
 		public Boundary( IOLoop loop ) : this( loop, 18 ) {}
 		public Boundary( IOLoop loop, int maxWorkPerLoop )
 		{
-			asyncWatcher = new AsyncWatcher ((LibEvLoop)loop.EventLoop, ( l, w, et ) => processWork());
+			asyncWatcher = new AsyncWatcher ((LibEvLoop)loop.EventLoop, ( l, w, et ) => ProcessWork());
 			asyncWatcher.Start ();
 			
 			workQueue = new ConcurrentQueue<Action> ();
