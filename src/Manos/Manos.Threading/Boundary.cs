@@ -31,54 +31,52 @@ using System.Collections.Concurrent;
 
 namespace Manos.Threading
 {
-    public class Boundary : IBoundary
-    {
-        public static readonly Boundary Instance = new Boundary (IOLoop.Instance);
+	public class Boundary : IBoundary
+	{
+		public static readonly Boundary Instance = new Boundary (IOLoop.Instance);
         
-        private readonly AsyncWatcher asyncWatcher;
+		private readonly AsyncWatcher asyncWatcher;
 
-        private readonly ConcurrentQueue<Action> workQueue;
+		private readonly ConcurrentQueue<Action> workQueue;
 
-        private int maxWorkPerLoop;
+		private int maxWorkPerLoop;
 
-        public Boundary( IOLoop loop ) : this( loop, 18 ) {}
-        public Boundary( IOLoop loop, int maxWorkPerLoop )
+		public Boundary( IOLoop loop ) : this( loop, 18 ) {}
+		public Boundary( IOLoop loop, int maxWorkPerLoop )
+		{
+			asyncWatcher = new AsyncWatcher ((LibEvLoop)loop.EventLoop, ( l, w, et ) => processWork());
+			asyncWatcher.Start ();
+			
+			workQueue = new ConcurrentQueue<Action> ();
+			this.maxWorkPerLoop = maxWorkPerLoop;
+		}
+
+		public void ExecuteOnTargetLoop (Action action)
+		{
+			workQueue.Enqueue (action);
+			
+			asyncWatcher.Send ();
+		}
+
+        private void ProcessWork ()
         {
-            asyncWatcher = new AsyncWatcher ((LibEvLoop)loop.EventLoop, ( l, w, et ) => processWork());
-            asyncWatcher.Start ();
-
-            workQueue = new ConcurrentQueue<Action> ();
-            this.maxWorkPerLoop = maxWorkPerLoop;
-        }
-
-        public void ExecuteOnTargetLoop (Action action)
-        {
-            workQueue.Enqueue (action);
-
-            asyncWatcher.Send ();
-        }
-
-        private void processWork ()
-        {
-            int remaining = maxWorkPerLoop;
-            while( remaining-- > 0 ) {
-				
+			int remaining = maxWorkPerLoop + 1;
+			while( --remaining > 0 ) {
 				Action action;
 				if( workQueue.TryDequeue (out action)) {
-	                try {
-	                    action();
-	                }
-	                catch (Exception ex) {
+					try {
+						action();
+					}
+					catch (Exception ex) {
 						Console.WriteLine ("Error in processing synchronized action");
-	                    Console.WriteLine (ex);
-	                }
-					
+						Console.WriteLine (ex);
+					}
 				}
 				else break;
 			}
 
-            if (remaining < 0) asyncWatcher.Send ();
-        }
-    }
+			if (remaining < 0) asyncWatcher.Send ();
+		}
+	}
 }
 
