@@ -179,7 +179,7 @@ manos_tls_accept (manos_tls_socket_t server, manos_tls_socket_t *client, manos_s
 	}
 
 	client_socket = malloc (sizeof (*client_socket));
-	if (client == NULL) {
+	if (client_socket == NULL) {
 		close (info->fd);
 		return ENOMEM;
 	}
