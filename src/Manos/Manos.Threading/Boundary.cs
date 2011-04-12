@@ -75,7 +75,7 @@ namespace Manos.Threading
 				else break;
 			}
 
-			if (remaining < 0) asyncWatcher.Send ();
+			if (remaining == 0) asyncWatcher.Send ();
 		}
 	}
 }
