@@ -99,7 +99,6 @@
     <Compile Include="Manos.Http\IHttpTransaction.cs" />
     <Compile Include="Manos.Http\UploadedFile.cs" />
     <Compile Include="Manos.Routing\RouteHandler.cs" />
-    <Compile Include="Manos.IO\ByteUtils.cs" />
     <Compile Include="Manos.IO\ConnectionAcceptedEventArgs.cs" />
     <Compile Include="Manos.IO\IOLoop.cs" />
     <Compile Include="Manos.IO.Libev\IOStream.cs" />
