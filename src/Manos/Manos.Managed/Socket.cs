@@ -221,7 +221,7 @@ namespace Manos.Managed
 
         public void Write(byte[] data, int offset, int count, IO.WriteCallback callback)
         {
-            var write_bytes = new SendBytesOperation(new ByteBuffer[] {new ByteBuffer(data, offset, count)}, callback);
+            var write_bytes = new SendBytesOperation(new ByteBuffer(data, offset, count), callback);
             QueueWriteOperation(write_bytes);
         }
 
@@ -252,7 +252,7 @@ namespace Manos.Managed
             {
                 sending = true;
             }
-            socket.BeginSend(buffer.buffer.Bytes, buffer.buffer.Position, buffer.buffer.Length, SocketFlags.None, out er, (ar) =>
+            socket.BeginSend(buffer.Bytes, buffer.Position, buffer.Length, SocketFlags.None, out er, (ar) =>
             {
                 StartTimeout();
                 socket.EndSend(ar, out er);

@@ -33,14 +33,12 @@ namespace Manos.IO
 {
     public class SendBytesOperation : IWriteOperation
     {
-
-        private ByteBuffer[] buffers;
-        private int bufferOffset;
+        private ByteBuffer buffer;
         private WriteCallback callback;
 
-        public SendBytesOperation(ByteBuffer[] buffers, WriteCallback callback)
+        public SendBytesOperation(ByteBuffer buffer, WriteCallback callback)
         {
-            this.buffers = buffers;
+            this.buffer = buffer;
             this.callback = callback;
         }
 
@@ -63,55 +61,33 @@ namespace Manos.IO
 
         public void HandleWrite(IIOStream stream)
         {
-            while (this.buffers.Length > bufferOffset)
+            while (!IsComplete)
             {
                 int len = -1;
                 int error;
-                len = sstream.Send(buffers[bufferOffset], out error);
+                len = sstream.Send(buffer, out error);
 
                 if (len > 0)
                 {
-                    AdjustSegments(len);
+					if (buffer.Length == len) {
+						IsComplete = true;
+						if (callback != null) {
+							callback ();
+						}
+					} else {
+						buffer.Position += len;
+						buffer.Length -= len;
+					}
                 }
                 else
                 {
                     return;
                 }
             }
-
-            FireCallbacks();
-            IsComplete = (buffers.Length == bufferOffset);
-        }
-
-        void AdjustSegments(int len)
-        {
-            if (len > 0)
-            {
-                int seg_len = buffers[bufferOffset].Length;
-                if (seg_len == len)
-                {
-                    buffers[bufferOffset] = null;
-                    bufferOffset++;
-                }
-                else
-                {
-                    var buf = buffers[bufferOffset];
-                    buf.Position += len;
-                    buf.Length -= len;
-                }
-            }
         }
 
         public void EndWrite(IIOStream stream)
         {
-        }
-
-        private void FireCallbacks()
-        {
-            if (buffers.Length == bufferOffset && callback != null)
-            {
-                callback();
-            }
         }
     }
 }

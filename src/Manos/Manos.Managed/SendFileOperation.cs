@@ -38,9 +38,7 @@ namespace Manos.Managed
 				}
 				if (len > 0) {
 					position += len;
-					currentPrefixBlock = new SendBytesOperation (new[] {
-						new ByteBuffer (transferBuffer, 0, len)
-					}, null);
+					currentPrefixBlock = new SendBytesOperation (new ByteBuffer (transferBuffer, 0, len), null);
 					currentPrefixBlock.BeginWrite (stream);
 				} else {
 					OnComplete (len, err);
@@ -118,9 +116,7 @@ namespace Manos.Managed
                     Length = stat.Length;
                     var chunkHeader = string.Format("{0:x}\r\n", Length);
                     var headerBytes = Encoding.ASCII.GetBytes(chunkHeader);
-                    currentPrefixBlock = new SendBytesOperation(new[] {
-						new ByteBuffer (headerBytes, 0, headerBytes.Length)
-					}, null);
+                    currentPrefixBlock = new SendBytesOperation(new ByteBuffer (headerBytes, 0, headerBytes.Length), null);
                     stream.EnableWriting();
                     currentPrefixBlock.BeginWrite(stream);
                 }

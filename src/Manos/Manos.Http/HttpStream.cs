@@ -176,16 +176,14 @@ namespace Manos.Http
 			var bytes = new List<ByteBuffer> ();
 
 			if (chunked)
-				WriteChunk (bytes, count, false);
+				SendChunk (count, false);
 
 			length += (count - offset);
 			
-			bytes.Add (new ByteBuffer (buffer, offset, count));
+			QueueWriteOperation (new SendBytesOperation (new ByteBuffer (buffer, offset, count), null));
+			
 			if (chunked)
-				WriteChunk (bytes, -1, false);
-
-			var write_bytes = new SendBytesOperation (bytes.ToArray (), null);
-			QueueWriteOperation (write_bytes);
+				SendChunk (-1, false);
 		}
 
 		public void End ()
@@ -219,12 +217,7 @@ namespace Manos.Http
 
 			final_chunk_sent = true;
 
-			var bytes = new List<ByteBuffer> ();
-
-			WriteChunk (bytes, 0, true);
-
-			var write_bytes = new SendBytesOperation (bytes.ToArray (), callback);
-			QueueWriteOperation (write_bytes);
+			SendChunk (0, true);
 		}
 
 		public void SendBufferedOps (WriteCallback callback)
@@ -261,9 +254,7 @@ namespace Manos.Http
 
 			metadata_written = true;
 
-			var bytes = new List<ByteBuffer> ();
-			bytes.Add (new ByteBuffer (data, 0, data.Length));
-			var write_bytes = new SendBytesOperation (bytes.ToArray (), callback);
+			var write_bytes = new SendBytesOperation (new ByteBuffer (data, 0, data.Length), callback);
 
 			SocketStream.QueueWriteOperation (write_bytes);
 		}
@@ -291,18 +282,13 @@ namespace Manos.Http
 
 		private void SendChunk (int l, bool last)
 		{
-			var bytes = new List<ByteBuffer> ();
-
-			WriteChunk (bytes, l, last);
-
-			var write_bytes = new SendBytesOperation (bytes.ToArray (), null);
-			QueueWriteOperation (write_bytes);
+			QueueWriteOperation (WriteChunk (l, last));
 		}
 
-		private void WriteChunk (List<ByteBuffer> bytes, int l, bool last)
+		private IWriteOperation WriteChunk (int l, bool last)
 		{
 			if (l == 0 && !last)
-				return;
+				return new NopWriteOperation (null);
 
 			
 			int i = 0;
@@ -323,7 +309,7 @@ namespace Manos.Http
 
 			length += i;
 			
-			bytes.Add (new ByteBuffer (chunk_buffer, 0, i));
+			return new SendBytesOperation (new ByteBuffer (chunk_buffer, 0, i), null);
 		}
 
 		private void LengthCallback (long length, int error)

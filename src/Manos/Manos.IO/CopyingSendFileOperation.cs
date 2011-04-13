@@ -22,9 +22,7 @@ namespace Manos.IO
 				}
 				if (len > 0) {
 					position += len;
-					currentPrefixBlock = new SendBytesOperation (new[] {
-						new ByteBuffer (transferBuffer, 0, len)
-					}, null);
+					currentPrefixBlock = new SendBytesOperation (new ByteBuffer (transferBuffer, 0, len), null);
 					currentPrefixBlock.BeginWrite (stream);
 				} else {
 					OnComplete (len, err);
