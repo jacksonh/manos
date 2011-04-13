@@ -232,8 +232,7 @@ namespace Manos.Managed
         {
             lock (write_ops)
             {
-                if (write_ops.Count < 1 || !write_ops.Last().Combine(op))
-                    write_ops.Enqueue(op);
+				write_ops.Enqueue(op);
 
                 if (current_write_op == null)
                 {

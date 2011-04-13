@@ -54,11 +54,6 @@ namespace Manos.IO
             private set;
         }
 
-        public bool Combine(IWriteOperation other)
-        {
-            return false;
-        }
-
         ISocketStream sstream;
 
         public void BeginWrite(IIOStream stream)

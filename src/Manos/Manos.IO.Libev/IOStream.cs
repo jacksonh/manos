@@ -130,10 +130,7 @@ namespace Manos.IO.Libev
 
             UpdateExpires();
 
-            // We try to combine the op in case they are both byte buffers
-            // that could be sent as a single scatter/gather operation
-            if (write_ops.Count < 1 || !write_ops.Last().Combine(op))
-                write_ops.Enqueue(op);
+			write_ops.Enqueue(op);
 
             if (current_write_op == null)
             {

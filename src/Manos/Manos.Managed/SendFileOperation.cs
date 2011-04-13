@@ -74,11 +74,6 @@ namespace Manos.Managed
         {
         }
 
-        public bool Combine(IWriteOperation other)
-        {
-            return false;
-        }
-
         public void EndWrite(IIOStream stream)
         {
             Libeio.close(fd, err =>
