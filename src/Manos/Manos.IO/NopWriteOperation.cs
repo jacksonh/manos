@@ -48,11 +48,6 @@ namespace Manos.IO {
 			get { return true; }
 		}
 
-		public bool Combine (IWriteOperation other)
-		{
-			return false;
-		}
-
         public void BeginWrite (IIOStream stream)
 		{
 		}
