@@ -36,7 +36,7 @@ using Manos.Collections;
 
 namespace Manos.Http
 {
-	public class HttpStream : Stream, IDisposable
+	public class HttpStream : System.IO.Stream, IDisposable
 	{
 		private long length;
 		private bool chunk_encode = true;

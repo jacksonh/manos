@@ -35,7 +35,7 @@ using Manos.IO;
 
 namespace Manos.Http
 {
-	public class HttpStreamWriterWrapper : Stream
+	public class HttpStreamWriterWrapper : System.IO.Stream
 	{
 		private HttpStream stream;
 
