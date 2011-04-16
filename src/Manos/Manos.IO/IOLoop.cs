@@ -47,9 +47,10 @@ namespace Manos.IO {
             get
             {
                 if (instance == null)
-                    if (LibEvLoop.IsWindows)
-                        instance = new Managed.IOLoop();
-                    else
+#warning disabled windows code
+//                    if (LibEvLoop.IsWindows)
+//                        instance = new Managed.IOLoop();
+//                    else
                         instance = new Libev.IOLoop();
                 return instance;
             }

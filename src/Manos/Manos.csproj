@@ -50,11 +50,6 @@
     <Compile Include="Manos.IO.Libev\IOLoop.cs" />
     <Compile Include="Manos.IO\IOStream.cs" />
     <Compile Include="Manos.IO\SendFileOperation.cs" />
-    <Compile Include="Manos.Managed\AsyncWatcher.cs" />
-    <Compile Include="Manos.Managed\IOLoop.cs" />
-    <Compile Include="Manos.Managed\Libeio.cs" />
-    <Compile Include="Manos.Managed\SendFileOperation.cs" />
-    <Compile Include="Manos.Managed\Socket.cs" />
     <Compile Include="Manos\Loop.cs" />
     <Compile Include="Manos\BaseWatcher.cs" />
     <Compile Include="Manos\DeleteAttribute.cs" />
@@ -192,6 +187,11 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="Manos.Templates.Testing\ManosTemplateStub.cs" />
+    <None Include="Manos.Managed\AsyncWatcher.cs" />
+    <None Include="Manos.Managed\IOLoop.cs" />
+    <None Include="Manos.Managed\Libeio.cs" />
+    <None Include="Manos.Managed\SendFileOperation.cs" />
+    <None Include="Manos.Managed\Socket.cs" />
   </ItemGroup>
   <Target Name="ListSources">
     <Message Text="@(Compile)" Importance="High" />
