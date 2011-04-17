@@ -97,6 +97,10 @@ namespace Manos.IO.Libev
 
 		public override void Write (IEnumerable<ByteBuffer> data)
 		{
+			if (data == null) {
+				throw new ArgumentNullException ("data");
+			}
+			
 			writeQueue.Enqueue (data);
 			
 			ResumeWriting ();

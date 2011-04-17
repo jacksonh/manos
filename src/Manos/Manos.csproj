@@ -190,6 +190,8 @@
     <Compile Include="Manos.IO.Libev\SecureSocket.cs" />
     <Compile Include="Manos.IO\ISendfileCapable.cs" />
     <Compile Include="Manos.IO.Libev\SendFileOperation.cs" />
+    <Compile Include="Manos.IO.Libev\Libeio.cs" />
+    <Compile Include="Manos.IO.Libev\FileStream.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

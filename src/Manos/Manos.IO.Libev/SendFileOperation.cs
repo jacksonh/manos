@@ -35,13 +35,13 @@ namespace Manos.IO.Libev
 		void OpenFile ()
 		{
 			target.PauseWriting ();
-			Libeio.Libeio.open (file, OpenFlags.O_RDONLY, FilePermissions.ALLPERMS, (fd, err) => {
+			Libeio.open (file, OpenFlags.O_RDONLY, FilePermissions.ALLPERMS, (fd, err) => {
 				this.sourceFd = fd;
 				if (fd == -1) {
 					completed = true;
 					Console.Error.WriteLine ("Error sending file '{0}' errno: '{1}'", file, err);
 				} else {
-					Libeio.Libeio.fstat (fd, (r, stat, error) => {
+					Libeio.fstat (fd, (r, stat, error) => {
 						if (r == -1) {
 							completed = true;
 						} else {
@@ -55,14 +55,14 @@ namespace Manos.IO.Libev
 
 		void CloseFile ()
 		{
-			Libeio.Libeio.close (sourceFd, err => { });
+			Libeio.close (sourceFd, err => { });
 			sourceFd = 0;
 		}
 
 		void SendNextBlock ()
 		{
 			target.PauseWriting ();
-			Libeio.Libeio.sendfile (target.Handle.ToInt32 (), sourceFd, position, length - position, (len, err) => {
+			Libeio.sendfile (target.Handle.ToInt32 (), sourceFd, position, length - position, (len, err) => {
 				if (len >= 0) {
 					position += len;
 				} else {
