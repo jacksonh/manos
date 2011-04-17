@@ -89,7 +89,7 @@ namespace Manos {
 				throw new ArgumentNullException ("methods");
 
 			module.StartInternal ();
-			module.Routes.MatchOps = StringOpsForPatterns (patterns);
+			module.Routes.MatchOps = SimpleOpsForPatterns (patterns);
 			module.Routes.Methods = methods;
 			Routes.Children.Add (module.Routes);
 			return module.Routes;
@@ -135,7 +135,7 @@ namespace Manos {
 			if (methods == null)
 				throw new ArgumentNullException ("methods");
 			
-			RouteHandler res = new RouteHandler (StringOpsForPatterns (patterns), methods, target);
+			RouteHandler res = new RouteHandler (SimpleOpsForPatterns (patterns), methods, target);
 			Routes.Children.Add (res);
 			return res;
 		}
