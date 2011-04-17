@@ -8,12 +8,13 @@ namespace Manos.IO.Libev
 	{
 		Stream source, target;
 		ByteBuffer currentBuffer;
-		bool active;
+		bool active, ownsSource;
 
-		public StreamCopySequencer (Stream source, Stream target)
+		public StreamCopySequencer (Stream source, Stream target, bool ownsSource)
 		{
 			this.source = source;
 			this.target = target;
+			this.ownsSource = ownsSource;
 		}
 
 		IEnumerable<ByteBuffer> CopySequencer ()
@@ -27,6 +28,12 @@ namespace Manos.IO.Libev
 				source.ResumeReading ();
 				yield return buffer;
 			}
+			if (ownsSource) {
+				source.Close ();
+			}
+			source = null;
+			target = null;
+			currentBuffer = null;
 		}
 
 		void OnSourceData (ByteBuffer buffer)
