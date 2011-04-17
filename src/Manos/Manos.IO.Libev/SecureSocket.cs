@@ -20,6 +20,7 @@ namespace Manos.IO.Libev
 			public SecureSocketStream (SecureSocket parent, IntPtr handle, IntPtr tlsContext)
 				: base (parent.Loop, handle)
 			{
+				this.parent = parent;
 				this.tlsContext = tlsContext;
 			}
 
@@ -120,6 +121,7 @@ namespace Manos.IO.Libev
 		{
 			stream = new SecureSocketStream (this, new IntPtr (info.fd), tlsContext);
 			this.tlsContext = tlsContext;
+			this.state = Socket.SocketState.Open;
 		}
 
 		public override Stream GetSocketStream ()
@@ -149,6 +151,8 @@ namespace Manos.IO.Libev
 					throw new Exception (String.Format ("Address {0}::{1} is already in use.", host, port));
 				throw new Exception (String.Format ("An error occurred while trying to liste to {0}:{1} errno: {2}", host, port, error));
 			}
+			
+			state = Socket.SocketState.Listening;
 			
 			stream = new SecureSocketStream (this, new IntPtr (fd), tlsContext);
 			stream.ResumeReading ();

@@ -22,6 +22,7 @@ namespace Manos.IO.Libev
 			public PlainSocketStream (PlainSocket parent, IntPtr handle)
 				: base (parent.Loop, handle)
 			{
+				this.parent = parent;
 			}
 
 			public void SendFile (string file)
@@ -155,6 +156,7 @@ namespace Manos.IO.Libev
 			: base (loop, info)
 		{
 			stream = new PlainSocketStream (this, new IntPtr (info.fd));
+			this.state = Socket.SocketState.Open;
 		}
 
 		public override Stream GetSocketStream ()
@@ -203,6 +205,8 @@ namespace Manos.IO.Libev
 					throw new Exception (String.Format ("Address {0}::{1} is already in use.", host, port));
 				throw new Exception (String.Format ("An error occurred while trying to liste to {0}:{1} errno: {2}", host, port, error));
 			}
+			
+			state = Socket.SocketState.Listening;
 			
 			stream = new PlainSocketStream (this, new IntPtr (fd));
 			stream.ResumeReading ();
