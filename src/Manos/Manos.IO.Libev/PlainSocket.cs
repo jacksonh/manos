@@ -2,6 +2,7 @@ using System;
 using Manos.Collections;
 using System.Runtime.InteropServices;
 using Libev;
+using System.Collections.Generic;
 
 namespace Manos.IO.Libev
 {
@@ -10,15 +11,54 @@ namespace Manos.IO.Libev
 		Action<Socket> acceptCallback;
 		PlainSocketStream stream;
 		
-		class PlainSocketStream : EventedStream
+		class PlainSocketStream : EventedStream, ISendfileCapable
 		{
 			PlainSocket parent;
 			byte [] receiveBuffer = new byte[4096];
 			SocketInfo [] socketInfos;
+			SendFileOperation currentSendFile;
+			Queue<string> sendFileQueue;
 
 			public PlainSocketStream (PlainSocket parent, IntPtr handle)
 				: base (parent.Loop, handle)
 			{
+			}
+
+			public void SendFile (string file)
+			{
+				if (sendFileQueue == null) {
+					sendFileQueue = new Queue<string> ();
+				}
+				sendFileQueue.Enqueue (file);
+				writeQueue.Enqueue (null);
+			}
+
+			protected override bool EnsureActiveBuffer ()
+			{
+				return base.EnsureActiveBuffer () || currentSendFile != null;
+			}
+
+			protected override bool EnsureActiveWriter ()
+			{
+				if (currentWriter == null && writeQueue.Count > 0 && writeQueue.Peek () == null) {
+					writeQueue.Dequeue ();
+					currentSendFile = new SendFileOperation (this, sendFileQueue.Dequeue ());
+					return false;
+				} else {
+					return true;
+				}
+			}
+
+			protected override void HandleWrite ()
+			{
+				if (currentSendFile != null) {
+					if (currentSendFile.Run ()) {
+						currentSendFile.Dispose ();
+						currentSendFile = null;
+					}
+				} else {
+					base.HandleWrite ();
+				}
 			}
 
 			public override void Close ()

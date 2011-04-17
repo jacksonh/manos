@@ -188,6 +188,8 @@
     <Compile Include="Manos.IO.Libev\SocketInfo.cs" />
     <Compile Include="Manos.IO.Libev\EventedSocket.cs" />
     <Compile Include="Manos.IO.Libev\SecureSocket.cs" />
+    <Compile Include="Manos.IO\ISendfileCapable.cs" />
+    <Compile Include="Manos.IO.Libev\SendFileOperation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
