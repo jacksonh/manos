@@ -32,6 +32,7 @@ namespace Manos.IO.Libev
 				}
 				sendFileQueue.Enqueue (file);
 				writeQueue.Enqueue (null);
+				ResumeWriting ();
 			}
 
 			protected override bool EnsureActiveBuffer ()
@@ -49,8 +50,8 @@ namespace Manos.IO.Libev
 					return base.EnsureActiveWriter ();
 				}
 			}
-
-			protected override void HandleWrite ()
+			
+			protected override void SendCurrentBuffer()
 			{
 				if (currentSendFile != null) {
 					if (currentSendFile.Run ()) {
@@ -58,7 +59,7 @@ namespace Manos.IO.Libev
 						currentSendFile = null;
 					}
 				} else {
-					base.HandleWrite ();
+					base.SendCurrentBuffer ();
 				}
 			}
 

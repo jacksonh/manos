@@ -86,6 +86,8 @@ namespace Manos.IO.Libev
 		public override void Write (IEnumerable<ByteBuffer> data)
 		{
 			writeQueue.Enqueue (data);
+			
+			ResumeWriting ();
 		}
 
 		public override void Close ()
