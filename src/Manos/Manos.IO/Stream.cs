@@ -69,6 +69,14 @@ namespace Manos.IO
 			Dispose (false);
 		}
 
+		public abstract void ResumeReading ();
+
+		public abstract void ResumeWriting ();
+
+		public abstract void PauseReading ();
+
+		public abstract void PauseWriting ();
+
 		public virtual void Close ()
 		{
 			onData = null;

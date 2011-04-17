@@ -165,7 +165,7 @@ namespace Manos.IO.Libev
 			}
 			
 			stream = new PlainSocketStream (this, new IntPtr (fd));
-			stream.EnableReading ();
+			stream.ResumeReading ();
 		}
 
 		public override void Close ()

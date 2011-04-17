@@ -50,35 +50,35 @@ namespace Manos.IO.Libev
 			private set;
 		}
 
-		public void EnableReading ()
+		public override void ResumeReading ()
 		{
 			readWatcher.Start ();
 		}
 
-		public void EnableWriting ()
+		public override void ResumeWriting ()
 		{
 			writeWatcher.Start ();
 		}
 
-		public void DisableReading ()
+		public override void PauseReading ()
 		{
 			readWatcher.Stop ();
 		}
 
-		public void DisableWriting ()
+		public override void PauseWriting ()
 		{
 			writeWatcher.Stop ();
 		}
 
 		protected override void CancelReader ()
 		{
-			DisableReading ();
+			PauseReading ();
 			base.CancelReader ();
 		}
 
 		public override IDisposable Read (Action<ByteBuffer> onData, Action<Exception> onError, Action onClose)
 		{
-			EnableReading ();
+			ResumeReading ();
 			
 			return base.Read (onData, onError, onClose);
 		}
@@ -90,8 +90,8 @@ namespace Manos.IO.Libev
 
 		public override void Close ()
 		{
-			DisableReading ();
-			DisableWriting ();
+			PauseReading ();
+			PauseWriting ();
 
 			readWatcher.Dispose ();
 			writeWatcher.Dispose ();
@@ -118,7 +118,7 @@ namespace Manos.IO.Libev
 		{
 			var sendBuffer = GetActiveBuffer ();
 			if (sendBuffer == null) {
-				DisableWriting ();
+				PauseWriting ();
 			} else {
 				var sent = WriteSingleBuffer (sendBuffer);
 				if (sent > 0) {
@@ -128,7 +128,7 @@ namespace Manos.IO.Libev
 						sendBuffer = null;
 					}
 				} else {
-					DisableWriting ();
+					PauseWriting ();
 				}
 			}
 		}
