@@ -184,6 +184,7 @@
     <Compile Include="Manos.IO\Stream.cs" />
     <Compile Include="Manos.IO.Libev\EventedStream.cs" />
     <Compile Include="Manos.IO\Socket.cs" />
+    <Compile Include="Manos.IO.Libev\SocketInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
