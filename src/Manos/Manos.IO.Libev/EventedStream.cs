@@ -10,9 +10,9 @@ namespace Manos.IO.Libev
 		// readiness watchers
 		IOWatcher readWatcher, writeWatcher;
 		// write queue handling
-		ByteBuffer currentBuffer;
-		IEnumerator<ByteBuffer> currentWriter;
-		Queue<IEnumerable<ByteBuffer>> writeQueue;
+		protected ByteBuffer currentBuffer;
+		protected IEnumerator<ByteBuffer> currentWriter;
+		protected Queue<IEnumerable<ByteBuffer>> writeQueue;
 
 		protected EventedStream (IOLoop loop, IntPtr handle)
 		{
@@ -116,45 +116,47 @@ namespace Manos.IO.Libev
 
 		protected virtual void HandleWrite ()
 		{
-			var sendBuffer = GetActiveBuffer ();
-			if (sendBuffer == null) {
+			if (!EnsureActiveBuffer ()) {
 				PauseWriting ();
 			} else {
-				var sent = WriteSingleBuffer (sendBuffer);
-				if (sent > 0) {
-					sendBuffer.Position += sent;
-					sendBuffer.Length -= sent;
-					if (sendBuffer.Length == 0) {
-						sendBuffer = null;
-					}
-				} else {
-					PauseWriting ();
-				}
+				SendCurrentBuffer ();
 			}
 		}
 
-		ByteBuffer GetActiveBuffer ()
+		protected virtual void SendCurrentBuffer ()
 		{
-			if (currentBuffer == null) {
-				var writer = GetActiveWriter ();
-				if (writer.MoveNext ()) {
-					currentBuffer = writer.Current;
-				} else {
-					writer.Dispose ();
-					writer = null;
+			var sent = WriteSingleBuffer (currentBuffer);
+			if (sent > 0) {
+				currentBuffer.Position += sent;
+				currentBuffer.Length -= sent;
+				if (currentBuffer.Length == 0) {
+					currentBuffer = null;
 				}
+			} else {
+				PauseWriting ();
 			}
-			return currentBuffer;
 		}
 
-		IEnumerator<ByteBuffer> GetActiveWriter ()
+		protected virtual bool EnsureActiveBuffer ()
 		{
-			if (currentWriter == null) {
-				if (writeQueue.Count > 0) {
-					currentWriter = writeQueue.Dequeue ().GetEnumerator ();
+			if (currentBuffer == null && EnsureActiveWriter ()) {
+				if (currentWriter.MoveNext ()) {
+					currentBuffer = currentWriter.Current;
+				} else {
+					currentWriter.Dispose ();
+					currentWriter = null;
+					return EnsureActiveBuffer ();
 				}
 			}
-			return currentWriter;
+			return currentBuffer != null;
+		}
+
+		protected virtual bool EnsureActiveWriter ()
+		{
+			if (currentWriter == null && writeQueue.Count > 0) {
+				currentWriter = writeQueue.Dequeue ().GetEnumerator ();
+			}
+			return currentWriter != null;
 		}
 	}
 }
