@@ -46,7 +46,7 @@ namespace Manos.IO.Libev
 					currentSendFile = new SendFileOperation (this, sendFileQueue.Dequeue ());
 					return false;
 				} else {
-					return true;
+					return base.EnsureActiveWriter ();
 				}
 			}
 
