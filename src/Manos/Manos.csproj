@@ -187,6 +187,7 @@
     <Compile Include="Manos.IO.Libev\PlainSocket.cs" />
     <Compile Include="Manos.IO.Libev\SocketInfo.cs" />
     <Compile Include="Manos.IO.Libev\EventedSocket.cs" />
+    <Compile Include="Manos.IO.Libev\SecureSocket.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
