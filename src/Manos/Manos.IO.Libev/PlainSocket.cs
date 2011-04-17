@@ -50,8 +50,8 @@ namespace Manos.IO.Libev
 					return base.EnsureActiveWriter ();
 				}
 			}
-			
-			protected override void SendCurrentBuffer()
+
+			protected override void SendCurrentBuffer ()
 			{
 				if (currentSendFile != null) {
 					if (currentSendFile.Run ()) {
@@ -121,7 +121,8 @@ namespace Manos.IO.Libev
 			void HandleData ()
 			{
 				int err;
-				var received = manos_socket_receive (Handle.ToInt32 (), receiveBuffer, receiveBuffer.Length, out err);
+				int limit = (int) Math.Min (receiveBuffer.Length, readLimit ?? long.MaxValue);
+				var received = manos_socket_receive (Handle.ToInt32 (), receiveBuffer, limit, out err);
 				if (received == 0) {
 					Close ();
 				} else {

@@ -71,6 +71,8 @@ namespace Manos.IO
 
 		public abstract void ResumeReading ();
 
+		public abstract void ResumeReading (long forBytes);
+
 		public abstract void ResumeWriting ();
 
 		public abstract void PauseReading ();

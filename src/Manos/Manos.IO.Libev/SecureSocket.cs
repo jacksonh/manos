@@ -78,7 +78,8 @@ namespace Manos.IO.Libev
 			void HandleData ()
 			{
 				int err;
-				var received = manos_tls_receive (tlsContext, receiveBuffer, receiveBuffer.Length, out err);
+				int limit = (int) Math.Min (receiveBuffer.Length, readLimit ?? long.MaxValue);
+				var received = manos_tls_receive (tlsContext, receiveBuffer, limit, out err);
 				if (received == 0) {
 					Close ();
 				} else {

@@ -9,6 +9,8 @@ namespace Manos.IO.Libev
 	{
 		// readiness watchers
 		IOWatcher readWatcher, writeWatcher;
+		// read limits
+		protected long? readLimit;
 		// write queue handling
 		protected ByteBuffer currentBuffer;
 		protected IEnumerator<ByteBuffer> currentWriter;
@@ -52,7 +54,17 @@ namespace Manos.IO.Libev
 
 		public override void ResumeReading ()
 		{
+			readLimit = null;
 			readWatcher.Start ();
+		}
+
+		public override void ResumeReading (long forBytes)
+		{
+			if (forBytes < 0) {
+				throw new ArgumentException ("forBytes");
+			}
+			ResumeReading ();
+			readLimit = forBytes;
 		}
 
 		public override void ResumeWriting ()
@@ -110,6 +122,15 @@ namespace Manos.IO.Libev
 			Handle = IntPtr.Zero;
 		
 			base.Close ();
+		}
+
+		protected override void RaiseData (ByteBuffer data)
+		{
+			readLimit -= data.Length;
+			if (readLimit <= 0) {
+				PauseReading ();
+			}
+			base.RaiseData (data);
 		}
 
 		protected abstract void HandleRead ();
