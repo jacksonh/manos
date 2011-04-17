@@ -124,6 +124,7 @@ namespace Manos.IO.Libev
 				int limit = (int) Math.Min (receiveBuffer.Length, readLimit ?? long.MaxValue);
 				var received = manos_socket_receive (Handle.ToInt32 (), receiveBuffer, limit, out err);
 				if (received == 0) {
+					RaiseClose ();
 					Close ();
 				} else {
 					RaiseData (new ByteBuffer (receiveBuffer, 0, received));
