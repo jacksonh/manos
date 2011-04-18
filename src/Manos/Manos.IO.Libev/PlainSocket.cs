@@ -31,7 +31,7 @@ namespace Manos.IO.Libev
 			public override void Close ()
 			{
 				if (parent == null) {
-					throw new ObjectDisposedException (GetType ().FullName);
+					return;
 				}
 				
 				RaiseClose ();
@@ -183,8 +183,10 @@ namespace Manos.IO.Libev
 
 		public override void Close ()
 		{
-			if (stream != null)
+			if (stream != null) {
 				stream.Close ();
+				stream = null;
+			}
 			base.Close ();
 		}
 
