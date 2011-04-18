@@ -20,8 +20,7 @@ namespace Manos.IO.Libev
 		{
 			active = true;
 			source.Read (OnSourceData, OnSourceError, OnSourceClose);
-			target.PauseWriting ();
-			yield return new ByteBuffer (new byte[0], 0, 0);
+			yield return new ByteBuffer(new byte[0], 0, 0);
 			while (active) {
 				var buffer = currentBuffer;
 				target.PauseWriting ();
@@ -40,11 +39,13 @@ namespace Manos.IO.Libev
 		void OnSourceClose ()
 		{
 			active = false;
+			target.ResumeWriting ();
 		}
 
 		void OnSourceError (Exception error)
 		{
 			active = false;
+			target.ResumeWriting ();
 		}
 
 		public IEnumerator<ByteBuffer> GetEnumerator ()

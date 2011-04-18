@@ -156,11 +156,11 @@ namespace Manos.IO.Libev
 			if (sent > 0) {
 				currentBuffer.Position += sent;
 				currentBuffer.Length -= sent;
-				if (currentBuffer.Length == 0) {
-					currentBuffer = null;
-				}
 			} else {
 				PauseWriting ();
+			}
+			if (currentBuffer.Length == 0) {
+				currentBuffer = null;
 			}
 		}
 
