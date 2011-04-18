@@ -34,6 +34,8 @@ namespace Manos.IO.Libev
 					throw new ObjectDisposedException (GetType ().FullName);
 				}
 				
+				RaiseClose ();
+				
 				int error;
 				int res = manos_socket_close (Handle.ToInt32 (), out error);
 
@@ -45,8 +47,6 @@ namespace Manos.IO.Libev
 				receiveBuffer = null;
 				socketInfos = null;
 				parent = null;
-				
-				RaiseClose ();
 				
 				base.Close ();
 			}

@@ -30,6 +30,8 @@ namespace Manos.IO.Libev
 					throw new ObjectDisposedException (GetType ().FullName);
 				}
 				
+				RaiseClose ();
+				
 				int res = manos_tls_close (tlsContext);
 
 				if (res < 0) {
@@ -39,8 +41,6 @@ namespace Manos.IO.Libev
 				
 				receiveBuffer = null;
 				parent = null;
-				
-				RaiseClose ();
 				
 				base.Close ();
 			}
