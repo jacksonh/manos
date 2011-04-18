@@ -33,7 +33,6 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 using Libev;
-using Libeio;
 
 
 namespace Manos.IO {
