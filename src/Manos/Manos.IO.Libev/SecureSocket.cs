@@ -40,6 +40,8 @@ namespace Manos.IO.Libev
 				receiveBuffer = null;
 				parent = null;
 				
+				RaiseClose ();
+				
 				base.Close ();
 			}
 

@@ -46,6 +46,8 @@ namespace Manos.IO.Libev
 				socketInfos = null;
 				parent = null;
 				
+				RaiseClose ();
+				
 				base.Close ();
 			}
 
