@@ -21,6 +21,7 @@ namespace Manos.IO
 		{
 			active = true;
 			source.Read (OnSourceData, OnSourceError, OnSourceClose);
+			target.PauseWriting ();
 			yield return new ByteBuffer(new byte[0], 0, 0);
 			while (active) {
 				var buffer = currentBuffer;
