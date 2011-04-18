@@ -1,9 +1,11 @@
 using System;
 using Mono.Unix.Native;
+using System.Collections.Generic;
+using Manos.Collections;
 
 namespace Manos.IO.Libev
 {
-	class SendFileOperation : IDisposable
+	class SendFileOperation : IDisposable, IEnumerable<ByteBuffer>
 	{
 		int sourceFd;
 		EventedStream target;
@@ -34,7 +36,6 @@ namespace Manos.IO.Libev
 
 		void OpenFile ()
 		{
-			target.PauseWriting ();
 			Libeio.open (file, OpenFlags.O_RDONLY, FilePermissions.ALLPERMS, (fd, err) => {
 				this.sourceFd = fd;
 				if (fd == -1) {
@@ -61,7 +62,6 @@ namespace Manos.IO.Libev
 
 		void SendNextBlock ()
 		{
-			target.PauseWriting ();
 			Libeio.sendfile (target.Handle.ToInt32 (), sourceFd, position, length - position, (len, err) => {
 				if (len >= 0) {
 					position += len;
@@ -75,18 +75,30 @@ namespace Manos.IO.Libev
 			});
 		}
 
-		public bool Run ()
+		ByteBuffer emptyBuffer = new ByteBuffer (new byte[0], 0, 0);
+
+		IEnumerable<ByteBuffer> Run ()
 		{
-			if (!completed) {
+			while (!completed) {
+				target.PauseWriting ();
 				if (sourceFd == 0) {
 					OpenFile ();
 				} else {
 					SendNextBlock ();
 				}
-			} else {
-				CloseFile ();
+				yield return emptyBuffer;
 			}
-			return completed;
+			CloseFile ();
+		}
+
+		public IEnumerator<ByteBuffer> GetEnumerator ()
+		{
+			return Run ().GetEnumerator ();
+		}
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator ()
+		{
+			return GetEnumerator ();
 		}
 	}
 }

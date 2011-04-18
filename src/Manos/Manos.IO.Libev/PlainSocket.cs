@@ -16,8 +16,6 @@ namespace Manos.IO.Libev
 			PlainSocket parent;
 			byte [] receiveBuffer = new byte[4096];
 			SocketInfo [] socketInfos;
-			SendFileOperation currentSendFile;
-			Queue<string> sendFileQueue;
 
 			public PlainSocketStream (PlainSocket parent, IntPtr handle)
 				: base (parent.Loop, handle)
@@ -27,38 +25,7 @@ namespace Manos.IO.Libev
 
 			public void SendFile (string file)
 			{
-				if (sendFileQueue == null) {
-					sendFileQueue = new Queue<string> ();
-				}
-				sendFileQueue.Enqueue (file);
-				writeQueue.Enqueue (null);
-				ResumeWriting ();
-			}
-
-			protected override bool EnsureActiveBuffer ()
-			{
-				if (currentSendFile != null) {
-					return true;
-				} else if (currentBuffer == null && currentWriter == null
-					&& writeQueue.Count > 0 && writeQueue.Peek () == null) {
-					writeQueue.Dequeue ();
-					currentSendFile = new SendFileOperation (this, sendFileQueue.Dequeue ());
-					return true;
-				} else {
-					return base.EnsureActiveBuffer ();
-				}
-			}
-
-			protected override void SendCurrentBuffer ()
-			{
-				if (currentSendFile != null) {
-					if (currentSendFile.Run ()) {
-						currentSendFile.Dispose ();
-						currentSendFile = null;
-					}
-				} else {
-					base.SendCurrentBuffer ();
-				}
+				Write (new SendFileOperation (this, file));
 			}
 
 			public override void Close ()
