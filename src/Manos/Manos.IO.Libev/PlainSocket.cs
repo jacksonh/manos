@@ -37,17 +37,15 @@ namespace Manos.IO.Libev
 
 			protected override bool EnsureActiveBuffer ()
 			{
-				return base.EnsureActiveBuffer () || currentSendFile != null;
-			}
-
-			protected override bool EnsureActiveWriter ()
-			{
-				if (currentWriter == null && writeQueue.Count > 0 && writeQueue.Peek () == null) {
+				if (currentSendFile != null) {
+					return true;
+				} else if (currentBuffer == null && currentWriter == null
+					&& writeQueue.Count > 0 && writeQueue.Peek () == null) {
 					writeQueue.Dequeue ();
 					currentSendFile = new SendFileOperation (this, sendFileQueue.Dequeue ());
-					return false;
+					return true;
 				} else {
-					return base.EnsureActiveWriter ();
+					return base.EnsureActiveBuffer ();
 				}
 			}
 

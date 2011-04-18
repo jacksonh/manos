@@ -165,22 +165,23 @@ namespace Manos.IO.Libev
 			}
 			return currentWriter != null;
 		}
-
-		public static void OpenRead (string fileName, Action<Stream> onOpen, Action<Exception> onError)
+		
+		public static long GetLength (string fileName)
 		{
-			Open (fileName, OpenFlags.O_RDONLY, FilePermissions.ACCESSPERMS, onOpen, onError);
+			Stat stat;
+			Mono.Unix.Native.Syscall.stat (fileName, out stat);
+			return stat.st_size;
 		}
 
-		static void Open (string fileName, OpenFlags openFlags, FilePermissions perms,
-			Action<Stream> onOpen, Action<Exception> onError)
+		public static FileStream OpenRead (string fileName)
 		{
-			if (onOpen == null) 
-				throw new ArgumentNullException ("onOpen");
-			if (onError == null)
-				throw new ArgumentNullException ("onError");
-			
+			return Open (fileName, OpenFlags.O_RDONLY, FilePermissions.ACCESSPERMS);
+		}
+
+		static FileStream Open (string fileName, OpenFlags openFlags, FilePermissions perms)
+		{
 			var fd = Mono.Unix.Native.Syscall.open (fileName, openFlags, perms);
-			onOpen (new FileStream (new IntPtr (fd)));
+			return new FileStream (new IntPtr (fd));
 			
 //			Libeio.open (fileName, openFlags, perms, (fd, err) => {
 //				if (fd == -1) {

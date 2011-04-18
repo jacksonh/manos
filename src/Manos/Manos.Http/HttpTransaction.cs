@@ -29,7 +29,6 @@ using System;
 using System.IO;
 using System.Text;
 using System.Net;
-using System.Net.Sockets;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -41,9 +40,9 @@ namespace Manos.Http {
 
 	public class HttpTransaction : IHttpTransaction, IDisposable {
 
-		public static HttpTransaction BeginTransaction (HttpServer server, ISocketStream stream, HttpConnectionCallback cb, bool closeOnEnd = false)
+		public static HttpTransaction BeginTransaction (HttpServer server, Socket socket, HttpConnectionCallback cb, bool closeOnEnd = false)
 		{
-			HttpTransaction transaction = new HttpTransaction (server, stream, cb, closeOnEnd);
+			HttpTransaction transaction = new HttpTransaction (server, socket, cb, closeOnEnd);
 
 			return transaction;
 		}
@@ -53,28 +52,24 @@ namespace Manos.Http {
 		
 		private GCHandle gc_handle;
 		
-		public HttpTransaction (HttpServer server, ISocketStream stream, HttpConnectionCallback callback, bool closeOnEnd = false)
+		public HttpTransaction (HttpServer server, Socket socket, HttpConnectionCallback callback, bool closeOnEnd = false)
 		{
 			Server = server;
-			Stream = stream;
+			Socket = socket;
 			this.closeOnEnd = closeOnEnd;
 			
 			ConnectionCallback = callback;
 
 			gc_handle = GCHandle.Alloc (this);
 
-			Stream.Closed += delegate (object sender, EventArgs args) {
-				Close ();
-			};
-
-			Request = new HttpRequest (this, stream);
-			Request.Read ();
+			Request = new HttpRequest (this, socket);
+			Request.Read (Close);
 		}
 
 		public void Dispose ()
 		{
-			if (Stream != null) 
-				Stream.Close ();
+			if (Socket != null) 
+				Socket.Close ();
 			
 			// Technically the IOStream should call our Close method, but lets be sure
 			if (gc_handle.IsAllocated)
@@ -86,7 +81,7 @@ namespace Manos.Http {
 			private set;
 		}
 
-		public ISocketStream Stream {
+		public Socket Socket {
 			get;
 			private set;
 		}
@@ -137,7 +132,7 @@ namespace Manos.Http {
 			if (Response != null)
 				Response.Dispose ();
 
-			Stream = null;
+			Socket = null;
 			Request = null;
 			Response = null;
 		}
@@ -150,7 +145,7 @@ namespace Manos.Http {
 		public void OnRequestReady ()
 		{
 			try {
-				Response = new HttpResponse (Request, Stream);
+				Response = new HttpResponse (Request, Socket);
 				ResponseReady = true;
 				if( closeOnEnd ) Response.OnEnd += () => Response.Complete( OnResponseFinished );
 				Server.RunTransaction (this);
@@ -179,10 +174,10 @@ namespace Manos.Http {
 					Response.Dispose ();
 					Response = null;
 				}
-			      	Stream.Close ();
+			      	Socket.Close ();
 				return;
 			} else
-				Request.Read ();
+				Request.Read (Close);
 		}
 
 	}

@@ -93,7 +93,7 @@ namespace Manos.Http {
 			}
 		}
 
-		public ISocketStream Socket {
+		public Socket Socket {
 			get;
 			protected set;
 		}
@@ -386,17 +386,20 @@ namespace Manos.Http {
 
 			parser = new HttpParser ();
 		}
-
+		
 		public void Read ()
 		{
-			Reset ();
-			Socket.ReadBytes (OnBytesRead);
+			Read (() => {});
 		}
 
-		private void OnBytesRead (IIOStream stream, byte [] data, int offset, int count)
+		public void Read (Action onClose)
 		{
-			ByteBuffer bytes = new ByteBuffer (data, offset, count);
+			Reset ();
+			Socket.GetSocketStream ().Read (OnBytesRead, (obj) => {}, onClose);
+		}
 
+		private void OnBytesRead (ByteBuffer bytes)
+		{
 			try {
 				parser.Execute (parser_settings, bytes);
 			} catch (Exception e) {
@@ -504,10 +507,17 @@ namespace Manos.Http {
 			if (OnEnd != null)
 				OnEnd ();
 		}
+		
+		IAsyncWatcher endWatcher;
 
 		public void Complete (WriteCallback callback)
 		{
-			Stream.End (callback);
+			endWatcher = IOLoop.Instance.NewAsyncWatcher(delegate {
+				callback ();
+				endWatcher.Dispose ();
+			});
+			endWatcher.Start ();
+			Stream.End (endWatcher.Send);
 		}
 
 		public void WriteLine (string str)

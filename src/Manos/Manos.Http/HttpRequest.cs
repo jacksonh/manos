@@ -69,7 +69,7 @@ namespace Manos.Http {
 			RemotePort = port;
 		}
 
-		public HttpRequest (IHttpTransaction transaction, ISocketStream stream)
+		public HttpRequest (IHttpTransaction transaction, Socket stream)
 		{
 			Transaction = transaction;
 			Socket = stream;
@@ -189,12 +189,9 @@ namespace Manos.Http {
 
 		public void Execute ()
 		{
-            var reqSocket = AppHost.IOLoop.CreateSocketStream ();
-			reqSocket.Connect (RemoteAddress, RemotePort);
-            Socket = reqSocket;
-
-			reqSocket.Connected += delegate {
-				Stream = new HttpStream (this, Socket);
+            Socket = AppHost.IOLoop.CreateSocketStream ();
+			Socket.Connect (RemoteAddress, RemotePort, delegate {
+				Stream = new HttpStream (this, Socket.GetSocketStream ());
 				Stream.Chunked = false;
 				Stream.AddHeaders = false;
 
@@ -208,14 +205,16 @@ namespace Manos.Http {
 				Stream.End (() => {
 					HttpResponse response = new HttpResponse (this, Socket);
 
-					response.OnCompleted += () => {
-						if (OnResponse != null)
-							OnResponse (response);
-					};
+//					response.OnCompleted += () => {
+//						if (OnResponse != null)
+//							OnResponse (response);
+//					};
 					
-					response.Read ();
+					response.Read (() => {
+						if (OnResponse != null) OnResponse (response);
+					});
 				});
-			};
+			});
 		}
 
 		public override void WriteMetadata (StringBuilder builder)

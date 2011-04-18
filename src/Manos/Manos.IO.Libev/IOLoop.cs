@@ -70,14 +70,14 @@ namespace Manos.IO.Libev
             return new AsyncWatcher (evloop, cb);
         }
 
-        public override IO.ISocketStream CreateSocketStream()
+        public override Socket CreateSocketStream()
         {
-            return new PlainSocketStream (this);
+            return new PlainSocket (this);
         }
 
-        public override ISocketStream CreateSecureSocket(string certFile, string keyFile)
+        public override Socket CreateSecureSocket(string certFile, string keyFile)
         {
-            return new SecureSocketStream (certFile, keyFile, this);
+            return new SecureSocket (this, certFile, keyFile);
         }
     }
 }
