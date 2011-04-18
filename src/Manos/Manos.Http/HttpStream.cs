@@ -127,7 +127,7 @@ namespace Manos.Http
 			QueueFile (file_name);
 		}
 
-		IEnumerable<ByteBuffer> SendCallback (WriteCallback callback)
+		IEnumerable<ByteBuffer> SendCallback (Action callback)
 		{
 			callback ();
 			yield break;
@@ -177,7 +177,7 @@ namespace Manos.Http
 			End (null);
 		}
 
-		public void End (WriteCallback callback)
+		public void End (Action callback)
 		{
 			if (chunk_encode) {
 				SendFinalChunk (callback);
@@ -194,7 +194,7 @@ namespace Manos.Http
 			SendBufferedOps ();
 		}
 
-		public void SendFinalChunk (WriteCallback callback)
+		public void SendFinalChunk (Action callback)
 		{
 			EnsureMetadata ();
 
@@ -217,8 +217,8 @@ namespace Manos.Http
 					} else if (op is string) {
 						SendFileImpl ((string) op);
 						return;
-					} else if (op is WriteCallback) {
-						SocketStream.Write (SendCallback ((WriteCallback) op));
+					} else if (op is Action) {
+						SocketStream.Write (SendCallback ((Action) op));
 					} else {
 						throw new InvalidOperationException ();
 					}

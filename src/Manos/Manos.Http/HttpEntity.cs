@@ -510,7 +510,7 @@ namespace Manos.Http {
 		
 		IAsyncWatcher endWatcher;
 
-		public void Complete (WriteCallback callback)
+		public void Complete (Action callback)
 		{
 			endWatcher = IOLoop.Instance.NewAsyncWatcher(delegate {
 				callback ();
