@@ -180,7 +180,7 @@
     <Compile Include="Manos.IO.Libev\SendFileOperation.cs" />
     <Compile Include="Manos.IO.Libev\Libeio.cs" />
     <Compile Include="Manos.IO.Libev\FileStream.cs" />
-    <Compile Include="Manos.IO.Libev\StreamCopySequencer.cs" />
+    <Compile Include="Manos.IO\StreamCopySequencer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -205,5 +205,6 @@
   </ProjectExtensions>
   <ItemGroup>
     <Folder Include="Manos.Threading\" />
+    <Folder Include="Manos.IO.Libev\" />
   </ItemGroup>
 </Project>

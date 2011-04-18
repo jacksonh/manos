@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Manos.Collections;
 
-namespace Manos.IO.Libev
+namespace Manos.IO
 {
 	class StreamCopySequencer : IEnumerable<ByteBuffer>
 	{
