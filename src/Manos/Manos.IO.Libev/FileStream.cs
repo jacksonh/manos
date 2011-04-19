@@ -7,7 +7,7 @@ namespace Manos.IO.Libev
 {
 	public class FileStream : Stream
 	{
-		byte [] readBuffer = new byte[4096];
+		byte [] readBuffer;
 		bool readEnabled, writeEnabled;
 		long readLimit;
 		long position;
@@ -15,9 +15,10 @@ namespace Manos.IO.Libev
 		IEnumerator<ByteBuffer> currentWriter;
 		Queue<IEnumerable<ByteBuffer>> writeQueue;
 
-		internal FileStream (IntPtr handle)
+		FileStream (IntPtr handle, int blockSize)
 		{
 			this.Handle = handle;
+			this.readBuffer = new byte [blockSize];
 			
 			this.writeQueue = new Queue<IEnumerable<ByteBuffer>> ();
 		}
@@ -173,23 +174,15 @@ namespace Manos.IO.Libev
 			return stat.st_size;
 		}
 
-		public static FileStream OpenRead (string fileName)
+		public static FileStream OpenRead (string fileName, int blockSize)
 		{
-			return Open (fileName, OpenFlags.O_RDONLY, FilePermissions.ACCESSPERMS);
+			return Open (fileName, blockSize, OpenFlags.O_RDONLY, FilePermissions.ACCESSPERMS);
 		}
 
-		static FileStream Open (string fileName, OpenFlags openFlags, FilePermissions perms)
+		static FileStream Open (string fileName, int blockSize, OpenFlags openFlags, FilePermissions perms)
 		{
 			var fd = Mono.Unix.Native.Syscall.open (fileName, openFlags, perms);
-			return new FileStream (new IntPtr (fd));
-			
-//			Libeio.open (fileName, openFlags, perms, (fd, err) => {
-//				if (fd == -1) {
-//					onError (new Exception (string.Format ("Error opening file '{0}' errno: '{1}'", fileName, err)));
-//				} else {
-//					onOpen (new FileStream (new IntPtr (fd)));
-//				}
-//			});
+			return new FileStream (new IntPtr (fd), blockSize);
 		}
 	}
 }

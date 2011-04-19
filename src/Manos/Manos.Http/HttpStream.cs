@@ -139,7 +139,7 @@ namespace Manos.Http
 				((ISendfileCapable) SocketStream).SendFile (fileName);
 			} else {
 				SocketStream.PauseWriting ();
-				var fs = Manos.IO.Libev.FileStream.OpenRead (fileName);
+				var fs = Manos.IO.Libev.FileStream.OpenRead (fileName, 64 * 1024);
 				SocketStream.Write (new StreamCopySequencer (fs, SocketStream, true));
 			}
 			SocketStream.Write (SendCallback (SendBufferedOps));
