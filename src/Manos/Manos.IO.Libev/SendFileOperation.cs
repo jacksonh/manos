@@ -22,7 +22,7 @@ namespace Manos.IO.Libev
 		~SendFileOperation ()
 		{
 			if (sourceFd > 0) {
-				Dispose ();
+				CloseFile ();
 			}
 		}
 
@@ -88,7 +88,7 @@ namespace Manos.IO.Libev
 				}
 				yield return emptyBuffer;
 			}
-			CloseFile ();
+			Dispose ();
 		}
 
 		public IEnumerator<ByteBuffer> GetEnumerator ()
