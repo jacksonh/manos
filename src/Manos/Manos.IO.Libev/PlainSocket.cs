@@ -145,6 +145,9 @@ namespace Manos.IO.Libev
 
 		public override void Connect (string host, int port, Action callback)
 		{
+			if (state != Socket.SocketState.Invalid)
+				throw new InvalidOperationException ("Socket already in use");
+			
 			int error;
 			var fd = manos_socket_connect (host, port, out error);
 
@@ -171,6 +174,9 @@ namespace Manos.IO.Libev
 		{
 			if (callback == null)
 				throw new ArgumentNullException ("callback");
+			
+			if (state != Socket.SocketState.Invalid)
+				throw new InvalidOperationException ("Socket already in use");
 			
 			this.acceptCallback = callback;
 			

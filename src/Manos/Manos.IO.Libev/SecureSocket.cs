@@ -147,6 +147,9 @@ namespace Manos.IO.Libev
 			if (callback == null)
 				throw new ArgumentNullException ("callback");
 			
+			if (state != Socket.SocketState.Invalid)
+				throw new InvalidOperationException ("Socket already in use");
+			
 			this.acceptCallback = callback;
 			
 			int error;
@@ -186,12 +189,6 @@ namespace Manos.IO.Libev
 
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
 		private static extern int manos_tls_redo_handshake (IntPtr tls);
-/*
-        public override ISendFileOperation MakeSendFile (string file)
-		{
-			return new CopyingSendFileOperation (file, null);
-		}
- */
 	}
 }
 
