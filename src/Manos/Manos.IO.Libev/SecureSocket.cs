@@ -82,7 +82,7 @@ namespace Manos.IO.Libev
 				int err;
 				int limit = (int) Math.Min (receiveBuffer.Length, readLimit ?? long.MaxValue);
 				var received = manos_tls_receive (tlsContext, receiveBuffer, limit, out err);
-				if (received <= 0 && err != 0) {
+				if (received < 0 && err != 0 || received == 0) {
 					if (received < 0) {
 						RaiseError (new Exception ());
 					}
