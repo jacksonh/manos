@@ -11,7 +11,17 @@ namespace Manos.IO.Libev
 		Action<Socket> acceptCallback;
 		PlainSocketStream stream;
 		
-		class PlainSocketStream : EventedStream, ISendfileCapable
+#if !DISABLE_POSIX
+		partial class PlainSocketStream : ISendfileCapable
+		{
+			public void SendFile (string file)
+			{
+				Write (new SendFileOperation (this, file));
+			}
+		}
+#endif
+		
+		partial class PlainSocketStream : EventedStream
 		{
 			PlainSocket parent;
 			byte [] receiveBuffer = new byte[4096];
@@ -21,11 +31,6 @@ namespace Manos.IO.Libev
 				: base (parent.Loop, handle)
 			{
 				this.parent = parent;
-			}
-
-			public void SendFile (string file)
-			{
-				Write (new SendFileOperation (this, file));
 			}
 
 			public override void Close ()
@@ -198,17 +203,6 @@ namespace Manos.IO.Libev
 
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
 		private static extern int manos_socket_listen (string host, int port, int backlog, out int err);
-/*
-
-        public override ISendFileOperation MakeSendFile (string file)
-		{
-#if DISABLE_POSIX
-			return new PosixSendFileOperation (file, null);
-#else
-			return new CopyingSendFileOperation (file, null);
-#endif
-		}
- */
 	}
 }
 
