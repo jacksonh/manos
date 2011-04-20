@@ -79,6 +79,8 @@ namespace Manos.IO
 
 		public abstract void PauseWriting ();
 
+		public abstract void Flush ();
+
 		public virtual void Close ()
 		{
 			onData = null;

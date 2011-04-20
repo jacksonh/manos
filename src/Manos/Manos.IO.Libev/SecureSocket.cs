@@ -44,6 +44,10 @@ namespace Manos.IO.Libev
 				
 				base.Close ();
 			}
+			
+			public override void Flush()
+			{
+			}
 
 			protected override void HandleRead ()
 			{

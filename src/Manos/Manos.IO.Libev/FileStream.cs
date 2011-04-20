@@ -43,6 +43,10 @@ namespace Manos.IO.Libev
 			}
 			base.Close ();
 		}
+		
+		public override void Flush()
+		{
+		}
 
 		void OnCloseDone (int result)
 		{
