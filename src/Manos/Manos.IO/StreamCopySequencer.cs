@@ -20,7 +20,7 @@ namespace Manos.IO
 		IEnumerable<ByteBuffer> CopySequencer ()
 		{
 			active = true;
-			source.Read (OnSourceData, OnSourceError, OnSourceClose);
+			var reader = source.Read (OnSourceData, OnSourceError, OnSourceClose);
 			target.PauseWriting ();
 			yield return new ByteBuffer(new byte[0], 0, 0);
 			while (active) {
@@ -29,6 +29,7 @@ namespace Manos.IO
 				source.ResumeReading ();
 				yield return buffer;
 			}
+			reader.Dispose ();
 			if (ownsSource) {
 				source.Close ();
 			}

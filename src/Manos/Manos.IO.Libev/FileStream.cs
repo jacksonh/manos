@@ -30,15 +30,17 @@ namespace Manos.IO.Libev
 
 		public override void Close ()
 		{
-			Libeio.close (Handle.ToInt32 (), OnCloseDone);
-			Handle = IntPtr.Zero;
-			if (currentWriter != null) {
-				currentWriter.Dispose ();
-				currentWriter = null;
+			if (Handle != IntPtr.Zero) {
+				Libeio.close (Handle.ToInt32 (), OnCloseDone);
+				Handle = IntPtr.Zero;
+				if (currentWriter != null) {
+					currentWriter.Dispose ();
+					currentWriter = null;
+				}
+				writeQueue.Clear ();
+				writeQueue = null;
+				readBuffer = null;
 			}
-			writeQueue.Clear ();
-			writeQueue = null;
-			readBuffer = null;
 			base.Close ();
 		}
 
@@ -166,7 +168,7 @@ namespace Manos.IO.Libev
 			}
 			return currentWriter != null;
 		}
-		
+
 		public static long GetLength (string fileName)
 		{
 			Stat stat;
