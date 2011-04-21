@@ -228,6 +228,14 @@ manos_timer_watcher_create (ev_tstamp after, ev_tstamp repeat, manos_watcher_cb 
 }
 
 void
+manos_timer_watcher_set (void *watcher, ev_tstamp after, ev_tstamp repeat)
+{
+	manos_timer_watcher_t timer = watcher;
+
+	ev_timer_set (timer->watcher, after, repeat);
+}
+
+void
 manos_timer_watcher_destroy (void *watcher)
 {
 	free (watcher);

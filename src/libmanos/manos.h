@@ -37,6 +37,7 @@ void* manos_prepare_watcher_create (manos_watcher_cb callback, const void *data)
 void manos_prepare_watcher_destroy (void *watcher);
 
 void* manos_timer_watcher_create (ev_tstamp after, ev_tstamp repeat, manos_watcher_cb callback, const void *data);
+void manos_timer_watcher_set (void *watcher, ev_tstamp after, ev_tstamp repeat);
 void manos_timer_watcher_destroy (void *watcher);
 
 
