@@ -26,11 +26,25 @@ namespace Manos.IO.Libev
 			PlainSocket parent;
 			byte [] receiveBuffer = new byte[4096];
 			SocketInfo [] socketInfos;
+			long position;
 
 			public PlainSocketStream (PlainSocket parent, IntPtr handle)
 				: base (parent.Loop, handle)
 			{
 				this.parent = parent;
+			}
+
+			public override long Position {
+				get { return position; }
+				set { SeekTo (value); }
+			}
+
+			public override bool CanRead {
+				get { return true; }
+			}
+
+			public override bool CanWrite {
+				get { return true; }
 			}
 
 			public override void Close ()
@@ -55,7 +69,7 @@ namespace Manos.IO.Libev
 				
 				base.Close ();
 			}
-			
+
 			public override void Flush ()
 			{
 			}
@@ -112,7 +126,9 @@ namespace Manos.IO.Libev
 			protected override int WriteSingleBuffer (ByteBuffer buffer)
 			{
 				int err;
-				return manos_socket_send (Handle.ToInt32 (), buffer.Bytes, buffer.Position, buffer.Length, out err);
+				int sent = manos_socket_send (Handle.ToInt32 (), buffer.Bytes, buffer.Position, buffer.Length, out err);
+				position += sent;
+				return sent;
 			}
 
 			[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]

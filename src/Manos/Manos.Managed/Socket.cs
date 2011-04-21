@@ -35,12 +35,82 @@ namespace Manos.Managed
 		{
 			Socket parent;
 			bool readAllowed, writeAllowed;
-			long readLimit;
+			long readLimit, position;
 			byte [] receiveBuffer = new byte [4096];
+			System.Timers.Timer readTimer, writeTimer;
 
 			public SocketStream (Socket parent)
 			{
 				this.parent = parent;
+			}
+
+			public override long Position {
+				get { return position; }
+				set { SeekTo (value); }
+			}
+
+			public override bool CanRead {
+				get { return true; }
+			}
+
+			public override bool CanWrite {
+				get { return true; }
+			}
+
+			public override bool CanTimeout {
+				get { return true; }
+			}
+
+			public override TimeSpan ReadTimeout {
+				get { return readTimer == null ? TimeSpan.Zero : TimeSpan.FromMilliseconds (readTimer.Interval); }
+				set {
+					if (value < TimeSpan.Zero)
+						throw new ArgumentException ("value");
+					if (readTimer == null) {
+						readTimer = new System.Timers.Timer (value.TotalMilliseconds);
+						readTimer.Elapsed += HandleReadTimerElapsed;
+					}
+					if (value == TimeSpan.Zero) {
+						readTimer.Stop ();
+					} else {
+						readTimer.Interval = value.TotalMilliseconds;
+						readTimer.Start ();
+					}
+				}
+			}
+
+			public override TimeSpan WriteTimeout {
+				get { return writeTimer == null ? TimeSpan.Zero : TimeSpan.FromMilliseconds (writeTimer.Interval); }
+				set {
+					if (value < TimeSpan.Zero)
+						throw new ArgumentException ("value");
+					if (writeTimer == null) {
+						writeTimer = new System.Timers.Timer (value.TotalMilliseconds);
+						writeTimer.Elapsed += HandleWriteTimerElapsed;
+					}
+					if (value == TimeSpan.Zero) {
+						writeTimer.Stop ();
+					} else {
+						writeTimer.Interval = value.TotalMilliseconds;
+						writeTimer.Start ();
+					}
+				}
+			}
+
+			void HandleReadTimerElapsed (object sender, System.Timers.ElapsedEventArgs e)
+			{
+				if (readAllowed) {
+					RaiseError (new TimeoutException ());
+					PauseReading ();
+				}
+			}
+
+			void HandleWriteTimerElapsed (object sender, System.Timers.ElapsedEventArgs e)
+			{
+				if (writeAllowed) {
+					RaiseError (new TimeoutException ());
+					PauseWriting ();
+				}
 			}
 
 			public override void Write (IEnumerable<ByteBuffer> data)
@@ -99,6 +169,10 @@ namespace Manos.Managed
 			{
 				SocketError err;
 				parent.socket.BeginSend (buffer.Bytes, buffer.Position, buffer.Length, SocketFlags.None, out err, ar => {
+					if (writeTimer != null) {
+						writeTimer.Stop ();
+						writeTimer.Start ();
+					}
 					parent.socket.EndSend (ar);
 					if (err != SocketError.Success) {
 						parent.loop.NonBlockInvoke (delegate {
@@ -124,6 +198,11 @@ namespace Manos.Managed
 
 			void ReadCallback (IAsyncResult ar)
 			{
+				if (readTimer != null) {
+					readTimer.Stop ();
+					readTimer.Start ();
+				}
+				
 				SocketError error;
 				int len = parent.socket.EndReceive (ar, out error);
 				
@@ -141,6 +220,12 @@ namespace Manos.Managed
 				}
 			}
 
+			protected override void RaiseData (ByteBuffer data)
+			{
+				position += data.Length;
+				base.RaiseData (data);
+			}
+
 			public override void Close ()
 			{
 				if (parent == null) {
@@ -152,6 +237,16 @@ namespace Manos.Managed
 						parent.socket.EndDisconnect (ar);
 						RaiseClose ();
 						parent = null;
+						
+						if (readTimer != null) {
+							readTimer.Dispose ();
+						}
+						if (writeTimer != null) {
+							writeTimer.Dispose ();
+						}
+						readTimer = null;
+						writeTimer = null;
+						
 						base.Close ();
 					} catch {
 					}

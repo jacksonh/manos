@@ -26,6 +26,33 @@ namespace Manos.Managed
 			this.readBuffer = new byte [blockSize];
 		}
 
+		public override long Position {
+			get { return stream.Position; }
+			set { SeekTo (value); }
+		}
+
+		public override bool CanRead {
+			get { return stream.CanRead; }
+		}
+
+		public override bool CanSeek {
+			get { return stream.CanSeek; }
+		}
+
+		public override bool CanWrite {
+			get { return stream.CanWrite; }
+		}
+
+		public override void SeekBy (long delta)
+		{
+			stream.Seek (delta, SeekOrigin.Current);
+		}
+
+		public override void SeekTo (long position)
+		{
+			stream.Seek (position, SeekOrigin.Begin);
+		}
+
 		public override void Close ()
 		{
 			if (stream != null) {
@@ -151,11 +178,12 @@ namespace Manos.Managed
 		static FileStream Open (string fileName, int blockSize, OpenFlags openFlags, FilePermissions perms)
 		{
 			FileAccess access = FileAccess.ReadWrite;
-			if ((openFlags & OpenFlags.O_RDWR) != 0) {
+			OpenFlags mask = OpenFlags.O_RDONLY | OpenFlags.O_RDWR | OpenFlags.O_WRONLY;
+			if ((openFlags & mask) == OpenFlags.O_RDWR) {
 				access = FileAccess.ReadWrite;
-			} else if ((openFlags & OpenFlags.O_RDONLY) != 0) {
+			} else if ((openFlags & mask) == OpenFlags.O_RDONLY) {
 				access = FileAccess.Read;
-			} else if ((openFlags & OpenFlags.O_WRONLY) != 0) {
+			} else if ((openFlags & mask) == OpenFlags.O_WRONLY) {
 				access = FileAccess.Write;
 			} 
 			var fs = new System.IO.FileStream (fileName, FileMode.Open, access);

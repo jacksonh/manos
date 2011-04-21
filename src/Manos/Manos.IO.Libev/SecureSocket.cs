@@ -16,12 +16,26 @@ namespace Manos.IO.Libev
 			SecureSocket parent;
 			IntPtr tlsContext;
 			byte [] receiveBuffer = new byte[4096];
+			long position;
 
 			public SecureSocketStream (SecureSocket parent, IntPtr handle, IntPtr tlsContext)
 				: base (parent.Loop, handle)
 			{
 				this.parent = parent;
 				this.tlsContext = tlsContext;
+			}
+
+			public override long Position {
+				get { return position; }
+				set { SeekTo (value); }
+			}
+
+			public override bool CanRead {
+				get { return true; }
+			}
+
+			public override bool CanWrite {
+				get { return true; }
 			}
 
 			public override void Close ()
@@ -44,8 +58,8 @@ namespace Manos.IO.Libev
 				
 				base.Close ();
 			}
-			
-			public override void Flush()
+
+			public override void Flush ()
 			{
 			}
 
@@ -94,6 +108,12 @@ namespace Manos.IO.Libev
 				} else if (received > 0) {
 					RaiseData (new ByteBuffer (receiveBuffer, 0, received));
 				}
+			}
+
+			protected override void RaiseData (ByteBuffer data)
+			{
+				position += data.Length;
+				base.RaiseData (data);
 			}
 
 			protected override int WriteSingleBuffer (ByteBuffer buffer)

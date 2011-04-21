@@ -102,6 +102,37 @@ namespace Manos.IO
 			Dispose (false);
 		}
 
+		public abstract long Position {
+			get;
+			set;
+		}
+
+		public abstract bool CanRead {
+			get;
+		}
+
+		public abstract bool CanWrite {
+			get;
+		}
+
+		public virtual bool CanSeek {
+			get { return false; }
+		}
+
+		public virtual bool CanTimeout {
+			get { return false; }
+		}
+
+		public virtual TimeSpan ReadTimeout {
+			get { throw new NotSupportedException (); }
+			set { throw new NotSupportedException (); }
+		}
+
+		public virtual TimeSpan WriteTimeout {
+			get { throw new NotSupportedException (); }
+			set { throw new NotSupportedException (); }
+		}
+
 		public abstract void ResumeReading ();
 
 		public abstract void ResumeReading (long forBytes);
@@ -111,6 +142,16 @@ namespace Manos.IO
 		public abstract void PauseReading ();
 
 		public abstract void PauseWriting ();
+
+		public virtual void SeekBy (long delta)
+		{
+			throw new NotSupportedException ();
+		}
+
+		public virtual void SeekTo (long position)
+		{
+			throw new NotSupportedException ();
+		}
 
 		public abstract void Flush ();
 

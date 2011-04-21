@@ -9,18 +9,38 @@ namespace Manos.IO.Libev
 	{
 		byte [] readBuffer;
 		bool readEnabled, writeEnabled;
+		bool canRead, canWrite;
 		long readLimit;
 		long position;
 
-		FileStream (IntPtr handle, int blockSize)
+		FileStream (IntPtr handle, int blockSize, bool canRead, bool canWrite)
 		{
 			this.Handle = handle;
 			this.readBuffer = new byte [blockSize];
+			this.canRead = canRead;
+			this.canWrite = canWrite;
 		}
 
 		public IntPtr Handle {
 			get;
 			private set;
+		}
+
+		public override long Position {
+			get { return position; }
+			set { SeekTo (value); }
+		}
+
+		public override bool CanRead {
+			get { return canRead; }
+		}
+
+		public override bool CanWrite {
+			get { return canWrite; }
+		}
+
+		public override bool CanSeek {
+			get { return true; }
 		}
 
 		public override void Close ()
@@ -30,6 +50,22 @@ namespace Manos.IO.Libev
 				Handle = IntPtr.Zero;
 			}
 			base.Close ();
+		}
+
+		public override void SeekBy (long delta)
+		{
+			if (position + delta < 0)
+				throw new ArgumentException ("delta");
+			
+			this.position += delta;
+		}
+
+		public override void SeekTo (long position)
+		{
+			if (position < 0)
+				throw new ArgumentException ("position");
+			
+			this.position = position;
 		}
 
 		public override void Flush ()
@@ -59,9 +95,12 @@ namespace Manos.IO.Libev
 
 		public override void ResumeReading (long forBytes)
 		{
+			if (!canRead)
+				throw new InvalidOperationException ();
 			if (forBytes < 0) {
 				throw new ArgumentException ("forBytes");
 			}
+			
 			readEnabled = true;
 			readLimit = forBytes;
 			ReadNextBuffer ();
@@ -69,6 +108,9 @@ namespace Manos.IO.Libev
 
 		public override void ResumeWriting ()
 		{
+			if (!canWrite)
+				throw new InvalidOperationException ();
+			
 			writeEnabled = true;
 			HandleWrite ();
 		}
@@ -158,7 +200,12 @@ namespace Manos.IO.Libev
 		static FileStream Open (string fileName, int blockSize, OpenFlags openFlags, FilePermissions perms)
 		{
 			var fd = Mono.Unix.Native.Syscall.open (fileName, openFlags, perms);
-			return new FileStream (new IntPtr (fd), blockSize);
+			var mask = OpenFlags.O_RDONLY | OpenFlags.O_RDWR | OpenFlags.O_WRONLY;
+			var canRead = (openFlags & mask) == OpenFlags.O_RDONLY
+				|| (openFlags & mask) == OpenFlags.O_RDWR;
+			var canWrite = (openFlags & mask) == OpenFlags.O_WRONLY
+				|| (openFlags & mask) == OpenFlags.O_RDWR;
+			return new FileStream (new IntPtr (fd), blockSize, canRead, canWrite);
 		}
 	}
 }

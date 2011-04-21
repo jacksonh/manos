@@ -9,6 +9,9 @@ namespace Manos.IO.Libev
 	{
 		// readiness watchers
 		IOWatcher readWatcher, writeWatcher;
+		TimerWatcher readTimeoutWatcher, writeTimeoutWatcher;
+		TimeSpan readTimeout, writeTimeout;
+		DateTime? readTimeoutContinuation, writeTimeoutContinuation;
 		// read limits
 		protected long? readLimit;
 
@@ -26,13 +29,75 @@ namespace Manos.IO.Libev
 			this.writeWatcher = new IOWatcher (Handle, EventTypes.Write, Loop.EVLoop, HandleWriteReady);
 		}
 
+		public override bool CanTimeout {
+			get { return true; }
+		}
+
+		public override TimeSpan ReadTimeout {
+			get { return readTimeout; }
+			set {
+				if (value < TimeSpan.Zero) 
+					throw new ArgumentException ("value");
+				readTimeout = value;
+				if (readTimeoutWatcher == null) {
+					readTimeoutWatcher = new TimerWatcher (readTimeout, Loop.EVLoop, HandleReadTimeout);
+				}
+				readTimeoutWatcher.Repeat = readTimeout;
+				readTimeoutWatcher.Again ();
+			}
+		}
+
+		public override TimeSpan WriteTimeout {
+			get { return writeTimeout; }
+			set {
+				if (value < TimeSpan.Zero) 
+					throw new ArgumentException ("value");
+				writeTimeout = value;
+				if (writeTimeoutWatcher == null) {
+					writeTimeoutWatcher = new TimerWatcher (writeTimeout, Loop.EVLoop, HandleWriteTimeout);
+				}
+				writeTimeoutWatcher.Repeat = writeTimeout;
+				writeTimeoutWatcher.Again ();
+			}
+		}
+
+		void HandleReadTimeout (Loop loop, TimerWatcher watcher, EventTypes revents)
+		{
+			if (readTimeoutContinuation != null) {
+				readTimeoutWatcher.Repeat = DateTime.Now - readTimeoutContinuation.Value;
+				readTimeoutWatcher.Again ();
+				readTimeoutContinuation = null;
+			} else {
+				RaiseError (new TimeoutException ());
+				PauseReading ();
+			}
+		}
+
+		void HandleWriteTimeout (Loop loop, TimerWatcher watcher, EventTypes revents)
+		{
+			if (writeTimeoutContinuation != null) {
+				writeTimeoutWatcher.Repeat = DateTime.Now - writeTimeoutContinuation.Value;
+				writeTimeoutWatcher.Again ();
+				writeTimeoutContinuation = null;
+			} else {
+				RaiseError (new TimeoutException ());
+				PauseWriting ();
+			}
+		}
+
 		void HandleWriteReady (Loop loop, IOWatcher watcher, EventTypes revents)
 		{
+			if (writeTimeoutContinuation == null) {
+				writeTimeoutContinuation = DateTime.Now;
+			}
 			HandleWrite ();
 		}
 
 		void HandleReadReady (Loop loop, IOWatcher watcher, EventTypes revents)
 		{
+			if (readTimeoutContinuation == null) {
+				readTimeoutContinuation = DateTime.Now;
+			}
 			HandleRead ();
 		}
 
@@ -103,9 +168,16 @@ namespace Manos.IO.Libev
 
 				readWatcher.Dispose ();
 				writeWatcher.Dispose ();
+				
+				if (readTimeoutWatcher != null)
+					readTimeoutWatcher.Dispose ();
+				if (writeTimeoutWatcher != null)
+					writeTimeoutWatcher.Dispose ();
 
 				readWatcher = null;
 				writeWatcher = null;
+				readTimeoutWatcher = null;
+				writeTimeoutWatcher = null;
 			
 				Handle = IntPtr.Zero;
 			}
