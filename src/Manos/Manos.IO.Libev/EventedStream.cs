@@ -11,10 +11,6 @@ namespace Manos.IO.Libev
 		IOWatcher readWatcher, writeWatcher;
 		// read limits
 		protected long? readLimit;
-		// write queue handling
-		protected ByteBuffer currentBuffer;
-		protected IEnumerator<ByteBuffer> currentWriter;
-		protected Queue<IEnumerable<ByteBuffer>> writeQueue;
 
 		protected EventedStream (IOLoop loop, IntPtr handle)
 		{
@@ -28,8 +24,6 @@ namespace Manos.IO.Libev
 			
 			this.readWatcher = new IOWatcher (Handle, EventTypes.Read, Loop.EVLoop, HandleReadReady);
 			this.writeWatcher = new IOWatcher (Handle, EventTypes.Write, Loop.EVLoop, HandleWriteReady);
-			
-			this.writeQueue = new Queue<IEnumerable<ByteBuffer>> ();
 		}
 
 		void HandleWriteReady (Loop loop, IOWatcher watcher, EventTypes revents)
@@ -97,34 +91,24 @@ namespace Manos.IO.Libev
 
 		public override void Write (IEnumerable<ByteBuffer> data)
 		{
-			if (data == null) {
-				throw new ArgumentNullException ("data");
-			}
-			
-			writeQueue.Enqueue (data);
-			
+			base.Write (data);
 			ResumeWriting ();
 		}
 
 		public override void Close ()
 		{
-			PauseReading ();
-			PauseWriting ();
+			if (Handle != IntPtr.Zero) {
+				PauseReading ();
+				PauseWriting ();
 
-			readWatcher.Dispose ();
-			writeWatcher.Dispose ();
-			if (currentWriter != null) {
-				currentWriter.Dispose ();
+				readWatcher.Dispose ();
+				writeWatcher.Dispose ();
+
+				readWatcher = null;
+				writeWatcher = null;
+			
+				Handle = IntPtr.Zero;
 			}
-
-			readWatcher = null;
-			writeWatcher = null;
-			
-			currentWriter = null;
-			currentBuffer = null;
-			
-			Handle = IntPtr.Zero;
-		
 			base.Close ();
 		}
 
@@ -138,53 +122,6 @@ namespace Manos.IO.Libev
 		}
 
 		protected abstract void HandleRead ();
-
-		protected abstract int WriteSingleBuffer (ByteBuffer buffer);
-
-		protected virtual void HandleWrite ()
-		{
-			if (!EnsureActiveBuffer ()) {
-				PauseWriting ();
-			} else {
-				SendCurrentBuffer ();
-			}
-		}
-
-		protected virtual void SendCurrentBuffer ()
-		{
-			var sent = WriteSingleBuffer (currentBuffer);
-			if (sent > 0) {
-				currentBuffer.Position += sent;
-				currentBuffer.Length -= sent;
-			} else {
-				PauseWriting ();
-			}
-			if (currentBuffer.Length == 0) {
-				currentBuffer = null;
-			}
-		}
-
-		protected virtual bool EnsureActiveBuffer ()
-		{
-			if (currentBuffer == null && EnsureActiveWriter ()) {
-				if (currentWriter.MoveNext ()) {
-					currentBuffer = currentWriter.Current;
-				} else {
-					currentWriter.Dispose ();
-					currentWriter = null;
-					return EnsureActiveBuffer ();
-				}
-			}
-			return currentBuffer != null;
-		}
-
-		protected virtual bool EnsureActiveWriter ()
-		{
-			if (currentWriter == null && writeQueue.Count > 0) {
-				currentWriter = writeQueue.Dequeue ().GetEnumerator ();
-			}
-			return currentWriter != null;
-		}
 	}
 }
 

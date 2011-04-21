@@ -11,12 +11,28 @@ namespace Manos.IO
 		Action<Exception> onError;
 		Action onClose;
 		IDisposable currentReader;
+		// write queue handling
+		ByteBuffer currentBuffer;
+		IEnumerator<ByteBuffer> currentWriter;
+		Queue<IEnumerable<ByteBuffer>> writeQueue;
+		
+		protected Stream ()
+		{
+			this.writeQueue = new Queue<IEnumerable<ByteBuffer>> ();
+		}
 
 		protected virtual void CancelReader ()
 		{
 			onData = null;
 			onError = null;
 			onClose = null;
+			if (currentWriter != null) {
+				currentWriter.Dispose ();
+				currentWriter = null;
+			}
+			currentBuffer = null;
+			writeQueue.Clear ();
+			writeQueue = null;
 		}
 		
 		protected class ReaderHandle : IDisposable
@@ -43,6 +59,7 @@ namespace Manos.IO
 				throw new ArgumentNullException ("onError");
 			if (onClose == null)
 				throw new ArgumentNullException ("onClose");
+			
 			this.onData = onData;
 			this.onError = onError;
 			this.onClose = onClose;
@@ -52,7 +69,13 @@ namespace Manos.IO
 			return currentReader;
 		}
 
-		public abstract void Write (IEnumerable<ByteBuffer> data);
+		public virtual void Write (IEnumerable<ByteBuffer> data)
+		{
+			if (data == null)
+				throw new ArgumentNullException ("data");
+			
+			writeQueue.Enqueue (data);
+		}
 
 		public virtual void Write (ByteBuffer data)
 		{
@@ -112,6 +135,53 @@ namespace Manos.IO
 		protected virtual void RaiseClose ()
 		{
 			onClose ();
+		}
+
+		protected abstract int WriteSingleBuffer (ByteBuffer buffer);
+
+		protected virtual void HandleWrite ()
+		{
+			if (!EnsureActiveBuffer ()) {
+				PauseWriting ();
+			} else {
+				WriteCurrentBuffer ();
+			}
+		}
+
+		protected virtual void WriteCurrentBuffer ()
+		{
+			var sent = WriteSingleBuffer (currentBuffer);
+			if (sent > 0) {
+				currentBuffer.Position += sent;
+				currentBuffer.Length -= sent;
+			} else {
+				PauseWriting ();
+			}
+			if (currentBuffer.Length == 0) {
+				currentBuffer = null;
+			}
+		}
+
+		protected virtual bool EnsureActiveBuffer ()
+		{
+			if (currentBuffer == null && EnsureActiveWriter ()) {
+				if (currentWriter.MoveNext ()) {
+					currentBuffer = currentWriter.Current;
+				} else {
+					currentWriter.Dispose ();
+					currentWriter = null;
+					return EnsureActiveBuffer ();
+				}
+			}
+			return currentBuffer != null;
+		}
+
+		protected virtual bool EnsureActiveWriter ()
+		{
+			if (currentWriter == null && writeQueue.Count > 0) {
+				currentWriter = writeQueue.Dequeue ().GetEnumerator ();
+			}
+			return currentWriter != null;
 		}
 	}
 }

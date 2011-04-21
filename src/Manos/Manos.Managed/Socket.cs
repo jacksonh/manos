@@ -37,21 +37,15 @@ namespace Manos.Managed
 			bool readAllowed, writeAllowed;
 			long readLimit;
 			byte [] receiveBuffer = new byte [4096];
-			// write queue
-			IEnumerator<ByteBuffer> currentWrite;
-			Queue<IEnumerable<ByteBuffer>> writeQueue;
 
 			public SocketStream (Socket parent)
 			{
 				this.parent = parent;
-				writeQueue = new Queue<IEnumerable<ByteBuffer>> ();
 			}
 
 			public override void Write (IEnumerable<ByteBuffer> data)
 			{
-				if (data == null)
-					throw new ArgumentNullException ("data");
-				writeQueue.Enqueue (data);
+				base.Write (data);
 				ResumeWriting ();
 			}
 
@@ -94,7 +88,14 @@ namespace Manos.Managed
 				return base.Read (onData, onError, onClose);
 			}
 
-			void WriteSingleBuffer (ByteBuffer buffer)
+			protected override void HandleWrite ()
+			{
+				if (writeAllowed) {
+					base.HandleWrite ();
+				}
+			}
+
+			protected override int WriteSingleBuffer (ByteBuffer buffer)
 			{
 				SocketError err;
 				parent.socket.BeginSend (buffer.Bytes, buffer.Position, buffer.Length, SocketFlags.None, out err, ar => {
@@ -103,37 +104,11 @@ namespace Manos.Managed
 						parent.loop.NonBlockInvoke (delegate {
 							RaiseError (new SocketException ());
 						});
-					} else if (ar.CompletedSynchronously) {
-						parent.loop.NonBlockInvoke (ResumeWriting);
 					} else {
-						ResumeWriting ();
+						parent.loop.NonBlockInvoke (ResumeWriting);
 					}
 				}, null);
-			}
-
-			void HandleWrite ()
-			{
-				if (!writeAllowed) {
-					return;
-				}
-				
-				if (currentWrite == null) {
-					if (writeQueue.Count > 0) {
-						currentWrite = writeQueue.Dequeue ().GetEnumerator ();
-						HandleWrite ();
-					} else {
-						PauseWriting ();
-					}
-				} else {
-					if (currentWrite.MoveNext ()) {
-						WriteSingleBuffer (currentWrite.Current);
-						PauseWriting ();
-					} else {
-						currentWrite.Dispose ();
-						currentWrite = null;
-						HandleWrite ();
-					}
-				}
+				return buffer.Length;
 			}
 
 			void HandleRead ()

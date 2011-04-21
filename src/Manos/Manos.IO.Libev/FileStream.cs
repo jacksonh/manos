@@ -11,16 +11,11 @@ namespace Manos.IO.Libev
 		bool readEnabled, writeEnabled;
 		long readLimit;
 		long position;
-		// write queue
-		IEnumerator<ByteBuffer> currentWriter;
-		Queue<IEnumerable<ByteBuffer>> writeQueue;
 
 		FileStream (IntPtr handle, int blockSize)
 		{
 			this.Handle = handle;
 			this.readBuffer = new byte [blockSize];
-			
-			this.writeQueue = new Queue<IEnumerable<ByteBuffer>> ();
 		}
 
 		public IntPtr Handle {
@@ -33,18 +28,11 @@ namespace Manos.IO.Libev
 			if (Handle != IntPtr.Zero) {
 				Libeio.close (Handle.ToInt32 (), OnCloseDone);
 				Handle = IntPtr.Zero;
-				if (currentWriter != null) {
-					currentWriter.Dispose ();
-					currentWriter = null;
-				}
-				writeQueue.Clear ();
-				writeQueue = null;
-				readBuffer = null;
 			}
 			base.Close ();
 		}
-		
-		public override void Flush()
+
+		public override void Flush ()
 		{
 		}
 
@@ -54,12 +42,7 @@ namespace Manos.IO.Libev
 
 		public override void Write (IEnumerable<ByteBuffer> data)
 		{
-			if (data == null) {
-				throw new ArgumentNullException ("data");
-			}
-			
-			writeQueue.Enqueue (data);
-			
+			base.Write (data);
 			ResumeWriting ();
 		}
 
@@ -87,7 +70,7 @@ namespace Manos.IO.Libev
 		public override void ResumeWriting ()
 		{
 			writeEnabled = true;
-			WriteNextBuffer ();
+			HandleWrite ();
 		}
 
 		public override void PauseReading ()
@@ -113,15 +96,16 @@ namespace Manos.IO.Libev
 		void OnReadDone (int result, byte[] buffer, int error)
 		{
 			if (result < 0) {
+				PauseReading ();
 				RaiseError (new Exception (string.Format ("Error '{0}' reading from file '{1}'", error, Handle.ToInt32 ())));
 			} else if (result > 0) {
-				RaiseData (new ByteBuffer (buffer, 0, result));
 				position += result;
+				RaiseData (new ByteBuffer (buffer, 0, result));
+				ReadNextBuffer ();
 			} else {
-				readEnabled = false;
+				PauseReading ();
 				RaiseClose ();
 			}
-			ReadNextBuffer ();
 		}
 
 		protected override void RaiseData (ByteBuffer data)
@@ -133,28 +117,22 @@ namespace Manos.IO.Libev
 			base.RaiseData (data);
 		}
 
-		void WriteNextBuffer ()
+		protected override void HandleWrite ()
 		{
-			if (!writeEnabled) {
-				return;
+			if (writeEnabled) {
+				base.HandleWrite ();
 			}
-			
-			while (EnsureActiveWriter() && !currentWriter.MoveNext()) {
-				currentWriter.Dispose ();
-				currentWriter = null;
+		}
+
+		protected override int WriteSingleBuffer (ByteBuffer buffer)
+		{
+			var bytes = buffer.Bytes;
+			if (buffer.Position > 0) {
+				bytes = new byte[buffer.Length];
+				Array.Copy (buffer.Bytes, buffer.Position, bytes, 0, buffer.Length);
 			}
-			
-			if (currentWriter == null) {
-				PauseWriting ();
-			} else {
-				var currentBuffer = currentWriter.Current;
-				var bytes = currentBuffer.Bytes;
-				if (currentBuffer.Position > 0) {
-					bytes = new byte[currentBuffer.Length];
-					Array.Copy (currentBuffer.Bytes, currentBuffer.Position, bytes, 0, currentBuffer.Length);
-				}
-				Libeio.write (Handle.ToInt32 (), bytes, position, currentBuffer.Length, OnWriteDone);
-			}
+			Libeio.write (Handle.ToInt32 (), bytes, position, buffer.Length, OnWriteDone);
+			return buffer.Length;
 		}
 
 		void OnWriteDone (int result, int error)
@@ -162,15 +140,7 @@ namespace Manos.IO.Libev
 			if (result < 0) {
 				throw new Exception (string.Format ("Error '{0}' writing to file '{1}'", error, Handle.ToInt32 ()));
 			}
-			WriteNextBuffer ();
-		}
-
-		bool EnsureActiveWriter ()
-		{
-			if (currentWriter == null && writeQueue.Count > 0) {
-				currentWriter = writeQueue.Dequeue ().GetEnumerator ();
-			}
-			return currentWriter != null;
+			HandleWrite ();
 		}
 
 		public static long GetLength (string fileName)

@@ -12,11 +12,7 @@ namespace Manos.Managed
 		byte [] readBuffer;
 		bool readEnabled, writeEnabled;
 		long readLimit;
-		long position;
 		IOLoop loop;
-		// write queue
-		IEnumerator<ByteBuffer> currentWrite;
-		Queue<IEnumerable<ByteBuffer>> writeQueue;
 
 		FileStream (IOLoop loop, System.IO.FileStream stream, int blockSize)
 		{
@@ -28,8 +24,6 @@ namespace Manos.Managed
 			this.loop = loop;
 			this.stream = stream;
 			this.readBuffer = new byte [blockSize];
-			
-			this.writeQueue = new Queue<IEnumerable<ByteBuffer>> ();
 		}
 
 		public override void Close ()
@@ -37,12 +31,6 @@ namespace Manos.Managed
 			if (stream != null) {
 				stream.Dispose ();
 				stream = null;
-				if (currentWrite != null) {
-					currentWrite.Dispose ();
-					currentWrite = null;
-				}
-				writeQueue.Clear ();
-				writeQueue = null;
 				readBuffer = null;
 			}
 			base.Close ();
@@ -54,12 +42,7 @@ namespace Manos.Managed
 
 		public override void Write (IEnumerable<ByteBuffer> data)
 		{
-			if (data == null) {
-				throw new ArgumentNullException ("data");
-			}
-			
-			writeQueue.Enqueue (data);
-			
+			base.Write (data);
 			ResumeWriting ();
 		}
 
@@ -117,12 +100,11 @@ namespace Manos.Managed
 			if (result > 0) {
 				loop.NonBlockInvoke (delegate {
 					RaiseData (new ByteBuffer (readBuffer, 0, result));
-					position += result;
 					ReadNextBuffer ();
 				});
 			} else {
 				loop.NonBlockInvoke (delegate {
-					readEnabled = false;
+					PauseReading ();
 					RaiseClose ();
 				});
 			}
@@ -137,34 +119,17 @@ namespace Manos.Managed
 			base.RaiseData (data);
 		}
 
-		void WriteNextBuffer (ByteBuffer buffer)
+		protected override void HandleWrite ()
 		{
-			stream.BeginWrite (buffer.Bytes, buffer.Position, buffer.Length, OnWriteDone, null);
+			if (writeEnabled) {
+				base.HandleWrite ();
+			}
 		}
 
-		void HandleWrite ()
+		protected override int WriteSingleBuffer (ByteBuffer buffer)
 		{
-			if (!writeEnabled) {
-				return;
-			}
-				
-			if (currentWrite == null) {
-				if (writeQueue.Count > 0) {
-					currentWrite = writeQueue.Dequeue ().GetEnumerator ();
-					HandleWrite ();
-				} else {
-					PauseWriting ();
-				}
-			} else {
-				if (currentWrite.MoveNext ()) {
-					WriteNextBuffer (currentWrite.Current);
-					PauseWriting ();
-				} else {
-					currentWrite.Dispose ();
-					currentWrite = null;
-					HandleWrite ();
-				}
-			}
+			stream.BeginWrite (buffer.Bytes, buffer.Position, buffer.Length, OnWriteDone, null);
+			return buffer.Length;
 		}
 
 		void OnWriteDone (IAsyncResult ar)
