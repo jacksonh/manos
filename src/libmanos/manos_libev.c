@@ -54,7 +54,7 @@ typedef struct {
 } manos_async_watcher_t;
 
 static void
-manos_async_watcher_cb (struct ev_loop *loop, ev_io *w, int revents)
+manos_async_watcher_cb (struct ev_loop *loop, ev_async *w, int revents)
 {
 	manos_async_watcher_t *watcher = (manos_async_watcher_t*) w;
 	watcher->callback (watcher->data, revents);
@@ -92,7 +92,7 @@ typedef struct {
 } manos_check_watcher_t;
 
 static void
-manos_check_watcher_cb (struct ev_loop *loop, ev_io *w, int revents)
+manos_check_watcher_cb (struct ev_loop *loop, ev_check *w, int revents)
 {
 	manos_check_watcher_t *watcher = (manos_check_watcher_t*) w;
 	watcher->callback (watcher->data, revents);
@@ -129,7 +129,7 @@ typedef struct {
 } manos_idle_watcher_t;
 
 static void
-manos_idle_watcher_cb (struct ev_loop *loop, ev_io *w, int revents)
+manos_idle_watcher_cb (struct ev_loop *loop, ev_idle *w, int revents)
 {
 	manos_idle_watcher_t *watcher = (manos_idle_watcher_t*) w;
 	watcher->callback (watcher->data, revents);
@@ -167,7 +167,7 @@ typedef struct {
 } manos_prepare_watcher_t;
 
 static void
-manos_prepare_watcher_cb (struct ev_loop *loop, ev_io *w, int revents)
+manos_prepare_watcher_cb (struct ev_loop *loop, ev_prepare *w, int revents)
 {
 	manos_prepare_watcher_t *watcher = (manos_prepare_watcher_t*) w;
 	watcher->callback (watcher->data, revents);
@@ -205,7 +205,7 @@ typedef struct {
 } manos_timer_watcher_t;
 
 static void
-manos_timer_watcher_cb (struct ev_loop *loop, ev_io *w, int revents)
+manos_timer_watcher_cb (struct ev_loop *loop, ev_timer *w, int revents)
 {
 	manos_timer_watcher_t *watcher = (manos_timer_watcher_t*) w;
 	watcher->callback (watcher->data, revents);
@@ -230,9 +230,9 @@ manos_timer_watcher_create (ev_tstamp after, ev_tstamp repeat, manos_watcher_cb 
 void
 manos_timer_watcher_set (void *watcher, ev_tstamp after, ev_tstamp repeat)
 {
-	manos_timer_watcher_t timer = watcher;
+	manos_timer_watcher_t *timer = watcher;
 
-	ev_timer_set (timer->watcher, after, repeat);
+	ev_timer_set (&timer->watcher, after, repeat);
 }
 
 void
