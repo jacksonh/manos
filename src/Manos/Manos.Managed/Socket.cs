@@ -141,7 +141,7 @@ namespace Manos.Managed
 				}
 			}
 
-			public void Close ()
+			public override void Close ()
 			{
 				if (parent == null) {
 					return;
@@ -156,6 +156,8 @@ namespace Manos.Managed
 					} catch {
 					}
 				}, null);
+				
+				base.Close ();
 			}
 		}
 		

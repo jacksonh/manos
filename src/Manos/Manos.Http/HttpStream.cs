@@ -139,7 +139,9 @@ namespace Manos.Http
 				((ISendfileCapable) SocketStream).SendFile (fileName);
 			} else {
 				SocketStream.PauseWriting ();
-				var fs = Manos.IO.Libev.FileStream.OpenRead (fileName, 64 * 1024);
+				var fs = Libev.LibEvLoop.IsWindows
+					? (IO.Stream) Manos.Managed.FileStream.OpenRead (fileName, 64 * 1024)
+					: (IO.Stream) Manos.IO.Libev.FileStream.OpenRead (fileName, 64 * 1024);
 				SocketStream.Write (new StreamCopySequencer (fs, SocketStream, true));
 			}
 			SocketStream.Write (SendCallback (SendBufferedOps));
@@ -147,7 +149,9 @@ namespace Manos.Http
 
 		void SendFileImpl (string fileName)
 		{
-			var len = Manos.IO.Libev.FileStream.GetLength (fileName);
+			var len = Libev.LibEvLoop.IsWindows 
+				? Manos.Managed.FileStream.GetLength (fileName)
+				: Manos.IO.Libev.FileStream.GetLength (fileName);
 			if (chunk_encode) {
 				SendChunk (len, false);
 				SendFileData (fileName);
