@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -112,12 +112,12 @@ namespace Manos.Managed
             return new AsyncWatcher(loop, cb);
         }
 
-        public override ISocketStream CreateSocketStream()
+        public override Manos.IO.Socket CreateSocketStream()
         {
-            return new SocketStream(this);
+            return new Socket(this);
         }
 
-        public override ISocketStream CreateSecureSocket(string certFile, string keyFile)
+        public override Manos.IO.Socket CreateSecureSocket(string certFile, string keyFile)
         {
             throw new NotSupportedException ();
         }

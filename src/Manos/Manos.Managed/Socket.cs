@@ -9,464 +9,275 @@ using Manos.Collections;
 
 namespace Manos.Managed
 {
-    class SocketStream: Manos.IO.ISocketStream
-    {
-        private Socket socket;
-        private string address;
-        private int port;
-        private System.Timers.Timer timer;
-        private IOLoop loop;
+	public class Socket : Manos.IO.Socket
+	{
+		System.Net.Sockets.Socket socket;
+		Action connectedCallback;
+		Action<Socket> acceptedCallback;
+		Stream stream;
+		IOLoop loop;
 
-        public ISendFileOperation MakeSendFile(string fn)
-        {
-            return new SendFileOperation (fn, null);
-        }
+		public Socket (IOLoop loop)
+		{
+			if (loop == null)
+				throw new ArgumentNullException ("loop");
+			this.loop = loop;
+		}
 
-        public IntPtr Handle
-        {
-            get
-            {
-                return socket.Handle;
-            }
-        }
+		Socket (IOLoop loop, System.Net.Sockets.Socket socket) : this (loop)
+		{
+			this.socket = socket;
+			this.address = ((IPEndPoint) socket.RemoteEndPoint).Address.ToString ();
+			this.port = ((IPEndPoint) socket.RemoteEndPoint).Port;
+		}
+		
+		class SocketStream : Manos.IO.Stream
+		{
+			Socket parent;
+			bool readAllowed, writeAllowed;
+			long readLimit;
+			byte [] receiveBuffer = new byte [4096];
+			// write queue
+			IEnumerator<ByteBuffer> currentWrite;
+			Queue<IEnumerable<ByteBuffer>> writeQueue;
 
-        public SocketStream(IOLoop loop)
-        {
-            this.loop = loop;
-        }
+			public SocketStream (Socket parent)
+			{
+				this.parent = parent;
+				writeQueue = new Queue<IEnumerable<ByteBuffer>> ();
+			}
 
-        public SocketStream(IOLoop loop, Socket sock):this(loop)
-        {
-            socket = sock;
-            StartTimeout();
-            address = ((IPEndPoint)socket.RemoteEndPoint).Address.ToString();
-            port = ((IPEndPoint)socket.RemoteEndPoint).Port;
-                        
-        }
+			public override void Write (IEnumerable<ByteBuffer> data)
+			{
+				if (data == null)
+					throw new ArgumentNullException ("data");
+				writeQueue.Enqueue (data);
+				ResumeWriting ();
+			}
 
+			public override void ResumeReading ()
+			{
+				ResumeReading (long.MaxValue);
+			}
 
-        public Manos.IO.IOLoop IOLoop { get { return loop; } }
+			public override void ResumeReading (long forBytes)
+			{
+				if (forBytes < 0)
+					throw new ArgumentException ("forBytes");
+				readLimit = forBytes;
+				throw new NotImplementedException ();
+			}
 
+			public override void ResumeWriting ()
+			{
+				writeAllowed = true;
+				HandleWrite ();
+			}
 
-        public void Connect(string host, int port)
-        {
-            address = host;
-            this.port = port;
-            IPAddress addr;
-            if (!IPAddress.TryParse(host, out addr))
-            {
-                Dns.BeginGetHostEntry(host, (a) =>
-                {
-                    try
-                    {
-                        IPHostEntry ep = Dns.EndGetHostEntry(a);
-                        StartConnectingSocket(ep.AddressList[0], port);
-                    }
-                    catch
-                    {
-                        OnError();
-                    }
-                }, null);
-            }
-            else
-            {
-                StartConnectingSocket(addr, port);
-            }
-        }
+			public override void PauseReading ()
+			{
+				readAllowed = false;
+			}
 
-        public void Connect(int port)
-        {
-            Connect("127.0.0.1", port);
-        }
+			public override void PauseWriting ()
+			{
+				writeAllowed = false;
+			}
 
-        public void Listen(string host, int port)
-        {
-            address = host;
-            this.port = port; 
-            IPAddress addr;
-            if (!IPAddress.TryParse(host, out addr))
-            {
-                Dns.BeginGetHostEntry(host, (a) =>
-                {
-                    try
-                    {
-                        IPHostEntry ep= Dns.EndGetHostEntry(a);
-                        StartListeningSocket(ep.AddressList[0], port);
-                    }
-                    catch
-                    {
-                        OnError();
-                    }
-                }, null);
-            } else {
-                StartListeningSocket(addr, port);
-            }
-        }
+			public override void Flush ()
+			{
+			}
 
-        private void StartListeningSocket(IPAddress addr, int port)
-        {
-            socket = new Socket(addr.AddressFamily, 
-                SocketType.Stream, 
-                ProtocolType.Tcp);
-            try
-            {
-                socket.Bind(new IPEndPoint(addr, port));
-                socket.Listen(5);
-                socket.BeginAccept(AcceptCallback, null);
-            }
-            catch
-            {
-                OnError();
-            }
-        }
+			public override IDisposable Read (Action<ByteBuffer> onData, Action<Exception> onError, Action onClose)
+			{
+				ResumeReading ();
+				return base.Read (onData, onError, onClose);
+			}
 
-        private void StartConnectingSocket(IPAddress addr, int port)
-        {
-            StartTimeout();
-            socket = new Socket(addr.AddressFamily, 
-                SocketType.Stream, 
-                ProtocolType.Tcp);
-            try
-            {
-                socket.BeginConnect(addr, port, (ar) =>
-                {
-                    try
-                    {
-                        socket.EndConnect(ar);
-                        if (Connected != null)
-                            loop.NonBlockInvoke(delegate
-                            {
-                                Connected(this);
-                            });
-                    }
-                    catch
-                    {
-                        OnError();
-                    }
-                }, null);
-            }
-            catch
-            {
-                OnError();
-            }
-        }
+			void WriteSingleBuffer (ByteBuffer buffer)
+			{
+				SocketError err;
+				parent.socket.BeginSend (buffer.Bytes, buffer.Position, buffer.Length, SocketFlags.None, out err, ar => {
+					parent.socket.EndSend (ar);
+					if (err != SocketError.Success) {
+						parent.loop.NonBlockInvoke (delegate {
+							RaiseError (new SocketException ());
+						});
+					} else if (ar.CompletedSynchronously) {
+						parent.loop.NonBlockInvoke (ResumeWriting);
+					} else {
+						ResumeWriting ();
+					}
+				}, null);
+			}
 
-        private void StartTimeout()
-        {
-            if (timer == null)
-            {
-                timer = new System.Timers.Timer(60 * 1000);
-                timer.Elapsed += (s, e) =>
-                {
-                    if (TimedOut != null)
-                    {
-                        loop.BlockInvoke(delegate
-                        {
-                            TimedOut(this, EventArgs.Empty);
-                        });
-                    }
-                    Close();
-                };
-            }
-            if (timer.Enabled)
-            {
-                timer.Interval = timer.Interval;
-            } else
-                timer.Enabled = true;
-            
-        }
+			void HandleWrite ()
+			{
+				if (!writeAllowed) {
+					return;
+				}
+				
+				if (currentWrite == null) {
+					if (writeQueue.Count > 0) {
+						currentWrite = writeQueue.Dequeue ().GetEnumerator ();
+						HandleWrite ();
+					} else {
+						PauseWriting ();
+					}
+				} else {
+					if (currentWrite.MoveNext ()) {
+						WriteSingleBuffer (currentWrite.Current);
+						PauseWriting ();
+					} else {
+						currentWrite.Dispose ();
+						currentWrite = null;
+						HandleWrite ();
+					}
+				}
+			}
 
-        private void AcceptCallback(IAsyncResult ar)
-        {
-            try
-            {
-                Socket sock = socket.EndAccept(ar);
+			void HandleRead ()
+			{
+				if (!readAllowed) {
+					return;
+				}
+				
+				SocketError se;
+				int length = (int) Math.Min (readLimit, receiveBuffer.Length);
+				parent.socket.BeginReceive (receiveBuffer, 0, length, SocketFlags.None, out se, ReadCallback, null);
+			}
 
-                if (this.ConnectionAccepted != null)
-                {
-                    loop.NonBlockInvoke(delegate
-                    {
-                        ConnectionAccepted(this, new IO.ConnectionAcceptedEventArgs(new SocketStream(loop, sock)));
-                    });
-                }
-                else
-                {
-                    sock.Dispose();
-                }
-                socket.BeginAccept(AcceptCallback, null);
-            }
-            catch
-            {
-                OnError();
-            }
-        }
-        public string Address
-        {
-            get { return address; }
-        }
+			void ReadCallback (IAsyncResult ar)
+			{
+				SocketError error;
+				int len = parent.socket.EndReceive (ar, out error);
+				
+				if (error != SocketError.Success) {
+					parent.loop.NonBlockInvoke (delegate {
+						RaiseError (new SocketException ());
+					});
+				} else if (len == 0) {
+					parent.loop.NonBlockInvoke (RaiseClose);
+				} else {
+					parent.loop.NonBlockInvoke (delegate {
+						RaiseData (new ByteBuffer (receiveBuffer, 0, len));
+						HandleRead ();
+					});
+				}
+			}
 
-        public int Port
-        {
-            get { return port; }
-        }
+			public void Close ()
+			{
+				if (parent == null) {
+					return;
+				}
+				
+				parent.socket.BeginDisconnect (false, ar => {
+					try {
+						parent.socket.EndDisconnect (ar);
+						RaiseClose ();
+						parent = null;
+						base.Close ();
+					} catch {
+					}
+				}, null);
+			}
+		}
+		
+		public override Manos.IO.Stream GetSocketStream ()
+		{
+			if (state != Socket.SocketState.Open)
+				throw new InvalidOperationException ();
+			
+			if (stream == null)
+				stream = new SocketStream (this);
+			
+			return stream;
+		}
 
-        public event Action<IO.ISocketStream> Connected;
+		public override void Connect (string host, int port, Action callback)
+		{
+			if (state != Socket.SocketState.Invalid)
+				throw new InvalidOperationException ();
+			
+			address = host;
+			this.port = port;
+			connectedCallback = callback;
+			
+			IPAddress addr;
+			if (!IPAddress.TryParse (host, out addr)) {
+				Dns.BeginGetHostEntry (host, (a) => {
+					try {
+						IPHostEntry ep = Dns.EndGetHostEntry (a);
+						StartConnectingSocket (ep.AddressList [0], port);
+					} catch {
+					}
+				}, null);
+			} else {
+				StartConnectingSocket (addr, port);
+			}
+		}
 
-        public event EventHandler<IO.ConnectionAcceptedEventArgs> ConnectionAccepted;
+		void StartConnectingSocket (IPAddress addr, int port)
+		{
+			socket = new System.Net.Sockets.Socket (addr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+			try {
+				socket.BeginConnect (addr, port, (ar) => {
+					try {
+						socket.EndConnect (ar);
+						loop.NonBlockInvoke (connectedCallback);
+					} catch {
+					}
+				}, null);
+			} catch {
+			}
+		}
 
-        public void Write(byte[] data, IO.WriteCallback callback)
-        {
-            Write(data, 0, data.Length, callback);
-        }
+		public override void Listen (string host, int port, Action<Manos.IO.Socket> callback)
+		{
+			if (state != Socket.SocketState.Invalid)
+				throw new InvalidOperationException ();
+			
+			address = host;
+			this.port = port;
+			acceptedCallback = callback;
+			
+			IPAddress addr;
+			if (!IPAddress.TryParse (host, out addr)) {
+				Dns.BeginGetHostEntry (host, (a) => {
+					try {
+						IPHostEntry ep = Dns.EndGetHostEntry (a);
+						StartListeningSocket (ep.AddressList [0], port);
+					} catch {
+					}
+				}, null);
+			} else {
+				StartListeningSocket (addr, port);
+			}
+		}
 
-        public void Write(byte[] data, int offset, int count, IO.WriteCallback callback)
-        {
-            var write_bytes = new SendBytesOperation(new ByteBuffer(data, offset, count), callback);
-            QueueWriteOperation(write_bytes);
-        }
+		void StartListeningSocket (IPAddress addr, int port)
+		{
+			socket = new System.Net.Sockets.Socket (addr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+			try {
+				socket.Bind (new IPEndPoint (addr, port));
+				socket.Listen (5);
+				socket.BeginAccept (AcceptCallback, null);
+			} catch {
+			}
+		}
 
-        Queue<IWriteOperation> write_ops = new Queue<IWriteOperation>();
-        IWriteOperation current_write_op;
+		void AcceptCallback (IAsyncResult ar)
+		{
+			try {
+				var sock = socket.EndAccept (ar);
 
-        public void QueueWriteOperation(IO.IWriteOperation op)
-        {
-            lock (write_ops)
-            {
-				write_ops.Enqueue(op);
-
-                if (current_write_op == null)
-                {
-                    current_write_op = write_ops.Dequeue();
-                    op.BeginWrite(this);
-
-                    StartSending();
-                }
-            }
-        }
-
-        private bool sending;
-        public int Send(Collections.ByteBuffer buffer, out int error)
-        {
-            SocketError er;
-            lock (write_ops)
-            {
-                sending = true;
-            }
-            socket.BeginSend(buffer.Bytes, buffer.Position, buffer.Length, SocketFlags.None, out er, (ar) =>
-            {
-                StartTimeout();
-                socket.EndSend(ar, out er);
-                if (er != SocketError.Success)
-                {
-                    OnError();
-                }
-                if (ar.CompletedSynchronously)
-                {
-                    lock (write_ops)
-                    {
-                        sending = false;
-                    }
-                } else {
-                    lock (write_ops)
-                    {
-                        loop.NonBlockInvoke(StartSending);
-                    }
-                }
-            }, null);
-            error = (int)er;
-
-            return buffer.Length;
-        }
-
-
-
-
-        private void StartSending()
-        {
-            if (current_write_op == null) return;
-            bool cont = true;
-            while (cont)
-            {
-                if (disabledsending)
-                {
-                    sending = false;
-                    return;
-                }
-                cont = false;
-                if (current_write_op.IsComplete)
-                {
-                    current_write_op.EndWrite(this);
-
-                    if (write_ops.Count > 0)
-                    {
-                        IWriteOperation op = write_ops.Dequeue();
-                        sending = false;
-                        op.BeginWrite(this);
-                        current_write_op = op;
-                        current_write_op.HandleWrite(this);
-                        lock (this)
-                        {
-                            if (!sending)
-                                cont = true;
-                        }
-                    }
-                    else
-                    {
-                        current_write_op = null;
-                    }
-                }
-                else
-                {
-                    current_write_op.HandleWrite(this);
-                    lock (this)
-                    {
-                        if (!sending)
-                            cont = true;
-                    }
-                }
-            }
-            
-        }
-        
-        public event EventHandler Error;
-
-        public event EventHandler Closed;
-
-        public event EventHandler TimedOut;
-
-        private void OnError()
-        {
-            if (Error != null)
-                loop.NonBlockInvoke(delegate
-                {
-                    Error(this, EventArgs.Empty);
-                });
-        }
-
-        
-        byte[] receiveBuffer;
-        public void ReadBytes(IO.ReadCallback callback)
-        {
-            if (receiveBuffer == null) receiveBuffer = new byte[4096];
-            SocketError se;
-            socket.BeginReceive(receiveBuffer, 0, receiveBuffer.Length, SocketFlags.None, out se, ReadCallback, callback);
-            if (se != SocketError.Success)
-                OnError();
-        }
-
-        private void ReadCallback(IAsyncResult ar)
-        {
-            StartTimeout();
-            SocketError se;
-            var callback = ((IO.ReadCallback)ar.AsyncState);
-            int len = socket.EndReceive(ar, out se);
-            
-            if (se != SocketError.Success)
-            {
-                OnError();
-            }
-            else
-            {
-                loop.NonBlockInvoke(delegate
-                {
-                    if (len == 0)
-                    {
-                        if (Closed != null)
-                            Closed(this, EventArgs.Empty);
-                    }
-                    else
-                    {
-                        callback(this, receiveBuffer, 0, len);
-                        socket.BeginReceive(receiveBuffer, 0, receiveBuffer.Length, SocketFlags.None, out se, ReadCallback, callback);
-                        if (se != SocketError.Success)
-                            OnError();
-                    }
-                });
-            }
-            if (len == 0)
-            {
-                if (Closed != null)
-                {
-                    loop.NonBlockInvoke(delegate
-                    {
-                        Closed(this, EventArgs.Empty);
-                    });
-                }
-            }
-        }
-
-        private bool disabledsending;
-
-        public void EnableWriting()
-        {
-            if (disabledsending)
-            {
-                disabledsending = false;
-                if (!sending)
-                    loop.NonBlockInvoke(() => {
-                        lock (write_ops)
-                        {
-                            StartSending();
-                        }
-                    });
-            }
-        }
-
-        public void DisableWriting()
-        {
-            disabledsending = true;
-        }
-
-
-        public int SendFile (string name, bool chunked, long length, Action<long, int> callback)
-        {
-            throw new NotSupportedException();
-        }
-
-        public void Close()
-        {
-            if (socket.Connected)
-            {
-                socket.BeginDisconnect(true, (ar) =>
-                {
-                    try
-                    {
-                        socket.EndDisconnect(ar);
-                        if (timer != null)
-                        {
-                            var t = timer;
-                            timer = null;
-                            t.Enabled = false;
-                            t.Dispose();
-                        }
-
-
-                        if (Closed != null)
-                        {
-                            loop.NonBlockInvoke(delegate
-                            {
-                                Closed(this, EventArgs.Empty);
-                            });
-                        }
-                    }
-                    catch
-                    {
-                        OnError();
-
-                    }
-                }, null);
-            }
-        }
-
-        public void Dispose()
-        {
-            socket.Dispose();
-            var t = timer;
-            if (t != null)
-            {
-                timer = null;
-                t.Dispose();
-            }
-        }
-    }
+				loop.NonBlockInvoke (delegate {
+					acceptedCallback (new Socket (loop, sock));
+				});
+				socket.BeginAccept (AcceptCallback, null);
+			} catch {
+			}
+		}
+	}
 }
