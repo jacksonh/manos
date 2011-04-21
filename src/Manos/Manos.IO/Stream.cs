@@ -15,10 +15,9 @@ namespace Manos.IO
 		ByteBuffer currentBuffer;
 		IEnumerator<ByteBuffer> currentWriter;
 		Queue<IEnumerable<ByteBuffer>> writeQueue;
-		
+
 		protected Stream ()
 		{
-			this.writeQueue = new Queue<IEnumerable<ByteBuffer>> ();
 		}
 
 		protected virtual void CancelReader ()
@@ -26,13 +25,15 @@ namespace Manos.IO
 			onData = null;
 			onError = null;
 			onClose = null;
-			if (currentWriter != null) {
-				currentWriter.Dispose ();
-				currentWriter = null;
+			if (writeQueue != null) {
+				if (currentWriter != null) {
+					currentWriter.Dispose ();
+					currentWriter = null;
+				}
+				currentBuffer = null;
+				writeQueue.Clear ();
+				writeQueue = null;
 			}
-			currentBuffer = null;
-			writeQueue.Clear ();
-			writeQueue = null;
 		}
 		
 		protected class ReaderHandle : IDisposable
@@ -74,12 +75,21 @@ namespace Manos.IO
 			if (data == null)
 				throw new ArgumentNullException ("data");
 			
+			if (writeQueue == null) {
+				writeQueue = new Queue<IEnumerable<ByteBuffer>> ();
+			}
+			
 			writeQueue.Enqueue (data);
+		}
+
+		static IEnumerable<ByteBuffer> SingleBuffer (ByteBuffer buffer)
+		{
+			yield return buffer;
 		}
 
 		public virtual void Write (ByteBuffer data)
 		{
-			Write (Enumerable.Repeat (data, 1));
+			Write (SingleBuffer (data));
 		}
 
 		public virtual void Write (byte[] data)
@@ -141,6 +151,9 @@ namespace Manos.IO
 
 		protected virtual void HandleWrite ()
 		{
+			if (writeQueue == null) {
+				throw new InvalidOperationException ();
+			}
 			if (!EnsureActiveBuffer ()) {
 				PauseWriting ();
 			} else {
