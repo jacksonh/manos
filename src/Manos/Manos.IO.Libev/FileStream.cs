@@ -146,7 +146,7 @@ namespace Manos.IO.Libev
 				ReadNextBuffer ();
 			} else {
 				PauseReading ();
-				RaiseClose ();
+				RaiseEndOfStream ();
 			}
 		}
 

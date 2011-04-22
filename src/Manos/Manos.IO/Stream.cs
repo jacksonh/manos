@@ -9,7 +9,7 @@ namespace Manos.IO
 	{
 		Action<ByteBuffer> onData;
 		Action<Exception> onError;
-		Action onClose;
+		Action onEndOfStream;
 		IDisposable currentReader;
 		// write queue handling
 		ByteBuffer currentBuffer;
@@ -24,7 +24,7 @@ namespace Manos.IO
 		{
 			onData = null;
 			onError = null;
-			onClose = null;
+			onEndOfStream = null;
 			if (writeQueue != null) {
 				if (currentWriter != null) {
 					currentWriter.Dispose ();
@@ -52,18 +52,18 @@ namespace Manos.IO
 			}
 		}
 		
-		public virtual IDisposable Read (Action<ByteBuffer> onData, Action<Exception> onError, Action onClose)
+		public virtual IDisposable Read (Action<ByteBuffer> onData, Action<Exception> onError, Action onEndOfStream)
 		{
 			if (onData == null)
 				throw new ArgumentNullException ("onData");
 			if (onError == null)
 				throw new ArgumentNullException ("onError");
-			if (onClose == null)
+			if (onEndOfStream == null)
 				throw new ArgumentNullException ("onClose");
 			
 			this.onData = onData;
 			this.onError = onError;
-			this.onClose = onClose;
+			this.onEndOfStream = onEndOfStream;
 			
 			currentReader = new ReaderHandle (this);
 			
@@ -159,7 +159,7 @@ namespace Manos.IO
 		{
 			onData = null;
 			onError = null;
-			onClose = null;
+			onEndOfStream = null;
 		}
 
 		public void Dispose ()
@@ -183,9 +183,9 @@ namespace Manos.IO
 			onError (exception);
 		}
 
-		protected virtual void RaiseClose ()
+		protected virtual void RaiseEndOfStream ()
 		{
-			onClose ();
+			onEndOfStream ();
 		}
 
 		protected abstract int WriteSingleBuffer (ByteBuffer buffer);

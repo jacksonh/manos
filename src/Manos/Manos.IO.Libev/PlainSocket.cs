@@ -53,7 +53,7 @@ namespace Manos.IO.Libev
 					return;
 				}
 				
-				RaiseClose ();
+				RaiseEndOfStream ();
 				
 				int error;
 				int res = manos_socket_close (Handle.ToInt32 (), out error);

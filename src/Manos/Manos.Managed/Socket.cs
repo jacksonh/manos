@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -211,7 +211,7 @@ namespace Manos.Managed
 						RaiseError (new SocketException ());
 					});
 				} else if (len == 0) {
-					parent.loop.NonBlockInvoke (RaiseClose);
+					parent.loop.NonBlockInvoke (RaiseEndOfStream);
 				} else {
 					parent.loop.NonBlockInvoke (delegate {
 						RaiseData (new ByteBuffer (receiveBuffer, 0, len));
@@ -235,7 +235,7 @@ namespace Manos.Managed
 				parent.socket.BeginDisconnect (false, ar => {
 					try {
 						parent.socket.EndDisconnect (ar);
-						RaiseClose ();
+						RaiseEndOfStream ();
 						parent = null;
 						
 						if (readTimer != null) {

@@ -44,7 +44,7 @@ namespace Manos.IO.Libev
 					return;
 				}
 				
-				RaiseClose ();
+				RaiseEndOfStream ();
 				
 				int res = manos_tls_close (tlsContext);
 

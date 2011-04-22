@@ -132,7 +132,7 @@ namespace Manos.Managed
 			} else {
 				loop.NonBlockInvoke (delegate {
 					PauseReading ();
-					RaiseClose ();
+					RaiseEndOfStream ();
 				});
 			}
 		}
