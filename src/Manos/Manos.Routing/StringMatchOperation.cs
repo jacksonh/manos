@@ -53,14 +53,19 @@ namespace Manos.Routing
 	
 		public bool IsMatch (string input, int start, out DataDictionary data, out int end)
 		{
-			if (!StartsWith (input, start, String)) {
+			return IsMatchInternal (String, input, start, out data, out end);
+		}
+
+		internal static bool IsMatchInternal (string the_string, string input, int start, out DataDictionary data, out int end)
+		{
+			if (!StartsWith (input, start, the_string)) {
 				data = null;
 				end = start;
 				return false;
 			}
 
 			data = null;
-			end = start + String.Length;
+			end = start + the_string.Length;
 			return true;
 		}
 

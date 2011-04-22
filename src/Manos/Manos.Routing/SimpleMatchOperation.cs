@@ -70,9 +70,8 @@ namespace Manos.Routing
 			end = start;
 			data = null;
 
-			if (groups == null) {
-				return false;
-			}
+			if (groups == null)
+				return StringMatchOperation.IsMatchInternal (Pattern, input, start, out data, out end);
 			
 			int input_pos = start;
 			int pattern_pos = 0;
@@ -167,8 +166,9 @@ namespace Manos.Routing
 				groups.Add (group);
 				start = pattern.IndexOf ('{', end);
 			}
-			
-			this.groups = groups.ToArray ();
+
+			if (groups.Count > 0)
+				this.groups = groups.ToArray ();
 		}
 	}
 }

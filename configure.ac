@@ -32,6 +32,7 @@ fi
 
 AC_SUBST(XBUILD)
 
+m4_include([m4/pkg.m4])
 
 AC_ARG_WITH([gnutls],
 	[AS_HELP_STRING([--with-gnutls],

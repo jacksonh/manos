@@ -120,6 +120,7 @@ namespace HelloWorld {
 
 		void AsyncCounter (IManosContext ctx)
 		{
+		/*
 			try {
 				for (var count = 0; count < 60; count++) {
 					System.Threading.Thread.Sleep (1000);
@@ -135,6 +136,7 @@ namespace HelloWorld {
 				Console.WriteLine ("Sync block died:");
 				Console.WriteLine (e);
 			}
+			*/
 		}
 
 		public void Default (IManosContext ctx, string default_value = "I AM DEFAULT")
