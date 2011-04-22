@@ -25,15 +25,6 @@ namespace Manos.IO
 			onData = null;
 			onError = null;
 			onEndOfStream = null;
-			if (writeQueue != null) {
-				if (currentWriter != null) {
-					currentWriter.Dispose ();
-					currentWriter = null;
-				}
-				currentBuffer = null;
-				writeQueue.Clear ();
-				writeQueue = null;
-			}
 		}
 		
 		protected class ReaderHandle : IDisposable
@@ -157,9 +148,19 @@ namespace Manos.IO
 
 		public virtual void Close ()
 		{
-			onData = null;
-			onError = null;
-			onEndOfStream = null;
+			if (currentReader != null) {
+				currentReader.Dispose ();
+				currentReader = null;
+			}
+			if (writeQueue != null) {
+				if (currentWriter != null) {
+					currentWriter.Dispose ();
+					currentWriter = null;
+				}
+				currentBuffer = null;
+				writeQueue.Clear ();
+				writeQueue = null;
+			}
 		}
 
 		public void Dispose ()
@@ -175,17 +176,23 @@ namespace Manos.IO
 
 		protected virtual void RaiseData (ByteBuffer data)
 		{
-			onData (data);
+			if (onData != null) {
+				onData (data);
+			}
 		}
 
 		protected virtual void RaiseError (Exception exception)
 		{
-			onError (exception);
+			if (onError != null) {
+				onError (exception);
+			}
 		}
 
 		protected virtual void RaiseEndOfStream ()
 		{
-			onEndOfStream ();
+			if (onEndOfStream != null) {
+				onEndOfStream ();
+			}
 		}
 
 		protected abstract int WriteSingleBuffer (ByteBuffer buffer);
