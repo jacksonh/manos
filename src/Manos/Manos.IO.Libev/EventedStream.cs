@@ -162,6 +162,7 @@ namespace Manos.IO.Libev
 
 		public override void Close ()
 		{
+			base.Close ();
 			if (Handle != IntPtr.Zero) {
 				PauseReading ();
 				PauseWriting ();
@@ -181,7 +182,6 @@ namespace Manos.IO.Libev
 			
 				Handle = IntPtr.Zero;
 			}
-			base.Close ();
 		}
 
 		protected override void RaiseData (ByteBuffer data)

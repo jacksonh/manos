@@ -25,6 +25,7 @@ namespace Manos.IO
 			onData = null;
 			onError = null;
 			onEndOfStream = null;
+			currentReader = null;
 		}
 		
 		protected class ReaderHandle : IDisposable
