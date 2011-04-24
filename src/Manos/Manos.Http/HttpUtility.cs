@@ -231,6 +231,10 @@ namespace Manos.Http {
 				}
 				value = UrlDecode (decoded.Substring (valuePos, valueEnd - valuePos), encoding);
 
+				if (name == null) {
+				   name = value;
+				   value = String.Empty;
+				}
 				result.Set (name, value);
 				if (namePos == -1)
 					break;
