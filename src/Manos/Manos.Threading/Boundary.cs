@@ -35,7 +35,7 @@ namespace Manos.Threading
 	{
 		public static readonly Boundary Instance = new Boundary (IOLoop.Instance);
         
-		private readonly AsyncWatcher asyncWatcher;
+		private readonly IAsyncWatcher asyncWatcher;
 
 		private readonly ConcurrentQueue<Action> workQueue;
 
@@ -44,7 +44,7 @@ namespace Manos.Threading
 		public Boundary( IOLoop loop ) : this( loop, 18 ) {}
 		public Boundary( IOLoop loop, int maxWorkPerLoop )
 		{
-			asyncWatcher = new AsyncWatcher ((LibEvLoop)loop.EventLoop, ( l, w, et ) => ProcessWork());
+			asyncWatcher = loop.NewAsyncWatcher (ProcessWork);
 			asyncWatcher.Start ();
 			
 			workQueue = new ConcurrentQueue<Action> ();
@@ -58,7 +58,7 @@ namespace Manos.Threading
 			asyncWatcher.Send ();
 		}
 
-        private void ProcessWork ()
+        private void ProcessWork (Loop loop, IAsyncWatcher watcher, EventTypes revents)
         {
 			int remaining = maxWorkPerLoop + 1;
 			while( --remaining > 0 ) {
