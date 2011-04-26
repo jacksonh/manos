@@ -159,7 +159,7 @@ namespace Manos
 			
 			foreach (var ep in listenEndPoints) {
 
-                var server = new HttpServer (IOLoop, HandleTransaction, IOLoop.CreateSocketStream());
+                var server = new HttpServer (IOLoop, HandleTransaction, IOLoop.CreateSocket());
 				server.Listen (ep.Address.ToString (), ep.Port);
 				
 				servers.Add (server);

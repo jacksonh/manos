@@ -66,6 +66,7 @@ namespace Manos.Http {
 		private bool finished_reading;
 
 		private IAsyncWatcher end_watcher;
+		private IAsyncWatcher completeWatcher;
 
 		public HttpEntity ()
 		{
@@ -90,6 +91,11 @@ namespace Manos.Http {
 			if (end_watcher != null) {
 				end_watcher.Dispose ();
 				end_watcher = null;
+			}
+
+			if (completeWatcher != null) {
+				completeWatcher.Dispose ();
+				completeWatcher = null;
 			}
 		}
 
@@ -507,17 +513,16 @@ namespace Manos.Http {
 			if (OnEnd != null)
 				OnEnd ();
 		}
-		
-		IAsyncWatcher endWatcher;
 
 		public void Complete (Action callback)
 		{
-			endWatcher = IOLoop.Instance.NewAsyncWatcher(delegate {
+			completeWatcher = IOLoop.Instance.NewAsyncWatcher(delegate {
+				completeWatcher.Dispose ();
+				completeWatcher = null;
 				callback ();
-				endWatcher.Dispose ();
 			});
-			endWatcher.Start ();
-			Stream.End (endWatcher.Send);
+			completeWatcher.Start ();
+			Stream.End (completeWatcher.Send);
 		}
 
 		public void WriteLine (string str)

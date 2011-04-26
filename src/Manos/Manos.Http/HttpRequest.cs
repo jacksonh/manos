@@ -189,7 +189,7 @@ namespace Manos.Http {
 
 		public void Execute ()
 		{
-            Socket = AppHost.IOLoop.CreateSocketStream ();
+            Socket = AppHost.IOLoop.CreateSocket ();
 			Socket.Connect (RemoteAddress, RemotePort, delegate {
 				Stream = new HttpStream (this, Socket.GetSocketStream ());
 				Stream.Chunked = false;

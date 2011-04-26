@@ -112,7 +112,7 @@ namespace Manos.Managed
             return new AsyncWatcher(loop, cb);
         }
 
-        public override Manos.IO.Socket CreateSocketStream()
+        public override Manos.IO.Socket CreateSocket()
         {
             return new Socket(this);
         }
