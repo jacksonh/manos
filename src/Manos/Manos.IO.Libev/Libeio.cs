@@ -9,7 +9,7 @@ using eio_tstamp = System.Double;
 using uid_t = System.Int32;
 using gid_t = System.Int32;
 
-namespace Libeio
+namespace Manos.IO.Libev
 {
 	static class Libeio
 	{
@@ -110,8 +110,23 @@ namespace Libeio
 		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
 		static extern IntPtr eio_read (int fd, byte [] buf, size_t length, off_t offset, int pri, eio_cb cb, IntPtr data);
 
-//		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
-//		static extern IntPtr eio_write (int fd, IntPtr buf, size_t length, off_t offset, int pri, eio_cb cb, IntPtr data);
+		static eio_cb writeCB = WriteCallback;
+
+		static void WriteCallback (ref eio_req req)
+		{
+			var handle = GCHandle.FromIntPtr (req.data);
+			((Action<int, int>) handle.Target) (req.result.ToInt32 (), req.errorno);
+			handle.Free ();
+		}
+
+		public static void write (int fd, byte[] buffer, long offset, long length, Action<int, int> callback)
+		{
+			eio_write (fd, buffer, (UIntPtr) length, offset, 0, writeCB, GCHandle.ToIntPtr (GCHandle.Alloc (callback)));
+		}
+
+		[DllImport ("libeio", CallingConvention = CallingConvention.Cdecl)]
+		static extern IntPtr eio_write (int fd, byte[] buf, size_t length, off_t offset, int pri, eio_cb cb, IntPtr data);
+
 		static eio_cb fstatCB = FstatCallback;
 
 		static void FstatCallback (ref eio_req req)

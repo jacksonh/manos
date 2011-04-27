@@ -92,7 +92,7 @@ namespace Manos.Http {
 			get;
 		}
 
-		ISocketStream Socket {
+		Socket Socket {
 			get;
 		}
 
@@ -111,7 +111,7 @@ namespace Manos.Http {
 
 		T GetProperty<T> (string name);
 		
-		void Read ();
+		void Read (Action onClose);
 		void SetWwwFormData (DataDictionary data);
 		void WriteMetadata (StringBuilder builder);
 

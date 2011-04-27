@@ -33,7 +33,6 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 using Libev;
-using Libeio;
 
 
 namespace Manos.IO {
@@ -73,9 +72,9 @@ namespace Manos.IO {
 
         public abstract IAsyncWatcher NewAsyncWatcher(AsyncWatcherCallback cb);
 
-        public abstract ISocketStream CreateSocketStream ();
+        public abstract Socket CreateSocket ();
 
-        public abstract ISocketStream CreateSecureSocket (string certFile, string keyFile);
+        public abstract Socket CreateSecureSocket (string certFile, string keyFile);
     }
 }
 

@@ -95,7 +95,7 @@ namespace Manos.Http {
 		void End (byte [] data, int offset, int length);
 		void End (string str, params object [] prms);
 
-		void Complete (WriteCallback callback);
+		void Complete (Action callback);
 
 		void SendFile (string file);
 		
