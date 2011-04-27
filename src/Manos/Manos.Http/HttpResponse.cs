@@ -44,16 +44,16 @@ namespace Manos.Http {
 		private StreamWriter writer;
 		private Dictionary<string, HttpCookie> cookies;
 
-		public HttpResponse (IHttpRequest request, ISocketStream stream)
+		public HttpResponse (IHttpRequest request, Socket socket)
 		{
 			Request = request;
-			Socket = stream;
+			Socket = socket;
 
 			StatusCode = 200;
 
 			WriteHeaders = true;
 
-			Stream = new HttpStream (this, stream);
+			Stream = new HttpStream (this, socket.GetSocketStream ());
 			Stream.Chunked = (request.MajorVersion > 0 && request.MinorVersion > 0);
 		}
 

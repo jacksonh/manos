@@ -29,7 +29,6 @@ using System.Text;
 using System.Net;
 using System.Linq;
 using System.Reflection;
-using System.Net.Sockets;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -48,7 +47,7 @@ namespace Manos.Http
         public static readonly string ServerVersion;
 
         private HttpConnectionCallback callback;
-        ISocketStream socket;
+        Socket socket;
         private bool closeOnEnd;
 
         static HttpServer()
@@ -57,22 +56,23 @@ namespace Manos.Http
             ServerVersion = "Manos/" + v.ToString();
         }
 
-        public HttpServer(HttpConnectionCallback callback, ISocketStream socket, bool closeOnEnd = false)
+        public HttpServer(IOLoop loop, HttpConnectionCallback callback, Socket socket, bool closeOnEnd = false)
         {
             this.callback = callback;
             this.socket = socket;
             this.closeOnEnd = closeOnEnd;
+			this.IOLoop = loop;
         }
 
         public IOLoop IOLoop
         {
-            get { return socket.IOLoop; }
+			get;
+			private set;
         }
 
         public void Listen(string host, int port)
         {
-            socket.Listen(host, port);
-            socket.ConnectionAccepted += ConnectionAccepted;
+            socket.Listen(host, port, ConnectionAccepted);
         }
 
         public void Dispose()
@@ -88,9 +88,9 @@ namespace Manos.Http
             trans.Run();
         }
 
-        private void ConnectionAccepted(object sender, ConnectionAcceptedEventArgs args)
+        private void ConnectionAccepted(Socket socket)
         {
-            var t = HttpTransaction.BeginTransaction(this, args.Stream, callback, closeOnEnd);
+            var t = HttpTransaction.BeginTransaction(this, socket, callback, closeOnEnd);
         }
     }
 }
