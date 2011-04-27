@@ -66,6 +66,7 @@ namespace Manos.Http {
 		private bool finished_reading;
 
 		private IAsyncWatcher end_watcher;
+		private IAsyncWatcher completeWatcher;
 
 		public HttpEntity ()
 		{
@@ -91,9 +92,14 @@ namespace Manos.Http {
 				end_watcher.Dispose ();
 				end_watcher = null;
 			}
+
+			if (completeWatcher != null) {
+				completeWatcher.Dispose ();
+				completeWatcher = null;
+			}
 		}
 
-		public ISocketStream Socket {
+		public Socket Socket {
 			get;
 			protected set;
 		}
@@ -386,17 +392,20 @@ namespace Manos.Http {
 
 			parser = new HttpParser ();
 		}
-
+		
 		public void Read ()
 		{
-			Reset ();
-			Socket.ReadBytes (OnBytesRead);
+			Read (() => {});
 		}
 
-		private void OnBytesRead (IIOStream stream, byte [] data, int offset, int count)
+		public void Read (Action onClose)
 		{
-			ByteBuffer bytes = new ByteBuffer (data, offset, count);
+			Reset ();
+			Socket.GetSocketStream ().Read (OnBytesRead, (obj) => {}, onClose);
+		}
 
+		private void OnBytesRead (ByteBuffer bytes)
+		{
 			try {
 				parser.Execute (parser_settings, bytes);
 			} catch (Exception e) {
@@ -505,9 +514,15 @@ namespace Manos.Http {
 				OnEnd ();
 		}
 
-		public void Complete (WriteCallback callback)
+		public void Complete (Action callback)
 		{
-			Stream.End (callback);
+			completeWatcher = IOLoop.Instance.NewAsyncWatcher(delegate {
+				completeWatcher.Dispose ();
+				completeWatcher = null;
+				callback ();
+			});
+			completeWatcher.Start ();
+			Stream.End (completeWatcher.Send);
 		}
 
 		public void WriteLine (string str)

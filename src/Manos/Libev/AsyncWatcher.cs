@@ -81,12 +81,6 @@ namespace Libev
             ev_async_stop(Loop.Handle, watcher_ptr);
         }
 
-        protected override void UnmanagedCallbackHandler(IntPtr _loop, IntPtr _watcher, EventTypes revents)
-        {
-            // Maybe I should verify the pointers?
-            callback(Loop, this, revents);
-        }
-
         [DllImport("libev", CallingConvention = CallingConvention.Cdecl)]
         private static extern void ev_async_start(IntPtr loop, IntPtr watcher);
 

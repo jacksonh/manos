@@ -21,72 +21,59 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 //
-
-
 using System;
 using System.Runtime.InteropServices;
 
-
-namespace Manos.Collections {
-
-	[StructLayout (LayoutKind.Sequential)]
-	public struct ByteBufferS {
-		public int Position;
-		public int Length;
-		public byte [] Bytes;
-
-		public ByteBufferS (byte [] data, int position, int length)
-		{
-			this.Position = position;
-			this.Length = length;
-			this.Bytes = data;
-		}
-	}
-
-	public class ByteBuffer {
-
-		internal ByteBufferS buffer;
+namespace Manos.Collections
+{
+	public class ByteBuffer
+	{
+		int position;
+		int length;
+		byte [] bytes;
 
 		public ByteBuffer (byte [] bytes, int position, int length)
 		{
-			buffer = new ByteBufferS (bytes, position, length);
+			this.bytes = bytes;
+			this.position = position;
+			this.length = length;
 		}
 
 		public byte CurrentByte {
-			get { return buffer.Bytes [buffer.Position]; }
+			get { return bytes [position]; }
 		}
 
 		public byte [] Bytes {
-			get { return buffer.Bytes; }
+			get { return bytes; }
 		}
 
 		public int Length {
-			get { return buffer.Length; }
+			get { return length; }
 			set {
-				if (value > buffer.Bytes.Length)
+				if (value > bytes.Length)
 					throw new ArgumentOutOfRangeException ("value", "Can not increase the size of a byte buffer.");
 				if (value < 0)
 					throw new ArgumentOutOfRangeException ("value", "Length must be zero or greater.");
-				buffer.Length = value;
+				length = value;
 			}
 		}
 
 		public int Position {
-			get { return buffer.Position; }
+			get { return position; }
 			set {
-				if (value > buffer.Bytes.Length)
+				if (value > bytes.Length)
 					throw new ArgumentOutOfRangeException ("value", "Position must be less than the array length.");
 				if (value < 0)
 					throw new ArgumentOutOfRangeException ("value", "Position must be zero or greater.");
-				buffer.Position = value;
+				position = value;
 			}
 		}
 
 		public byte ReadByte ()
 		{
-			if (buffer.Position >= buffer.Length)
+			if (position >= length)
 				throw new InvalidOperationException ("Read past end of ByteBuffer.");
-			return buffer.Bytes [buffer.Position++];
+			return bytes [position++];
 		}
 	}
 }

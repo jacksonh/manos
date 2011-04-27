@@ -159,7 +159,7 @@ namespace Manos
 			
 			foreach (var ep in listenEndPoints) {
 
-                var server = new HttpServer (HandleTransaction, IOLoop.CreateSocketStream());
+                var server = new HttpServer (IOLoop, HandleTransaction, IOLoop.CreateSocket());
 				server.Listen (ep.Address.ToString (), ep.Port);
 				
 				servers.Add (server);
@@ -167,7 +167,7 @@ namespace Manos
 			foreach (var ep in secureListenEndPoints.Keys) {
 				var keypair = secureListenEndPoints [ep];
 				var socket = IOLoop.CreateSecureSocket (keypair.Item1, keypair.Item2);
-				var server = new HttpServer (HandleTransaction, socket);
+				var server = new HttpServer (ioloop, HandleTransaction, socket);
 				server.Listen (ep.Address.ToString (), ep.Port);
 				
 				servers.Add (server);

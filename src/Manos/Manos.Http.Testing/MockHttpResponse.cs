@@ -191,7 +191,7 @@ namespace Manos.Http.Testing
 			SetCookie (name, cookie);
 		}
 		
-		public void Complete (WriteCallback callback)
+		public void Complete (Action callback)
 		{
 			
 		}

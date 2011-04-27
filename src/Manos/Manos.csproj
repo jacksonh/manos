@@ -48,13 +48,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Manos.IO.Libev\IOLoop.cs" />
-    <Compile Include="Manos.IO\IOStream.cs" />
-    <Compile Include="Manos.IO\SendFileOperation.cs" />
-    <Compile Include="Manos.Managed\AsyncWatcher.cs" />
-    <Compile Include="Manos.Managed\IOLoop.cs" />
-    <Compile Include="Manos.Managed\Libeio.cs" />
-    <Compile Include="Manos.Managed\SendFileOperation.cs" />
-    <Compile Include="Manos.Managed\Socket.cs" />
     <Compile Include="Manos\Loop.cs" />
     <Compile Include="Manos\BaseWatcher.cs" />
     <Compile Include="Manos\DeleteAttribute.cs" />
@@ -99,13 +92,7 @@
     <Compile Include="Manos.Http\IHttpTransaction.cs" />
     <Compile Include="Manos.Http\UploadedFile.cs" />
     <Compile Include="Manos.Routing\RouteHandler.cs" />
-    <Compile Include="Manos.IO\ConnectionAcceptedEventArgs.cs" />
     <Compile Include="Manos.IO\IOLoop.cs" />
-    <Compile Include="Manos.IO.Libev\IOStream.cs" />
-    <Compile Include="Manos.IO\NopWriteOperation.cs" />
-    <Compile Include="Manos.IO\SendBytesOperation.cs" />
-    <Compile Include="Manos.IO.Libev\SocketStream.cs" />
-    <Compile Include="Manos.IO\IWriteOperation.cs" />
     <Compile Include="Manos\IManosContext.cs" />
     <Compile Include="Manos.Logging\IManosLogger.cs" />
     <Compile Include="Manos.Logging\ManosConsoleLogger.cs" />
@@ -161,7 +148,6 @@
     <Compile Include="Manos.Template\ITemplateCodegen.cs" />
     <Compile Include="Manos.Template\Expression.cs" />
     <Compile Include="Manos.Template\TemplateFactory.cs" />
-    <Compile Include="Libeio\Libeio.cs" />
     <Compile Include="Libev\AsyncWatcher.cs" />
     <Compile Include="Libev\CheckWatcher.cs" />
     <Compile Include="Libev\EventTypes.cs" />
@@ -179,13 +165,25 @@
     <Compile Include="Manos\IManosRun.cs" />
     <Compile Include="Manos.IO.Libev\UdpReceiver.cs" />
     <Compile Include="Manos\ManosConfig.cs" />
-    <Compile Include="Manos.IO\PosixSendFileOperation.cs" />
-    <Compile Include="Manos.IO\CopyingSendFileOperation.cs" />
-    <Compile Include="Manos.IO.Libev\SecureSocketStream.cs" />
-    <Compile Include="Manos.IO.Libev\PlainSocketStream.cs" />
     <Compile Include="Manos.Threading\Boundary.cs" />
     <Compile Include="Manos.Threading\BoundaryExtensions.cs" />
     <Compile Include="Manos.Threading\IBoundary.cs" />
+    <Compile Include="Manos.IO\Stream.cs" />
+    <Compile Include="Manos.IO.Libev\EventedStream.cs" />
+    <Compile Include="Manos.IO\Socket.cs" />
+    <Compile Include="Manos.IO.Libev\PlainSocket.cs" />
+    <Compile Include="Manos.IO.Libev\SocketInfo.cs" />
+    <Compile Include="Manos.IO.Libev\EventedSocket.cs" />
+    <Compile Include="Manos.IO.Libev\SecureSocket.cs" />
+    <Compile Include="Manos.IO\ISendfileCapable.cs" />
+    <Compile Include="Manos.IO.Libev\SendFileOperation.cs" />
+    <Compile Include="Manos.IO.Libev\Libeio.cs" />
+    <Compile Include="Manos.IO.Libev\FileStream.cs" />
+    <Compile Include="Manos.IO\StreamCopySequencer.cs" />
+    <Compile Include="Manos.Managed\AsyncWatcher.cs" />
+    <Compile Include="Manos.Managed\IOLoop.cs" />
+    <Compile Include="Manos.Managed\Socket.cs" />
+    <Compile Include="Manos.Managed\FileStream.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -205,5 +203,6 @@
   </ProjectExtensions>
   <ItemGroup>
     <Folder Include="Manos.Threading\" />
+    <Folder Include="Manos.IO.Libev\" />
   </ItemGroup>
 </Project>

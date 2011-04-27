@@ -21,9 +21,6 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 //
-
-
-
 using System;
 using System.IO;
 using System.Text;
@@ -36,20 +33,15 @@ using Manos.Collections;
 
 namespace Manos.Http
 {
-	public class HttpStream : Stream, IDisposable
+	public class HttpStream : System.IO.Stream, IDisposable
 	{
 		private long length;
 		private bool chunk_encode = true;
 		private bool metadata_written;
 		private bool final_chunk_sent;
+		private Queue<object> write_ops;
 
-		private int pending_length_cbs;
-		private bool waiting_for_length;
-		private WriteCallback end_callback;
-
-		private Queue<IWriteOperation> write_ops;
-
-		public HttpStream (HttpEntity entity, ISocketStream stream)
+		public HttpStream (HttpEntity entity, Manos.IO.Stream stream)
 		{
 			HttpEntity = entity;
 			SocketStream = stream;
@@ -61,7 +53,7 @@ namespace Manos.Http
 			private set;
 		}
 
-		public ISocketStream SocketStream {
+		public Manos.IO.Stream SocketStream {
 			get;
 			private set;
 		}
@@ -93,20 +85,14 @@ namespace Manos.Http
 		}
 
 		public override long Length {
-			get {
-				return length;
-			}
+			get { return length; }
 		}
-		
+
 		public override long Position {
-			get {
-				return length;
-			}
-			set {
-				Seek (value, SeekOrigin.Begin);
-			}
+			get { return length; }
+			set { Seek (value, SeekOrigin.Begin); }
 		}
-		
+
 		public override void Flush ()
 		{
 		}
@@ -115,7 +101,7 @@ namespace Manos.Http
 		{
 			throw new NotSupportedException ("Can not Read from an HttpStream.");
 		}
-		
+
 		public override long Seek (long offset, SeekOrigin origin)
 		{
 			throw new NotSupportedException ("Can not seek on an HttpStream.");
@@ -130,62 +116,64 @@ namespace Manos.Http
 		{
 			Write (buffer, offset, count, chunk_encode);
 		}
-		
+
 		public void SendFile (string file_name)
 		{
 			EnsureMetadata ();
-
-			var write_file = SocketStream.MakeSendFile (file_name);
-			write_file.Chunked = chunk_encode;
-
-			if (!chunk_encode) {
-				pending_length_cbs++;
-                if (Loop.IsWindows)
-                    Manos.Managed.Libeio.stat(file_name, (stat, err) =>
-                    {
-                        if (err != null)
-                            write_file.SetLength(stat.Length);
-                        LengthCallback(stat.Length, err == null ? 0 : -1);
-                    });
-                else 
-				Libeio.Libeio.stat(file_name, (r, stat, err) => {
-					if (r != -1)
-						write_file.SetLength (stat.st_size);
-					LengthCallback (stat.st_size, err);
-				});
-			} else {
-				write_file.Completed += delegate {
-					length += write_file.Length;
-				};
-			}
-
-			// If chunk encoding is used the initial chunk will be written by the sendfile operation
-			// because only it knows the length at the time.
-			//
 			
-			QueueWriteOperation (write_file);
+			var len = Manos.IO.Libev.FileStream.GetLength (file_name);
+			length += len;
+			
+			QueueFile (file_name);
+		}
 
-			if (chunk_encode)
+		IEnumerable<ByteBuffer> SendCallback (Action callback)
+		{
+			callback ();
+			yield break;
+		}
+
+		void SendFileData (string fileName)
+		{
+			if (SocketStream is ISendfileCapable) {
+				((ISendfileCapable) SocketStream).SendFile (fileName);
+			} else {
+				SocketStream.PauseWriting ();
+				var fs = Libev.LibEvLoop.IsWindows
+					? (IO.Stream) Manos.Managed.FileStream.OpenRead (fileName, 64 * 1024)
+					: (IO.Stream) Manos.IO.Libev.FileStream.OpenRead (fileName, 64 * 1024);
+				SocketStream.Write (new StreamCopySequencer (fs, SocketStream, true));
+			}
+			SocketStream.Write (SendCallback (SendBufferedOps));
+		}
+
+		void SendFileImpl (string fileName)
+		{
+			var len = Libev.LibEvLoop.IsWindows 
+				? Manos.Managed.FileStream.GetLength (fileName)
+				: Manos.IO.Libev.FileStream.GetLength (fileName);
+			if (chunk_encode) {
+				SendChunk (len, false);
+				SendFileData (fileName);
 				SendChunk (-1, false);
+			} else {
+				SendFileData (fileName);
+			}
 		}
 
 		private void Write (byte [] buffer, int offset, int count, bool chunked)
 		{
 			EnsureMetadata ();
 
-			var bytes = new List<ByteBuffer> ();
-
 			if (chunked)
-				WriteChunk (bytes, count, false);
+				SendChunk (count, false);
 
 			length += (count - offset);
 			
-			bytes.Add (new ByteBuffer (buffer, offset, count));
+			QueueBuffer (new ByteBuffer (buffer, offset, count));
+			
 			if (chunked)
-				WriteChunk (bytes, -1, false);
-
-			var write_bytes = new SendBytesOperation (bytes.ToArray (), null);
-			QueueWriteOperation (write_bytes);
+				SendChunk (-1, false);
 		}
 
 		public void End ()
@@ -193,24 +181,24 @@ namespace Manos.Http
 			End (null);
 		}
 
-		public void End (WriteCallback callback)
+		public void End (Action callback)
 		{
-			if (pending_length_cbs > 0) {
-				waiting_for_length = true;
-				end_callback = callback;
-				return;
-			}
-
 			if (chunk_encode) {
 				SendFinalChunk (callback);
 				return;
 			}
+			
+			if (callback != null) {
+				if (write_ops == null)
+					write_ops = new Queue<object> ();
+				write_ops.Enqueue (callback);
+			}
 
-			WriteMetadata (null);
-			SendBufferedOps (callback);
+			WriteMetadata ();
+			SendBufferedOps ();
 		}
 
-		public void SendFinalChunk (WriteCallback callback)
+		public void SendFinalChunk (Action callback)
 		{
 			EnsureMetadata ();
 
@@ -219,33 +207,31 @@ namespace Manos.Http
 
 			final_chunk_sent = true;
 
-			var bytes = new List<ByteBuffer> ();
-
-			WriteChunk (bytes, 0, true);
-
-			var write_bytes = new SendBytesOperation (bytes.ToArray (), callback);
-			QueueWriteOperation (write_bytes);
+			SendChunk (0, true);
+			SocketStream.Write (SendCallback (callback));
 		}
 
-		public void SendBufferedOps (WriteCallback callback)
+		public void SendBufferedOps ()
 		{
 			if (write_ops != null) {
-				IWriteOperation [] ops = write_ops.ToArray ();
-
-				for (int i = 0; i < ops.Length; i++) {
-					SocketStream.QueueWriteOperation (ops [i]);
+				while (write_ops.Count > 0) {
+					var op = write_ops.Dequeue ();
+					if (op is ByteBuffer) {
+						SocketStream.Write ((ByteBuffer) op);
+					} else if (op is string) {
+						SendFileImpl ((string) op);
+						return;
+					} else if (op is Action) {
+						SocketStream.Write (SendCallback ((Action) op));
+					} else {
+						throw new InvalidOperationException ();
+					}
 				}
-				write_ops.Clear ();
 			}
-
-			SocketStream.QueueWriteOperation (new NopWriteOperation (callback));
 		}
 
-		public void WriteMetadata (WriteCallback callback)
+		void WriteMetadata ()
 		{
-			if (pending_length_cbs > 0)
-				return;
-
 			if (AddHeaders) {
 				if (chunk_encode) {
 					HttpEntity.Headers.SetNormalizedHeader ("Transfer-Encoding", "chunked");
@@ -260,46 +246,45 @@ namespace Manos.Http
 			byte [] data = Encoding.ASCII.GetBytes (builder.ToString ());
 
 			metadata_written = true;
-
-			var bytes = new List<ByteBuffer> ();
-			bytes.Add (new ByteBuffer (data, 0, data.Length));
-			var write_bytes = new SendBytesOperation (bytes.ToArray (), callback);
-
-			SocketStream.QueueWriteOperation (write_bytes);
+			
+			SocketStream.Write (data);
 		}
 
-		public void EnsureMetadata ()
+		void EnsureMetadata ()
 		{
 			if (!chunk_encode || metadata_written)
 				return;
 
-			WriteMetadata (null);
+			WriteMetadata ();
 		}
 
-		private void QueueWriteOperation (IWriteOperation op)
+		private void QueueBuffer (ByteBuffer buffer)
 		{
 			if (chunk_encode) {
-				SocketStream.QueueWriteOperation (op);
+				SocketStream.Write (buffer);
 				return;
 			}
 
 			if (write_ops == null)
-				write_ops = new Queue<IWriteOperation> ();
+				write_ops = new Queue<object> ();
 
-			write_ops.Enqueue (op);
+			write_ops.Enqueue (buffer);
 		}
 
-		private void SendChunk (int l, bool last)
+		private void QueueFile (string file)
 		{
-			var bytes = new List<ByteBuffer> ();
+			if (chunk_encode) {
+				SendFileImpl (file);
+				return;
+			}
 
-			WriteChunk (bytes, l, last);
+			if (write_ops == null)
+				write_ops = new Queue<object> ();
 
-			var write_bytes = new SendBytesOperation (bytes.ToArray (), null);
-			QueueWriteOperation (write_bytes);
+			write_ops.Enqueue (file);
 		}
 
-		private void WriteChunk (List<ByteBuffer> bytes, int l, bool last)
+		private void SendChunk (long l, bool last)
 		{
 			if (l == 0 && !last)
 				return;
@@ -323,22 +308,7 @@ namespace Manos.Http
 
 			length += i;
 			
-			bytes.Add (new ByteBuffer (chunk_buffer, 0, i));
-		}
-
-		private void LengthCallback (long length, int error)
-		{
-			if (length == -1) {
-				Console.Error.WriteLine ("Error getting file length errno: '{0}'", error);
-				length = 0;
-			}
-
-			this.length += length;
-			--pending_length_cbs;
-
-			if (pending_length_cbs <= 0 && waiting_for_length) {
-				End (end_callback);
-			}
+			QueueBuffer (new ByteBuffer (chunk_buffer, 0, i));
 		}
 	}
 }
