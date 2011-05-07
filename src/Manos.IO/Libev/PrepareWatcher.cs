@@ -1,10 +1,11 @@
 using System;
 using System.Runtime.InteropServices;
 using Manos;
+using Manos.IO;
 
 namespace Libev
 {
-	class PrepareWatcher : Watcher
+	class PrepareWatcher : Watcher, IPrepareWatcher
 	{
 		private Action<PrepareWatcher, EventTypes> callback;
 		private static UnmanagedWatcherCallback unmanaged_callback;

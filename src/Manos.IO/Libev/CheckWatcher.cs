@@ -1,9 +1,10 @@
 using System;
 using System.Runtime.InteropServices;
+using Manos.IO;
 
 namespace Libev
 {
-	class CheckWatcher : Watcher
+	class CheckWatcher : Watcher, ICheckWatcher
 	{
 		private Action<CheckWatcher, EventTypes> callback;
 		private static UnmanagedWatcherCallback unmanaged_callback;

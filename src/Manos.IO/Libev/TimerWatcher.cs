@@ -1,9 +1,10 @@
 using System;
 using System.Runtime.InteropServices;
+using Manos.IO;
 
 namespace Libev
 {
-	class TimerWatcher : Watcher
+	class TimerWatcher : Watcher, ITimerWatcher
 	{
 		private Action<TimerWatcher, EventTypes> callback;
 		private TimeSpan repeat;
