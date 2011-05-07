@@ -28,6 +28,11 @@ namespace Manos.IO.Libev
 			Loop.RunBlocking ();
 		}
 
+		public override void RunOnce ()
+		{
+			Loop.RunOneShot ();
+		}
+
 		public override void Stop ()
 		{
 			Loop.Unloop (UnloopType.All);
