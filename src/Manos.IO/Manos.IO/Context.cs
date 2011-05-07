@@ -3,11 +3,24 @@ using Mono.Unix.Native;
 
 namespace Manos.IO
 {
-	public abstract class Context
+	public abstract class Context : IDisposable
 	{
 		protected Context ()
 		{
 		}
+
+		~Context ()
+		{
+			Dispose (false);
+		}
+
+		public void Dispose ()
+		{
+			Dispose (true);
+			GC.SuppressFinalize (this);
+		}
+
+		protected abstract void Dispose (bool disposing);
 
 		public abstract void Start ();
 

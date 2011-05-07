@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace Manos.IO.Libev
 {
-	class EioContext
+	class EioContext : IDisposable
 	{
 		static Thread eioHandlerThread;
 		static Loop eioLoop;
@@ -37,6 +37,21 @@ namespace Manos.IO.Libev
 			eioHandlerCb = EioHandler;
 			outstanding = new ConcurrentQueue<Action> ();
 			pulse = new AsyncWatcher (parent, eioHandlerCb);
+		}
+
+		public void Dispose ()
+		{
+			if (eioHandlerCb != null) {
+				pulse.Dispose ();
+				eioHandlerCb = null;
+				outstanding = null;
+				GC.SuppressFinalize (this);
+			}
+		}
+
+		~EioContext ()
+		{
+			Dispose ();
 		}
 
 		void EioHandler (AsyncWatcher watcher, EventTypes events)

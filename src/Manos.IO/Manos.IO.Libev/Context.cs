@@ -12,6 +12,14 @@ namespace Manos.IO.Libev
 			Loop = new Loop ();
 			Eio = new EioContext (Loop);
 		}
+		
+		protected override void Dispose(bool disposing)
+		{
+			if (Loop != null) {
+				Eio.Dispose ();
+				Loop.Dispose ();
+			}
+		}
 
 		public Loop Loop {
 			get;
