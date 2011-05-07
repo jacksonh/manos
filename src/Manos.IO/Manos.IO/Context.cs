@@ -1,4 +1,5 @@
 using System;
+using Mono.Unix.Native;
 
 namespace Manos.IO
 {
@@ -27,6 +28,8 @@ namespace Manos.IO
 		public abstract Socket CreateSocket ();
 
 		public abstract Socket CreateSecureSocket (string certFile, string keyFile);
+
+		public abstract Stream Open (string fileName, int blockSize, OpenFlags openFlags, FilePermissions perms);
 	}
 }
 

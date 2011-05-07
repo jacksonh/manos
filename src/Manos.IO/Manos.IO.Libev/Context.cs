@@ -1,6 +1,7 @@
 using System;
 using Libev;
 using System.Runtime.InteropServices;
+using Mono.Unix.Native;
 
 namespace Manos.IO.Libev
 {
@@ -74,14 +75,17 @@ namespace Manos.IO.Libev
 
 		public override Socket CreateSocket ()
 		{
-			throw new NotImplementedException ();
-//			return new PlainSocket (this);
+			return new PlainSocket (Loop);
 		}
 
 		public override Socket CreateSecureSocket (string certFile, string keyFile)
 		{
-			throw new NotImplementedException ();
-//			return new SecureSocket (this, certFile, keyFile);
+			return new SecureSocket (Loop, certFile, keyFile);
+		}
+
+		public override Stream Open (string fileName, int blockSize, OpenFlags openFlags, FilePermissions perms)
+		{
+			return FileStream.Open (fileName, blockSize, openFlags, perms);
 		}
 	}
 }
