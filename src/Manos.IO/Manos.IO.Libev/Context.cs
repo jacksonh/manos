@@ -12,8 +12,8 @@ namespace Manos.IO.Libev
 			Loop = new Loop ();
 			Eio = new EioContext (Loop);
 		}
-		
-		protected override void Dispose(bool disposing)
+
+		protected override void Dispose (bool disposing)
 		{
 			if (Loop != null) {
 				Eio.Dispose ();
@@ -39,6 +39,11 @@ namespace Manos.IO.Libev
 		public override void RunOnce ()
 		{
 			Loop.RunOneShot ();
+		}
+
+		public override void RunOnceNonblocking ()
+		{
+			Loop.RunNonBlocking ();
 		}
 
 		public override void Stop ()

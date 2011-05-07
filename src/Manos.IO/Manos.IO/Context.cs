@@ -26,6 +26,8 @@ namespace Manos.IO
 
 		public abstract void RunOnce ();
 
+		public abstract void RunOnceNonblocking ();
+
 		public abstract void Stop ();
 
 		public abstract ITimerWatcher CreateTimerWatcher (TimeSpan timeout, TimeSpan repeat, Action cb);
