@@ -25,6 +25,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Net.Sockets;
 using Manos;
+using Manos.IO;
 
 namespace Libev
 {

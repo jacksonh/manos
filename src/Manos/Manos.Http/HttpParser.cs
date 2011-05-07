@@ -31,7 +31,7 @@
 using System;
 using System.IO;
 
-using Manos.Collections;
+using Manos.IO;
 
 namespace Manos.Http {
 

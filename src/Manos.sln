@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manos", "Manos\Manos.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "manostool", "manostool\manostool.csproj", "{482384E3-EB97-4A8E-9ED9-EACC31350B5E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manos.IO", "Manos.IO\Manos.IO.csproj", "{5E2AA984-1C9C-4890-BEF6-CC2981C49AFF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,18 @@ Global
 		{482384E3-EB97-4A8E-9ED9-EACC31350B5E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{482384E3-EB97-4A8E-9ED9-EACC31350B5E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{482384E3-EB97-4A8E-9ED9-EACC31350B5E}.Release|Win32.ActiveCfg = Release|Any CPU
+		{5E2AA984-1C9C-4890-BEF6-CC2981C49AFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E2AA984-1C9C-4890-BEF6-CC2981C49AFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E2AA984-1C9C-4890-BEF6-CC2981C49AFF}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5E2AA984-1C9C-4890-BEF6-CC2981C49AFF}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5E2AA984-1C9C-4890-BEF6-CC2981C49AFF}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{5E2AA984-1C9C-4890-BEF6-CC2981C49AFF}.Debug|Win32.Build.0 = Debug|Any CPU
+		{5E2AA984-1C9C-4890-BEF6-CC2981C49AFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E2AA984-1C9C-4890-BEF6-CC2981C49AFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E2AA984-1C9C-4890-BEF6-CC2981C49AFF}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5E2AA984-1C9C-4890-BEF6-CC2981C49AFF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5E2AA984-1C9C-4890-BEF6-CC2981C49AFF}.Release|Win32.ActiveCfg = Release|Any CPU
+		{5E2AA984-1C9C-4890-BEF6-CC2981C49AFF}.Release|Win32.Build.0 = Release|Any CPU
 		{9F5B878D-A04B-4F97-8722-1BCB698EF4E4}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{9F5B878D-A04B-4F97-8722-1BCB698EF4E4}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
 		{9F5B878D-A04B-4F97-8722-1BCB698EF4E4}.Debug|Mixed Platforms.Build.0 = Debug|Win32
@@ -60,6 +74,9 @@ Global
 		$2.inheritsSet = Mono
 		$2.inheritsScope = text/x-csharp
 		$2.scope = text/x-csharp
+		$0.DotNetNamingPolicy = $3
+		$3.DirectoryNamespaceAssociation = Flat
+		$3.ResourceNamePolicy = FileFormatDefault
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

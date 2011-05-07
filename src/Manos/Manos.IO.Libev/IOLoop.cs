@@ -45,13 +45,13 @@ namespace Manos.IO.Libev
 		public override void AddTimeout (Timeout timeout)
 		{
 			TimerWatcher t = new TimerWatcher (timeout.begin, timeout.span, evloop, HandleTimeout);
-			t.UserData = timeout;
+			t.Tag = timeout;
 			t.Start ();
 		}
 
 		private void HandleTimeout (Loop loop, TimerWatcher timeout, EventTypes revents)
 		{
-			Timeout t = (Timeout) timeout.UserData;
+			Timeout t = (Timeout) timeout.Tag;
 
 			AppHost.RunTimeout (t);
 			if (!t.ShouldContinueToRepeat ()) {

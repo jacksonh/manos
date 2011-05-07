@@ -1,5 +1,5 @@
 using System;
-using Manos.Collections;
+using Manos.IO;
 using System.Collections.Generic;
 using System.IO;
 using Mono.Unix.Native;

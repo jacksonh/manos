@@ -24,7 +24,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Manos.Collections
+namespace Manos.IO
 {
 	public class ByteBuffer
 	{

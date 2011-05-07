@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Manos.IO;
 
 namespace Manos
 {
@@ -24,7 +25,7 @@ namespace Manos
             private set;
         }
 
-        public object UserData
+        public object Tag
         {
             get;
             set;
@@ -35,29 +36,5 @@ namespace Manos
         public abstract void Start ();
         public abstract void Stop ();
 
-    }
-
-    public interface IBaseWatcher: IDisposable
-    {
-        void Start ();
-        void Stop ();
-        object UserData
-        {
-            get;
-            set;
-        }
-        Loop Loop
-        {
-            get;
-        }
-        bool IsRunning
-        {
-            get;
-        }
-    }
-
-    public interface IAsyncWatcher: IBaseWatcher  // always a base watcher
-    {
-        void Send ();
     }
 }
