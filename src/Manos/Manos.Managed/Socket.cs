@@ -141,6 +141,7 @@ namespace Manos.Managed
 
 			public override void ResumeWriting ()
 			{
+                if (writeAllowed) return;
 				writeAllowed = true;
 				HandleWrite ();
 			}
