@@ -125,6 +125,8 @@ namespace Manos.IO
 			set { throw new NotSupportedException (); }
 		}
 
+        public abstract bool Managed { get; }
+
 		public abstract void ResumeReading ();
 
 		public abstract void ResumeReading (long forBytes);

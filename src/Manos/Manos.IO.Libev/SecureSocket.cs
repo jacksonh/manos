@@ -25,6 +25,12 @@ namespace Manos.IO.Libev
 				this.tlsContext = tlsContext;
 			}
 
+            public override bool Managed
+            {
+                get { return false; }
+            }
+
+
 			public override long Position {
 				get { return position; }
 				set { SeekTo (value); }

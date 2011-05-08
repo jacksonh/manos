@@ -21,6 +21,11 @@ namespace Manos.IO.Libev
 			this.canWrite = canWrite;
 		}
 
+        public override bool Managed
+        {
+            get { return false; }
+        }
+
 		public IntPtr Handle {
 			get;
 			private set;
