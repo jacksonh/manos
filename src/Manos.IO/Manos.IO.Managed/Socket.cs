@@ -178,7 +178,7 @@ namespace Manos.IO.Managed
 							RaiseError (new SocketException ());
 						});
 					} else {
-						parent.loop.Enqueue (ResumeWriting);
+						parent.loop.Enqueue (HandleWrite);
 					}
 				}, null);
 				return buffer.Length;

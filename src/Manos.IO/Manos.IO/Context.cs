@@ -14,6 +14,25 @@ namespace Manos.IO
 			Dispose (false);
 		}
 
+		private static readonly bool isWindows;
+
+		static Context ()
+		{
+			isWindows = Environment.OSVersion.Platform == PlatformID.Win32NT
+				|| Environment.OSVersion.Platform == PlatformID.Win32S
+				|| Environment.OSVersion.Platform == PlatformID.Win32Windows
+				|| Environment.OSVersion.Platform == PlatformID.WinCE;
+		}
+
+		public static Context Create ()
+		{
+			if (isWindows) {
+				return new Manos.IO.Managed.Context ();
+			} else {
+				return new Manos.IO.Libev.Context ();
+			}
+		}
+
 		public void Dispose ()
 		{
 			Dispose (true);
