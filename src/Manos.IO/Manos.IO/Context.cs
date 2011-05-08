@@ -64,8 +64,17 @@ namespace Manos.IO
 		public abstract Socket CreateSocket ();
 
 		public abstract Socket CreateSecureSocket (string certFile, string keyFile);
+		
+		public abstract class FileOperations
+		{
+			public abstract Stream Open (string fileName, int blockSize, OpenFlags openFlags, FilePermissions perms);
 
-		public abstract Stream Open (string fileName, int blockSize, OpenFlags openFlags, FilePermissions perms);
+			public abstract long GetLength (string fileName);
+		}
+		
+		public abstract FileOperations File {
+			get;
+		}
 	}
 }
 

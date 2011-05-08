@@ -48,7 +48,8 @@ namespace Manos.Http {
 		private DataDictionary cookies;
 
 		
-		public HttpRequest (string address)
+		public HttpRequest (Context context, string address)
+			: base (context)
 		{
 			Uri uri = null;
 
@@ -64,12 +65,14 @@ namespace Manos.Http {
 			MinorVersion = 1;
 		}
 
-		public HttpRequest (string remote_address, int port) : this (remote_address)
+		public HttpRequest (Context context, string remote_address, int port)
+			: this (context, remote_address)
 		{
 			RemotePort = port;
 		}
 
 		public HttpRequest (IHttpTransaction transaction, Socket stream)
+			: base (transaction.Context)
 		{
 			Transaction = transaction;
 			Socket = stream;
@@ -189,7 +192,7 @@ namespace Manos.Http {
 
 		public void Execute ()
 		{
-            Socket = AppHost.IOLoop.CreateSocket ();
+            Socket = AppHost.Context.CreateSocket ();
 			Socket.Connect (RemoteAddress, RemotePort, delegate {
 				Stream = new HttpStream (this, Socket.GetSocketStream ());
 				Stream.Chunked = false;
@@ -203,7 +206,7 @@ namespace Manos.Http {
 				}
 
 				Stream.End (() => {
-					HttpResponse response = new HttpResponse (this, Socket);
+					HttpResponse response = new HttpResponse (Context, this, Socket);
 
 //					response.OnCompleted += () => {
 //						if (OnResponse != null)

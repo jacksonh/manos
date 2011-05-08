@@ -18,6 +18,7 @@ namespace Manos.IO.Managed
 		private List<AsyncWatcher> asyncs;
 		private List<TimerWatcher> timers;
 		private volatile bool running;
+		private ManagedFileOperations fileOps;
 
 		public Context ()
 		{
@@ -29,6 +30,7 @@ namespace Manos.IO.Managed
 			checks = new List<CheckWatcher> ();
 			idles = new List<IdleWatcher> ();
 			timers = new List<TimerWatcher> ();
+			fileOps = new ManagedFileOperations (this);
 		}
 
 		internal void Enqueue (Action cb)
@@ -172,21 +174,6 @@ namespace Manos.IO.Managed
 			return result;
 		}
 
-		public override Stream Open (string fileName, int blockSize, Mono.Unix.Native.OpenFlags openFlags, Mono.Unix.Native.FilePermissions perms)
-		{
-			FileAccess access = FileAccess.ReadWrite;
-			OpenFlags mask = OpenFlags.O_RDONLY | OpenFlags.O_RDWR | OpenFlags.O_WRONLY;
-			if ((openFlags & mask) == OpenFlags.O_RDWR) {
-				access = FileAccess.ReadWrite;
-			} else if ((openFlags & mask) == OpenFlags.O_RDONLY) {
-				access = FileAccess.Read;
-			} else if ((openFlags & mask) == OpenFlags.O_WRONLY) {
-				access = FileAccess.Write;
-			} 
-			var fs = new System.IO.FileStream (fileName, FileMode.Open, access, FileShare.ReadWrite, 0x1000, true);
-			return new FileStream (this, fs, blockSize);
-		}
-
 		public override Manos.IO.Socket CreateSocket ()
 		{
 			return new Socket (this);
@@ -195,6 +182,40 @@ namespace Manos.IO.Managed
 		public override Manos.IO.Socket CreateSecureSocket (string certFile, string keyFile)
 		{
 			throw new NotSupportedException ();
+		}
+		
+		class ManagedFileOperations : FileOperations
+		{
+			private Context parent;
+
+			public ManagedFileOperations (Context parent)
+			{
+				this.parent = parent;
+			}
+
+			public override Stream Open (string fileName, int blockSize, Mono.Unix.Native.OpenFlags openFlags, Mono.Unix.Native.FilePermissions perms)
+			{
+				FileAccess access = FileAccess.ReadWrite;
+				OpenFlags mask = OpenFlags.O_RDONLY | OpenFlags.O_RDWR | OpenFlags.O_WRONLY;
+				if ((openFlags & mask) == OpenFlags.O_RDWR) {
+					access = FileAccess.ReadWrite;
+				} else if ((openFlags & mask) == OpenFlags.O_RDONLY) {
+					access = FileAccess.Read;
+				} else if ((openFlags & mask) == OpenFlags.O_WRONLY) {
+					access = FileAccess.Write;
+				} 
+				var fs = new System.IO.FileStream (fileName, FileMode.Open, access, FileShare.ReadWrite, 0x1000, true);
+				return new FileStream (parent, fs, blockSize);
+			}
+
+			public override long GetLength (string fileName)
+			{
+				return FileStream.GetLength (fileName);
+			}
+		}
+		
+		public override FileOperations File {
+			get { return fileOps; }
 		}
 	}
 }

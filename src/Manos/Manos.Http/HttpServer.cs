@@ -56,15 +56,15 @@ namespace Manos.Http
             ServerVersion = "Manos/" + v.ToString();
         }
 
-        public HttpServer(IOLoop loop, HttpConnectionCallback callback, Socket socket, bool closeOnEnd = false)
+        public HttpServer(Context context, HttpConnectionCallback callback, Socket socket, bool closeOnEnd = false)
         {
             this.callback = callback;
             this.socket = socket;
             this.closeOnEnd = closeOnEnd;
-			this.IOLoop = loop;
+			this.Context = context;
         }
 
-        public IOLoop IOLoop
+        public Context Context
         {
 			get;
 			private set;

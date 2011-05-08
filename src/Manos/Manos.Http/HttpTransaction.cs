@@ -58,6 +58,8 @@ namespace Manos.Http {
 			Socket = socket;
 			this.closeOnEnd = closeOnEnd;
 			
+			Context = server.Context;
+			
 			ConnectionCallback = callback;
 
 			gc_handle = GCHandle.Alloc (this);
@@ -74,6 +76,11 @@ namespace Manos.Http {
 			// Technically the IOStream should call our Close method, but lets be sure
 			if (gc_handle.IsAllocated)
 				gc_handle.Free ();
+		}
+		
+		public Context Context {
+			get;
+			private set;
 		}
 
 		public HttpServer Server {
@@ -145,7 +152,7 @@ namespace Manos.Http {
 		public void OnRequestReady ()
 		{
 			try {
-				Response = new HttpResponse (Request, Socket);
+				Response = new HttpResponse (Context, Request, Socket);
 				ResponseReady = true;
 				if( closeOnEnd ) Response.OnEnd += () => Response.Complete( OnResponseFinished );
 				Server.RunTransaction (this);
