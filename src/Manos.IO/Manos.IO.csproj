@@ -39,6 +39,7 @@
     <Folder Include="Assembly\" />
     <Folder Include="Manos.IO\" />
     <Folder Include="Manos.IO.Libev\" />
+    <Folder Include="Manos.IO.Managed\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assembly\AssemblyInfo.cs" />
@@ -75,5 +76,14 @@
     <Compile Include="Manos.IO.Libev\SendFileOperation.cs" />
     <Compile Include="Manos.IO.Libev\SecureSocket.cs" />
     <Compile Include="Manos.IO.Libev\FileStream.cs" />
+    <Compile Include="Manos.IO.Managed\Context.cs" />
+    <Compile Include="Manos.IO.Managed\Watcher.cs" />
+    <Compile Include="Manos.IO.Managed\AsyncWatcher.cs" />
+    <Compile Include="Manos.IO.Managed\PrepareWatcher.cs" />
+    <Compile Include="Manos.IO.Managed\CheckWatcher.cs" />
+    <Compile Include="Manos.IO.Managed\IdleWatcher.cs" />
+    <Compile Include="Manos.IO.Managed\FileStream.cs" />
+    <Compile Include="Manos.IO.Managed\Socket.cs" />
+    <Compile Include="Manos.IO.Managed\TimerWatcher.cs" />
   </ItemGroup>
 </Project>
