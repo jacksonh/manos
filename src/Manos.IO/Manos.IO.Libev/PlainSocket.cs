@@ -10,7 +10,7 @@ namespace Manos.IO.Libev
 		Action<Socket> acceptCallback;
 		PlainSocketStream stream;
 		
-		partial class PlainSocketStream : EventedStream//, ISendfileCapable
+		partial class PlainSocketStream : EventedStream, ISendfileCapable
 		{
 			PlainSocket parent;
 			byte [] receiveBuffer = new byte[4096];

@@ -61,7 +61,7 @@ namespace Manos.IO.Libev
 
 		void SendNextBlock ()
 		{
-			context.Eio.SendFile(target.Handle.ToInt32 (), sourceFd, position, length - position, (len, err) => {
+			context.Eio.SendFile (target.Handle.ToInt32 (), sourceFd, position, length - position, (len, err) => {
 				if (len >= 0) {
 					position += len;
 				} else {
@@ -82,9 +82,8 @@ namespace Manos.IO.Libev
 				target.PauseWriting ();
 				if (sourceFd == 0) {
 					OpenFile ();
-				} else {
-					SendNextBlock ();
 				}
+				SendNextBlock ();
 				yield return emptyBuffer;
 			}
 			Dispose ();
