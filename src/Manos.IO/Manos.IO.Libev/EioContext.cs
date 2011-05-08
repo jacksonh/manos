@@ -17,6 +17,7 @@ namespace Manos.IO.Libev
 			manos_init (eioLoop.Handle);
 			
 			eioHandlerThread = new Thread (EioHandler);
+			eioHandlerThread.IsBackground = true;
 			eioHandlerThread.Start ();
 		}
 
