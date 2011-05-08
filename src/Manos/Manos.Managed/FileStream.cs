@@ -26,6 +26,12 @@ namespace Manos.Managed
 			this.readBuffer = new byte [blockSize];
 		}
 
+        public override bool Managed
+        {
+            get { return true; }
+        }
+
+
 		public override long Position {
 			get { return stream.Position; }
 			set { SeekTo (value); }
@@ -75,8 +81,9 @@ namespace Manos.Managed
 
 		public override IDisposable Read (Action<ByteBuffer> onData, Action<Exception> onError, Action onClose)
 		{
-			ResumeReading ();
-			return base.Read (onData, onError, onClose);
+            IDisposable res = base.Read(onData, onError, onClose);
+            ResumeReading();
+            return res;
 		}
 
 		public override void ResumeReading ()
@@ -185,8 +192,8 @@ namespace Manos.Managed
 				access = FileAccess.Read;
 			} else if ((openFlags & mask) == OpenFlags.O_WRONLY) {
 				access = FileAccess.Write;
-			} 
-			var fs = new System.IO.FileStream (fileName, FileMode.Open, access);
+			}
+            var fs = new System.IO.FileStream (fileName, FileMode.Open, access, FileShare.ReadWrite, 0x1000, true);
 			return new FileStream ((IOLoop) IOLoop.Instance, fs, blockSize);
 		}
 	}

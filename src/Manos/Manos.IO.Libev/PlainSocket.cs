@@ -18,6 +18,12 @@ namespace Manos.IO.Libev
 			{
 				Write (new SendFileOperation (this, file));
 			}
+
+            public override bool Managed
+            {
+                get { return false; }
+            }
+
 		}
 #endif
 		

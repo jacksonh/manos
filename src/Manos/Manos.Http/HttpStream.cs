@@ -121,7 +121,7 @@ namespace Manos.Http
 		{
 			EnsureMetadata ();
 			
-			var len = Manos.IO.Libev.FileStream.GetLength (file_name);
+			var len = SocketStream.Managed ? Manos.Managed.FileStream.GetLength (file_name) : Manos.IO.Libev.FileStream.GetLength (file_name);
 			length += len;
 			
 			QueueFile (file_name);

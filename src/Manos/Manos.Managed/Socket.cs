@@ -29,6 +29,7 @@ namespace Manos.Managed
 			this.socket = socket;
 			this.address = ((IPEndPoint) socket.RemoteEndPoint).Address.ToString ();
 			this.port = ((IPEndPoint) socket.RemoteEndPoint).Port;
+            this.state = SocketState.Open;
 		}
 		
 		class SocketStream : Manos.IO.Stream
@@ -43,6 +44,11 @@ namespace Manos.Managed
 			{
 				this.parent = parent;
 			}
+
+            public override bool Managed
+            {
+                get { return true; }
+            }
 
 			public override long Position {
 				get { return position; }
@@ -129,11 +135,13 @@ namespace Manos.Managed
 				if (forBytes < 0)
 					throw new ArgumentException ("forBytes");
 				readLimit = forBytes;
-				throw new NotImplementedException ();
+                readAllowed = true;
+                HandleRead ();
 			}
 
 			public override void ResumeWriting ()
 			{
+                if (writeAllowed) return;
 				writeAllowed = true;
 				HandleWrite ();
 			}
@@ -167,7 +175,7 @@ namespace Manos.Managed
 
 			protected override int WriteSingleBuffer (ByteBuffer buffer)
 			{
-				SocketError err;
+				SocketError err = SocketError.Success;
 				parent.socket.BeginSend (buffer.Bytes, buffer.Position, buffer.Length, SocketFlags.None, out err, ar => {
 					if (writeTimer != null) {
 						writeTimer.Stop ();
@@ -179,7 +187,7 @@ namespace Manos.Managed
 							RaiseError (new SocketException ());
 						});
 					} else {
-						parent.loop.NonBlockInvoke (ResumeWriting);
+						parent.loop.NonBlockInvoke (HandleWrite);
 					}
 				}, null);
 				return buffer.Length;
@@ -187,9 +195,6 @@ namespace Manos.Managed
 
 			void HandleRead ()
 			{
-				if (!readAllowed) {
-					return;
-				}
 				
 				SocketError se;
 				int length = (int) Math.Min (readLimit, receiveBuffer.Length);
