@@ -151,6 +151,7 @@ data/manos.pc
 src/Makefile
 src/Manos/Makefile
 src/Manos/Assembly/AssemblyInfo.cs
+src/Manos.IO/Makefile
 src/Manos.IO/Assembly/AssemblyInfo.cs
 src/manostool/Makefile
 src/manostool/AssemblyInfo.cs

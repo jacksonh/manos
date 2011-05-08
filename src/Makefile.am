@@ -1,2 +1,2 @@
 
-SUBDIRS = libeio libev libmanos Manos manostool
+SUBDIRS = libeio libev libmanos Manos manostool Manos.IO
