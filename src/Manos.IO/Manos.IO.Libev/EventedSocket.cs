@@ -5,23 +5,23 @@ namespace Manos.IO.Libev
 {
 	abstract class EventedSocket : Socket
 	{
-		public EventedSocket (Loop loop)
+		public EventedSocket (Context context)
 		{
-			if (loop == null)
-				throw new ArgumentNullException ("loop");
+			if (context == null)
+				throw new ArgumentNullException ("context");
 			
-			this.Loop = loop;
+			this.Context = context;
 		}
 
-		protected EventedSocket (Loop loop, SocketInfo info)
-			: this (loop)
+		protected EventedSocket (Context context, SocketInfo info)
+			: this (context)
 		{
 			address = info.Address.ToString ();
 			port = info.port;
 		}
 
 
-		public Loop Loop {
+		public Context Context {
 			get;
 			private set;
 		}

@@ -37,6 +37,7 @@ namespace Manos.IO.Libev
 			eioHandlerCb = EioHandler;
 			outstanding = new ConcurrentQueue<Action> ();
 			pulse = new AsyncWatcher (parent, eioHandlerCb);
+			pulse.Start ();
 		}
 
 		public void Dispose ()

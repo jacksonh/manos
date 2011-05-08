@@ -18,7 +18,7 @@ namespace Manos.IO.Libev
 			long position;
 
 			public SecureSocketStream (SecureSocket parent, IntPtr handle, IntPtr tlsContext)
-				: base (parent.Loop, handle)
+				: base (parent.Context, handle)
 			{
 				this.parent = parent;
 				this.tlsContext = tlsContext;
@@ -88,7 +88,7 @@ namespace Manos.IO.Libev
 				
 					error = manos_tls_accept (tlsContext, out clientTlsContext, out socketInfo);
 					if (error == 0) {
-						var socket = new SecureSocket (parent.Loop, socketInfo, clientTlsContext);
+						var socket = new SecureSocket (parent.Context, socketInfo, clientTlsContext);
 						parent.acceptCallback (socket);
 					}
 				}
@@ -134,8 +134,8 @@ namespace Manos.IO.Libev
 			private static extern int manos_tls_close (IntPtr tls);
 		}
 		
-		public SecureSocket (Loop loop, string certFile, string keyFile)
-			: base (loop)
+		public SecureSocket (Context context, string certFile, string keyFile)
+			: base (context)
 		{
 			int err = manos_tls_init (out tlsContext, certFile, keyFile);
 			if (err != 0) {
@@ -145,8 +145,8 @@ namespace Manos.IO.Libev
 			}
 		}
 
-		SecureSocket (Loop loop, SocketInfo info, IntPtr tlsContext)
-			: base (loop, info)
+		SecureSocket (Context context, SocketInfo info, IntPtr tlsContext)
+			: base (context, info)
 		{
 			stream = new SecureSocketStream (this, new IntPtr (info.fd), tlsContext);
 			this.tlsContext = tlsContext;

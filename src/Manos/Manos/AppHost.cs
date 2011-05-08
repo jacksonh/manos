@@ -53,7 +53,12 @@ namespace Manos
 		private static IManosLogger log;
 		private static List<IManosPipe> pipes;
 		private static Boundary boundary = Boundary.Instance;
-		private static Context context = Context.Create ();
+		private static Context context;
+
+		static AppHost ()
+		{
+			context = Context.Create ();
+		}
 
 		public static ManosApp App {
 			get { return app; }	

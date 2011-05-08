@@ -11,9 +11,11 @@ namespace Manos.IO.Libev
 		string file;
 		long position, length;
 		bool completed;
+		Context context;
 
-		public SendFileOperation (EventedStream target, string file)
+		public SendFileOperation (Context context, EventedStream target, string file)
 		{
+			this.context = context;
 			this.target = target;
 			this.file = file;
 		}
@@ -59,7 +61,7 @@ namespace Manos.IO.Libev
 
 		void SendNextBlock ()
 		{
-			Libeio.sendfile (target.Handle.ToInt32 (), sourceFd, position, length - position, (len, err) => {
+			context.Eio.SendFile(target.Handle.ToInt32 (), sourceFd, position, length - position, (len, err) => {
 				if (len >= 0) {
 					position += len;
 				} else {

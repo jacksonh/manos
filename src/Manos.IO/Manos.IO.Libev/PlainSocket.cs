@@ -10,7 +10,7 @@ namespace Manos.IO.Libev
 		Action<Socket> acceptCallback;
 		PlainSocketStream stream;
 		
-		partial class PlainSocketStream : EventedStream, ISendfileCapable
+		partial class PlainSocketStream : EventedStream//, ISendfileCapable
 		{
 			PlainSocket parent;
 			byte [] receiveBuffer = new byte[4096];
@@ -18,7 +18,7 @@ namespace Manos.IO.Libev
 			long position;
 
 			public PlainSocketStream (PlainSocket parent, IntPtr handle)
-				: base (parent.Loop, handle)
+				: base (parent.Context, handle)
 			{
 				this.parent = parent;
 			}
@@ -38,7 +38,7 @@ namespace Manos.IO.Libev
 
 			public void SendFile (string file)
 			{
-				Write (new SendFileOperation (this, file));
+				Write (new SendFileOperation (Context, this, file));
 			}
 
 			public override void Close ()
@@ -97,7 +97,7 @@ namespace Manos.IO.Libev
 					throw new Exception (String.Format ("Exception while accepting. errno: {0}", error));
 
 				for (int i = 0; i < amount; i++) {
-					var socket = new PlainSocket (parent.Loop, socketInfos [i]);
+					var socket = new PlainSocket (parent.Context, socketInfos [i]);
 					parent.acceptCallback (socket);
 				}
 			}
@@ -138,13 +138,13 @@ namespace Manos.IO.Libev
 			internal static extern int manos_socket_send (int fd, byte [] buffer, int offset, int len, out int err);
 		}
 		
-		public PlainSocket (Loop loop)
-			: base (loop)
+		public PlainSocket (Context context)
+			: base (context)
 		{
 		}
 
-		PlainSocket (Loop loop, SocketInfo info)
-			: base (loop, info)
+		PlainSocket (Context context, SocketInfo info)
+			: base (context, info)
 		{
 			stream = new PlainSocketStream (this, new IntPtr (info.fd));
 			this.state = Socket.SocketState.Open;
@@ -170,7 +170,7 @@ namespace Manos.IO.Libev
 			
 			stream = new PlainSocketStream (this, new IntPtr (fd));
 			
-			var connectWatcher = new IOWatcher (new IntPtr (fd), EventTypes.Write, Loop, (watcher, revents) => {
+			var connectWatcher = new IOWatcher (new IntPtr (fd), EventTypes.Write, Context.Loop, (watcher, revents) => {
 				watcher.Stop ();
 				watcher.Dispose ();
 				

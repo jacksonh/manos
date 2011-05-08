@@ -11,9 +11,11 @@ namespace Manos.IO.Libev
 		bool canRead, canWrite;
 		long readLimit;
 		long position;
+		Context context;
 
-		FileStream (IntPtr handle, int blockSize, bool canRead, bool canWrite)
+		FileStream (Context context, IntPtr handle, int blockSize, bool canRead, bool canWrite)
 		{
+			this.context = context;
 			this.Handle = handle;
 			this.readBuffer = new byte [blockSize];
 			this.canRead = canRead;
@@ -132,7 +134,7 @@ namespace Manos.IO.Libev
 			}
 			
 			var length = (int) Math.Min (readBuffer.Length, readLimit);
-			Libeio.read (Handle.ToInt32 (), readBuffer, position, length, OnReadDone);
+			context.Eio.Read (Handle.ToInt32 (), readBuffer, position, length, OnReadDone);
 		}
 
 		void OnReadDone (int result, byte[] buffer, int error)
@@ -173,7 +175,7 @@ namespace Manos.IO.Libev
 				bytes = new byte[buffer.Length];
 				Array.Copy (buffer.Bytes, buffer.Position, bytes, 0, buffer.Length);
 			}
-			Libeio.write (Handle.ToInt32 (), bytes, position, buffer.Length, OnWriteDone);
+			context.Eio.Write (Handle.ToInt32 (), bytes, position, buffer.Length, OnWriteDone);
 			return buffer.Length;
 		}
 
@@ -192,12 +194,8 @@ namespace Manos.IO.Libev
 			return stat.st_size;
 		}
 
-		public static FileStream OpenRead (string fileName, int blockSize)
-		{
-			return Open (fileName, blockSize, OpenFlags.O_RDONLY, FilePermissions.ACCESSPERMS);
-		}
-
-		public static FileStream Open (string fileName, int blockSize, OpenFlags openFlags, FilePermissions perms)
+		public static FileStream Open (Context context, string fileName, int blockSize,
+			OpenFlags openFlags, FilePermissions perms)
 		{
 			var fd = Mono.Unix.Native.Syscall.open (fileName, openFlags, perms);
 			var mask = OpenFlags.O_RDONLY | OpenFlags.O_RDWR | OpenFlags.O_WRONLY;
@@ -205,7 +203,7 @@ namespace Manos.IO.Libev
 				|| (openFlags & mask) == OpenFlags.O_RDWR;
 			var canWrite = (openFlags & mask) == OpenFlags.O_WRONLY
 				|| (openFlags & mask) == OpenFlags.O_RDWR;
-			return new FileStream (new IntPtr (fd), blockSize, canRead, canWrite);
+			return new FileStream (context, new IntPtr (fd), blockSize, canRead, canWrite);
 		}
 	}
 }

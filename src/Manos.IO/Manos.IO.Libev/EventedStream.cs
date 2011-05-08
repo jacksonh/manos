@@ -14,18 +14,18 @@ namespace Manos.IO.Libev
 		// read limits
 		protected long? readLimit;
 
-		protected EventedStream (Loop loop, IntPtr handle)
+		protected EventedStream (Context context, IntPtr handle)
 		{
-			if (loop == null)
-				throw new ArgumentNullException ("loop");
+			if (context == null)
+				throw new ArgumentNullException ("context");
 			if (handle == IntPtr.Zero)
 				throw new ArgumentException ("handle");
 			
-			this.Loop = loop;
+			this.Context = context;
 			this.Handle = handle;
 			
-			this.readWatcher = new IOWatcher (Handle, EventTypes.Read, Loop, HandleReadReady);
-			this.writeWatcher = new IOWatcher (Handle, EventTypes.Write, Loop, HandleWriteReady);
+			this.readWatcher = new IOWatcher (Handle, EventTypes.Read, Context.Loop, HandleReadReady);
+			this.writeWatcher = new IOWatcher (Handle, EventTypes.Write, Context.Loop, HandleWriteReady);
 		}
 
 		public override bool CanTimeout {
@@ -39,7 +39,7 @@ namespace Manos.IO.Libev
 					throw new ArgumentException ("value");
 				readTimeout = value;
 				if (readTimeoutWatcher == null) {
-					readTimeoutWatcher = new TimerWatcher (readTimeout, Loop, HandleReadTimeout);
+					readTimeoutWatcher = new TimerWatcher (readTimeout, Context.Loop, HandleReadTimeout);
 				}
 				readTimeoutWatcher.Repeat = readTimeout;
 				readTimeoutWatcher.Again ();
@@ -53,7 +53,7 @@ namespace Manos.IO.Libev
 					throw new ArgumentException ("value");
 				writeTimeout = value;
 				if (writeTimeoutWatcher == null) {
-					writeTimeoutWatcher = new TimerWatcher (writeTimeout, Loop, HandleWriteTimeout);
+					writeTimeoutWatcher = new TimerWatcher (writeTimeout, Context.Loop, HandleWriteTimeout);
 				}
 				writeTimeoutWatcher.Repeat = writeTimeout;
 				writeTimeoutWatcher.Again ();
@@ -100,7 +100,7 @@ namespace Manos.IO.Libev
 			HandleRead ();
 		}
 
-		public Loop Loop {
+		public Context Context {
 			get;
 			private set;
 		}

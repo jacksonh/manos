@@ -13,7 +13,7 @@ namespace Manos.IO.Libev
 		{
 			Loop = new Loop ();
 			Eio = new EioContext (Loop);
-			fileOps = new LibevFileOperations ();
+			fileOps = new LibevFileOperations (this);
 		}
 
 		protected override void Dispose (bool disposing)
@@ -96,19 +96,26 @@ namespace Manos.IO.Libev
 
 		public override Socket CreateSocket ()
 		{
-			return new PlainSocket (Loop);
+			return new PlainSocket (this);
 		}
 
 		public override Socket CreateSecureSocket (string certFile, string keyFile)
 		{
-			return new SecureSocket (Loop, certFile, keyFile);
+			return new SecureSocket (this, certFile, keyFile);
 		}
 		
 		class LibevFileOperations : FileOperations
 		{
+			Context parent;
+
+			public LibevFileOperations (Context parent)
+			{
+				this.parent = parent;
+			}
+
 			public override Stream Open (string fileName, int blockSize, OpenFlags openFlags, FilePermissions perms)
 			{
-				return FileStream.Open (fileName, blockSize, openFlags, perms);
+				return FileStream.Open (parent, fileName, blockSize, openFlags, perms);
 			}
 
 			public override long GetLength (string fileName)
