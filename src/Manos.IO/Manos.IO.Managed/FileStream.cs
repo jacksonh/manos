@@ -75,8 +75,9 @@ namespace Manos.IO.Managed
 
 		public override IDisposable Read (Action<ByteBuffer> onData, Action<Exception> onError, Action onClose)
 		{
+			var result = base.Read (onData, onError, onClose);
 			ResumeReading ();
-			return base.Read (onData, onError, onClose);
+			return result;
 		}
 
 		public override void ResumeReading ()
