@@ -135,7 +135,8 @@ namespace Manos.Managed
 				if (forBytes < 0)
 					throw new ArgumentException ("forBytes");
 				readLimit = forBytes;
-				throw new NotImplementedException ();
+                readAllowed = true;
+                HandleRead ();
 			}
 
 			public override void ResumeWriting ()
@@ -185,7 +186,7 @@ namespace Manos.Managed
 							RaiseError (new SocketException ());
 						});
 					} else {
-						parent.loop.NonBlockInvoke (ResumeWriting);
+						parent.loop.NonBlockInvoke (HandleWrite);
 					}
 				}, null);
 				return buffer.Length;
