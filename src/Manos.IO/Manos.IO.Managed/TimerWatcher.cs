@@ -44,7 +44,7 @@ namespace Manos.IO.Managed
 
 		protected override void Dispose (bool disposing)
 		{
-//			Context.Remove (this);
+			Context.Remove (this);
 		}
 
 		public void Again ()

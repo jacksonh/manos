@@ -7,7 +7,7 @@ using Mono.Unix.Native;
 
 namespace Manos.IO.Managed
 {
-	public class Context : Manos.IO.Context
+	class Context : Manos.IO.Context
 	{
 		private AutoResetEvent pulse;
 		private ConcurrentQueue<Action> outstanding;
@@ -55,6 +55,11 @@ namespace Manos.IO.Managed
 		internal void Remove (IdleWatcher check)
 		{
 			idles.Remove (check);
+		}
+
+		internal void Remove (TimerWatcher timer)
+		{
+			timers.Remove (timer);
 		}
 
 		protected override void Dispose (bool disposing)
