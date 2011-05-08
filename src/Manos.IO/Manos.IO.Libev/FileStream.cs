@@ -79,8 +79,9 @@ namespace Manos.IO.Libev
 
 		public override IDisposable Read (Action<ByteBuffer> onData, Action<Exception> onError, Action onClose)
 		{
+			var result = base.Read (onData, onError, onClose);
 			ResumeReading ();
-			return base.Read (onData, onError, onClose);
+			return result;
 		}
 
 		public override void ResumeReading ()
@@ -96,9 +97,11 @@ namespace Manos.IO.Libev
 				throw new ArgumentException ("forBytes");
 			}
 			
-			readEnabled = true;
 			readLimit = forBytes;
-			ReadNextBuffer ();
+			if (!readEnabled) {
+				readEnabled = true;
+				ReadNextBuffer ();
+			}
 		}
 
 		public override void ResumeWriting ()
@@ -106,8 +109,10 @@ namespace Manos.IO.Libev
 			if (!canWrite)
 				throw new InvalidOperationException ();
 			
-			writeEnabled = true;
-			HandleWrite ();
+			if (!writeEnabled) {
+				writeEnabled = true;
+				HandleWrite ();
+			}
 		}
 
 		public override void PauseReading ()

@@ -28,6 +28,7 @@ namespace Manos.IO.Managed
 			this.socket = socket;
 			this.address = ((IPEndPoint) socket.RemoteEndPoint).Address.ToString ();
 			this.port = ((IPEndPoint) socket.RemoteEndPoint).Port;
+			this.state = Socket.SocketState.Open;
 		}
 		
 		class SocketStream : Manos.IO.Stream
@@ -127,14 +128,20 @@ namespace Manos.IO.Managed
 			{
 				if (forBytes < 0)
 					throw new ArgumentException ("forBytes");
+
 				readLimit = forBytes;
-				throw new NotImplementedException ();
+				if (!readAllowed) {
+					readAllowed = true;
+					HandleRead ();
+				}
 			}
 
 			public override void ResumeWriting ()
 			{
-				writeAllowed = true;
-				HandleWrite ();
+				if (!writeAllowed) {
+					writeAllowed = true;
+					HandleWrite ();
+				}
 			}
 
 			public override void PauseReading ()

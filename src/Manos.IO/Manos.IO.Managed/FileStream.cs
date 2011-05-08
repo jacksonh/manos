@@ -89,15 +89,20 @@ namespace Manos.IO.Managed
 			if (forBytes < 0) {
 				throw new ArgumentException ("forBytes");
 			}
-			readEnabled = true;
+			
 			readLimit = forBytes;
-			ReadNextBuffer ();
+			if (!readEnabled) {
+				readEnabled = true;
+				ReadNextBuffer ();
+			}
 		}
 
 		public override void ResumeWriting ()
 		{
-			writeEnabled = true;
-			HandleWrite ();
+			if (!writeEnabled) {
+				writeEnabled = true;
+				HandleWrite ();
+			}
 		}
 
 		public override void PauseReading ()

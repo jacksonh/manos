@@ -183,7 +183,7 @@ namespace Manos.IO.Managed
 			} else if ((openFlags & mask) == OpenFlags.O_WRONLY) {
 				access = FileAccess.Write;
 			} 
-			var fs = new System.IO.FileStream (fileName, FileMode.Open, access);
+			var fs = new System.IO.FileStream (fileName, FileMode.Open, access, FileShare.ReadWrite, 0x1000, true);
 			return new FileStream (this, fs, blockSize);
 		}
 
