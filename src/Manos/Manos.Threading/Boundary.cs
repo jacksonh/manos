@@ -37,14 +37,14 @@ namespace Manos.Threading
 
 		static Boundary ()
 		{
-//			Instance = new Boundary (AppHost.Context);
+			Instance = new Boundary (AppHost.Context);
 		}
 
 		private readonly IAsyncWatcher asyncWatcher;
 		private readonly ConcurrentQueue<Action> workQueue;
 		private int maxWorkPerLoop;
 
-		public Boundary (Context context) : this( context, 18 )
+		public Boundary (Context context) : this (context, 18)
 		{
 		}
 

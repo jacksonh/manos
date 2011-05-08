@@ -52,7 +52,6 @@ namespace Manos
 		private static IManosCache cache;
 		private static IManosLogger log;
 		private static List<IManosPipe> pipes;
-		private static Boundary boundary = Boundary.Instance;
 		private static Context context;
 
 		static AppHost ()
