@@ -74,7 +74,7 @@ namespace Manos.IO.Libev
 			});
 		}
 
-		ByteBuffer emptyBuffer = new ByteBuffer (new byte[0], 0, 0);
+		static ByteBuffer emptyBuffer = new ByteBuffer (new byte[0], 0, 0);
 
 		IEnumerable<ByteBuffer> Run ()
 		{

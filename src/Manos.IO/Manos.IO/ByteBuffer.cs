@@ -49,31 +49,28 @@ namespace Manos.IO
 
 		public int Length {
 			get { return length; }
-			set {
-				if (value > bytes.Length)
-					throw new ArgumentOutOfRangeException ("value", "Can not increase the size of a byte buffer.");
-				if (value < 0)
-					throw new ArgumentOutOfRangeException ("value", "Length must be zero or greater.");
-				length = value;
-			}
 		}
 
 		public int Position {
 			get { return position; }
-			set {
-				if (value > bytes.Length)
-					throw new ArgumentOutOfRangeException ("value", "Position must be less than the array length.");
-				if (value < 0)
-					throw new ArgumentOutOfRangeException ("value", "Position must be zero or greater.");
-				position = value;
-			}
 		}
 
 		public byte ReadByte ()
 		{
-			if (position >= length)
+			if (length == 0)
 				throw new InvalidOperationException ("Read past end of ByteBuffer.");
+			length--;
 			return bytes [position++];
+		}
+
+		public void Skip (int bytes)
+		{
+			if (bytes < 0)
+				throw new ArgumentException ("Can't move backwards in buffer.");
+			if (bytes > length)
+				throw new ArgumentException ("Can't move past end of buffer.");
+			position += bytes;
+			length -= bytes;
 		}
 	}
 }

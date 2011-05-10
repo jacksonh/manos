@@ -213,8 +213,7 @@ namespace Manos.IO
 		{
 			var sent = WriteSingleBuffer (currentBuffer);
 			if (sent > 0) {
-				currentBuffer.Position += sent;
-				currentBuffer.Length -= sent;
+				currentBuffer.Skip (sent);
 			} else {
 				PauseWriting ();
 			}
