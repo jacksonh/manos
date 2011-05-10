@@ -8,13 +8,10 @@ namespace Manos.IO.Libev
 {
 	class Context : Manos.IO.Context
 	{
-		private LibevFileOperations fileOps;
-
 		public Context ()
 		{
 			Loop = new Loop ();
 			Eio = new EioContext (Loop);
-			fileOps = new LibevFileOperations (this);
 		}
 
 		protected override void Dispose (bool disposing)
@@ -104,46 +101,32 @@ namespace Manos.IO.Libev
 		{
 			return new SecureSocket (this, certFile, keyFile);
 		}
-		
-		class LibevFileOperations : FileOperations
+
+		public override Stream OpenFile (string fileName, FileAccess openMode, int blockSize)
 		{
-			Context parent;
-
-			public LibevFileOperations (Context parent)
-			{
-				this.parent = parent;
-			}
-
-			public override Stream Open (string fileName, FileAccess openMode, int blockSize)
-			{
-				OpenFlags openFlags = 0;
-				switch (openMode) {
-					case FileAccess.Read:
-						openFlags = OpenFlags.O_RDONLY;
-						break;
+			OpenFlags openFlags = 0;
+			switch (openMode) {
+				case FileAccess.Read:
+					openFlags = OpenFlags.O_RDONLY;
+					break;
 						
-					case FileAccess.ReadWrite:
-						openFlags = OpenFlags.O_RDWR;
-						break;
+				case FileAccess.ReadWrite:
+					openFlags = OpenFlags.O_RDWR;
+					break;
 						
-					case FileAccess.Write:
-						openFlags = OpenFlags.O_WRONLY;
-						break;
+				case FileAccess.Write:
+					openFlags = OpenFlags.O_WRONLY;
+					break;
 						
-					default:
-						throw new ArgumentException ("openMode");
-				}
-				return FileStream.Open (parent, fileName, blockSize, openFlags);
+				default:
+					throw new ArgumentException ("openMode");
 			}
-
-			public override Stream Create (string fileName, int blockSize)
-			{
-				return FileStream.Create (parent, fileName, blockSize);
-			}
+			return FileStream.Open (this, fileName, blockSize, openFlags);
 		}
-		
-		public override FileOperations File {
-			get { return fileOps; }
+
+		public override Stream CreateFile (string fileName, int blockSize)
+		{
+			return FileStream.Create (this, fileName, blockSize);
 		}
 	}
 }

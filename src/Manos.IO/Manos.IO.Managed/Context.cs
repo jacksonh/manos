@@ -18,7 +18,6 @@ namespace Manos.IO.Managed
 		private List<AsyncWatcher> asyncs;
 		private List<TimerWatcher> timers;
 		private volatile bool running;
-		private ManagedFileOperations fileOps;
 
 		public Context ()
 		{
@@ -30,7 +29,6 @@ namespace Manos.IO.Managed
 			checks = new List<CheckWatcher> ();
 			idles = new List<IdleWatcher> ();
 			timers = new List<TimerWatcher> ();
-			fileOps = new ManagedFileOperations (this);
 		}
 
 		internal void Enqueue (Action cb)
@@ -183,31 +181,17 @@ namespace Manos.IO.Managed
 		{
 			throw new NotSupportedException ();
 		}
-		
-		class ManagedFileOperations : FileOperations
+
+		public override Stream OpenFile (string fileName, FileAccess openMode, int blockSize)
 		{
-			private Context parent;
-
-			public ManagedFileOperations (Context parent)
-			{
-				this.parent = parent;
-			}
-
-			public override Stream Open (string fileName, FileAccess openMode, int blockSize)
-			{
-				var fs = new System.IO.FileStream (fileName, FileMode.Open, openMode, FileShare.ReadWrite, blockSize, true);
-				return new FileStream (parent, fs, blockSize);
-			}
-
-			public override Stream Create (string fileName, int blockSize)
-			{
-				var fs = System.IO.File.Create (fileName);
-				return new FileStream (parent, fs, blockSize);
-			}
+			var fs = new System.IO.FileStream (fileName, FileMode.Open, openMode, FileShare.ReadWrite, blockSize, true);
+			return new FileStream (this, fs, blockSize);
 		}
-		
-		public override FileOperations File {
-			get { return fileOps; }
+
+		public override Stream CreateFile (string fileName, int blockSize)
+		{
+			var fs = System.IO.File.Create (fileName);
+			return new FileStream (this, fs, blockSize);
 		}
 	}
 }
