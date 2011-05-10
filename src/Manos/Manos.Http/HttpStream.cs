@@ -122,7 +122,7 @@ namespace Manos.Http
 		{
 			EnsureMetadata ();
 			
-			var len = HttpEntity.Context.File.GetLength (file_name);
+			var len = new FileInfo (file_name).Length;
 			length += len;
 			
 			QueueFile (file_name);
@@ -140,7 +140,7 @@ namespace Manos.Http
 				((ISendfileCapable) SocketStream).SendFile (fileName);
 			} else {
 				SocketStream.PauseWriting ();
-				var fs = HttpEntity.Context.File.Open (fileName, 64 * 1024, OpenFlags.O_RDONLY, FilePermissions.ACCESSPERMS);
+				var fs = HttpEntity.Context.File.Open (fileName, FileAccess.Read, 64 * 1024);
 				SocketStream.Write (new StreamCopySequencer (fs, SocketStream, true));
 			}
 			SocketStream.Write (SendCallback (SendBufferedOps));
@@ -148,7 +148,7 @@ namespace Manos.Http
 
 		void SendFileImpl (string fileName)
 		{
-			var len = HttpEntity.Context.File.GetLength (fileName);
+			var len = new FileInfo (fileName).Length;
 			if (chunk_encode) {
 				SendChunk (len, false);
 				SendFileData (fileName);

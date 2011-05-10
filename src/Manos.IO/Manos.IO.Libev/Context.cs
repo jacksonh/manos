@@ -2,6 +2,7 @@ using System;
 using Libev;
 using System.Runtime.InteropServices;
 using Mono.Unix.Native;
+using System.IO;
 
 namespace Manos.IO.Libev
 {
@@ -113,14 +114,31 @@ namespace Manos.IO.Libev
 				this.parent = parent;
 			}
 
-			public override Stream Open (string fileName, int blockSize, OpenFlags openFlags, FilePermissions perms)
+			public override Stream Open (string fileName, FileAccess openMode, int blockSize)
 			{
-				return FileStream.Open (parent, fileName, blockSize, openFlags, perms);
+				OpenFlags openFlags = 0;
+				switch (openMode) {
+					case FileAccess.Read:
+						openFlags = OpenFlags.O_RDONLY;
+						break;
+						
+					case FileAccess.ReadWrite:
+						openFlags = OpenFlags.O_RDWR;
+						break;
+						
+					case FileAccess.Write:
+						openFlags = OpenFlags.O_WRONLY;
+						break;
+						
+					default:
+						throw new ArgumentException ("openMode");
+				}
+				return FileStream.Open (parent, fileName, blockSize, openFlags);
 			}
 
-			public override long GetLength (string fileName)
+			public override Stream Create (string fileName, int blockSize)
 			{
-				return FileStream.GetLength (fileName);
+				return FileStream.Create (parent, fileName, blockSize);
 			}
 		}
 		

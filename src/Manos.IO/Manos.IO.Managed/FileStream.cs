@@ -170,11 +170,6 @@ namespace Manos.IO.Managed
 			stream.EndWrite (ar);
 			loop.Enqueue (HandleWrite);
 		}
-
-		public static long GetLength (string fileName)
-		{
-			return new FileInfo (fileName).Length;
-		}
 	}
 }
 

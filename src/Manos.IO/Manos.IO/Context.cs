@@ -1,5 +1,6 @@
 using System;
 using Mono.Unix.Native;
+using System.IO;
 
 namespace Manos.IO
 {
@@ -67,9 +68,9 @@ namespace Manos.IO
 		
 		public abstract class FileOperations
 		{
-			public abstract Stream Open (string fileName, int blockSize, OpenFlags openFlags, FilePermissions perms);
+			public abstract Stream Open (string fileName, FileAccess openMode, int blockSize);
 
-			public abstract long GetLength (string fileName);
+			public abstract Stream Create (string fileName, int blockSize);
 		}
 		
 		public abstract FileOperations File {

@@ -193,24 +193,16 @@ namespace Manos.IO.Managed
 				this.parent = parent;
 			}
 
-			public override Stream Open (string fileName, int blockSize, Mono.Unix.Native.OpenFlags openFlags, Mono.Unix.Native.FilePermissions perms)
+			public override Stream Open (string fileName, FileAccess openMode, int blockSize)
 			{
-				FileAccess access = FileAccess.ReadWrite;
-				OpenFlags mask = OpenFlags.O_RDONLY | OpenFlags.O_RDWR | OpenFlags.O_WRONLY;
-				if ((openFlags & mask) == OpenFlags.O_RDWR) {
-					access = FileAccess.ReadWrite;
-				} else if ((openFlags & mask) == OpenFlags.O_RDONLY) {
-					access = FileAccess.Read;
-				} else if ((openFlags & mask) == OpenFlags.O_WRONLY) {
-					access = FileAccess.Write;
-				} 
-				var fs = new System.IO.FileStream (fileName, FileMode.Open, access, FileShare.ReadWrite, 0x1000, true);
+				var fs = new System.IO.FileStream (fileName, FileMode.Open, openMode, FileShare.ReadWrite, blockSize, true);
 				return new FileStream (parent, fs, blockSize);
 			}
 
-			public override long GetLength (string fileName)
+			public override Stream Create (string fileName, int blockSize)
 			{
-				return FileStream.GetLength (fileName);
+				var fs = System.IO.File.Create (fileName);
+				return new FileStream (parent, fs, blockSize);
 			}
 		}
 		

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Mono.Unix.Native;
+using System.IO;
 
 namespace Manos.IO.Libev
 {
@@ -187,23 +188,23 @@ namespace Manos.IO.Libev
 			HandleWrite ();
 		}
 
-		public static long GetLength (string fileName)
-		{
-			Stat stat;
-			Mono.Unix.Native.Syscall.stat (fileName, out stat);
-			return stat.st_size;
-		}
-
 		public static FileStream Open (Context context, string fileName, int blockSize,
-			OpenFlags openFlags, FilePermissions perms)
+			OpenFlags openFlags)
 		{
-			var fd = Mono.Unix.Native.Syscall.open (fileName, openFlags, perms);
+			var fd = Syscall.open (fileName, openFlags,
+				FilePermissions.S_IRUSR | FilePermissions.S_IWUSR | FilePermissions.S_IROTH);
 			var mask = OpenFlags.O_RDONLY | OpenFlags.O_RDWR | OpenFlags.O_WRONLY;
 			var canRead = (openFlags & mask) == OpenFlags.O_RDONLY
 				|| (openFlags & mask) == OpenFlags.O_RDWR;
 			var canWrite = (openFlags & mask) == OpenFlags.O_WRONLY
 				|| (openFlags & mask) == OpenFlags.O_RDWR;
 			return new FileStream (context, new IntPtr (fd), blockSize, canRead, canWrite);
+		}
+
+		public static FileStream Create (Context context, string fileName, int blockSize)
+		{
+			return Open (context, fileName, blockSize,
+				OpenFlags.O_RDWR | OpenFlags.O_CREAT | OpenFlags.O_TRUNC);
 		}
 	}
 }
