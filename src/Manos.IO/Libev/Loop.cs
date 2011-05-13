@@ -7,6 +7,7 @@ namespace Libev
 	class Loop
 	{
 		private IntPtr _native;
+		private GCHandle _handle;
 		private static readonly bool _isV4;
 
 		static Loop ()
@@ -26,6 +27,8 @@ namespace Libev
 			
 			if (_native == IntPtr.Zero)
 				throw new Exception ("Unable to create native loop");
+			
+			_handle = GCHandle.Alloc (this);
 		}
 
 		~Loop ()
@@ -47,6 +50,7 @@ namespace Libev
 			
 			ev_loop_destroy (_native);
 			_native = IntPtr.Zero;
+			_handle.Free ();
 		}
 
 		public void RunBlocking ()
