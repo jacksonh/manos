@@ -173,22 +173,32 @@ namespace Manos.IO.Managed
 
 			protected override int WriteSingleBuffer (ByteBuffer buffer)
 			{
-				SocketError err;
-				parent.socket.BeginSend (buffer.Bytes, buffer.Position, buffer.Length, SocketFlags.None, out err, ar => {
+				parent.socket.BeginSend (buffer.Bytes, buffer.Position, buffer.Length,
+					SocketFlags.None, WriteCallback, null);
+				return buffer.Length;
+			}
+			
+			void WriteCallback (IAsyncResult ar)
+			{
+				if (parent == null)
+					return;
+					
+				parent.loop.Enqueue (delegate {
+					if (parent == null)
+						return;
+					
 					if (writeTimer != null) {
 						writeTimer.Stop ();
 						writeTimer.Start ();
 					}
-					parent.socket.EndSend (ar);
+					SocketError err;
+					parent.socket.EndSend (ar, out err);
 					if (err != SocketError.Success) {
-						parent.loop.Enqueue (delegate {
-							RaiseError (new SocketException ());
-						});
+						RaiseError (new SocketException ());
 					} else {
-						parent.loop.Enqueue (HandleWrite);
+						HandleWrite ();
 					}
-				}, null);
-				return buffer.Length;
+				});
 			}
 
 			void HandleRead ()
@@ -204,26 +214,32 @@ namespace Manos.IO.Managed
 
 			void ReadCallback (IAsyncResult ar)
 			{
-				if (readTimer != null) {
-					readTimer.Stop ();
-					readTimer.Start ();
-				}
+				if (parent == null)
+					return;
 				
-				SocketError error;
-				int len = parent.socket.EndReceive (ar, out error);
+				parent.loop.Enqueue (delegate {
+					if (parent == null)
+						return;
 				
-				if (error != SocketError.Success) {
-					parent.loop.Enqueue (delegate {
-						RaiseError (new SocketException ());
-					});
-				} else if (len == 0) {
-					parent.loop.Enqueue (RaiseEndOfStream);
-				} else {
-					parent.loop.Enqueue (delegate {
+					if (readTimer != null) {
+						readTimer.Stop ();
+						readTimer.Start ();
+					}
+				
+					SocketError error;
+					int len = parent.socket.EndReceive (ar, out error);
+				
+					if (error != SocketError.Success) {
+						parent.loop.Enqueue (delegate {
+							RaiseError (new SocketException ());
+						});
+					} else if (len == 0) {
+						RaiseEndOfStream ();
+					} else {
 						RaiseData (new ByteBuffer (receiveBuffer, 0, len));
 						HandleRead ();
-					});
-				}
+					}
+				});
 			}
 
 			protected override void RaiseData (ByteBuffer data)
@@ -240,23 +256,22 @@ namespace Manos.IO.Managed
 				
 				parent.socket.BeginDisconnect (false, ar => {
 					try {
-						parent.socket.EndDisconnect (ar);
-						RaiseEndOfStream ();
-						parent = null;
-						
-						if (readTimer != null) {
-							readTimer.Dispose ();
-						}
-						if (writeTimer != null) {
-							writeTimer.Dispose ();
-						}
-						readTimer = null;
-						writeTimer = null;
-						
-						base.Close ();
+						((System.Net.Sockets.Socket) ar.AsyncState).EndDisconnect (ar);
+						((System.Net.Sockets.Socket) ar.AsyncState).Close ();
 					} catch {
 					}
-				}, null);
+				}, parent.socket);
+				
+				RaiseEndOfStream ();
+				if (readTimer != null) {
+					readTimer.Dispose ();
+				}
+				if (writeTimer != null) {
+					writeTimer.Dispose ();
+				}
+				readTimer = null;
+				writeTimer = null;
+				parent = null;
 				
 				base.Close ();
 			}
@@ -271,6 +286,11 @@ namespace Manos.IO.Managed
 				stream = new SocketStream (this);
 			
 			return stream;
+		}
+		
+		public override void Close ()
+		{
+			GetSocketStream ().Close ();
 		}
 
 		public override void Connect (string host, int port, Action callback)

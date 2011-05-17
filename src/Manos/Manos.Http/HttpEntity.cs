@@ -66,7 +66,6 @@ namespace Manos.Http {
 		private bool finished_reading;
 
 		private IAsyncWatcher end_watcher;
-		private IAsyncWatcher completeWatcher;
 
 		public HttpEntity (Context context)
 		{
@@ -97,11 +96,6 @@ namespace Manos.Http {
 			if (end_watcher != null) {
 				end_watcher.Dispose ();
 				end_watcher = null;
-			}
-
-			if (completeWatcher != null) {
-				completeWatcher.Dispose ();
-				completeWatcher = null;
 			}
 		}
 
@@ -522,9 +516,9 @@ namespace Manos.Http {
 
 		public void Complete (Action callback)
 		{
+			IAsyncWatcher completeWatcher;
 			completeWatcher = Context.CreateAsyncWatcher (delegate {
 				completeWatcher.Dispose ();
-				completeWatcher = null;
 				callback ();
 			});
 			completeWatcher.Start ();
