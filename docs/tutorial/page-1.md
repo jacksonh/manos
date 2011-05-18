@@ -108,9 +108,11 @@ Building and Running Manos Apps
 To test out your application first you'll need to build it. You can build the app with the manos build command.
 
 If you aren't already in the Shorty directory:
+
     cd Shorty/
 
 and now you can build:
+
     manos --build
 
 To run this app all we'll use the manos --server command. This command loads the local compiled manos app
