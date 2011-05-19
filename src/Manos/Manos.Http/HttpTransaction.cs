@@ -180,8 +180,11 @@ namespace Manos.Http
 				if (wantClose) {
 					Close ();
 				}
-			} else
+			} else {
+				responseFinished = false;
+				wantClose = false;
 				Request.Read (Close);
+			}
 		}
 
 	}
