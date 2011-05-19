@@ -50,6 +50,14 @@ AS_IF([test "x$with_gnutls" = xyes],
 		 fi],
 		[])])
 
+AC_ARG_ENABLE([native-io],
+	[AS_HELP_STRING([--disable-native-io],
+		[disable support for native IO backends in Manos.IO])],
+	[IO_COMPILE_FLAGS=FORCE_MANAGED_IO],
+	[IO_COMPILE_FLAGS=])
+
+AC_SUBST(IO_COMPILE_FLAGS)
+
 
 
 	dnl ******************************************************************

@@ -15,19 +15,23 @@ namespace Manos.IO
 			Dispose (false);
 		}
 
-		private static readonly bool isWindows;
+		private static readonly bool useManagedImpl;
 
 		static Context ()
 		{
-			isWindows = Environment.OSVersion.Platform == PlatformID.Win32NT
+#if ALWAYS_USE_MANAGED_IO
+			useManagedImpl = true;
+#else
+			useManagedImpl = Environment.OSVersion.Platform == PlatformID.Win32NT
 				|| Environment.OSVersion.Platform == PlatformID.Win32S
 				|| Environment.OSVersion.Platform == PlatformID.Win32Windows
 				|| Environment.OSVersion.Platform == PlatformID.WinCE;
+#endif
 		}
 
 		public static Context Create ()
 		{
-			if (isWindows) {
+			if (useManagedImpl) {
 				return new Manos.IO.Managed.Context ();
 			} else {
 				return new Manos.IO.Libev.Context ();
