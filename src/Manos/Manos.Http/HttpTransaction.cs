@@ -65,7 +65,7 @@ namespace Manos.Http {
 			gc_handle = GCHandle.Alloc (this);
 
 			Request = new HttpRequest (this, socket);
-			Request.Read (delegate {});
+			Request.Read (Close);
 		}
 
 		public void Dispose ()
