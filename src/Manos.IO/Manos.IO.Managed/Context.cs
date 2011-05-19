@@ -10,8 +10,7 @@ namespace Manos.IO.Managed
 	class Context : Manos.IO.Context
 	{
 		private AutoResetEvent pulse;
-		private ConcurrentQueue<Action> outstanding;
-		private ConcurrentQueue<Action> processing;
+		private Queue<Action> outstanding;
 		private List<PrepareWatcher> prepares;
 		private List<CheckWatcher> checks;
 		private List<IdleWatcher> idles;
@@ -22,8 +21,7 @@ namespace Manos.IO.Managed
 		public Context ()
 		{
 			pulse = new AutoResetEvent (false);
-			outstanding = new ConcurrentQueue<Action> ();
-			processing = new ConcurrentQueue<Action> ();
+			outstanding = new Queue<Action> ();
 			asyncs = new List<AsyncWatcher> ();
 			prepares = new List<PrepareWatcher> ();
 			checks = new List<CheckWatcher> ();
@@ -33,7 +31,11 @@ namespace Manos.IO.Managed
 
 		internal void Enqueue (Action cb)
 		{
-			outstanding.Enqueue (cb);
+			if (cb == null)
+				throw new ArgumentNullException ("cb");
+			lock (this) {
+				outstanding.Enqueue (cb);
+			}
 			pulse.Set ();
 		}
 
@@ -73,7 +75,6 @@ namespace Manos.IO.Managed
 				Dispose (ref timers);
 				
 				outstanding = null;
-				processing = null;
 				checks = null;
 				prepares = null;
 				idles = null;
@@ -107,15 +108,18 @@ namespace Manos.IO.Managed
 
 		public override void RunOnceNonblocking ()
 		{
-			if (processing.Count == 0) {
-				processing = Interlocked.Exchange (ref outstanding, processing);
-			}
 			foreach (var prep in prepares) {
 				prep.Invoke ();
 			}
-			while (processing.Count > 0) {
+			int count = 0;
+			lock (this) {
+				count = outstanding.Count;
+			}
+			while (count-- > 0) {
 				Action cb;
-				processing.TryDequeue (out cb);
+				lock (this) {
+					cb = outstanding.Dequeue ();
+				}
 				cb ();
 			}
 			foreach (var idle in idles) {
