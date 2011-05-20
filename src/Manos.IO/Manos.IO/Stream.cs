@@ -202,7 +202,7 @@ namespace Manos.IO
 			if (writeQueue == null) {
 				throw new InvalidOperationException ();
 			}
-			if (!EnsureActiveBuffer ()) {
+			if (!EnsureActiveBuffer () || currentBuffer == null) {
 				PauseWriting ();
 			} else {
 				WriteCurrentBuffer ();
@@ -212,7 +212,7 @@ namespace Manos.IO
 		protected virtual void WriteCurrentBuffer ()
 		{
 			var sent = WriteSingleBuffer (currentBuffer);
-			if (sent > 0) {
+			if (sent >= 0) {
 				currentBuffer.Skip (sent);
 			} else {
 				PauseWriting ();
