@@ -166,25 +166,36 @@ namespace Manos.Http
 
 		public void OnResponseFinished ()
 		{
-			responseFinished = true;
-			bool disconnect = true;
+			Socket.GetSocketStream ().Write (ResponseFinishedCallback ());
+		}
+		
+		IEnumerable<ByteBuffer> ResponseFinishedCallback ()
+		{
+			IBaseWatcher handler;
+			handler = Server.Context.CreateIdleWatcher (delegate {
+				handler.Dispose ();
+				responseFinished = true;
+				bool disconnect = true;
 
-			if (!NoKeepAlive) {
-				string dis;
-				if (Request.MinorVersion > 0 && Request.Headers.TryGetValue ("Connection", out dis))
-					disconnect = (dis == "close");
-			}
-
-			if (disconnect) {
-				Socket.Close ();
-				if (wantClose) {
-					Close ();
+				if (!NoKeepAlive) {
+					string dis;
+					if (Request.MinorVersion > 0 && Request.Headers.TryGetValue ("Connection", out dis))
+						disconnect = (dis == "close");
 				}
-			} else {
-				responseFinished = false;
-				wantClose = false;
-				Request.Read (Close);
-			}
+
+				if (disconnect) {
+					Socket.Close ();
+					if (wantClose) {
+						Close ();
+					}
+				} else {
+					responseFinished = false;
+					wantClose = false;
+					Request.Read (Close);
+				}
+			});
+			handler.Start ();
+			yield break;
 		}
 
 	}

@@ -108,7 +108,7 @@ namespace Manos.IO.Managed
 
 		public override void RunOnceNonblocking ()
 		{
-			foreach (var prep in prepares) {
+			foreach (var prep in prepares.ToArray ()) {
 				prep.Invoke ();
 			}
 			int count = 0;
@@ -122,11 +122,11 @@ namespace Manos.IO.Managed
 				}
 				cb ();
 			}
-			foreach (var idle in idles) {
+			foreach (var idle in idles.ToArray ()) {
 				idle.Invoke ();
 				pulse.Set ();
 			}
-			foreach (var check in checks) {
+			foreach (var check in checks.ToArray ()) {
 				check.Invoke ();
 			}
 		}
