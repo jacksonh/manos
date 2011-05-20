@@ -88,6 +88,7 @@
     <Compile Include="Manos.IO.Managed\FileStream.cs" />
     <Compile Include="Manos.IO.Managed\Socket.cs" />
     <Compile Include="Manos.IO.Managed\TimerWatcher.cs" />
+    <Compile Include="Manos.IO.Managed\ManagedStream.cs" />
   </ItemGroup>
   <Target Name="ListSources">
     <Message Text="@(Compile)" Importance="High" />

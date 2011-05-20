@@ -22,6 +22,13 @@ namespace Manos.IO.Managed
 				throw new ArgumentNullException ("loop");
 			this.loop = loop;
 		}
+		
+		void Enqueue (Action action)
+		{
+			lock (this) {
+				loop.Enqueue (action);
+			}
+		}
 
 		Socket (Context loop, System.Net.Sockets.Socket socket) : this (loop)
 		{
@@ -31,21 +38,22 @@ namespace Manos.IO.Managed
 			this.state = Socket.SocketState.Open;
 		}
 		
-		class SocketStream : Manos.IO.Stream
+		class SocketStream : ManagedStream
 		{
-			Socket parent;
+			System.Net.Sockets.Socket socket;
 			bool readAllowed, writeAllowed;
-			long readLimit, position;
+			long readLimit;
 			byte [] receiveBuffer = new byte [4096];
 			System.Timers.Timer readTimer, writeTimer;
 
 			public SocketStream (Socket parent)
+				: base (parent.loop)
 			{
-				this.parent = parent;
+				this.socket = parent.socket;
 			}
 
 			public override long Position {
-				get { return position; }
+				get { throw new NotSupportedException (); }
 				set { SeekTo (value); }
 			}
 
@@ -160,8 +168,9 @@ namespace Manos.IO.Managed
 
 			public override IDisposable Read (Action<ByteBuffer> onData, Action<Exception> onError, Action onClose)
 			{
+				var result = base.Read (onData, onError, onClose);
 				ResumeReading ();
-				return base.Read (onData, onError, onClose);
+				return result;
 			}
 
 			protected override void HandleWrite ()
@@ -173,18 +182,14 @@ namespace Manos.IO.Managed
 
 			protected override int WriteSingleBuffer (ByteBuffer buffer)
 			{
-				parent.socket.BeginSend (buffer.Bytes, buffer.Position, buffer.Length,
-					SocketFlags.None, WriteCallback, null);
+				socket.BeginSend (buffer.Bytes, buffer.Position, buffer.Length, SocketFlags.None, WriteCallback, null);
 				return buffer.Length;
 			}
 			
 			void WriteCallback (IAsyncResult ar)
 			{
-				if (parent == null)
-					return;
-					
-				parent.loop.Enqueue (delegate {
-					if (parent == null)
+				Enqueue (delegate {
+					if (socket == null)
 						return;
 					
 					if (writeTimer != null) {
@@ -192,7 +197,7 @@ namespace Manos.IO.Managed
 						writeTimer.Start ();
 					}
 					SocketError err;
-					parent.socket.EndSend (ar, out err);
+					socket.EndSend (ar, out err);
 					if (err != SocketError.Success) {
 						RaiseError (new SocketException ());
 					} else {
@@ -209,16 +214,13 @@ namespace Manos.IO.Managed
 				
 				SocketError se;
 				int length = (int) Math.Min (readLimit, receiveBuffer.Length);
-				parent.socket.BeginReceive (receiveBuffer, 0, length, SocketFlags.None, out se, ReadCallback, null);
+				socket.BeginReceive (receiveBuffer, 0, length, SocketFlags.None, out se, ReadCallback, null);
 			}
 
 			void ReadCallback (IAsyncResult ar)
 			{
-				if (parent == null)
-					return;
-				
-				parent.loop.Enqueue (delegate {
-					if (parent == null)
+				Enqueue (delegate {
+					if (socket == null)
 						return;
 				
 					if (readTimer != null) {
@@ -227,12 +229,10 @@ namespace Manos.IO.Managed
 					}
 				
 					SocketError error;
-					int len = parent.socket.EndReceive (ar, out error);
+					int len = socket.EndReceive (ar, out error);
 				
 					if (error != SocketError.Success) {
-						parent.loop.Enqueue (delegate {
-							RaiseError (new SocketException ());
-						});
+						RaiseError (new SocketException ());
 					} else if (len == 0) {
 						RaiseEndOfStream ();
 					} else {
@@ -242,38 +242,34 @@ namespace Manos.IO.Managed
 				});
 			}
 
-			protected override void RaiseData (ByteBuffer data)
-			{
-				position += data.Length;
-				base.RaiseData (data);
-			}
-
 			public override void Close ()
 			{
-				if (parent == null) {
+				if (socket == null) {
 					return;
 				}
 				
-				parent.socket.BeginDisconnect (false, ar => {
-					try {
-						((System.Net.Sockets.Socket) ar.AsyncState).EndDisconnect (ar);
-						((System.Net.Sockets.Socket) ar.AsyncState).Close ();
-					} catch {
-					}
-				}, parent.socket);
+				socket.BeginDisconnect (false, ar => {
+					Enqueue (delegate {
+						try {
+							((System.Net.Sockets.Socket) ar.AsyncState).EndDisconnect (ar);
+							((System.Net.Sockets.Socket) ar.AsyncState).Dispose ();
+						} catch {
+						}
 				
-				RaiseEndOfStream ();
-				if (readTimer != null) {
-					readTimer.Dispose ();
-				}
-				if (writeTimer != null) {
-					writeTimer.Dispose ();
-				}
-				readTimer = null;
-				writeTimer = null;
-				parent = null;
+						RaiseEndOfStream ();
+						if (readTimer != null) {
+							readTimer.Dispose ();
+						}
+						if (writeTimer != null) {
+							writeTimer.Dispose ();
+						}
+						readTimer = null;
+						writeTimer = null;
+						socket = null;
 				
-				base.Close ();
+						base.Close ();
+					});
+				}, socket);
 			}
 		}
 		
@@ -305,11 +301,13 @@ namespace Manos.IO.Managed
 			IPAddress addr;
 			if (!IPAddress.TryParse (host, out addr)) {
 				Dns.BeginGetHostEntry (host, (a) => {
-					try {
-						IPHostEntry ep = Dns.EndGetHostEntry (a);
-						StartConnectingSocket (ep.AddressList [0], port);
-					} catch {
-					}
+					loop.Enqueue (delegate {
+						try {
+							IPHostEntry ep = Dns.EndGetHostEntry (a);
+							StartConnectingSocket (ep.AddressList [0], port);
+						} catch {
+						}
+					});
 				}, null);
 			} else {
 				StartConnectingSocket (addr, port);
@@ -321,11 +319,13 @@ namespace Manos.IO.Managed
 			socket = new System.Net.Sockets.Socket (addr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 			try {
 				socket.BeginConnect (addr, port, (ar) => {
-					try {
-						socket.EndConnect (ar);
-						loop.Enqueue (connectedCallback);
-					} catch {
-					}
+					loop.Enqueue (delegate {
+						try {
+							socket.EndConnect (ar);
+							connectedCallback ();
+						} catch {
+						}
+					});
 				}, null);
 			} catch {
 			}
@@ -343,11 +343,13 @@ namespace Manos.IO.Managed
 			IPAddress addr;
 			if (!IPAddress.TryParse (host, out addr)) {
 				Dns.BeginGetHostEntry (host, (a) => {
-					try {
-						IPHostEntry ep = Dns.EndGetHostEntry (a);
-						StartListeningSocket (ep.AddressList [0], port);
-					} catch {
-					}
+					Enqueue (delegate {
+						try {
+							IPHostEntry ep = Dns.EndGetHostEntry (a);
+							StartListeningSocket (ep.AddressList [0], port);
+						} catch {
+						}
+					});
 				}, null);
 			} else {
 				StartListeningSocket (addr, port);
@@ -370,12 +372,12 @@ namespace Manos.IO.Managed
 			try {
 				var sock = socket.EndAccept (ar);
 
-				loop.Enqueue (delegate {
+				Enqueue (delegate {
 					acceptedCallback (new Socket (loop, sock));
 				});
-				socket.BeginAccept (AcceptCallback, null);
 			} catch {
 			}
+			socket.BeginAccept (AcceptCallback, null);
 		}
 	}
 }

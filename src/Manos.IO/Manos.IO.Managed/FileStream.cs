@@ -6,22 +6,21 @@ using Mono.Unix.Native;
 
 namespace Manos.IO.Managed
 {
-	class FileStream : Manos.IO.Stream
+	class FileStream : ManagedStream
 	{
 		System.IO.FileStream stream;
 		byte [] readBuffer;
 		bool readEnabled, writeEnabled;
 		long readLimit;
-		Context loop;
 
 		public FileStream (Context loop, System.IO.FileStream stream, int blockSize)
+			: base (loop)
 		{
 			if (loop == null)
 				throw new ArgumentNullException ("loop");
 			if (stream == null)
 				throw new ArgumentNullException ("stream");
 			
-			this.loop = loop;
 			this.stream = stream;
 			this.readBuffer = new byte [blockSize];
 		}
@@ -128,19 +127,19 @@ namespace Manos.IO.Managed
 
 		void OnReadDone (IAsyncResult ar)
 		{
-			int result = stream.EndRead (ar);
+			Enqueue (delegate {
+				if (stream != null) {
+					int result = stream.EndRead (ar);
 			
-			if (result > 0) {
-				loop.Enqueue (delegate {
-					RaiseData (new ByteBuffer (readBuffer, 0, result));
-					ReadNextBuffer ();
-				});
-			} else {
-				loop.Enqueue (delegate {
-					PauseReading ();
-					RaiseEndOfStream ();
-				});
-			}
+					if (result > 0) {
+						RaiseData (new ByteBuffer (readBuffer, 0, result));
+						ReadNextBuffer ();
+					} else {
+						PauseReading ();
+						RaiseEndOfStream ();
+					}
+				}
+			});
 		}
 
 		protected override void RaiseData (ByteBuffer data)
@@ -167,8 +166,12 @@ namespace Manos.IO.Managed
 
 		void OnWriteDone (IAsyncResult ar)
 		{
-			stream.EndWrite (ar);
-			loop.Enqueue (HandleWrite);
+			Enqueue (delegate {
+				if (stream != null) {
+					stream.EndWrite (ar);
+					HandleWrite ();
+				}
+			});
 		}
 	}
 }
