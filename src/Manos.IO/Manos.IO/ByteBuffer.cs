@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 
 namespace Manos.IO
 {
-	public class ByteBuffer
+	public sealed class ByteBuffer
 	{
 		int position;
 		int length;
