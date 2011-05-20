@@ -20,6 +20,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <GenerateDocumentation>true</GenerateDocumentation>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -28,9 +29,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <GenerateDocumentation>true</GenerateDocumentation>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(IO_COMPILE_FLAGS)' == 'FORCE_MANAGED_IO' ">
-	  <DefineConstants>ALWAYS_USE_MANAGED_IO</DefineConstants>
+    <DefineConstants>ALWAYS_USE_MANAGED_IO</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

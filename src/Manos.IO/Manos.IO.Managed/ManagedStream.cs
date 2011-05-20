@@ -2,7 +2,7 @@ using System;
 
 namespace Manos.IO.Managed
 {
-	public abstract class ManagedStream : Manos.IO.Stream
+	abstract class ManagedStream : Manos.IO.Stream
 	{
 		Context context;
 		

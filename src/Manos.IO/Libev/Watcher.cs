@@ -26,11 +26,6 @@ namespace Libev
 			private set;
 		}
 
-		public object Tag {
-			get;
-			set;
-		}
-
 		~Watcher ()
 		{
 			Dispose ();

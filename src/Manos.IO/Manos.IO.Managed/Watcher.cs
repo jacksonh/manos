@@ -24,11 +24,6 @@ namespace Manos.IO.Managed
 			IsRunning = false;
 		}
 
-		public object Tag {
-			get;
-			set;
-		}
-
 		public bool IsRunning {
 			get;
 			protected set;
