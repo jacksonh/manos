@@ -361,7 +361,7 @@ namespace Manos.IO.Managed
 			socket = new System.Net.Sockets.Socket (addr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 			try {
 				socket.Bind (new IPEndPoint (addr, port));
-				socket.Listen (5);
+				socket.Listen (128);
 				socket.BeginAccept (AcceptCallback, null);
 			} catch {
 			}
