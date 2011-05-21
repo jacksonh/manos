@@ -45,6 +45,21 @@ namespace Manos.IO
 		/// local socket for listening sockets.
 		/// </summary>
 		protected int port;
+		Context context;
+		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Manos.IO.Socket"/> class.
+		/// </summary>
+		/// <param name='context'>
+		/// The context this socket will be bound to.
+		/// </param>
+		protected Socket (Context context)
+		{
+			if (context == null)
+				throw new ArgumentNullException ("context");
+			
+			this.context = context;
+		}
 		
 		/// <summary>
 		/// The address of the peer for open sockets, the address of the
@@ -74,6 +89,13 @@ namespace Manos.IO
 					throw new InvalidOperationException ();
 				return port;
 			}
+		}
+		
+		/// <summary>
+		/// Gets the context this socket is bound to.
+		/// </summary>
+		public virtual Context Context {
+			get { return context; }
 		}
 		
 		/// <summary>

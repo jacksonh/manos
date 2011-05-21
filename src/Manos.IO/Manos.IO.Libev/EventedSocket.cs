@@ -6,11 +6,8 @@ namespace Manos.IO.Libev
 	abstract class EventedSocket : Socket
 	{
 		public EventedSocket (Context context)
+			: base (context)
 		{
-			if (context == null)
-				throw new ArgumentNullException ("context");
-			
-			this.Context = context;
 		}
 
 		protected EventedSocket (Context context, SocketInfo info)
@@ -20,10 +17,8 @@ namespace Manos.IO.Libev
 			port = info.port;
 		}
 
-
-		public Context Context {
-			get;
-			private set;
+		public new Context Context {
+			get { return (Context) base.Context; }
 		}
 	}
 }

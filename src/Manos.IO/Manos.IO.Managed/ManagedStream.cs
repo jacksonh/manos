@@ -4,19 +4,19 @@ namespace Manos.IO.Managed
 {
 	abstract class ManagedStream : Manos.IO.Stream
 	{
-		Context context;
-		
 		internal ManagedStream (Context ctx)
+			: base (ctx)
 		{
-			if (ctx == null)
-				throw new ArgumentNullException ("ctx");
-			context = ctx;
+		}
+		
+		public new Context Context {
+			get { return (Context) base.Context; }
 		}
 		
 		protected void Enqueue (Action action)
 		{
 			lock (this) {
-				context.Enqueue (action);
+				Context.Enqueue (action);
 			}
 		}
 	}

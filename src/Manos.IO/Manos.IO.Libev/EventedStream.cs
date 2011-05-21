@@ -15,13 +15,11 @@ namespace Manos.IO.Libev
 		protected long? readLimit;
 
 		protected EventedStream (Context context, IntPtr handle)
+			: base (context)
 		{
-			if (context == null)
-				throw new ArgumentNullException ("context");
 			if (handle == IntPtr.Zero)
 				throw new ArgumentException ("handle");
 			
-			this.Context = context;
 			this.Handle = handle;
 			
 			this.readWatcher = new IOWatcher (Handle, EventTypes.Read, Context.Loop, HandleReadReady);
@@ -100,9 +98,8 @@ namespace Manos.IO.Libev
 			HandleRead ();
 		}
 
-		public Context Context {
-			get;
-			private set;
+		public new Context Context {
+			get { return (Context) base.Context; }
 		}
 
 		public IntPtr Handle {

@@ -22,6 +22,7 @@ namespace Manos.IO
 		Action<Exception> onError;
 		Action onEndOfStream;
 		IDisposable currentReader;
+		Context context;
 		// write queue handling
 		ByteBuffer currentBuffer;
 		IEnumerator<ByteBuffer> currentWriter;
@@ -30,8 +31,22 @@ namespace Manos.IO
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Manos.IO.Stream"/> class.
 		/// </summary>
-		protected Stream ()
+		/// <param name='context'>
+		/// The context this instance will be bound to.
+		/// </param>
+		protected Stream (Context context)
 		{
+			if (context == null)
+				throw new ArgumentNullException ("context");
+			
+			this.context = context;
+		}
+		
+		/// <summary>
+		/// Gets the context this stream is bound to.
+		/// </summary>
+		public virtual Context Context {
+			get { return context; }
 		}
 
 		/// <summary>

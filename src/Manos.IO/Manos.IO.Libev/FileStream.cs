@@ -12,15 +12,18 @@ namespace Manos.IO.Libev
 		bool canRead, canWrite;
 		long readLimit;
 		long position;
-		Context context;
 
 		FileStream (Context context, IntPtr handle, int blockSize, bool canRead, bool canWrite)
+			: base (context)
 		{
-			this.context = context;
 			this.Handle = handle;
 			this.readBuffer = new byte [blockSize];
 			this.canRead = canRead;
 			this.canWrite = canWrite;
+		}
+		
+		public new Context Context {
+			get { return (Context) base.Context; }
 		}
 
 		public IntPtr Handle {
@@ -135,7 +138,7 @@ namespace Manos.IO.Libev
 			}
 			
 			var length = (int) Math.Min (readBuffer.Length, readLimit);
-			context.Eio.Read (Handle.ToInt32 (), readBuffer, position, length, OnReadDone);
+			Context.Eio.Read (Handle.ToInt32 (), readBuffer, position, length, OnReadDone);
 		}
 
 		void OnReadDone (int result, byte[] buffer, int error)
@@ -176,7 +179,7 @@ namespace Manos.IO.Libev
 				bytes = new byte[buffer.Length];
 				Array.Copy (buffer.Bytes, buffer.Position, bytes, 0, buffer.Length);
 			}
-			context.Eio.Write (Handle.ToInt32 (), bytes, position, buffer.Length, OnWriteDone);
+			Context.Eio.Write (Handle.ToInt32 (), bytes, position, buffer.Length, OnWriteDone);
 			return buffer.Length;
 		}
 

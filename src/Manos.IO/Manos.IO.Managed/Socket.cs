@@ -14,19 +14,20 @@ namespace Manos.IO.Managed
 		Action connectedCallback;
 		Action<Socket> acceptedCallback;
 		Stream stream;
-		Context loop;
 
 		public Socket (Context loop)
+			: base (loop)
 		{
-			if (loop == null)
-				throw new ArgumentNullException ("loop");
-			this.loop = loop;
+		}
+		
+		public new Context Context {
+			get { return (Context) base.Context; }
 		}
 		
 		void Enqueue (Action action)
 		{
 			lock (this) {
-				loop.Enqueue (action);
+				Context.Enqueue (action);
 			}
 		}
 
@@ -47,7 +48,7 @@ namespace Manos.IO.Managed
 			System.Timers.Timer readTimer, writeTimer;
 
 			public SocketStream (Socket parent)
-				: base (parent.loop)
+				: base (parent.Context)
 			{
 				this.socket = parent.socket;
 			}
@@ -301,7 +302,7 @@ namespace Manos.IO.Managed
 			IPAddress addr;
 			if (!IPAddress.TryParse (host, out addr)) {
 				Dns.BeginGetHostEntry (host, (a) => {
-					loop.Enqueue (delegate {
+					Enqueue (delegate {
 						try {
 							IPHostEntry ep = Dns.EndGetHostEntry (a);
 							StartConnectingSocket (ep.AddressList [0], port);
@@ -319,7 +320,7 @@ namespace Manos.IO.Managed
 			socket = new System.Net.Sockets.Socket (addr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 			try {
 				socket.BeginConnect (addr, port, (ar) => {
-					loop.Enqueue (delegate {
+					Enqueue (delegate {
 						try {
 							socket.EndConnect (ar);
 							connectedCallback ();
@@ -373,7 +374,7 @@ namespace Manos.IO.Managed
 				var sock = socket.EndAccept (ar);
 
 				Enqueue (delegate {
-					acceptedCallback (new Socket (loop, sock));
+					acceptedCallback (new Socket (Context, sock));
 				});
 			} catch {
 			}
