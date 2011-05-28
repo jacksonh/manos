@@ -66,12 +66,17 @@ namespace Manos.Http {
 		private bool finished_reading;
 
 		private IAsyncWatcher end_watcher;
-		private IAsyncWatcher completeWatcher;
 
-		public HttpEntity ()
+		public HttpEntity (Context context)
 		{
-			end_watcher = IOLoop.Instance.NewAsyncWatcher (HandleEnd);
+			this.Context = context;
+			end_watcher = context.CreateAsyncWatcher (HandleEnd);
 			end_watcher.Start ();
+		}
+		
+		public Context Context {
+			get;
+			private set;
 		}
 
 		~HttpEntity ()
@@ -91,11 +96,6 @@ namespace Manos.Http {
 			if (end_watcher != null) {
 				end_watcher.Dispose ();
 				end_watcher = null;
-			}
-
-			if (completeWatcher != null) {
-				completeWatcher.Dispose ();
-				completeWatcher = null;
 			}
 		}
 
@@ -508,7 +508,7 @@ namespace Manos.Http {
 			end_watcher.Send ();
 		}
 
-		internal virtual void HandleEnd (Loop loop, IAsyncWatcher watcher, EventTypes revents)
+		internal virtual void HandleEnd ()
 		{
 			if (OnEnd != null)
 				OnEnd ();
@@ -516,9 +516,9 @@ namespace Manos.Http {
 
 		public void Complete (Action callback)
 		{
-			completeWatcher = IOLoop.Instance.NewAsyncWatcher(delegate {
+			IAsyncWatcher completeWatcher;
+			completeWatcher = Context.CreateAsyncWatcher (delegate {
 				completeWatcher.Dispose ();
-				completeWatcher = null;
 				callback ();
 			});
 			completeWatcher.Start ();

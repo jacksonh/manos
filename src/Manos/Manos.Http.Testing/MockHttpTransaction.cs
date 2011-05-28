@@ -55,6 +55,11 @@ namespace Manos.Http.Testing
 		public HttpServer Server {
 			get { return null; }
 		}
+		
+		public Manos.IO.Context Context {
+			get;
+			private set;
+		}
 				
 		public IHttpRequest Request {
 			get;

@@ -30,6 +30,7 @@ using System.Collections.Generic;
 
 using Manos.IO;
 using Manos.Collections;
+using Mono.Unix.Native;
 
 namespace Manos.Http
 {
@@ -121,7 +122,7 @@ namespace Manos.Http
 		{
 			EnsureMetadata ();
 			
-			var len = SocketStream.Managed ? Manos.Managed.FileStream.GetLength (file_name) : Manos.IO.Libev.FileStream.GetLength (file_name);
+			var len = new FileInfo (file_name).Length;
 			length += len;
 			
 			QueueFile (file_name);
@@ -139,9 +140,7 @@ namespace Manos.Http
 				((ISendfileCapable) SocketStream).SendFile (fileName);
 			} else {
 				SocketStream.PauseWriting ();
-				var fs = Libev.LibEvLoop.IsWindows
-					? (IO.Stream) Manos.Managed.FileStream.OpenRead (fileName, 64 * 1024)
-					: (IO.Stream) Manos.IO.Libev.FileStream.OpenRead (fileName, 64 * 1024);
+				var fs = HttpEntity.Context.OpenFile (fileName, FileAccess.Read, 64 * 1024);
 				SocketStream.Write (new StreamCopySequencer (fs, SocketStream, true));
 			}
 			SocketStream.Write (SendCallback (SendBufferedOps));
@@ -149,9 +148,7 @@ namespace Manos.Http
 
 		void SendFileImpl (string fileName)
 		{
-			var len = Libev.LibEvLoop.IsWindows 
-				? Manos.Managed.FileStream.GetLength (fileName)
-				: Manos.IO.Libev.FileStream.GetLength (fileName);
+			var len = new FileInfo (fileName).Length;
 			if (chunk_encode) {
 				SendChunk (len, false);
 				SendFileData (fileName);

@@ -27,11 +27,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Manos.IO;
 
 
 namespace Manos.Http {
 
 	public interface IHttpTransaction {
+		
+		Context Context {
+			get;
+		}
 
 		IHttpRequest Request {
 			get;

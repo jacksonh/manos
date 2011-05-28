@@ -36,8 +36,6 @@ namespace Manos.Tool
 		{
 			IManosRun mr = Loader.LoadLibrary<IManosRun> (app, new List<string> ());
 			
-			IOLoop loop = IOLoop.Instance;
-			
 			string [] strargs = new string [args.Count];
 			for (int i = 0; i < strargs.Length; i++) {
 				strargs [i] = args [i];
@@ -49,8 +47,6 @@ namespace Manos.Tool
 			}
 			
 			int ret = mr.Main (strargs);
-			
-			loop.Start ();
 			
 			return ret;
 		}

@@ -21,9 +21,6 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 //
-
-
-
 using System;
 using System.Net;
 using System.Collections;
@@ -48,24 +45,24 @@ namespace Manos
 	{
 		private static ManosApp app;
 		private static bool started;
-		
 		private static List<IPEndPoint> listenEndPoints = new List<IPEndPoint> ();
 		private static Dictionary<IPEndPoint, Tuple<string, string>> secureListenEndPoints =
 			new Dictionary<IPEndPoint, Tuple<string, string>> ();
-		
 		private static List<HttpServer> servers = new List<HttpServer> ();
 		private static IManosCache cache;
 		private static IManosLogger log;
 		private static List<IManosPipe> pipes;
+		private static Context context;
 
-		private static Boundary boundary = Boundary.Instance;
-		
-		private static IOLoop ioloop = IOLoop.Instance;
-		
+		static AppHost ()
+		{
+			context = Context.Create ();
+		}
+
 		public static ManosApp App {
 			get { return app; }	
 		}
-		
+
 		public static IManosCache Cache {
 			get {
 				if (cache == null)
@@ -82,20 +79,20 @@ namespace Manos
 			}
 		}
 
-		public static IOLoop IOLoop {
-			get { return ioloop; }	
+		public static Context Context {
+			get { return context; }	
 		}
-		
+
 		public static IList<IManosPipe> Pipes {
 			get { return pipes; }
 		}
-		
+
 		public static ICollection<IPEndPoint> ListenEndPoints {
 			get {
 				return listenEndPoints.AsReadOnly ();
 			}
 		}
-		
+
 		public static void ListenAt (IPEndPoint endPoint)
 		{
 			if (endPoint == null)
@@ -106,7 +103,7 @@ namespace Manos
 			
 			listenEndPoints.Add (endPoint);
 		}
-		
+
 		public static void SecureListenAt (IPEndPoint endPoint, string cert, string key)
 		{
 			if (endPoint == null)
@@ -126,10 +123,10 @@ namespace Manos
 		public static void InitializeTLS (string priorities)
 		{
 #if !DISABLETLS
-            manos_tls_global_init(priorities);
+			manos_tls_global_init (priorities);
 			RegenerateDHParams (1024);
 #endif
-        }
+		}
 
 		public static void RegenerateDHParams (int bits)
 		{
@@ -137,13 +134,14 @@ namespace Manos
 			manos_tls_regenerate_dhparams (bits);
 #endif
 		}
-		
+
 #if !DISABLETLS
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
 		private static extern int manos_tls_global_init (string priorities);
-		
+
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
 		private static extern int manos_tls_regenerate_dhparams (int bits);
+
 #endif
 
 		public static void Start (ManosApp application)
@@ -159,28 +157,28 @@ namespace Manos
 			
 			foreach (var ep in listenEndPoints) {
 
-                var server = new HttpServer (IOLoop, HandleTransaction, IOLoop.CreateSocket());
+				var server = new HttpServer (Context, HandleTransaction, Context.CreateSocket ());
 				server.Listen (ep.Address.ToString (), ep.Port);
 				
 				servers.Add (server);
 			}
 			foreach (var ep in secureListenEndPoints.Keys) {
 				var keypair = secureListenEndPoints [ep];
-				var socket = IOLoop.CreateSecureSocket (keypair.Item1, keypair.Item2);
-				var server = new HttpServer (ioloop, HandleTransaction, socket);
+				var socket = Context.CreateSecureSocket (keypair.Item1, keypair.Item2);
+				var server = new HttpServer (context, HandleTransaction, socket);
 				server.Listen (ep.Address.ToString (), ep.Port);
 				
 				servers.Add (server);
 			}
 
-			ioloop.Start ();
+			context.Start ();
 		}
-		
+
 		public static void Stop ()
 		{
-			ioloop.Stop ();
+			context.Stop ();
 		}
-		
+
 		public static void HandleTransaction (IHttpTransaction con)
 		{
 			app.HandleTransaction (app, con);
@@ -202,17 +200,16 @@ namespace Manos
 		{
 			Timeout t = new Timeout (begin, timespan, repeat, data, callback);
 			
-			ioloop.AddTimeout (t);
+			ITimerWatcher timer;
+			timer = context.CreateTimerWatcher (begin, timespan, delegate {
+				t.Run (app);
+				if (!t.ShouldContinueToRepeat ()) {
+					timer.Dispose ();
+				}
+			});
 
 			return t;
 		}
-		
-		public static void RunTimeout (Timeout t)
-		{
-			t.Run (app);
-		}
-
-
 	}
 }
 

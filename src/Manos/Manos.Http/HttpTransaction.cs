@@ -21,10 +21,6 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 //
-
-
-
-
 using System;
 using System.IO;
 using System.Text;
@@ -36,9 +32,10 @@ using System.Runtime.InteropServices;
 using Manos.IO;
 using Manos.Collections;
 
-namespace Manos.Http {
-
-	public class HttpTransaction : IHttpTransaction, IDisposable {
+namespace Manos.Http
+{
+	public class HttpTransaction : IHttpTransaction, IDisposable
+	{
 
 		public static HttpTransaction BeginTransaction (HttpServer server, Socket socket, HttpConnectionCallback cb, bool closeOnEnd = false)
 		{
@@ -48,8 +45,8 @@ namespace Manos.Http {
 		}
 
 		private bool aborted;
-        private bool closeOnEnd;
-		
+		private bool closeOnEnd;
+		private bool wantClose, responseFinished;
 		private GCHandle gc_handle;
 		
 		public HttpTransaction (HttpServer server, Socket socket, HttpConnectionCallback callback, bool closeOnEnd = false)
@@ -57,6 +54,8 @@ namespace Manos.Http {
 			Server = server;
 			Socket = socket;
 			this.closeOnEnd = closeOnEnd;
+			
+			Context = server.Context;
 			
 			ConnectionCallback = callback;
 
@@ -74,6 +73,11 @@ namespace Manos.Http {
 			// Technically the IOStream should call our Close method, but lets be sure
 			if (gc_handle.IsAllocated)
 				gc_handle.Free ();
+		}
+		
+		public Context Context {
+			get;
+			private set;
 		}
 
 		public HttpServer Server {
@@ -123,18 +127,22 @@ namespace Manos.Http {
 
 		public void Close ()
 		{
-			if (gc_handle.IsAllocated)
-				gc_handle.Free ();
+			if (!responseFinished) {
+				wantClose = true;
+			} else {
+				if (gc_handle.IsAllocated)
+					gc_handle.Free ();
 
-			if (Request != null)
-				Request.Dispose ();
+				if (Request != null)
+					Request.Dispose ();
 
-			if (Response != null)
-				Response.Dispose ();
+				if (Response != null)
+					Response.Dispose ();
 
-			Socket = null;
-			Request = null;
-			Response = null;
+				Socket = null;
+				Request = null;
+				Response = null;
+			}
 		}
 
 		public void Run ()
@@ -145,9 +153,10 @@ namespace Manos.Http {
 		public void OnRequestReady ()
 		{
 			try {
-				Response = new HttpResponse (Request, Socket);
+				Response = new HttpResponse (Context, Request, Socket);
 				ResponseReady = true;
-				if( closeOnEnd ) Response.OnEnd += () => Response.Complete( OnResponseFinished );
+				if (closeOnEnd)
+					Response.OnEnd += () => Response.Complete (OnResponseFinished);
 				Server.RunTransaction (this);
 			} catch (Exception e) {
 				Console.WriteLine ("Exception while running transaction");
@@ -157,27 +166,36 @@ namespace Manos.Http {
 
 		public void OnResponseFinished ()
 		{
-			bool disconnect = true;
+			Socket.GetSocketStream ().Write (ResponseFinishedCallback ());
+		}
+		
+		IEnumerable<ByteBuffer> ResponseFinishedCallback ()
+		{
+			IBaseWatcher handler;
+			handler = Server.Context.CreateIdleWatcher (delegate {
+				handler.Dispose ();
+				responseFinished = true;
+				bool disconnect = true;
 
-			if (!NoKeepAlive) {
-				string dis;
-				if (Request.MinorVersion > 0 && Request.Headers.TryGetValue ("Connection", out dis))
-					disconnect = (dis == "close");
-			}
+				if (!NoKeepAlive) {
+					string dis;
+					if (Request.MinorVersion > 0 && Request.Headers.TryGetValue ("Connection", out dis))
+						disconnect = (dis == "close");
+				}
 
-			if (disconnect) {
-				if (Request != null) {
-					Request.Dispose ();
-					Request = null;
+				if (disconnect) {
+					Socket.Close ();
+					if (wantClose) {
+						Close ();
+					}
+				} else {
+					responseFinished = false;
+					wantClose = false;
+					Request.Read (Close);
 				}
-				if (Response != null) {
-					Response.Dispose ();
-					Response = null;
-				}
-			      	Socket.Close ();
-				return;
-			} else
-				Request.Read (Close);
+			});
+			handler.Start ();
+			yield break;
 		}
 
 	}

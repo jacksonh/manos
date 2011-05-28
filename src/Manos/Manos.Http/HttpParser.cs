@@ -31,7 +31,7 @@
 using System;
 using System.IO;
 
-using Manos.Collections;
+using Manos.IO;
 
 namespace Manos.Http {
 
@@ -151,7 +151,7 @@ namespace Manos.Http {
 			// length, `execute` needs to be called with an empty buffer to
 			// indicate that all the data has been send be the client/server,
 			// else there is no way of knowing the message is complete. 
-			int len = (int) (data.Length - data.Position);
+			int len = data.Length;
 			if (0 == len) {
 				if (State.body_identity_eof == state)
 					settings.RaiseOnMessageComplete(this);
@@ -193,7 +193,7 @@ namespace Manos.Http {
 			}
 
 			// this is where the work gets done, traverse the available data...
-			while (data.Position != data.Length) {
+			while (data.Length > 0) {
 
 				p = (int) data.Position;
 				int  pe = (int) data.Length;
@@ -1253,11 +1253,11 @@ namespace Manos.Http {
 
 				/******************* Body *******************/
 				case State.body_identity:
-					to_read = min(pe - p, content_length); //TODO change to use buffer? 
+					to_read = min(pe, content_length); //TODO change to use buffer? 
 
 					if (to_read > 0) {
-						settings.RaiseOnBody(this, data, p, to_read); 
-						data.Position = p+to_read;
+						settings.RaiseOnBody(this, data, p, to_read);
+						data.Skip(to_read);
 						content_length -= to_read;
 						if (content_length == 0) {
 							settings.RaiseOnMessageComplete(this);
@@ -1269,10 +1269,10 @@ namespace Manos.Http {
 
 
 				case State.body_identity_eof:
-					to_read = pe - p;  // TODO change to use buffer ?
+					to_read = pe;  // TODO change to use buffer ?
 					if (to_read > 0) {
 						settings.RaiseOnBody(this, data, p, to_read); 
-						data.Position = p+to_read;
+						data.Skip(to_read);
 					}
 					break;
 				/******************* Body *******************/
@@ -1356,10 +1356,10 @@ namespace Manos.Http {
 						settings.RaiseOnError(this, "not chunked", data, p_err);
 					}
 
-					to_read = min(pe-p, content_length);
+					to_read = min(pe, content_length);
 					if (to_read > 0) {
 						settings.RaiseOnBody(this, data, p, to_read);
-						data.Position = p+to_read;
+						data.Skip(to_read);
 					}
 
 					if (to_read == content_length) {

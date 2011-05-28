@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5E2AA984-1C9C-4890-BEF6-CC2981C49AFF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Manos.IO</RootNamespace>
+    <AssemblyName>Manos.IO</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\build\</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <GenerateDocumentation>true</GenerateDocumentation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\build\</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <GenerateDocumentation>true</GenerateDocumentation>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(IO_COMPILE_FLAGS)' == 'FORCE_MANAGED_IO' ">
+    <DefineConstants>ALWAYS_USE_MANAGED_IO</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Mono.Posix" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Assembly\" />
+    <Folder Include="Manos.IO\" />
+    <Folder Include="Manos.IO.Libev\" />
+    <Folder Include="Manos.IO.Managed\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Assembly\AssemblyInfo.cs" />
+    <Compile Include="Manos.IO\Stream.cs" />
+    <Compile Include="Manos.IO\ByteBuffer.cs" />
+    <Compile Include="Manos.IO\Socket.cs" />
+    <Compile Include="Manos.IO\ISendfileCapable.cs" />
+    <Compile Include="Manos.IO\IBaseWatcher.cs" />
+    <Compile Include="Manos.IO\IPrepareWatcher.cs" />
+    <Compile Include="Manos.IO\ICheckWatcher.cs" />
+    <Compile Include="Manos.IO\IAsyncWatcher.cs" />
+    <Compile Include="Libev\AsyncWatcher.cs" />
+    <Compile Include="Libev\CheckWatcher.cs" />
+    <Compile Include="Libev\EventTypes.cs" />
+    <Compile Include="Libev\IOWatcher.cs" />
+    <Compile Include="Libev\Loop.cs" />
+    <Compile Include="Libev\LoopType.cs" />
+    <Compile Include="Libev\PrepareWatcher.cs" />
+    <Compile Include="Libev\TimerWatcher.cs" />
+    <Compile Include="Libev\UnloopType.cs" />
+    <Compile Include="Libev\UnmanagedWatcherCallback.cs" />
+    <Compile Include="Libev\Watcher.cs" />
+    <Compile Include="Manos.IO\ITimerWatcher.cs" />
+    <Compile Include="Libev\IdleWatcher.cs" />
+    <Compile Include="Manos.IO\IIdleWatcher.cs" />
+    <Compile Include="Manos.IO\Context.cs" />
+    <Compile Include="Manos.IO.Libev\Context.cs" />
+    <Compile Include="Manos.IO.Libev\Libeio.cs" />
+    <Compile Include="Manos.IO.Libev\EioContext.cs" />
+    <Compile Include="Manos.IO.Libev\EventedSocket.cs" />
+    <Compile Include="Manos.IO.Libev\SocketInfo.cs" />
+    <Compile Include="Manos.IO.Libev\EventedStream.cs" />
+    <Compile Include="Manos.IO.Libev\PlainSocket.cs" />
+    <Compile Include="Manos.IO.Libev\SendFileOperation.cs" />
+    <Compile Include="Manos.IO.Libev\SecureSocket.cs" />
+    <Compile Include="Manos.IO.Libev\FileStream.cs" />
+    <Compile Include="Manos.IO.Managed\Context.cs" />
+    <Compile Include="Manos.IO.Managed\Watcher.cs" />
+    <Compile Include="Manos.IO.Managed\AsyncWatcher.cs" />
+    <Compile Include="Manos.IO.Managed\PrepareWatcher.cs" />
+    <Compile Include="Manos.IO.Managed\CheckWatcher.cs" />
+    <Compile Include="Manos.IO.Managed\IdleWatcher.cs" />
+    <Compile Include="Manos.IO.Managed\FileStream.cs" />
+    <Compile Include="Manos.IO.Managed\Socket.cs" />
+    <Compile Include="Manos.IO.Managed\TimerWatcher.cs" />
+    <Compile Include="Manos.IO.Managed\ManagedStream.cs" />
+  </ItemGroup>
+  <Target Name="ListSources">
+    <Message Text="@(Compile)" Importance="High" />
+  </Target>
+</Project>

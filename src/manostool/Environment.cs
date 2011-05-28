@@ -42,7 +42,10 @@ namespace Manos.Tool
 			
 			string exe_path = new Uri (typeof (Driver).Assembly.GetName ().CodeBase).LocalPath;
 
-			if (Loop.IsWindows) {
+			if (System.Environment.OSVersion.Platform == PlatformID.Win32NT
+				|| System.Environment.OSVersion.Platform == PlatformID.Win32S
+				|| System.Environment.OSVersion.Platform == PlatformID.Win32Windows
+				|| System.Environment.OSVersion.Platform == PlatformID.WinCE) {
 				ManosDirectory = Path.GetDirectoryName(Path.GetDirectoryName(exe_path));
                 DataDirectory = Path.Combine(ManosDirectory, "..");
                 DocsDirectory = Path.Combine(ManosDirectory, "docs");

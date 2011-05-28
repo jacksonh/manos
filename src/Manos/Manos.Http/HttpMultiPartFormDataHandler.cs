@@ -28,7 +28,7 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 
-using Manos.Collections;
+using Manos.IO;
 
 namespace Manos.Http {
 

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Manos.Collections;
 
 namespace Manos.IO
 {
@@ -41,8 +40,8 @@ namespace Manos.IO
 		void OnSourceData (ByteBuffer buffer)
 		{
 			currentBuffer = buffer;
-			target.ResumeWriting ();
 			source.PauseReading ();
+			target.ResumeWriting ();
 		}
 
 		void OnSourceClose ()

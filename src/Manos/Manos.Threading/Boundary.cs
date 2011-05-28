@@ -33,18 +33,24 @@ namespace Manos.Threading
 {
 	public class Boundary : IBoundary
 	{
-		public static readonly Boundary Instance = new Boundary (IOLoop.Instance);
-        
+		public static readonly Boundary Instance;
+
+		static Boundary ()
+		{
+			Instance = new Boundary (AppHost.Context);
+		}
+
 		private readonly IAsyncWatcher asyncWatcher;
-
 		private readonly ConcurrentQueue<Action> workQueue;
-
 		private int maxWorkPerLoop;
 
-		public Boundary( IOLoop loop ) : this( loop, 18 ) {}
-		public Boundary( IOLoop loop, int maxWorkPerLoop )
+		public Boundary (Context context) : this (context, 18)
 		{
-			asyncWatcher = loop.NewAsyncWatcher (ProcessWork);
+		}
+
+		public Boundary (Context context, int maxWorkPerLoop)
+		{
+			asyncWatcher = context.CreateAsyncWatcher (ProcessWork);
 			asyncWatcher.Start ();
 			
 			workQueue = new ConcurrentQueue<Action> ();
@@ -58,24 +64,24 @@ namespace Manos.Threading
 			asyncWatcher.Send ();
 		}
 
-        private void ProcessWork (Loop loop, IAsyncWatcher watcher, EventTypes revents)
-        {
+		private void ProcessWork ()
+		{
 			int remaining = maxWorkPerLoop + 1;
-			while( --remaining > 0 ) {
+			while (--remaining > 0) {
 				Action action;
-				if( workQueue.TryDequeue (out action)) {
+				if (workQueue.TryDequeue (out action)) {
 					try {
-						action();
-					}
-					catch (Exception ex) {
+						action ();
+					} catch (Exception ex) {
 						Console.WriteLine ("Error in processing synchronized action");
 						Console.WriteLine (ex);
 					}
-				}
-				else break;
+				} else
+					break;
 			}
 
-			if (remaining == 0) asyncWatcher.Send ();
+			if (remaining == 0)
+				asyncWatcher.Send ();
 		}
 	}
 }

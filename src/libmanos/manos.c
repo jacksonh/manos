@@ -70,13 +70,13 @@ eio_on_done_poll (EV_P_ ev_async *watcher, int revents)
 static void
 eio_want_poll ()
 {
-	ev_async_send (EV_DEFAULT_UC_ &eio_want_poll_watcher);
+	ev_async_send (manos_data.loop, &eio_want_poll_watcher);
 }
 
 static void
 eio_done_poll ()		
 {
-	ev_async_send (EV_DEFAULT_UC_ &eio_done_poll_watcher);
+	ev_async_send (manos_data.loop, &eio_done_poll_watcher);
 }
 
 
@@ -93,12 +93,12 @@ manos_init (struct ev_loop *loop)
 	eio_idle_watcher.data = &manos_data;
 	
 	ev_async_init (&eio_want_poll_watcher, eio_on_want_poll);
-	ev_async_start (EV_DEFAULT_UC_ &eio_want_poll_watcher);
+	ev_async_start (loop, &eio_want_poll_watcher);
 	eio_want_poll_watcher.data = &manos_data;
 	
 
 	ev_async_init (&eio_done_poll_watcher, eio_on_done_poll);
-        ev_async_start (EV_DEFAULT_UC_ &eio_done_poll_watcher);
+        ev_async_start (loop, &eio_done_poll_watcher);
 	eio_done_poll_watcher.data = &manos_data;
 	
 	eio_init (eio_want_poll, eio_done_poll);
