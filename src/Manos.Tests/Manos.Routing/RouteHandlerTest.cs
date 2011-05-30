@@ -219,14 +219,14 @@ namespace Manos.Routing.Tests
 			
 			Assert.IsTrue (rh.HasPatterns, "a1");
 			
-			rh.Children.Clear ();
-			Assert.IsFalse (rh.HasPatterns, "a2");
+			//Array.Clear(rh.MatchOps, 0, rh.MatchOps.Length);
+			//Assert.IsFalse (rh.HasPatterns, "a2");
 			
 			rh.Add (new RouteHandler(new StringMatchOperation("foobar"), HttpMethod.HTTP_GET));
 			Assert.IsTrue (rh.HasPatterns, "a3");
 			
-			//rh.Children = null;
-			//Assert.IsFalse (rh.HasPatterns, "a4");
+			rh.MatchOps = null;
+			Assert.IsFalse (rh.HasPatterns, "a4");
 		}
 		
 		[Test]
