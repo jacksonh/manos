@@ -66,6 +66,7 @@
     <Compile Include="Manos.Collections\DataDictionaryTest.cs" />
     <Compile Include="Manos.Http\HttpCookieTest.cs" />
     <Compile Include="Manos.Routing\HtmlFormDataTypeConverterTest.cs" />
+    <Compile Include="Manos.Spdy\ParserTests.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -78,5 +79,8 @@
       <Project>{2548B25A-2E1F-4E21-BC43-7E39B1F6F23F}</Project>
       <Name>Manos</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Manos.Spdy\" />
   </ItemGroup>
 </Project>

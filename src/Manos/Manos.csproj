@@ -45,6 +45,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\libs\Nini.dll</HintPath>
     </Reference>
+    <Reference Include="Ionic.Zlib, Version=1.9.1.5, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\Ionic.Zlib.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Manos\DeleteAttribute.cs" />
@@ -151,6 +155,16 @@
     <Compile Include="Manos\RepeatBehavior.cs" />
     <Compile Include="Manos\Timeout.cs" />
     <Compile Include="Manos\TimeoutCallback.cs" />
+    <Compile Include="Manos.Spdy\ControlFrame.cs" />
+    <Compile Include="Manos.Spdy\GoawayFrame.cs" />
+    <Compile Include="Manos.Spdy\NameValueHeaderBlock.cs" />
+    <Compile Include="Manos.Spdy\PingFrame.cs" />
+    <Compile Include="Manos.Spdy\RstStreamFrame.cs" />
+    <Compile Include="Manos.Spdy\SettingsFrame.cs" />
+    <Compile Include="Manos.Spdy\SPDYParser.cs" />
+    <Compile Include="Manos.Spdy\SynReplyFrame.cs" />
+    <Compile Include="Manos.Spdy\SynStreamFrame.cs" />
+    <Compile Include="Manos.Spdy\Compression.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -172,6 +186,7 @@
     <Folder Include="Manos.Threading\" />
     <Folder Include="Manos.IO\" />
     <Folder Include="Manos.Collections\" />
+    <Folder Include="Manos.Spdy\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Manos.IO\Manos.IO.csproj">
