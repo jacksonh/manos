@@ -40,10 +40,23 @@ namespace Manos.Routing.Tests
 		public void MethodWithNoArgs ()
 		{
 		}
-		
+		public void MethodWithIntArg(int i)
+		{
+		}
+		public void MethodWithStringArg(string s)
+		{
+		}
 		private MethodInfo GetMethodWithNoArgs ()
 		{
 			return GetType ().GetMethod ("MethodWithNoArgs");
+		}
+		private MethodInfo GetMethodWithIntArg()
+		{
+			return GetType().GetMethod("MethodWithIntArg");
+		}
+		private MethodInfo GetMethodWithStringArg()
+		{
+			return GetType().GetMethod("MethodWithStringArg");
 		}
 		
 		[Test]
@@ -78,7 +91,7 @@ namespace Manos.Routing.Tests
 			IManosContext ctx = new ManosContextStub ();
 			
 			object data = null;
-			bool converted = ParameterizedActionTarget.TryConvertType (ctx, typeof (string), new UnsafeString ("foobar"), out data);
+			bool converted = ParameterizedActionTarget.TryConvertUnsafeString (ctx, typeof (string), GetMethodWithStringArg().GetParameters()[0], new UnsafeString ("foobar"), out data);
 			Assert.IsTrue (converted);
 		}
 		
@@ -89,7 +102,7 @@ namespace Manos.Routing.Tests
 			
 			object data = null;
 			
-			ParameterizedActionTarget.TryConvertType (ctx, typeof (string), new UnsafeString ("foobar"), out data);
+			ParameterizedActionTarget.TryConvertUnsafeString (ctx, typeof (string), GetMethodWithStringArg().GetParameters()[0], new UnsafeString ("foobar"), out data);
 			Assert.AreEqual ("foobar", data);
 		}
 		
@@ -99,7 +112,7 @@ namespace Manos.Routing.Tests
 			IManosContext ctx = new ManosContextStub ();
 			
 			object data = null;
-			bool converted = ParameterizedActionTarget.TryConvertType (ctx, typeof (int), new UnsafeString ("42"), out data);
+			bool converted = ParameterizedActionTarget.TryConvertUnsafeString (ctx, typeof (int), GetMethodWithIntArg().GetParameters()[0], new UnsafeString ("42"), out data);
 			Assert.IsTrue (converted);
 		}
 		
@@ -110,7 +123,7 @@ namespace Manos.Routing.Tests
 			
 			object data = null;
 			
-			ParameterizedActionTarget.TryConvertType (ctx, typeof (int), new UnsafeString ("42"), out data);
+			ParameterizedActionTarget.TryConvertUnsafeString (ctx, typeof (int), GetMethodWithIntArg().GetParameters()[0], new UnsafeString ("42"), out data);
 			Assert.AreEqual (42, data);
 		}
 		
@@ -120,7 +133,7 @@ namespace Manos.Routing.Tests
 			IManosContext ctx = new ManosContextStub ();
 			
 			object data = null;
-			bool converted = ParameterizedActionTarget.TryConvertType (ctx, typeof (int), new UnsafeString ("foobar"), out data);
+			bool converted = ParameterizedActionTarget.TryConvertUnsafeString (ctx, typeof (int), GetMethodWithIntArg().GetParameters()[0], new UnsafeString ("foobar"), out data);
 			Assert.IsFalse (converted);
 		}
 		
@@ -131,7 +144,7 @@ namespace Manos.Routing.Tests
 			
 			object data = null;
 			
-			ParameterizedActionTarget.TryConvertType (ctx, typeof (int), new UnsafeString ("foobar"), out data);
+			ParameterizedActionTarget.TryConvertUnsafeString (ctx, typeof (int), GetMethodWithIntArg().GetParameters()[0], new UnsafeString ("foobar"), out data);
 			Assert.IsNull (data);
 		}
 	}
