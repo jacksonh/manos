@@ -19,6 +19,7 @@ namespace Manos.Spdy.Tests
 		byte[] GoawayPacket;
 		byte[] HeadersPacket;
 		byte[] WindowUpdatePacket;
+		byte[] VersionPacket;
 		
 		private static byte[] combine(params byte[][] all)
 		{
@@ -300,6 +301,30 @@ namespace Manos.Spdy.Tests
 				0x05
 			};
 		}
+		public byte[] genVersionPacket()
+		{
+			return new byte[] {
+				0x80, // 10000000 Control Frame bit +  empty version bits
+				0x02, // Version
+				(byte)ControlFrameType.VERSION,
+				0x00, // No Flags
+				// Length bytes, add to 32 bit integer - always 8 for this one
+				0x00,
+				0x00,
+				0x08,
+				// Number of Versions
+				0x00,
+				0x00,
+				0x00,
+				0x02,
+				// Version 1
+				0x00,
+				0x01,
+				// Version 2
+				0x00,
+				0x02
+			};
+		}
 		[SetUp]
 		public void Init()
 		{
@@ -312,6 +337,7 @@ namespace Manos.Spdy.Tests
 			GoawayPacket = genGoawayPacket();
 			HeadersPacket = genHeadersPacket();
 			WindowUpdatePacket = genWindowUpdatePacket();
+			VersionPacket = genVersionPacket();
 		}
 		[Test]
 		public void ParseSynStream ()
@@ -480,6 +506,24 @@ namespace Manos.Spdy.Tests
 				};
 				parser.OnWindowUpdate += handle;
 				parser.Parse(WindowUpdatePacket, 0, WindowUpdatePacket.Length);
+			});
+		}
+		[Test]
+		public void ParseVersion()
+		{
+			AsyncTest(done =>
+			{
+				SPDYParser.VersionHandler handle = (parsed_packet) => {
+					Assert.AreEqual(2, parsed_packet.Version, "Version");
+					Assert.AreEqual(ControlFrameType.VERSION, parsed_packet.Type, "Type");
+					Assert.AreEqual(0x00, parsed_packet.Flags, "Flags");
+					Assert.AreEqual(8, parsed_packet.Length, "Length");
+					Assert.AreEqual(2, parsed_packet.SupportedVersionsCount, "Supported Version Count");
+					Assert.AreEqual(1, parsed_packet.SupportedVersions[0], "First Supported Version");
+					Assert.AreEqual(2, parsed_packet.SupportedVersions[1], "Second Supported Version");
+				};
+				parser.OnVersion += handle;
+				parser.Parse(VersionPacket, 0, VersionPacket.Length);
 			});
 		}
 	}

@@ -166,6 +166,7 @@
     <Compile Include="Manos.Spdy\Compression.cs" />
     <Compile Include="Manos.Spdy\HeadersFrame.cs" />
     <Compile Include="Manos.Spdy\WindowUpdateFrame.cs" />
+    <Compile Include="Manos.Spdy\VersionFrame.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -20,6 +20,8 @@ namespace Manos.Spdy
 		public event HeadersHandler OnHeaders;
 		public delegate void WindowUpdateHandler(WindowUpdateFrame packet);
 		public event WindowUpdateHandler OnWindowUpdate;
+		public delegate void VersionHandler(VersionFrame packet);
+		public event VersionHandler OnVersion;
 		public SPDYParser ()
 		{
 		}
@@ -64,6 +66,11 @@ namespace Manos.Spdy
 			if (OnWindowUpdate != null)
 			{
 				OnWindowUpdate(w);
+			}
+			var x = new VersionFrame();
+			if (OnVersion != null)
+			{
+				OnVersion(x);
 			}
 		}
 	}
