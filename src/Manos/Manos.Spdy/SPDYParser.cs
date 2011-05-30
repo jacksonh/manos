@@ -16,6 +16,8 @@ namespace Manos.Spdy
 		public event PingHandler OnPing;
 		public delegate void GoawayHandler(GoawayFrame packet);
 		public event GoawayHandler OnGoaway;
+		public delegate void HeadersHandler(HeadersFrame packet);
+		public event HeadersHandler OnHeaders;
 		public SPDYParser ()
 		{
 		}
@@ -50,6 +52,11 @@ namespace Manos.Spdy
 			if (OnGoaway != null)
 			{
 				OnGoaway(u);
+			}
+			var v = new HeadersFrame();
+			if (OnHeaders != null)
+			{
+				OnHeaders(v);
 			}
 		}
 	}

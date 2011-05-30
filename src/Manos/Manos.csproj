@@ -107,7 +107,6 @@
     <Compile Include="Manos.Routing\NopMatchOperation.cs" />
     <Compile Include="Manos.Routing\MatchType.cs" />
     <Compile Include="Manos\HttpMethods.cs" />
-    <Compile Include="Assembly\AssemblyInfo.cs" />
     <Compile Include="Manos\AppHost.cs" />
     <Compile Include="Manos.Caching\CacheItemCallback.cs" />
     <Compile Include="Manos.Caching\CacheOpCallback.cs" />
@@ -165,6 +164,7 @@
     <Compile Include="Manos.Spdy\SynReplyFrame.cs" />
     <Compile Include="Manos.Spdy\SynStreamFrame.cs" />
     <Compile Include="Manos.Spdy\Compression.cs" />
+    <Compile Include="Manos.Spdy\HeadersFrame.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

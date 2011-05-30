@@ -17,6 +17,7 @@ namespace Manos.Spdy.Tests
 		byte[] SettingsPacket;
 		byte[] PingPacket;
 		byte[] GoawayPacket;
+		byte[] HeadersPacket;
 		
 		private static byte[] combine(params byte[][] all)
 		{
@@ -242,6 +243,39 @@ namespace Manos.Spdy.Tests
 				0x00,
 			};
 		}
+		public byte[] genHeadersPacket()
+		{
+			byte[] status = buildnamevalue("header1", "value1");
+			byte[] version = buildnamevalue("header2", "value2");
+			byte[] length =  inttonbytes(2, 4);
+			byte[] nvblock = combine(length, version, status);
+			byte[] deflated = new byte[0];
+			int deflen = Compression.Deflate(nvblock, 0, nvblock.Length, out deflated);
+			byte[] packet = new byte[] {
+				0x80, // 10000000 Control Frame bit +  empty version bits
+				0x02, // Version
+				(byte)ControlFrameType.HEADERS, // Enum for type bit, will be 1
+				0x00, // No Flags
+				// Length bytes, add to 32 bit integer
+				0x00,
+				0x00,
+				0x04,
+				// Stream-ID
+				0x00,
+				0x00,
+				0x00,
+				0x01
+			};
+			int len = packet.Length;
+			Array.Resize(ref packet, packet.Length + deflen);
+			Array.Copy(deflated, 0, packet, len, deflen);
+			byte[] lenbytes = inttonbytes(4 + deflen, 3);
+			//Console.WriteLine(deflen);
+			//Console.WriteLine(BitConverter.ToString(packet));
+			Array.Copy(lenbytes, 0, packet, 4, 3);
+			//Console.WriteL
+			return packet;
+		}
 		[SetUp]
 		public void Init()
 		{
@@ -252,6 +286,7 @@ namespace Manos.Spdy.Tests
 			SettingsPacket = genSettingsPacket();
 			PingPacket = genPingPacket();
 			GoawayPacket = genGoawayPacket();
+			HeadersPacket = genHeadersPacket();
 		}
 		[Test]
 		public void ParseSynStream ()
@@ -262,9 +297,9 @@ namespace Manos.Spdy.Tests
 				Assert.AreEqual(2, parsed_packet.Version, "Version");
 				Assert.AreEqual(ControlFrameType.SYN_STREAM, parsed_packet.Type, "Type");
 				Assert.AreEqual(0x00, parsed_packet.Flags, "Flags");
-				Assert.AreEqual(0x05, parsed_packet.Length, "Length");
-				Assert.AreEqual(0x01, parsed_packet.StreamID, "Stream ID");
-				Assert.AreEqual(0x00, parsed_packet.AssociatedToStreamID, "Associated to Stream ID");
+				Assert.AreEqual(5, parsed_packet.Length, "Length");
+				Assert.AreEqual(1, parsed_packet.StreamID, "Stream ID");
+				Assert.AreEqual(0, parsed_packet.AssociatedToStreamID, "Associated to Stream ID");
 				Assert.AreEqual(1, parsed_packet.Priority, "Priority");
 				Assert.AreEqual("GET", parsed_packet.Headers["method"], "Method");
 				Assert.AreEqual("/test", parsed_packet.Headers["path"], "Path");
@@ -289,8 +324,8 @@ namespace Manos.Spdy.Tests
 				Assert.AreEqual(2, parsed_packet.Version, "Version");
 				Assert.AreEqual(ControlFrameType.SYN_REPLY, parsed_packet.Type, "Type");
 				Assert.AreEqual(0x00, parsed_packet.Flags, "Flags");
-				Assert.AreEqual(0x05, parsed_packet.Length, "Length");
-				Assert.AreEqual(0x01, parsed_packet.StreamID, "Stream ID");
+				Assert.AreEqual(5, parsed_packet.Length, "Length");
+				Assert.AreEqual(1, parsed_packet.StreamID, "Stream ID");
 				Assert.AreEqual("200", parsed_packet.Headers["status"], "Status");
 				Assert.AreEqual("HTTP/1.1", parsed_packet.Headers["version"], "HTTP Version");
 				ran = true;
@@ -325,8 +360,8 @@ namespace Manos.Spdy.Tests
 					Assert.AreEqual(2, parsed_packet.Version, "Version");
 					Assert.AreEqual(ControlFrameType.RST_STREAM, parsed_packet.Type, "Type");
 					Assert.AreEqual(0x00, parsed_packet.Flags, "Flags");
-					Assert.AreEqual(0x08, parsed_packet.Length, "Length");
-					Assert.AreEqual(0x01, parsed_packet.StreamID, "Stream ID");
+					Assert.AreEqual(8, parsed_packet.Length, "Length");
+					Assert.AreEqual(1, parsed_packet.StreamID, "Stream ID");
 					Assert.AreEqual(RstStreamStatusCode.CANCEL, parsed_packet.StatusCode, "Status Code");
 					done(() => { parser.OnRstStream -= handle; });
 				};
@@ -343,7 +378,7 @@ namespace Manos.Spdy.Tests
 					Assert.AreEqual(2, parsed_packet.Version, "Version");
 					Assert.AreEqual(ControlFrameType.SETTINGS, parsed_packet.Type, "Type");
 					Assert.AreEqual(0x00, parsed_packet.Flags, "Flags");
-					Assert.AreEqual(0x0C, parsed_packet.Length, "Length");
+					Assert.AreEqual(12, parsed_packet.Length, "Length");
 					Assert.AreEqual(3041, parsed_packet.UploadBandwidth, "Upload Bandwidth");
 					done(() => { parser.OnSettings -= handle; });
 				};
@@ -360,7 +395,7 @@ namespace Manos.Spdy.Tests
 					Assert.AreEqual(2, parsed_packet.Version, "Version");
 					Assert.AreEqual(ControlFrameType.PING, parsed_packet.Type, "Type");
 					Assert.AreEqual(0x00, parsed_packet.Flags, "Flags");
-					Assert.AreEqual(0x04, parsed_packet.Length, "Length");
+					Assert.AreEqual(4, parsed_packet.Length, "Length");
 					Assert.AreEqual(1, parsed_packet.ID, "ID");
 					done(() => { parser.OnPing -= handle; });
 				};
@@ -377,13 +412,31 @@ namespace Manos.Spdy.Tests
 					Assert.AreEqual(2, parsed_packet.Version, "Version");
 					Assert.AreEqual(ControlFrameType.PING, parsed_packet.Type, "Type");
 					Assert.AreEqual(0x00, parsed_packet.Flags, "Flags");
-					Assert.AreEqual(0x08, parsed_packet.Length, "Length");
+					Assert.AreEqual(8, parsed_packet.Length, "Length");
 					Assert.AreEqual(1, parsed_packet.LastGoodStreamID, "Last Good Stream ID");
 					Assert.AreEqual(0, parsed_packet.StatusCode, "Status Code");
 					done(() => { parser.OnGoaway -= handle; });
 				};
 				parser.OnGoaway += handle;
 				parser.Parse(GoawayPacket, 0, GoawayPacket.Length);
+			});
+		}
+		[Test]
+		public void ParseHeaders()
+		{
+			AsyncTest(done =>
+			{
+				SPDYParser.HeadersHandler handle = (parsed_packet) => {
+					Assert.AreEqual(2, parsed_packet.Version, "Version");
+					Assert.AreEqual(ControlFrameType.HEADERS, parsed_packet.Type, "Type");
+					Assert.AreEqual(0x00, parsed_packet.Flags, "Flags");
+					//Assert.AreEqual(0x05, parsed_packet.Length, "Length");
+					Assert.AreEqual(1, parsed_packet.StreamID, "Stream ID");
+					Assert.AreEqual("value1", parsed_packet.Headers["header1"], "Header 1");
+					Assert.AreEqual("value2", parsed_packet.Headers["header2"], "Header 2");
+				};
+				parser.OnHeaders += handle;
+				parser.Parse(HeadersPacket, 0, HeadersPacket.Length);
 			});
 		}
 	}
