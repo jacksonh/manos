@@ -20,6 +20,7 @@ namespace Manos.Spdy.Tests
 		byte[] HeadersPacket;
 		byte[] WindowUpdatePacket;
 		byte[] VersionPacket;
+		byte[] DataPacket;
 		
 		private static byte[] combine(params byte[][] all)
 		{
@@ -93,7 +94,7 @@ namespace Manos.Spdy.Tests
 				0x02, // Version
 				(byte)ControlFrameType.SYN_STREAM, // Enum for type bit, will be 1
 				0x00, // No Flags
-				// Length bytes, add to 32 bit integer
+				// Length bytes, add to 24 bit integer
 				0x00,
 				0x00,
 				0x0A,
@@ -133,7 +134,7 @@ namespace Manos.Spdy.Tests
 				0x02, // Version
 				(byte)ControlFrameType.SYN_REPLY, // Enum for type bit, will be 1
 				0x00, // No Flags
-				// Length bytes, add to 32 bit integer
+				// Length bytes, add to 24 bit integer
 				0x00,
 				0x00,
 				0x04,
@@ -160,7 +161,7 @@ namespace Manos.Spdy.Tests
 				0x02, // Version
 				(byte)ControlFrameType.RST_STREAM, // Enum for type bit, will be 1
 				0x00, // No Flags
-				// Length bytes, add to 32 bit integer - always 8 for this one
+				// Length bytes, add to 24 bit integer - always 8 for this one
 				0x00,
 				0x00,
 				0x08,
@@ -258,7 +259,7 @@ namespace Manos.Spdy.Tests
 				0x02, // Version
 				(byte)ControlFrameType.HEADERS, // Enum for type bit, will be 1
 				0x00, // No Flags
-				// Length bytes, add to 32 bit integer
+				// Length bytes, add to 24 bit integer
 				0x00,
 				0x00,
 				0x04,
@@ -285,7 +286,7 @@ namespace Manos.Spdy.Tests
 				0x02, // Version
 				(byte)ControlFrameType.WINDOW_UPDATE,
 				0x00, // No Flags
-				// Length bytes, add to 32 bit integer - always 8 for this one
+				// Length bytes, add to 24 bit integer - always 8 for this one
 				0x00,
 				0x00,
 				0x08,
@@ -308,7 +309,7 @@ namespace Manos.Spdy.Tests
 				0x02, // Version
 				(byte)ControlFrameType.VERSION,
 				0x00, // No Flags
-				// Length bytes, add to 32 bit integer - always 8 for this one
+				// Length bytes, add to 24 bit integer - always 8 for this one
 				0x00,
 				0x00,
 				0x08,
@@ -325,6 +326,31 @@ namespace Manos.Spdy.Tests
 				0x02
 			};
 		}
+		public byte[] genDataPacket()
+		{
+			return new byte[] {
+				// Stream-ID
+				0x00,
+				0x00,
+				0x00,
+				0x01,
+				
+				0x00, // No Flags (0x01 - last frame, 0x02 - Compressed)
+				// Length bytes, add to 24 bit integer - always 8 for this one
+				0x00,
+				0x00,
+				0x08,
+				// Data 
+				0x0A,
+				0x02,
+				0x44,
+				0x05,
+				0x0B,
+				0xD0,
+				0x0F,
+				0x05
+			};
+		}
 		[SetUp]
 		public void Init()
 		{
@@ -338,6 +364,7 @@ namespace Manos.Spdy.Tests
 			HeadersPacket = genHeadersPacket();
 			WindowUpdatePacket = genWindowUpdatePacket();
 			VersionPacket = genVersionPacket();
+			DataPacket = genDataPacket();
 		}
 		[Test]
 		public void ParseSynStream ()
@@ -526,6 +553,22 @@ namespace Manos.Spdy.Tests
 				};
 				parser.OnVersion += handle;
 				parser.Parse(VersionPacket, 0, VersionPacket.Length);
+			});
+		}
+		[Test]
+		public void ParseDataFrame()
+		{
+			AsyncTest(done =>
+			{
+				SPDYParser.DataHandler handle = (parsed_packet) => {
+					Assert.AreEqual(1, parsed_packet.StreamID, "Stream ID");
+					Assert.AreEqual(0x00, parsed_packet.Flags, "Flags");
+					Assert.AreEqual(8, parsed_packet.Length, "Length");
+					Assert.AreSame(new byte[] {0x0A,0x02,0x44,0x05,0x0B,0xD0,0x0F,0x05}, parsed_packet.Data, "Data");
+					done(() => { parser.OnData -= handle; });
+				};
+				parser.OnData += handle;
+				parser.Parse(DataPacket, 0, DataPacket.Length);
 			});
 		}
 	}

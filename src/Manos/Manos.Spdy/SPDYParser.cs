@@ -22,6 +22,8 @@ namespace Manos.Spdy
 		public event WindowUpdateHandler OnWindowUpdate;
 		public delegate void VersionHandler(VersionFrame packet);
 		public event VersionHandler OnVersion;
+		public delegate void DataHandler(DataFrame packet);
+		public event DataHandler OnData;
 		public SPDYParser ()
 		{
 		}
@@ -71,6 +73,11 @@ namespace Manos.Spdy
 			if (OnVersion != null)
 			{
 				OnVersion(x);
+			}
+			var y = new DataFrame();
+			if (OnData != null)
+			{
+				OnData(y);
 			}
 		}
 	}
