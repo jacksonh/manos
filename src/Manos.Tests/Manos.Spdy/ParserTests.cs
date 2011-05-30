@@ -434,6 +434,7 @@ namespace Manos.Spdy.Tests
 					Assert.AreEqual(1, parsed_packet.StreamID, "Stream ID");
 					Assert.AreEqual("value1", parsed_packet.Headers["header1"], "Header 1");
 					Assert.AreEqual("value2", parsed_packet.Headers["header2"], "Header 2");
+					done(() => { parser.OnHeaders -= handle; });
 				};
 				parser.OnHeaders += handle;
 				parser.Parse(HeadersPacket, 0, HeadersPacket.Length);
