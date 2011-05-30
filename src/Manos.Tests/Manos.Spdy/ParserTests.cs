@@ -503,6 +503,7 @@ namespace Manos.Spdy.Tests
 					Assert.AreEqual(8, parsed_packet.Length, "Length");
 					Assert.AreEqual(1, parsed_packet.StreamID, "Stream ID");
 					Assert.AreEqual(5, parsed_packet.DeltaWindowSize, "Delta Window Size");
+					done(() => { parser.OnWindowUpdate -= handle; });
 				};
 				parser.OnWindowUpdate += handle;
 				parser.Parse(WindowUpdatePacket, 0, WindowUpdatePacket.Length);
@@ -521,6 +522,7 @@ namespace Manos.Spdy.Tests
 					Assert.AreEqual(2, parsed_packet.SupportedVersionsCount, "Supported Version Count");
 					Assert.AreEqual(1, parsed_packet.SupportedVersions[0], "First Supported Version");
 					Assert.AreEqual(2, parsed_packet.SupportedVersions[1], "Second Supported Version");
+					done(() => { parser.OnVersion -= handle; });
 				};
 				parser.OnVersion += handle;
 				parser.Parse(VersionPacket, 0, VersionPacket.Length);
