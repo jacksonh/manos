@@ -7,7 +7,7 @@ using Manos.Spdy;
 
 namespace Manos.Spdy.Tests
 {
-	[TestFixture()]
+	[TestFixture]
 	public class ParserTests
 	{
 		SPDYParser parser;
@@ -242,7 +242,7 @@ namespace Manos.Spdy.Tests
 				0x00,
 			};
 		}
-		[SetUp()]
+		[SetUp]
 		public void Init()
 		{
 			parser = new SPDYParser();
@@ -253,7 +253,7 @@ namespace Manos.Spdy.Tests
 			PingPacket = genPingPacket();
 			GoawayPacket = genGoawayPacket();
 		}
-		[Test()]
+		[Test]
 		public void ParseSynStream ()
 		{
 			ManualResetEvent wait = new ManualResetEvent(false);
@@ -280,7 +280,7 @@ namespace Manos.Spdy.Tests
 			Assert.IsTrue(ran, "Callback Fired");
 			parser.OnSynStream -= handle;
 		}
-		[Test()]
+		[Test]
 		public void ParseSynReply()
 		{
 			ManualResetEvent wait = new ManualResetEvent(false);
@@ -316,7 +316,7 @@ namespace Manos.Spdy.Tests
 			wait.WaitOne();
 			Assert.IsTrue(ran, "Callback Fired");
 		}
-		[Test()]
+		[Test]
 		public void ParseRstStream()
 		{
 			AsyncTest(done =>
@@ -334,7 +334,7 @@ namespace Manos.Spdy.Tests
 				parser.Parse(RstStreamPacket, 0, RstStreamPacket.Length);
 			});
 		}
-		[Test()]
+		[Test]
 		public void ParseSettings()
 		{
 			AsyncTest(done => 
@@ -351,7 +351,7 @@ namespace Manos.Spdy.Tests
 				parser.Parse(SettingsPacket, 0, SettingsPacket.Length);
 			});
 		}
-		[Test()]
+		[Test]
 		public void ParsePing()
 		{
 			AsyncTest(done =>
@@ -368,7 +368,7 @@ namespace Manos.Spdy.Tests
 				parser.Parse(PingPacket, 0, PingPacket.Length);
 			});
 		}
-		[Test()]
+		[Test]
 		public void ParseGoaway()
 		{
 			AsyncTest(done =>
