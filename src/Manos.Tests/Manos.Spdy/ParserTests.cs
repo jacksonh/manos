@@ -18,6 +18,7 @@ namespace Manos.Spdy.Tests
 		byte[] PingPacket;
 		byte[] GoawayPacket;
 		byte[] HeadersPacket;
+		byte[] WindowUpdatePacket;
 		
 		private static byte[] combine(params byte[][] all)
 		{
@@ -276,6 +277,29 @@ namespace Manos.Spdy.Tests
 			//Console.WriteL
 			return packet;
 		}
+		public byte[] genWindowUpdatePacket()
+		{
+			return new byte[] {
+				0x80, // 10000000 Control Frame bit +  empty version bits
+				0x02, // Version
+				(byte)ControlFrameType.WINDOW_UPDATE,
+				0x00, // No Flags
+				// Length bytes, add to 32 bit integer - always 8 for this one
+				0x00,
+				0x00,
+				0x08,
+				// Stream-ID
+				0x00,
+				0x00,
+				0x00,
+				0x01,
+				// Delta Window Size
+				0x00,
+				0x00,
+				0x00,
+				0x05
+			};
+		}
 		[SetUp]
 		public void Init()
 		{
@@ -287,6 +311,7 @@ namespace Manos.Spdy.Tests
 			PingPacket = genPingPacket();
 			GoawayPacket = genGoawayPacket();
 			HeadersPacket = genHeadersPacket();
+			WindowUpdatePacket = genWindowUpdatePacket();
 		}
 		[Test]
 		public void ParseSynStream ()
@@ -438,6 +463,23 @@ namespace Manos.Spdy.Tests
 				};
 				parser.OnHeaders += handle;
 				parser.Parse(HeadersPacket, 0, HeadersPacket.Length);
+			});
+		}
+		[Test]
+		public void ParseWindowUpdate()
+		{
+			AsyncTest(done =>
+			{
+				SPDYParser.WindowUpdateHandler handle = (parsed_packet) => {
+					Assert.AreEqual(2, parsed_packet.Version, "Version");
+					Assert.AreEqual(ControlFrameType.WINDOW_UPDATE, parsed_packet.Type, "Type");
+					Assert.AreEqual(0x00, parsed_packet.Flags, "Flags");
+					Assert.AreEqual(8, parsed_packet.Length, "Length");
+					Assert.AreEqual(1, parsed_packet.StreamID, "Stream ID");
+					Assert.AreEqual(5, parsed_packet.DeltaWindowSize, "Delta Window Size");
+				};
+				parser.OnWindowUpdate += handle;
+				parser.Parse(WindowUpdatePacket, 0, WindowUpdatePacket.Length);
 			});
 		}
 	}
