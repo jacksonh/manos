@@ -67,6 +67,7 @@
     <Compile Include="Manos.Http\HttpCookieTest.cs" />
     <Compile Include="Manos.Routing\HtmlFormDataTypeConverterTest.cs" />
     <Compile Include="Manos.Spdy\ParserTests.cs" />
+    <Compile Include="Manos.Spdy\GeneratorTests.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

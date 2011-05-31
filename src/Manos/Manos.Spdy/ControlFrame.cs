@@ -15,6 +15,9 @@ namespace Manos.Spdy
 		public void Parse(byte[] data, int offset, int length)
 		{
 		}
+		public byte[] Serialize()
+		{
+		}
 	}
 	public enum ControlFrameType	
 	{
