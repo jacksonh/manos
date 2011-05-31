@@ -12,6 +12,10 @@ namespace Manos.Spdy
 		{
 			return null;
 		}
+		public byte[] UncompressedSerialize()
+		{
+			return default(byte[]);
+		}
 	}
 }
 

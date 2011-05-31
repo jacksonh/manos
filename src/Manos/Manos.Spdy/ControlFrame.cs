@@ -17,6 +17,7 @@ namespace Manos.Spdy
 		}
 		public byte[] Serialize()
 		{
+			return default(byte[]);
 		}
 	}
 	public enum ControlFrameType	
