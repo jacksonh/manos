@@ -88,6 +88,29 @@ namespace Manos.Spdy.Tests
 			Assert.AreEqual(0x55, fromclass[11], "Stream ID"); //8, 9, 10, 11 -> Stream ID
 			Assert.AreEqual(0x03, fromclass[15], "Status Code"); //12, 13, 14, 15
 		}
+		[Test]
+		public void GenerateSettings()
+		{
+			SettingsFrame frame = new SettingsFrame();
+			frame.Version = 2;
+			frame.Flags = 0x00;
+			frame.UploadBandwidth = 255;
+			frame.MaxConcurrentStreams = 240;
+			byte[] fromclass = frame.Serialize();
+			Assert.AreEqual(fromclass.Length, 8 + frame.Length, "Frame Length");
+			Assert.AreEqual(0x80, fromclass[0], "Control Bit");
+			Assert.AreEqual(0x02, fromclass[1], "Version");
+			Assert.AreEqual(0x04, fromclass[3], "Frame Type"); //skip 2 because type is two bits
+			Assert.AreEqual(0x00, fromclass[4], "Flags");
+			// 5,6,7 are Length, Will add test once I actually implement packet generation
+			Assert.AreEqual(0x02, fromclass[11], "Number of Entries"); // 8, 9, 10, 11
+			Assert.AreEqual(0x01, fromclass[12], "Entry 1 persist flag"); //First byte is flags (12)
+			Assert.AreEqual(0x01, fromclass[15], "Entry 1 ID"); //last 3 bytes are ID (13, 14, 15)
+			Assert.AreEqual(0xFF, fromclass[19], "Entry 1 Value"); //16, 17, 18, 19
+			Assert.AreEqual(0x01, fromclass[20], "Entry 2 persist flag"); //First byte is flags (20)
+			Assert.AreEqual(0x04, fromclass[23], "Entry 2 ID"); //last 3 bytes are ID (21, 22, 23)
+			Assert.AreEqual(0xF0, fromclass[27], "Entry 2 Value"); //24, 25, 26, 27
+		}
 	}
 }
 
