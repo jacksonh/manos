@@ -126,6 +126,23 @@ namespace Manos.Spdy.Tests
 			Assert.AreEqual(0x04, fromclass[7], "Length"); // 5, 6, 7
 			Assert.AreEqual(0x11, fromclass[11], "ID"); // 8, 9, 10, 11
 		}
+		[Test]
+		public void GenerateGoAway()
+		{
+			GoawayFrame frame = new GoawayFrame();
+			frame.Version = 2;
+			frame.Flags = 0x00;
+			frame.LastGoodStreamID = 7;
+			frame.StatusCode = 17;
+			byte[] fromclass = frame.Serialize();
+			Assert.AreEqual(0x80, fromclass[0], "Control Bit");
+			Assert.AreEqual(0x02, fromclass[1], "Version");
+			Assert.AreEqual(0x07, fromclass[3], "Frame Type"); //skip 2 because type is two bits
+			Assert.AreEqual(0x00, fromclass[4], "Flags");
+			Assert.AreEqual(0x08, fromclass[7], "Length"); //5, 6, 7
+			Assert.AreEqual(0x07, fromclass[11], "Last Good Stream ID"); // 8, 9, 10, 11
+			Assert.AreEqual(0x00, fromclass[15], "Status Code"); //12, 13, 14, 15
+		}
 	}
 }
 
