@@ -69,6 +69,25 @@ namespace Manos.Spdy.Tests
 				Assert.AreEqual(nv[i], output[i], "Name Value Block Byte #" + i);
 			}
 		}
+		[Test]
+		public void GenerateRstStream()
+		{
+			RstStreamFrame frame = new RstStreamFrame();
+			frame.Version = 2;
+			frame.Flags = 0x00;
+			frame.StreamID = 341;
+			frame.StatusCode = RstStreamStatusCode.REFUSED_STREAM;
+			byte fromclass = frame.Serialize();
+			Assert.AreEqual(fromclass.Length, 8 + 8, "Lengths"); //first 8 is rst_stream length always, 2nd 8 is for control frame header
+			Assert.AreEqual(0x80, fromclass[0], "Control Bit");
+			Assert.AreEqual(0x02, fromclass[1], "Version");
+			Assert.AreEqual(0x03, fromclass[3], "Frame Type"); //skip 2 because type is two bits
+			Assert.AreEqual(0x00, fromclass[4], "Flags");
+			// 5,6,7 are Length, Will add test once I actually implement packet generation
+			Assert.AreEqual(0x01, fromclass[10], "Stream ID");
+			Assert.AreEqual(0x55, fromclass[11], "Stream ID"); //8, 9, 10, 11 -> Stream ID
+			Assert.AreEqual(0x03, fromclass[15], "Status Code"); //12, 13, 14, 15
+		}
 	}
 }
 
