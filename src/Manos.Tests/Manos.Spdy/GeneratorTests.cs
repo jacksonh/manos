@@ -22,7 +22,7 @@ namespace Manos.Spdy.Tests
 			frame.Priority = 1;
 			NameValueHeaderBlock headers = new NameValueHeaderBlock();
 			headers.Add("header1", "value1");
-			headers.Add("eader2", "value2");
+			headers.Add("header2", "value2");
 			frame.Headers = headers;
 			byte[] fromclass = frame.Serialize();
 			Assert.AreEqual(fromclass.Length, frame.Length + 8, "Lengths"); //8 is for control frame header
