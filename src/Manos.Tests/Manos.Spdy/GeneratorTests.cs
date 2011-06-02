@@ -111,6 +111,21 @@ namespace Manos.Spdy.Tests
 			Assert.AreEqual(0x04, fromclass[23], "Entry 2 ID"); //last 3 bytes are ID (21, 22, 23)
 			Assert.AreEqual(0xF0, fromclass[27], "Entry 2 Value"); //24, 25, 26, 27
 		}
+		[Test]
+		public void GeneratePing()
+		{
+			PingFrame frame = new PingFrame();
+			frame.Version = 2;
+			frame.Flags = 0x00;
+			frame.ID = 17;
+			byte[] fromclass = frame.Serialize();
+			Assert.AreEqual(0x80, fromclass[0], "Control Bit");
+			Assert.AreEqual(0x02, fromclass[1], "Version");
+			Assert.AreEqual(0x06, fromclass[3], "Frame Type"); //skip 2 because type is two bits
+			Assert.AreEqual(0x00, fromclass[4], "Flags");
+			Assert.AreEqual(0x04, fromclass[7], "Length"); // 5, 6, 7
+			Assert.AreEqual(0x11, fromclass[11], "ID"); // 8, 9, 10, 11
+		}
 	}
 }
 
