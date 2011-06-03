@@ -92,6 +92,7 @@ namespace Manos.Spdy.Tests
 			byte[] packet = new byte[] {
 				0x80, // 10000000 Control Frame bit +  empty version bits
 				0x02, // Version
+				0x00,
 				(byte)ControlFrameType.SYN_STREAM, // Enum for type bit, will be 1
 				0x00, // No Flags
 				// Length bytes, add to 24 bit integer
@@ -132,6 +133,7 @@ namespace Manos.Spdy.Tests
 			byte[] packet = new byte[] {
 				0x80, // 10000000 Control Frame bit +  empty version bits
 				0x02, // Version
+				0x00,
 				(byte)ControlFrameType.SYN_REPLY, // Enum for type bit, will be 1
 				0x00, // No Flags
 				// Length bytes, add to 24 bit integer
@@ -159,6 +161,7 @@ namespace Manos.Spdy.Tests
 			return new byte[] {
 				0x80, // 10000000 Control Frame bit +  empty version bits
 				0x02, // Version
+				0x00,
 				(byte)ControlFrameType.RST_STREAM, // Enum for type bit, will be 1
 				0x00, // No Flags
 				// Length bytes, add to 24 bit integer - always 8 for this one
@@ -210,6 +213,7 @@ namespace Manos.Spdy.Tests
 			return new byte[] {
 				0x80,
 				0x02,
+				0x00,
 				(byte)ControlFrameType.PING,
 				0x00, // No Flags
 				// Length
@@ -228,6 +232,7 @@ namespace Manos.Spdy.Tests
 			return new byte[] {
 				0x80,
 				0x02,
+				0x00,
 				(byte)ControlFrameType.GOAWAY,
 				0x00, // No Flags
 				// Length
@@ -257,6 +262,7 @@ namespace Manos.Spdy.Tests
 			byte[] packet = new byte[] {
 				0x80, // 10000000 Control Frame bit +  empty version bits
 				0x02, // Version
+				0x00,
 				(byte)ControlFrameType.HEADERS, // Enum for type bit, will be 1
 				0x00, // No Flags
 				// Length bytes, add to 24 bit integer
@@ -284,6 +290,7 @@ namespace Manos.Spdy.Tests
 			return new byte[] {
 				0x80, // 10000000 Control Frame bit +  empty version bits
 				0x02, // Version
+				0x00,
 				(byte)ControlFrameType.WINDOW_UPDATE,
 				0x00, // No Flags
 				// Length bytes, add to 24 bit integer - always 8 for this one
@@ -307,6 +314,7 @@ namespace Manos.Spdy.Tests
 			return new byte[] {
 				0x80, // 10000000 Control Frame bit +  empty version bits
 				0x02, // Version
+				0x00,
 				(byte)ControlFrameType.VERSION,
 				0x00, // No Flags
 				// Length bytes, add to 24 bit integer - always 8 for this one
