@@ -29,56 +29,37 @@ namespace Manos.Spdy
 		}
 		public void Parse(byte[] data, int offset, int length)
 		{
-			var p = new SynStreamFrame();
-			if (OnSynStream != null)
-			{
-				OnSynStream(p);
+			if (IsControlFrame(data, offset)) {
+				switch(data[offset + 3])
+				{
+				case 0x01:
+					if (OnSynStream != null)
+					{
+						OnSynStream(new SynStreamFrame(data, offset, length));
+					}
+					break;
+				case 0x02:
+					if (OnSynReply != null)
+					{
+						OnSynReply(new SynReplyFrame(data, offset, length));
+					}
+					break;
+				case 0x03:
+					if (OnRstStream != null)
+					{
+						OnRstStream(new RstStreamFrame(data, offset, length));
+					}
+				}
+			} else {
+				if (OnData != null)
+				{
+					OnData(new DataFrame(data, offset, length));
+				}
 			}
-			var q = new SynReplyFrame();
-			if (OnSynReply != null)
-			{
-				OnSynReply(q);
-			}
-			var r = new RstStreamFrame();
-			if (OnRstStream != null)
-			{
-				OnRstStream(r);
-			}
-			var s = new SettingsFrame();
-			if (OnSettings != null)
-			{
-				OnSettings(s);
-			}
-			var t = new PingFrame();
-			if (OnPing != null)
-			{
-				OnPing(t);
-			}
-			var u = new GoawayFrame();
-			if (OnGoaway != null)
-			{
-				OnGoaway(u);
-			}
-			var v = new HeadersFrame();
-			if (OnHeaders != null)
-			{
-				OnHeaders(v);
-			}
-			var w = new WindowUpdateFrame();
-			if (OnWindowUpdate != null)
-			{
-				OnWindowUpdate(w);
-			}
-			var x = new VersionFrame();
-			if (OnVersion != null)
-			{
-				OnVersion(x);
-			}
-			var y = new DataFrame();
-			if (OnData != null)
-			{
-				OnData(y);
-			}
+		}
+		public bool IsControlFrame(byte[] data, int offset)
+		{
+			return (data[offset] >> 7) == 1;
 		}
 	}
 }
