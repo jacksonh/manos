@@ -546,7 +546,6 @@ namespace Manos.Spdy.Tests
 					Assert.AreEqual(ControlFrameType.VERSION, parsed_packet.Type, "Type");
 					Assert.AreEqual(0x00, parsed_packet.Flags, "Flags");
 					Assert.AreEqual(8, parsed_packet.Length, "Length");
-					Assert.AreEqual(2, parsed_packet.SupportedVersionsCount, "Supported Version Count");
 					Assert.AreEqual(1, parsed_packet.SupportedVersions[0], "First Supported Version");
 					Assert.AreEqual(2, parsed_packet.SupportedVersions[1], "Second Supported Version");
 					done(() => { parser.OnVersion -= handle; });

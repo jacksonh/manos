@@ -11,6 +11,13 @@ namespace Manos.Spdy
 		public DataFrame ()
 		{
 		}
+		public DataFrame(byte[] data, int offset, int length)
+		{
+		}
+		public byte[] Serialize()
+		{
+			return default(byte[]);
+		}
 	}
 }
 
