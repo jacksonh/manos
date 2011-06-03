@@ -30,25 +30,62 @@ namespace Manos.Spdy
 		public void Parse(byte[] data, int offset, int length)
 		{
 			if (IsControlFrame(data, offset)) {
-				switch(data[offset + 3])
+				switch((ControlFrameType)Convert.ToInt32(data[offset + 3]))
 				{
-				case 0x01:
+				case ControlFrameType.SYN_STREAM:
 					if (OnSynStream != null)
 					{
 						OnSynStream(new SynStreamFrame(data, offset, length));
 					}
 					break;
-				case 0x02:
+				case ControlFrameType.SYN_REPLY:
 					if (OnSynReply != null)
 					{
 						OnSynReply(new SynReplyFrame(data, offset, length));
 					}
 					break;
-				case 0x03:
+				case ControlFrameType.RST_STREAM:
 					if (OnRstStream != null)
 					{
 						OnRstStream(new RstStreamFrame(data, offset, length));
 					}
+					break;
+				case ControlFrameType.SETTINGS:
+					if (OnSettings != null)
+					{
+						OnSettings(new SettingsFrame(data, offset, length));
+					}
+					break;
+				case ControlFrameType.PING:
+					if (OnPing != null)
+					{
+						OnPing(new PingFrame(data, offset, length));
+					}
+					break;
+				case ControlFrameType.GOAWAY:
+					if (OnGoaway != null)
+					{
+						OnGoaway(new GoawayFrame(data, offset, length));
+					}
+					break;
+				case ControlFrameType.HEADERS:
+					if (OnHeaders != null)
+					{
+						OnHeaders(new HeadersFrame(data, offset, length));
+					}
+					break;
+				case ControlFrameType.WINDOW_UPDATE:
+					if (OnWindowUpdate != null)
+					{
+						OnWindowUpdate(new WindowUpdateFrame(data, offset, length));
+					}
+					break;
+				case ControlFrameType.VERSION:
+					if (OnVersion != null)
+					{
+						OnVersion(new VersionFrame(data, offset, length));
+					}
+					break;
 				}
 			} else {
 				if (OnData != null)
