@@ -8,6 +8,9 @@ namespace Manos.Spdy
 		public PingFrame()
 		{
 		}
+		public PingFrame(byte[] data, int offset, int length)
+		{
+		}
 	}
 }
 

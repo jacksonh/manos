@@ -8,6 +8,9 @@ namespace Manos.Spdy
 		public VersionFrame ()
 		{
 		}
+		public VersionFrame(byte[] data, int offset, int length)
+		{
+		}
 	}
 }
 

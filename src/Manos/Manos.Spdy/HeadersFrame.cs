@@ -9,6 +9,9 @@ namespace Manos.Spdy
 		public HeadersFrame ()
 		{
 		}
+		public HeadersFrame(byte[] data, int offset, int length)
+		{
+		}
 	}
 }
 

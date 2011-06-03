@@ -9,6 +9,9 @@ namespace Manos.Spdy
 		public RstStreamFrame ()
 		{
 		}
+		public RstStreamFrame(byte[] data, int offset, int length)
+		{
+		}
 	}
 	public enum RstStreamStatusCode
 	{

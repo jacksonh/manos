@@ -7,6 +7,9 @@ namespace Manos.Spdy
 		public SettingsFrame ()
 		{
 		}
+		public SettingsFrame(byte[] data, int offset, int length)
+		{
+		}
 		public int UploadBandwidth { get; set; }
 		public int DownloadBandwidth { get; set; }
 		public int RoundTripTime { get; set; }

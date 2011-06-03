@@ -9,6 +9,9 @@ namespace Manos.Spdy
 		public GoawayFrame ()
 		{
 		}
+		public GoawayFrame(byte[] data, int offset, int length)
+		{
+		}
 	}
 }
 

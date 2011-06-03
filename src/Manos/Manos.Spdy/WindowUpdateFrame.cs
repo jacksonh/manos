@@ -9,6 +9,9 @@ namespace Manos.Spdy
 		public WindowUpdateFrame ()
 		{
 		}
+		public WindowUpdateFrame(byte[] data, int offset, int length)
+		{
+		}
 	}
 }
 

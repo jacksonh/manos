@@ -11,6 +11,9 @@ namespace Manos.Spdy
 		public SynStreamFrame ()
 		{
 		}
+		public SynStreamFrame(byte[] data, int offset, int length)
+		{
+		}
 	}
 }
 
