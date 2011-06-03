@@ -170,6 +170,23 @@ namespace Manos.Spdy.Tests
 				Assert.AreEqual(nv[i], output[i], "Name Value Block Byte #" + i);
 			}
 		}
+		[Test]
+		public void GenerateWindowUpdate()
+		{
+			WindowUpdateFrame frame = new WindowUpdateFrame();
+			frame.Version = 2;
+			frame.Flags = 0x00;
+			frame.StreamID = 30;
+			frame.DeltaWindowSize = 82;
+			byte[] fromclass = frame.Serialize();
+			Assert.AreEqual(0x80, fromclass[0], "Control Bit");
+			Assert.AreEqual(0x02, fromclass[1], "Version");
+			Assert.AreEqual(0x09, fromclass[3], "Frame Type"); //skip 2 because type is two bits
+			Assert.AreEqual(0x00, fromclass[4], "Flags");
+			Assert.AreEqual(0x08, fromclass[7], "Length"); // 5, 6, 7
+			Assert.AreEqual(0x1E, fromclass[11], "Stream ID"); // 8, 9, 10, 11
+			Assert.AreEqual(0x52, fromclass[15], "Delta Window Size"); // 12, 13, 14, 15
+		}
 	}
 }
 
