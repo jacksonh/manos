@@ -187,6 +187,23 @@ namespace Manos.Spdy.Tests
 			Assert.AreEqual(0x1E, fromclass[11], "Stream ID"); // 8, 9, 10, 11
 			Assert.AreEqual(0x52, fromclass[15], "Delta Window Size"); // 12, 13, 14, 15
 		}
+		[Test]
+		public void GenerateVersion()
+		{
+			VersionFrame frame = new VersionFrame();
+			frame.Version = 1;
+			frame.Flags = 0x00;
+			frame.SupportedVersions = new int[] { 2, 3 };
+			byte[] fromclass = frame.Serialize();
+			Assert.AreEqual(0x80, fromclass[0], "Control Bit");
+			Assert.AreEqual(0x01, fromclass[1], "Version");
+			Assert.AreEqual(0x0A, fromclass[3], "Frame Type"); //skip 2 because type is two bits
+			Assert.AreEqual(0x00, fromclass[4], "Flags");
+			Assert.AreEqual(0x08, fromclass[7], "Length"); // 5, 6, 7
+			Assert.AreEqual(0x02, fromclass[11], "Number of Supported Versions"); //8, 9, 10, 11
+			Assert.AreEqual(0x02, fromclass[13], "Supported Version 1 (2)"); // 12, 13
+			Assert.AreEqual(0x03, fromclass[15], "Supported Version 2 (3)"); // 14, 15
+		}
 	}
 }
 
