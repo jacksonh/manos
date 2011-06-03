@@ -185,6 +185,7 @@ namespace Manos.Spdy.Tests
 			return new byte[] {
 				0x80,
 				0x02,
+				0x00,
 				(byte)ControlFrameType.SETTINGS,
 				0x00, // No Flags
 				// Length
