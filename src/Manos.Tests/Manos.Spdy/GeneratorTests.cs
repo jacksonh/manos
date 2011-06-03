@@ -204,6 +204,22 @@ namespace Manos.Spdy.Tests
 			Assert.AreEqual(0x02, fromclass[13], "Supported Version 1 (2)"); // 12, 13
 			Assert.AreEqual(0x03, fromclass[15], "Supported Version 2 (3)"); // 14, 15
 		}
+		[Test]
+		public void GenerateData()
+		{
+			DataFrame frame = new DataFrame();
+			frame.Flags = 0x00;
+			frame.StreamID = 27;
+			frame.Data = new byte[] { 0x43, 0x22, 0x99 };
+			byte[] fromclass = frame.Serialize();
+			Assert.AreEqual(0x00, fromclass[0], "Not a Control Frame");
+			Assert.AreEqual(0x1B, fromclass[3], "Stream ID");
+			Assert.AreEqual(0x00, fromclass[4], "Flags");
+			Assert.AreEqual(0x03, fromclass[7], "Length");
+			Assert.AreEqual(0x43, fromclass[8], "Data 1");
+			Assert.AreEqual(0x22, fromclass[9], "Data 2");
+			Assert.AreEqual(0x99, fromclass[10], "Data 3");
+		}
 	}
 }
 
