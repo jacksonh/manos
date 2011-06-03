@@ -488,7 +488,7 @@ namespace Manos.Spdy.Tests
 			{
 				SPDYParser.GoawayHandler handle = (parsed_packet) => {
 					Assert.AreEqual(2, parsed_packet.Version, "Version");
-					Assert.AreEqual(ControlFrameType.PING, parsed_packet.Type, "Type");
+					Assert.AreEqual(ControlFrameType.GOAWAY, parsed_packet.Type, "Type");
 					Assert.AreEqual(0x00, parsed_packet.Flags, "Flags");
 					Assert.AreEqual(8, parsed_packet.Length, "Length");
 					Assert.AreEqual(1, parsed_packet.LastGoodStreamID, "Last Good Stream ID");
