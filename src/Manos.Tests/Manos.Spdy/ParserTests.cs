@@ -404,23 +404,20 @@ namespace Manos.Spdy.Tests
 		[Test]
 		public void ParseSynReply()
 		{
-			ManualResetEvent wait = new ManualResetEvent(false);
-			bool ran = false;
-			SPDYParser.SynReplyHandler handle = (parsed_packet) => {
-				Assert.AreEqual(2, parsed_packet.Version, "Version");
-				Assert.AreEqual(ControlFrameType.SYN_REPLY, parsed_packet.Type, "Type");
-				Assert.AreEqual(0x00, parsed_packet.Flags, "Flags");
-				Assert.AreEqual(1, parsed_packet.StreamID, "Stream ID");
-				Assert.AreEqual("200", parsed_packet.Headers["status"], "Status");
-				Assert.AreEqual("HTTP/1.1", parsed_packet.Headers["version"], "HTTP Version");
-				ran = true;
-				wait.Set();
-			};
-			parser.OnSynReply += handle;
-			parser.Parse(SynReplyPacket, 0, SynReplyPacket.Length);
-			wait.WaitOne(500, false);
-			Assert.IsTrue(ran, "Callback Fired");
-			parser.OnSynReply -= handle;
+			AsyncTest(done =>
+			{
+				SPDYParser.SynReplyHandler handle = (parsed_packet) => {
+					Assert.AreEqual(2, parsed_packet.Version, "Version");
+					Assert.AreEqual(ControlFrameType.SYN_REPLY, parsed_packet.Type, "Type");
+					Assert.AreEqual(0x00, parsed_packet.Flags, "Flags");
+					Assert.AreEqual(1, parsed_packet.StreamID, "Stream ID");
+					Assert.AreEqual("200", parsed_packet.Headers["status"], "Status");
+					Assert.AreEqual("HTTP/1.1", parsed_packet.Headers["version"], "HTTP Version");
+					done(() => parser.OnSynReply -= handle);
+				};
+				parser.OnSynReply += handle;
+				parser.Parse(SynReplyPacket, 0, SynReplyPacket.Length);
+			});
 		}
 		public void AsyncTest(Action<Action<Action>> cb)
 		{
