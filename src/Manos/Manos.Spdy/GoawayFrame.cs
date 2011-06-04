@@ -11,6 +11,10 @@ namespace Manos.Spdy
 		}
 		public GoawayFrame(byte[] data, int offset, int length)
 		{
+			this.Type = ControlFrameType.GOAWAY;
+			base.Parse(data, offset, length);
+			this.LastGoodStreamID = Util.BuildInt(data, offset + 8, 4);
+			this.StatusCode = Util.BuildInt(data, offset + 12, 4);
 		}
 	}
 }

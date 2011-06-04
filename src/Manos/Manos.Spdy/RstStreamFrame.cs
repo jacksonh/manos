@@ -11,6 +11,10 @@ namespace Manos.Spdy
 		}
 		public RstStreamFrame(byte[] data, int offset, int length)
 		{
+			this.Type = ControlFrameType.RST_STREAM;
+			base.Parse(data, offset, length);
+			this.StreamID = Util.BuildInt(data, offset + 8, 4);
+			this.StatusCode = (RstStreamStatusCode)Util.BuildInt(data, offset + 12, 4);
 		}
 	}
 	public enum RstStreamStatusCode

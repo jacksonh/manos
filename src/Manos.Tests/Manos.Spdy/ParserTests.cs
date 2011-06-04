@@ -570,7 +570,7 @@ namespace Manos.Spdy.Tests
 					Assert.AreEqual(1, parsed_packet.StreamID, "Stream ID");
 					Assert.AreEqual(0x00, parsed_packet.Flags, "Flags");
 					Assert.AreEqual(8, parsed_packet.Length, "Length");
-					Assert.AreSame(new byte[] {0x0A,0x02,0x44,0x05,0x0B,0xD0,0x0F,0x05}, parsed_packet.Data, "Data");
+					CollectionAssert.AreEqual(new byte[] {0x0A,0x02,0x44,0x05,0x0B,0xD0,0x0F,0x05}, parsed_packet.Data, "Data");
 					done(() => { parser.OnData -= handle; });
 				};
 				parser.OnData += handle;

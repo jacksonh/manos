@@ -13,6 +13,11 @@ namespace Manos.Spdy
 		}
 		public DataFrame(byte[] data, int offset, int length)
 		{
+			this.StreamID = Util.BuildInt(data, offset, 4);
+			this.Flags = data[offset + 4];
+			this.Length = Util.BuildInt(data, offset + 5, 3);
+			this.Data = new byte[this.Length];
+			Array.Copy(data, offset + 8, this.Data, 0, this.Length);
 		}
 		public byte[] Serialize()
 		{
