@@ -378,28 +378,25 @@ namespace Manos.Spdy.Tests
 		[Test]
 		public void ParseSynStream ()
 		{
-			ManualResetEvent wait = new ManualResetEvent(false);
-			bool ran = false;
-			SPDYParser.SynStreamHandler handle = (parsed_packet) => {
-				Assert.AreEqual(2, parsed_packet.Version, "Version");
-				Assert.AreEqual(ControlFrameType.SYN_STREAM, parsed_packet.Type, "Type");
-				Assert.AreEqual(0x00, parsed_packet.Flags, "Flags");
-				Assert.AreEqual(1, parsed_packet.StreamID, "Stream ID");
-				Assert.AreEqual(0, parsed_packet.AssociatedToStreamID, "Associated to Stream ID");
-				Assert.AreEqual(1, parsed_packet.Priority, "Priority");
-				Assert.AreEqual("GET", parsed_packet.Headers["method"], "Method");
-				Assert.AreEqual("/test", parsed_packet.Headers["path"], "Path");
-				Assert.AreEqual("HTTP/1.1", parsed_packet.Headers["version"], " HTTP Version");
-				Assert.AreEqual("www.google.com:1234", parsed_packet.Headers["host"], "Host");
-				Assert.AreEqual("https", parsed_packet.Headers["scheme"], "Scheme");
-				ran = true;
-				wait.Set();
-			};
-			parser.OnSynStream += handle;
-			parser.Parse(SynStreamPacket, 0, SynStreamPacket.Length);
-			wait.WaitOne(500, false);
-			Assert.IsTrue(ran, "Callback Fired");
-			parser.OnSynStream -= handle;
+			AsyncTest(done =>
+			{
+				SPDYParser.SynStreamHandler handle = (parsed_packet) => {
+					Assert.AreEqual(2, parsed_packet.Version, "Version");
+					Assert.AreEqual(ControlFrameType.SYN_STREAM, parsed_packet.Type, "Type");
+					Assert.AreEqual(0x00, parsed_packet.Flags, "Flags");
+					Assert.AreEqual(1, parsed_packet.StreamID, "Stream ID");
+					Assert.AreEqual(0, parsed_packet.AssociatedToStreamID, "Associated to Stream ID");
+					Assert.AreEqual(1, parsed_packet.Priority, "Priority");
+					Assert.AreEqual("GET", parsed_packet.Headers["method"], "Method");
+					Assert.AreEqual("/test", parsed_packet.Headers["path"], "Path");
+					Assert.AreEqual("HTTP/1.1", parsed_packet.Headers["version"], " HTTP Version");
+					Assert.AreEqual("www.google.com:1234", parsed_packet.Headers["host"], "Host");
+					Assert.AreEqual("https", parsed_packet.Headers["scheme"], "Scheme");
+					done(() => parser.OnSynStream -= handle);
+				};
+				parser.OnSynStream += handle;
+				parser.Parse(SynStreamPacket, 0, SynStreamPacket.Length);
+			});
 		}
 		[Test]
 		public void ParseSynReply()
