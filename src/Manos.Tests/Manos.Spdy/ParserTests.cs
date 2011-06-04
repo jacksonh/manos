@@ -98,7 +98,7 @@ namespace Manos.Spdy.Tests
 				// Length bytes, add to 24 bit integer
 				0x00,
 				0x00,
-				0x0A,
+				0x00,
 				// Stream-ID
 				0x00,
 				0x00,
@@ -118,7 +118,7 @@ namespace Manos.Spdy.Tests
 			byte[] lenbytes = inttonbytes(10 + deflen, 3); //10 is length of everything else in SYN_STREAM
 			//Console.WriteLine(deflen);
 			//Console.WriteLine(BitConverter.ToString(packet));
-			Array.Copy(lenbytes, 0, packet, 4, 3);
+			Array.Copy(lenbytes, 0, packet, 5, 3);
 			//Console.WriteLine(BitConverter.ToString(packet));
 			return packet;
 		}
@@ -139,7 +139,7 @@ namespace Manos.Spdy.Tests
 				// Length bytes, add to 24 bit integer
 				0x00,
 				0x00,
-				0x04,
+				0x00,
 				// Stream-ID
 				0x00,
 				0x00,
@@ -384,7 +384,6 @@ namespace Manos.Spdy.Tests
 				Assert.AreEqual(2, parsed_packet.Version, "Version");
 				Assert.AreEqual(ControlFrameType.SYN_STREAM, parsed_packet.Type, "Type");
 				Assert.AreEqual(0x00, parsed_packet.Flags, "Flags");
-				Assert.AreEqual(5, parsed_packet.Length, "Length");
 				Assert.AreEqual(1, parsed_packet.StreamID, "Stream ID");
 				Assert.AreEqual(0, parsed_packet.AssociatedToStreamID, "Associated to Stream ID");
 				Assert.AreEqual(1, parsed_packet.Priority, "Priority");
@@ -411,7 +410,6 @@ namespace Manos.Spdy.Tests
 				Assert.AreEqual(2, parsed_packet.Version, "Version");
 				Assert.AreEqual(ControlFrameType.SYN_REPLY, parsed_packet.Type, "Type");
 				Assert.AreEqual(0x00, parsed_packet.Flags, "Flags");
-				Assert.AreEqual(5, parsed_packet.Length, "Length");
 				Assert.AreEqual(1, parsed_packet.StreamID, "Stream ID");
 				Assert.AreEqual("200", parsed_packet.Headers["status"], "Status");
 				Assert.AreEqual("HTTP/1.1", parsed_packet.Headers["version"], "HTTP Version");

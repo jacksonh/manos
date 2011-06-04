@@ -168,6 +168,7 @@
     <Compile Include="Manos.Spdy\WindowUpdateFrame.cs" />
     <Compile Include="Manos.Spdy\VersionFrame.cs" />
     <Compile Include="Manos.Spdy\DataFrame.cs" />
+    <Compile Include="Manos.Spdy\Util.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

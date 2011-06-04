@@ -14,6 +14,9 @@ namespace Manos.Spdy
 		}
 		public void Parse(byte[] data, int offset, int length)
 		{
+			this.Version = data[offset + 1];
+			this.Flags = data[offset + 4];
+			this.Length = Util.BuildInt(data, offset + 5, 3);
 		}
 		public byte[] Serialize()
 		{
