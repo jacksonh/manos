@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace Manos.Spdy
 {
@@ -19,6 +20,18 @@ namespace Manos.Spdy
 			{
 				arr[offset + i] = Convert.ToByte((val >> ((length-(i + 1))*8)) & 0xFF); //kinda gross
 			}
+		}
+		public static byte[] Combine(params byte[][] all)
+		{
+			int totallength = all.Select(x => x.Length).Sum();
+			byte[] ret = new byte[totallength];
+			int index = 0;
+			foreach (var b in all)
+			{
+				b.CopyTo(ret, index);
+				index += b.Length;
+			}
+			return ret;
 		}
 	}
 }
