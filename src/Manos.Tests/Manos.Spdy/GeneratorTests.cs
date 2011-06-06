@@ -78,7 +78,7 @@ namespace Manos.Spdy.Tests
 			frame.StreamID = 341;
 			frame.StatusCode = RstStreamStatusCode.REFUSED_STREAM;
 			byte[] fromclass = frame.Serialize();
-			Assert.AreEqual(fromclass.Length, 8 + 8, "Lengths"); //first 8 is rst_stream length always, 2nd 8 is for control frame header
+			Assert.AreEqual(16, fromclass.Length, "Lengths"); //first 8 is rst_stream length always, 2nd 8 is for control frame header
 			Assert.AreEqual(0x80, fromclass[0], "Control Bit");
 			Assert.AreEqual(0x02, fromclass[1], "Version");
 			Assert.AreEqual(0x03, fromclass[3], "Frame Type"); //skip 2 because type is two bits
