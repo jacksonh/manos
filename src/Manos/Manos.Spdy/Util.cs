@@ -13,6 +13,13 @@ namespace Manos.Spdy
 			}
 			return ret;
 		}
+		public static void IntToBytes(int val, ref byte[] arr, int offset, int length)
+		{
+			for (int i = 0; i < length; i++)
+			{
+				arr[offset + i] = Convert.ToByte((val >> ((length-(i + 1))*8)) & 0xFF); //kinda gross
+			}
+		}
 	}
 }
 
