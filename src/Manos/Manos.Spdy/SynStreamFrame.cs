@@ -10,6 +10,7 @@ namespace Manos.Spdy
 		public NameValueHeaderBlock Headers { get; set; }
 		public SynStreamFrame ()
 		{
+			this.Type = ControlFrameType.SYN_STREAM;
 		}
 		public SynStreamFrame(byte[] data, int offset, int length)
 		{
@@ -19,6 +20,17 @@ namespace Manos.Spdy
 			this.AssociatedToStreamID = Util.BuildInt(data, offset + 12, 4);
 			this.Priority = data[16] >> 5;
 			this.Headers = NameValueHeaderBlock.Parse(data, 18, this.Length - 10);
+		}
+		public new byte[] Serialize()
+		{
+			byte[] nvblock = this.Headers.Serialize();
+			this.Length = nvblock.Length + 10;
+			var header = base.Serialize();
+			byte[] middle = new byte[10];
+			Util.IntToBytes(this.StreamID, ref middle, 0, 4);
+			Util.IntToBytes(this.AssociatedToStreamID, ref middle, 4, 4);
+			middle[8] = (byte)(this.Priority << 5);
+			return Util.Combine(header, middle, nvblock);
 		}
 	}
 }
