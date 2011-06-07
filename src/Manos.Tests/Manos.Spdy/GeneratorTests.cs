@@ -141,7 +141,7 @@ namespace Manos.Spdy.Tests
 			Assert.AreEqual(0x00, fromclass[4], "Flags");
 			Assert.AreEqual(0x08, fromclass[7], "Length"); //5, 6, 7
 			Assert.AreEqual(0x07, fromclass[11], "Last Good Stream ID"); // 8, 9, 10, 11
-			Assert.AreEqual(0x00, fromclass[15], "Status Code"); //12, 13, 14, 15
+			Assert.AreEqual(0x11, fromclass[15], "Status Code"); //12, 13, 14, 15
 		}
 		[Test]
 		public void GenerateHeaders()
