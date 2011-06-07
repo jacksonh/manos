@@ -4,6 +4,73 @@ namespace Manos.Spdy
 {
 	public class SettingsFrame : ControlFrame
 	{
+		public int UploadBandwidth {
+			get
+			{
+				return _UploadBandwidth;
+			}
+			set
+			{
+				_UploadBandwidth = value;
+				_UploadBandwidthChanged = true;
+			}
+		}
+		public int DownloadBandwidth {
+			get
+			{
+				return _DownloadBandwidth;
+			}
+			set
+			{
+				_DownloadBandwidth = value;
+				_DownloadBandwidthChanged = true;
+			}
+		}
+		public int RoundTripTime {
+			get
+			{
+				return _RoundTripTime;
+			}
+			set
+			{
+				_RoundTripTime = value;
+				_RoundTripTimeChanged = true;
+			}
+		}
+		public int MaxConcurrentStreams {
+			get
+			{
+				return _MaxConcurrentStreams;
+			}
+			set
+			{
+				_MaxConcurrentStreams = value;
+				_MaxConcurrentStreamsChanged = true;
+			}
+		}
+		public int CWND {
+			get
+			{
+				return _CWND;
+			}
+			set
+			{
+				_CWND = value;
+				_CWNDChanged = true;
+			}
+		}
+
+		private int _UploadBandwidth;
+		private int _DownloadBandwidth;
+		private int _RoundTripTime;
+		private int _MaxConcurrentStreams;
+		private int _CWND;
+		private bool _UploadBandwidthChanged;
+		private bool _DownloadBandwidthChanged;
+		private bool _RoundTripTimeChanged;
+		private bool _MaxConcurrentStreamsChanged;
+		private bool _CWNDChanged;
+
 		public SettingsFrame ()
 		{
 		}
@@ -40,11 +107,6 @@ namespace Manos.Spdy
 				}
 			}
 		}
-		public int UploadBandwidth { get; set; }
-		public int DownloadBandwidth { get; set; }
-		public int RoundTripTime { get; set; }
-		public int MaxConcurrentStreams { get; set; }
-		public int CWND { get; set; }
 	}
 }
 
