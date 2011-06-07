@@ -73,6 +73,7 @@ namespace Manos.Spdy
 
 		public SettingsFrame ()
 		{
+			this.Type = ControlFrameType.SETTINGS;
 		}
 		public SettingsFrame(byte[] data, int offset, int length)
 		{
@@ -106,6 +107,87 @@ namespace Manos.Spdy
 					break;
 				}
 			}
+		}
+		// I don't know the best way to do this
+		// This whole class needs something better
+		// But I don't know what that is yet
+		// Maybe using arrays as the backing, which would allow iteration
+		public new byte[] Serialize()
+		{
+			int numchanged = 0;
+			this.Length = 4;
+			if (this._UploadBandwidthChanged)
+			{
+				this.Length += 8;
+				numchanged++;
+			}
+			if (this._DownloadBandwidthChanged)
+			{
+				this.Length += 8;
+				numchanged++;
+			}
+			if (this._RoundTripTimeChanged)
+			{
+				this.Length += 8;
+				numchanged++;
+			}
+			if (this._MaxConcurrentStreamsChanged)
+			{
+				this.Length += 8;
+				numchanged++;
+			}
+			if (this._CWNDChanged)
+			{
+				this.Length += 8;
+				numchanged++;
+			}
+
+			byte[] header = base.Serialize();
+			Array.Resize(ref header, 8 + this.Length);
+			Util.IntToBytes(numchanged, ref header, 8, 4);
+			int index = 12;
+			if (this._UploadBandwidthChanged)
+			{
+				Util.IntToBytes(1, ref header, index, 4);
+				header[index] = 0x01;
+				index += 4;
+				Util.IntToBytes(this.UploadBandwidth, ref header, index, 4);
+				index += 4;
+			}
+			if (this._DownloadBandwidthChanged)
+			{
+				Util.IntToBytes(2, ref header, index, 4);
+				header[index] = 0x01;
+				index += 4;
+				Util.IntToBytes(this.DownloadBandwidth, ref header, index, 4);
+				index += 4;
+			}
+			if (this._RoundTripTimeChanged)
+			{
+				Util.IntToBytes(3, ref header, index, 4);
+				header[index] = 0x01;
+				index += 4;
+				Util.IntToBytes(this.RoundTripTime, ref header, index, 4);
+				index += 4;
+			}
+			if (this._MaxConcurrentStreamsChanged)
+			{
+				Util.IntToBytes(4, ref header, index, 4);
+				header[index] = 0x01;
+				index += 4;
+				Util.IntToBytes(this.MaxConcurrentStreams, ref header, index, 4);
+				index += 4;
+			}
+			if (this._CWNDChanged)
+			{
+				Util.IntToBytes(5, ref header, index, 4);
+				header[index] = 0x01;
+				index += 4;
+				Util.IntToBytes(this.CWND, ref header, index, 4);
+				index += 4;
+			}
+			Console.WriteLine(BitConverter.ToString(header));
+			return header;
 		}
 	}
 }
