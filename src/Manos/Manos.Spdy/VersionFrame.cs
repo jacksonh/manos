@@ -7,6 +7,7 @@ namespace Manos.Spdy
 		public int[] SupportedVersions { get; set; }
 		public VersionFrame ()
 		{
+			this.Type = ControlFrameType.VERSION;
 		}
 		public VersionFrame(byte[] data, int offset, int length)
 		{
@@ -20,6 +21,19 @@ namespace Manos.Spdy
 				SupportedVersions[i] = Util.BuildInt(data, index, 2);
 				index += 2;
 			}
+		}
+		public new byte[] Serialize()
+		{
+			this.Length = 4 + this.SupportedVersions.Length * 2;
+			var headers = base.Serialize();
+			Array.Resize(ref headers, this.Length + 8);
+			Util.IntToBytes(this.SupportedVersions.Length, ref headers, 8, 4);
+			for (int i = 0; i < this.SupportedVersions.Length; i++)
+			{
+				Util.IntToBytes(this.SupportedVersions[i], ref headers, 12 + i * 2, 2);
+			}
+			Console.WriteLine(BitConverter.ToString(headers));
+			return headers;
 		}
 	}
 }
