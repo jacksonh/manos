@@ -21,7 +21,12 @@ namespace Manos.Spdy
 		}
 		public byte[] Serialize()
 		{
-			return default(byte[]);
+			byte[] ret = new byte[8 + this.Data.Length];
+			Util.IntToBytes(this.StreamID, ref ret, 0, 4);
+			ret[4] = this.Flags;
+			Util.IntToBytes(this.Data.Length, ref ret, 5, 3);
+			Array.Copy(this.Data, 0, ret, 8, this.Data.Length);
+			return ret;
 		}
 	}
 }
