@@ -178,6 +178,7 @@ namespace Manos.Tool
 			string user = null;
 			string assembly = null;
 			string ipaddress = null;
+			string spdy = null;
 			
 			var p = new OptionSet () {
 				{ "p|port=", v => port = v },
@@ -186,7 +187,8 @@ namespace Manos.Tool
 				{ "k|keyfile=", v => keyFile = v },
 				{ "u|user=", v => user = v },
 				{ "a|assembly=", v=> assembly = v},
-				{ "l|listen=", v => ipaddress = v }
+				{ "l|listen=", v => ipaddress = v },
+				{ "n|spdy=", v => spdy = v }
 			};
 			args = p.Parse(args);
 
@@ -219,6 +221,12 @@ namespace Manos.Tool
 				cmd.SecurePort = pt;
 				cmd.CertificateFile = certFile;
 				cmd.KeyFile = keyFile;
+				if (spdy != null)
+					cmd.Spdy = true;
+			}
+			else {
+				if (spdy != null)
+					throw new ArgumentException("SSL is required to use SPDY");
 			}
 
 			if (user != null)

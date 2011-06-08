@@ -123,6 +123,11 @@ namespace Manos.Tool
 			set;
 		}
 		
+		public bool Spdy {
+			get;
+			set;
+		}
+
 		public void Run ()
 		{
 			// Load the config.
@@ -143,8 +148,14 @@ namespace Manos.Tool
 			AppHost.ListenAt (new System.Net.IPEndPoint (listenAddress, Port));
 			if (SecurePort != null) {
 				AppHost.InitializeTLS ("NORMAL");
-				AppHost.SecureListenAt (new System.Net.IPEndPoint (listenAddress, SecurePort.Value), CertificateFile, KeyFile);
-				Console.WriteLine ("Running {0} on secure port {1}.", app, SecurePort);
+				if (Spdy) {
+					AppHost.SpdyListenAt (new System.Net.IPEndPoint (listenAddress, SecurePort.Value), CertificateFile, KeyFile);
+					Console.WriteLine ("Running {0} on SPDY secure port {1}.", app, SecurePort);
+				}
+				else {
+					AppHost.SecureListenAt (new System.Net.IPEndPoint (listenAddress, SecurePort.Value), CertificateFile, KeyFile);
+					Console.WriteLine ("Running {0} on secure port {1}.", app, SecurePort);
+				}
 			}
 			AppHost.Start (app);
 		}
