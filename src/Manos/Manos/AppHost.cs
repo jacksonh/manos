@@ -30,6 +30,7 @@ using System.Runtime.InteropServices;
 
 using Manos.IO;
 using Manos.Http;
+using Manos.Spdy;
 using Manos.Caching;
 using Manos.Logging;
 
@@ -48,7 +49,10 @@ namespace Manos
 		private static List<IPEndPoint> listenEndPoints = new List<IPEndPoint> ();
 		private static Dictionary<IPEndPoint, Tuple<string, string>> secureListenEndPoints =
 			new Dictionary<IPEndPoint, Tuple<string, string>> ();
+		private static Dictionary<IPEndPoint, Tuple<string, string>> spdyListenEndPoints =
+			new Dictionary<IPEndPoint, Tuple<string, string>> ();
 		private static List<HttpServer> servers = new List<HttpServer> ();
+		private static List<SpdyServer> spdyservers = new List<SpdyServer> ();
 		private static IManosCache cache;
 		private static IManosLogger log;
 		private static List<IManosPipe> pipes;
@@ -120,6 +124,22 @@ namespace Manos
 				Tuple.Create (cert, key));
 		}
 
+		public static void SpdyListenAt (IPEndPoint endPoint, string cert, string key)
+		{
+			if (endPoint == null)
+				throw new ArgumentNullException ("endPoint");
+			if (cert == null)
+				throw new ArgumentNullException ("cert");
+			if (key == null)
+				throw new ArgumentNullException ("key");
+
+			if (spdyListenEndPoints.ContainsKey (endPoint) || listenEndPoints.Contains (endPoint))
+				throw new InvalidOperationException ("Endpoint already registered");
+
+			spdyListenEndPoints.Add (endPoint,
+				Tuple.Create (cert, key));
+		}
+
 		public static void InitializeTLS (string priorities)
 		{
 #if !DISABLETLS
@@ -169,6 +189,14 @@ namespace Manos
 				server.Listen (ep.Address.ToString (), ep.Port);
 				
 				servers.Add (server);
+			}
+			foreach (var ep in spdyListenEndPoints.Keys) {
+				var keypair = spdyListenEndPoints [ep];
+				var socket = Context.CreateSecureSocket (keypair.Item1, keypair.Item2);
+				var server = new SpdyServer (context, HandleTransaction, socket);
+				server.Listen (ep.Address.ToString (), ep.Port);
+
+				spdyservers.Add (server);
 			}
 
 			context.Start ();
