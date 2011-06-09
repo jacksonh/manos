@@ -170,6 +170,8 @@
     <Compile Include="Manos.Spdy\DataFrame.cs" />
     <Compile Include="Manos.Spdy\Util.cs" />
     <Compile Include="Manos.Spdy\SpdyServer.cs" />
+    <Compile Include="Manos.Spdy\SpdyTransaction.cs" />
+    <Compile Include="Manos.Spdy\SpdySession.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -192,6 +194,7 @@
     <Folder Include="Manos.IO\" />
     <Folder Include="Manos.Collections\" />
     <Folder Include="Manos.Spdy\" />
+    <Folder Include="Manos.Routing.Testing\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Manos.IO\Manos.IO.csproj">

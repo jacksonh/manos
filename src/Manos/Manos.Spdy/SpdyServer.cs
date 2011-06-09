@@ -10,11 +10,12 @@ using System.Collections.Generic;
 using Libev;
 
 using Manos.IO;
+using Manos.Http;
 
 namespace Manos.Spdy
 {
 
-    public delegate void SpdyConnectionCallback(ISpdyTransaction transaction);
+    public delegate void SpdyConnectionCallback(IHttpTransaction transaction);
 
     public class SpdyServer : IDisposable
     {
@@ -58,14 +59,9 @@ namespace Manos.Spdy
             }
         }
 
-        public void RunTransaction(SpdyTransaction trans)
-        {
-            trans.Run();
-        }
-
         private void ConnectionAccepted(Socket socket)
         {
-            var t = SpdyTransaction.BeginTransaction(this, socket, callback, closeOnEnd);
+            var t = new SpdySession(socket, callback);
         }
     }
 }
