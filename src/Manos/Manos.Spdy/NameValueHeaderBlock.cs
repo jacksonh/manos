@@ -78,7 +78,6 @@ namespace Manos.Spdy
 			byte[] inarr = this.UncompressedSerialize();
 			byte[] outarr = new byte[0];
 			var len = deflate.Deflate(inarr, 0, inarr.Length, out outarr);
-			Console.WriteLine(len);
 			Array.Resize(ref outarr, len);
 			return outarr;
 		}
