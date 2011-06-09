@@ -10,16 +10,16 @@ namespace Manos.Spdy
 		{
 			this.Type = ControlFrameType.HEADERS;
 		}
-		public HeadersFrame(byte[] data, int offset, int length)
+		public HeadersFrame(byte[] data, int offset, int length, InflatingZlibContext inflate)
 		{
 			this.Type = ControlFrameType.HEADERS;
 			base.Parse(data, offset, length);
 			this.StreamID = Util.BuildInt(data, offset + 8, 4);
-			this.Headers = NameValueHeaderBlock.Parse(data, offset + 12, length - 12);
+			this.Headers = NameValueHeaderBlock.Parse(data, offset + 12, length - 12, inflate);
 		}
-		public new byte[] Serialize()
+		public new byte[] Serialize(DeflatingZlibContext deflate)
 		{
-			byte[] nvblock = this.Headers.Serialize();
+			byte[] nvblock = this.Headers.Serialize(deflate);
 			this.Length = nvblock.Length + 4;
 			var header = base.Serialize();
 			byte[] middle = new byte[4];

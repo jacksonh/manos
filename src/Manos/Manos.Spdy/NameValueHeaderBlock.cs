@@ -9,21 +9,22 @@ namespace Manos.Spdy
 		public NameValueHeaderBlock ()
 		{
 		}
-		public static NameValueHeaderBlock Parse(byte[] data, int offset, int length)
+		public static NameValueHeaderBlock Parse(byte[] data, int offset, int length, InflatingZlibContext inflate)
 		{
+			int bytelength = 2; //for version 2, changes to 4 in version 3
 			byte[] def = new byte[0];
 			NameValueHeaderBlock ret = new NameValueHeaderBlock();
-			int len = Compression.Inflate(data, offset, length, out def);
-			int NumberPairs = Util.BuildInt(def, 0, 4);
-			int index = 4;
+			int len = inflate.Inflate(data, offset, length, out def);
+			int NumberPairs = Util.BuildInt(def, 0, bytelength);
+			int index = bytelength;
 			while (NumberPairs-- >= 0)
 			{
-				int namelength = Util.BuildInt(def, index, 4);
-				index +=4;
+				int namelength = Util.BuildInt(def, index, bytelength);
+				index +=bytelength;
 				string name = Encoding.UTF8.GetString(def, index, namelength);
 				index += namelength;
-				int vallength = Util.BuildInt(def, index, 4);
-				index += 4;
+				int vallength = Util.BuildInt(def, index, bytelength);
+				index += bytelength;
 				string vals = Encoding.UTF8.GetString(def, index, vallength);
 				index += vallength;
 				string[] splitvals = vals.Split(char.MinValue);
@@ -71,11 +72,12 @@ namespace Manos.Spdy
 			}
 			return ret;
 		}
-		public byte[] Serialize()
+		public byte[] Serialize(DeflatingZlibContext deflate)
 		{
 			byte[] inarr = this.UncompressedSerialize();
 			byte[] outarr = new byte[0];
-			var len = Compression.Deflate(inarr, 0, inarr.Length, out outarr);
+			var len = deflate.Deflate(inarr, 0, inarr.Length, out outarr);
+			Console.WriteLine(len);
 			Array.Resize(ref outarr, len);
 			return outarr;
 		}

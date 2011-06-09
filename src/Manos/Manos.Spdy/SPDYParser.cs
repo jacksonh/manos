@@ -24,8 +24,11 @@ namespace Manos.Spdy
 		public event VersionHandler OnVersion;
 		public delegate void DataHandler(DataFrame packet);
 		public event DataHandler OnData;
-		public SPDYParser ()
+		
+		private InflatingZlibContext inflate;
+		public SPDYParser (InflatingZlibContext inflate)
 		{
+			this.inflate = inflate;
 		}
 		public void Parse(byte[] data, int offset, int length)
 		{
@@ -35,13 +38,13 @@ namespace Manos.Spdy
 				case ControlFrameType.SYN_STREAM:
 					if (OnSynStream != null)
 					{
-						OnSynStream(new SynStreamFrame(data, offset, length));
+						OnSynStream(new SynStreamFrame(data, offset, length, this.inflate));
 					}
 					break;
 				case ControlFrameType.SYN_REPLY:
 					if (OnSynReply != null)
 					{
-						OnSynReply(new SynReplyFrame(data, offset, length));
+						OnSynReply(new SynReplyFrame(data, offset, length, this.inflate));
 					}
 					break;
 				case ControlFrameType.RST_STREAM:
@@ -71,7 +74,7 @@ namespace Manos.Spdy
 				case ControlFrameType.HEADERS:
 					if (OnHeaders != null)
 					{
-						OnHeaders(new HeadersFrame(data, offset, length));
+						OnHeaders(new HeadersFrame(data, offset, length, this.inflate));
 					}
 					break;
 				case ControlFrameType.WINDOW_UPDATE:

@@ -12,18 +12,18 @@ namespace Manos.Spdy
 		{
 			this.Type = ControlFrameType.SYN_STREAM;
 		}
-		public SynStreamFrame(byte[] data, int offset, int length)
+		public SynStreamFrame(byte[] data, int offset, int length, InflatingZlibContext inflate)
 		{
 			this.Type = ControlFrameType.SYN_STREAM;
 			base.Parse(data, offset, length);
 			this.StreamID = Util.BuildInt(data, offset + 8, 4);
 			this.AssociatedToStreamID = Util.BuildInt(data, offset + 12, 4);
 			this.Priority = data[16] >> 5;
-			this.Headers = NameValueHeaderBlock.Parse(data, 18, this.Length - 10);
+			this.Headers = NameValueHeaderBlock.Parse(data, 18, this.Length - 10, inflate);
 		}
-		public new byte[] Serialize()
+		public new byte[] Serialize(DeflatingZlibContext deflate)
 		{
-			byte[] nvblock = this.Headers.Serialize();
+			byte[] nvblock = this.Headers.Serialize(deflate);
 			this.Length = nvblock.Length + 10;
 			var header = base.Serialize();
 			byte[] middle = new byte[10];
