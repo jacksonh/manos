@@ -37,32 +37,33 @@ namespace Manos.Spdy
 		}
 		public byte[] UncompressedSerialize()
 		{
-			int arrlen = 4;
+			int bytelength = 2;
+			int arrlen = bytelength;
 			// Shouldn't iterate twice?
 			// If I have to resize the array at the end, then that'll be O(n) in itself
 			// So either way, its O(2n) (I think)
 			foreach (var key in this.AllKeys)
 			{
-				arrlen += 4;
+				arrlen += bytelength;
 				arrlen += key.Length;
 				string val = this[key];
-				arrlen += 4;
+				arrlen += bytelength;
 				arrlen += val.Length;
 			}
 			byte[] ret = new byte[arrlen];
-			Util.IntToBytes(this.Count, ref ret, 0, 4);
-			int index = 4;
+			Util.IntToBytes(this.Count, ref ret, 0, bytelength);
+			int index = bytelength;
 			foreach (var key in this.AllKeys)
 			{
-				Util.IntToBytes(key.Length, ref ret, index, 4);
-				index += 4;
+				Util.IntToBytes(key.Length, ref ret, index, bytelength);
+				index += bytelength;
 				foreach (char c in key)
 				{
 					ret[index] = (byte)c;
 					index++;
 				}
-				Util.IntToBytes(this[key].Length, ref ret, index, 4);
-				index += 4;
+				Util.IntToBytes(this[key].Length, ref ret, index, bytelength);
+				index += bytelength;
 				string vals = this[key].Replace(' ', char.MinValue);
 				foreach (char c in vals)
 				{
