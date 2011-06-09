@@ -87,7 +87,7 @@ namespace Manos.Spdy.Tests
 			byte[] length =  inttonbytes(5, 4);
 			byte[] nvblock = combine(length, method, path, version, host, scheme);
 			byte[] deflated = new byte[0];
-			int deflen = Compression.Deflate(nvblock, 0, nvblock.Length, out deflated);
+			int deflen = (new DeflatingZlibContext()).Deflate(nvblock, 0, nvblock.Length, out deflated);
 			//Console.WriteLine(BitConverter.ToString(deflated, 0, deflen));
 			byte[] packet = new byte[] {
 				0x80, // 10000000 Control Frame bit +  empty version bits
@@ -129,7 +129,7 @@ namespace Manos.Spdy.Tests
 			byte[] length =  inttonbytes(2, 4);
 			byte[] nvblock = combine(length, version, status);
 			byte[] deflated = new byte[0];
-			int deflen = Compression.Deflate(nvblock, 0, nvblock.Length, out deflated);
+			int deflen = (new DeflatingZlibContext()).Deflate(nvblock, 0, nvblock.Length, out deflated);
 			byte[] packet = new byte[] {
 				0x80, // 10000000 Control Frame bit +  empty version bits
 				0x02, // Version
@@ -259,7 +259,7 @@ namespace Manos.Spdy.Tests
 			byte[] length =  inttonbytes(2, 4);
 			byte[] nvblock = combine(length, version, status);
 			byte[] deflated = new byte[0];
-			int deflen = Compression.Deflate(nvblock, 0, nvblock.Length, out deflated);
+			int deflen = (new DeflatingZlibContext()).Deflate(nvblock, 0, nvblock.Length, out deflated);
 			byte[] packet = new byte[] {
 				0x80, // 10000000 Control Frame bit +  empty version bits
 				0x02, // Version
@@ -363,7 +363,7 @@ namespace Manos.Spdy.Tests
 		[SetUp]
 		public void Init()
 		{
-			parser = new SPDYParser();
+			parser = new SPDYParser(new InflatingZlibContext());
 			SynStreamPacket = genSynStream();
 			SynReplyPacket = genSynReply();
 			RstStreamPacket = genRstStream();

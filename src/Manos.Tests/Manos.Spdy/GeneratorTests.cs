@@ -35,7 +35,7 @@ namespace Manos.Spdy.Tests
 			Assert.AreEqual(0x01, fromclass[15], "Associated To Stream ID"); // 12, 13, 14, 15 -> Assoc Stream ID
 			Assert.AreEqual(0x20, fromclass[16], "Priority"); // 17 is unused
 			byte[] output = new byte[0];
-			int declength = Compression.Inflate(fromclass, 18, frame.Length - 10, out output);
+			int declength = (new InflatingZlibContext()).Inflate(fromclass, 18, frame.Length - 10, out output);
 			byte[] nv = headers.UncompressedSerialize();
 			for (int i = 0; i < declength; i++)
 			{
@@ -62,7 +62,7 @@ namespace Manos.Spdy.Tests
 			// 5,6,7 are Length, Will add test once I actually implement packet generation
 			Assert.AreEqual(0x02, fromclass[11], "Stream ID"); //8, 9, 10, 11 -> Stream ID
 			byte[] output = new byte[0];
-			int declength = Compression.Inflate(fromclass, 12, frame.Length - 4, out output);
+			int declength = (new InflatingZlibContext()).Inflate(fromclass, 12, frame.Length - 4, out output);
 			byte[] nv = headers.UncompressedSerialize();
 			for (int i = 0; i < declength; i++)
 			{
@@ -163,7 +163,7 @@ namespace Manos.Spdy.Tests
 			// 5,6,7 are Length, Will add test once I actually implement packet generation
 			Assert.AreEqual(0x1B, fromclass[11], "Stream ID"); //8, 9, 10, 11 -> Stream ID
 			byte[] output = new byte[0];
-			int declength = Compression.Inflate(fromclass, 12 , frame.Length - 4, out output);
+			int declength = (new InflatingZlibContext()).Inflate(fromclass, 12 , frame.Length - 4, out output);
 			byte[] nv = headers.UncompressedSerialize();
 			for (int i = 0; i < declength; i++)
 			{
