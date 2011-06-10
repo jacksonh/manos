@@ -21,7 +21,7 @@ namespace Manos.Spdy
 			this.Priority = data[16] >> 5;
 			this.Headers = NameValueHeaderBlock.Parse(data, 18, this.Length - 10, inflate);
 		}
-		public new byte[] Serialize(DeflatingZlibContext deflate)
+		public byte[] Serialize(DeflatingZlibContext deflate)
 		{
 			byte[] nvblock = this.Headers.Serialize(deflate);
 			this.Length = nvblock.Length + 10;

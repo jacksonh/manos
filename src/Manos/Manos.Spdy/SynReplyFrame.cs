@@ -17,7 +17,7 @@ namespace Manos.Spdy
 			this.StreamID = Util.BuildInt(data, offset + 8, 4);
 			this.Headers = NameValueHeaderBlock.Parse(data, offset + 14, length - 12, inflate); //14 because of 2 unused bytes
 		}
-		public new byte[] Serialize(DeflatingZlibContext deflate)
+		public byte[] Serialize(DeflatingZlibContext deflate)
 		{
 			byte[] nvblock = this.Headers.Serialize(deflate);
 			this.Length = nvblock.Length + 6;
