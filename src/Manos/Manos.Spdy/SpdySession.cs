@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Collections.Generic;
 
 using Manos.IO;
 
@@ -11,65 +12,53 @@ namespace Manos.Spdy
 		private SpdyConnectionCallback callback;
 		private Stream socketstream;
 		private SPDYParser parser;
-		private InflatingZlibContext inflate;
-		private DeflatingZlibContext deflate;
+		public InflatingZlibContext Inflate;
+		public DeflatingZlibContext Deflate;
+		Dictionary<int, Tuple<SynStreamFrame, List<byte[]>>> pendingreqs = new Dictionary<int, Tuple<SynStreamFrame, List<byte[]>>>();
 		public SpdySession (Socket sock, SpdyConnectionCallback cb)
 		{
 			this.socket = sock;
 			this.callback = cb;
-			this.inflate = new InflatingZlibContext();
-			this.deflate = new DeflatingZlibContext();
-			this.parser = new SPDYParser(this.inflate);
+			this.Inflate = new InflatingZlibContext();
+			this.Deflate = new DeflatingZlibContext();
+			this.parser = new SPDYParser(this.Inflate);
 			parser.OnSynStream += HandleSynStream;
 			parser.OnRstStream += HandleRstStream;
+			parser.OnData += HandleData;
 			this.socketstream = this.socket.GetSocketStream();
 			this.socketstream.Read(onData, onError, onEndOfStream);
 		}
 
+		void HandleData (DataFrame packet)
+		{
+			if (pendingreqs.ContainsKey(packet.StreamID)) {
+				pendingreqs[packet.StreamID].Item2.Add(packet.Data);
+				if ((packet.Flags & 0x01) == 1) {
+					var t = new SpdyTransaction(this.socket, pendingreqs[packet.StreamID].Item1, parser, callback, this, pendingreqs[packet.StreamID].Item2);
+					t.LoadRequest();
+				}
+			} else {
+				RstStreamFrame rst = new RstStreamFrame();
+				rst.StreamID = packet.StreamID;
+				rst.StatusCode = RstStreamStatusCode.PROTOCOL_ERROR;
+				this.socketstream.Write(rst.Serialize());
+			}
+		}
+
 		void HandleRstStream (RstStreamFrame packet)
 		{
-			Console.WriteLine(((RstStreamStatusCode)packet.StatusCode).ToString());
 			this.socket.Close();
 		}
 
 		void HandleSynStream (SynStreamFrame packet)
 		{
-			if (packet.Headers["url"].Contains("favicon.ico"))
-			{
-				SynReplyFrame rep = new SynReplyFrame();
-				rep.Version = 2;
-				rep.StreamID = packet.StreamID;
-				rep.Flags = 0x01;
-				NameValueHeaderBlock n = new NameValueHeaderBlock();
-				n.Add("status", "404");
-				n.Add("version", "HTTP/1.1");
-				rep.Headers = n;
-				byte[] res = rep.Serialize(this.deflate);
-				this.socketstream.Write(res);
-				return;
+			if ((packet.Flags & 0x01) != 1) {
+				pendingreqs[packet.StreamID] = Tuple.Create(packet, new List<byte[]>());
 			}
-			SynReplyFrame reply = new SynReplyFrame();
-			reply.Version = 2;
-			reply.StreamID = packet.StreamID;
-			reply.Flags = 0x00;
-			NameValueHeaderBlock nv = new NameValueHeaderBlock();
-			nv.Add("status", "200");
-			nv.Add("version", "HTTP/1.1");
-			nv.Add("Content-Type", "text/plain");
-			reply.Headers = nv;
-			byte[] resp = reply.Serialize(this.deflate);
-			this.socketstream.Write(resp);
-			DataFrame final = new DataFrame();
-			final.StreamID = packet.StreamID;
-			final.Flags = 0x01;
-			final.Data = Encoding.UTF8.GetBytes("Hello World\n");
-			this.socketstream.Write(final.Serialize());
-//			Console.WriteLine("Data 1 Sent");
-//			DataFrame f2 = new DataFrame();
-//			f2.StreamID = 1;
-//			f2.Flags = 0x01;
-//			this.socketstream.Write(f2.Serialize());
-//			Console.WriteLine("Data 2 Sent");
+			else {
+				var t = new SpdyTransaction(this.socket, packet, parser, callback, this);
+				t.LoadRequest();
+			}
 		}
 		private void onData(ByteBuffer data)
 		{
@@ -77,11 +66,13 @@ namespace Manos.Spdy
 		}
 		private void onError(Exception error)
 		{
-			//Console.WriteLine("ERROR: {0}", error.Message);
+			Console.WriteLine("ERROR: {0}", error.InnerException);
+			Console.WriteLine("{0}", error.Source);
+
 		}
 		private void onEndOfStream()
 		{
-			//this.socket.Close();
+			Console.WriteLine("End of Stream");
 		}
 	}
 }
