@@ -172,6 +172,8 @@
     <Compile Include="Manos.Spdy\SpdyServer.cs" />
     <Compile Include="Manos.Spdy\SpdyTransaction.cs" />
     <Compile Include="Manos.Spdy\SpdySession.cs" />
+    <Compile Include="Manos.Spdy\SpdyRequest.cs" />
+    <Compile Include="Manos.Spdy\SpdyResponse.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -195,6 +197,7 @@
     <Folder Include="Manos.Collections\" />
     <Folder Include="Manos.Spdy\" />
     <Folder Include="Manos.Routing.Testing\" />
+    <Folder Include="Manos.Template\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Manos.IO\Manos.IO.csproj">
