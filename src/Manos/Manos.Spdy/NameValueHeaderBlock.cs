@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Specialized;
 using System.Text;
+using Manos.Http;
 
 namespace Manos.Spdy
 {
@@ -80,6 +81,24 @@ namespace Manos.Spdy
 			var len = deflate.Deflate(inarr, 0, inarr.Length, out outarr);
 			Array.Resize(ref outarr, len);
 			return outarr;
+		}
+		public HttpHeaders ToHttpHeaders(string[] exclude)
+		{
+			HttpHeaders h = new HttpHeaders();
+			foreach (var key in this.AllKeys)
+			{
+				foreach (var str in exclude)
+				{
+					if (str == key)
+					{
+						continue;
+					}
+				}
+				if (!string.IsNullOrEmpty(key)) {
+					h.SetHeader(key, this[key]);
+				}
+			}
+			return h;
 		}
 	}
 }
