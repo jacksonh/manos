@@ -1,8 +1,10 @@
 using System;
-using Manos.Http;
-using Manos.IO;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
+
+using Manos.Http;
+using Manos.IO;
 
 namespace Manos.Spdy
 {
@@ -131,7 +133,9 @@ namespace Manos.Spdy
 
 		public void Redirect (string url)
 		{
-			throw new NotImplementedException ("Redirect");
+			StatusCode = 302;
+			Headers.SetNormalizedHeader("Location", url);
+			End();
 		}
 
 		public void SetHeader (string name, string value)

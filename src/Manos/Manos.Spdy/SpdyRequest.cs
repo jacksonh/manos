@@ -1,7 +1,10 @@
 using System;
 using System.Text;
+using System.Collections.Generic;
 
+using Manos.IO;
 using Manos.Http;
+using Manos.Collections;
 
 namespace Manos.Spdy
 {
