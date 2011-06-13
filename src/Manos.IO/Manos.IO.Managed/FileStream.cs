@@ -23,7 +23,8 @@ namespace Manos.IO.Managed
 			
 			this.stream = stream;
 			this.readBuffer = new byte [blockSize];
-		}
+        }
+
 
 		public override long Position {
 			get { return stream.Position; }

@@ -209,9 +209,6 @@ namespace Manos.IO.Managed
 
 			void HandleRead ()
 			{
-				if (!readAllowed) {
-					return;
-				}
 				
 				SocketError se;
 				int length = (int) Math.Min (readLimit, receiveBuffer.Length);
