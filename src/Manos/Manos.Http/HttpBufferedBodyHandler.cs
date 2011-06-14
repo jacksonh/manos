@@ -33,7 +33,7 @@ namespace Manos.Http {
 
 		private StringBuilder builder;
 
-		public void HandleData (HttpEntity entity, ByteBuffer data, int pos, int len)
+		public void HandleData (IHttpDataRecipient entity, ByteBuffer data, int pos, int len)
 		{
 			if (builder == null)
 				builder = new StringBuilder ();
@@ -42,7 +42,7 @@ namespace Manos.Http {
 			builder.Append (str);
 		}
 
-		public void Finish (HttpEntity entity)
+		public void Finish (IHttpDataRecipient entity)
 		{
 			entity.PostBody = builder.ToString ();
 		}

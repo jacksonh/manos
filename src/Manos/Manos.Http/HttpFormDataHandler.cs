@@ -40,7 +40,7 @@ namespace Manos.Http {
 		private StringBuilder key_buffer = new StringBuilder ();
 		private StringBuilder value_buffer = new StringBuilder ();
 		
-		public void HandleData (HttpEntity entity, ByteBuffer data, int pos, int len)
+		public void HandleData (IHttpDataRecipient entity, ByteBuffer data, int pos, int len)
 		{
 			string str_data = entity.ContentEncoding.GetString (data.Bytes, pos, len);
 
@@ -78,7 +78,7 @@ namespace Manos.Http {
 			}
 		}
 
-		public void Finish (HttpEntity entity)
+		public void Finish (IHttpDataRecipient entity)
 		{
 			if (state == State.InKey && key_buffer.Length > 0)
 				throw new HttpException ("Malformed POST data, key found without value.");
@@ -86,7 +86,7 @@ namespace Manos.Http {
 			FinishPair (entity);
 		}
 
-		private void FinishPair (HttpEntity entity)
+		private void FinishPair (IHttpDataRecipient entity)
 		{
 			if (key_buffer.Length == 0)
 				throw new HttpException ("zero length key in www-form data.");
