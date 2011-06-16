@@ -32,9 +32,9 @@ namespace Manos.Spdy
 		{
 			this.stream.InitializeInflate();
 		}
-		public int Inflate(byte[] input, int offset, int length, out byte[] output)
+		public byte[] Inflate(byte[] input, int offset, int length)
 		{
-			output = new byte[40000];
+			byte[] output = new byte[40000];
 			stream.InputBuffer = input;
 			stream.NextIn = offset;
 			stream.AvailableBytesIn = length;
@@ -48,10 +48,8 @@ namespace Manos.Spdy
 			}
 			int ret = (int)stream.TotalBytesOut - bytes;
 			bytes = (int)stream.TotalBytesOut;
-			if (bytes > 4000) {
-				output = new byte[4000];
-			}
-			return ret;	
+			Array.Resize(ref output, ret);
+			return output;
 		}
 
 	}
@@ -61,9 +59,9 @@ namespace Manos.Spdy
 		{
 			this.stream.InitializeDeflate();
 		}
-		public int Deflate(byte[] input, int offset, int length, out byte[] output)
+		public byte[] Deflate(byte[] input, int offset, int length)
 		{
-			output = new byte[40000];
+			byte[] output = new byte[40000];
 			stream.InputBuffer = input;
 			stream.NextIn = offset;
 			stream.AvailableBytesIn = length;
@@ -77,7 +75,8 @@ namespace Manos.Spdy
 			}
 			int ret = (int)stream.TotalBytesOut - bytes;
 			bytes = (int)stream.TotalBytesOut;
-			return ret;	
+			Array.Resize(ref output, ret);
+			return output;
 		}
 	}
 }

@@ -86,8 +86,8 @@ namespace Manos.Spdy.Tests
 			byte[] scheme = buildnamevalue("scheme", "https");
 			byte[] length =  inttonbytes(5, 4);
 			byte[] nvblock = combine(length, method, path, version, host, scheme);
-			byte[] deflated = new byte[0];
-			int deflen = (new DeflatingZlibContext()).Deflate(nvblock, 0, nvblock.Length, out deflated);
+			byte[] deflated = (new DeflatingZlibContext()).Deflate(nvblock, 0, nvblock.Length);
+			int deflen = deflated.Length;
 			//Console.WriteLine(BitConverter.ToString(deflated, 0, deflen));
 			byte[] packet = new byte[] {
 				0x80, // 10000000 Control Frame bit +  empty version bits
@@ -128,8 +128,8 @@ namespace Manos.Spdy.Tests
 			byte[] version = buildnamevalue("version", "HTTP/1.1");
 			byte[] length =  inttonbytes(2, 4);
 			byte[] nvblock = combine(length, version, status);
-			byte[] deflated = new byte[0];
-			int deflen = (new DeflatingZlibContext()).Deflate(nvblock, 0, nvblock.Length, out deflated);
+			byte[] deflated = (new DeflatingZlibContext()).Deflate(nvblock, 0, nvblock.Length);
+			int deflen = deflated.Length;
 			byte[] packet = new byte[] {
 				0x80, // 10000000 Control Frame bit +  empty version bits
 				0x02, // Version
@@ -258,8 +258,8 @@ namespace Manos.Spdy.Tests
 			byte[] version = buildnamevalue("header2", "value2");
 			byte[] length =  inttonbytes(2, 4);
 			byte[] nvblock = combine(length, version, status);
-			byte[] deflated = new byte[0];
-			int deflen = (new DeflatingZlibContext()).Deflate(nvblock, 0, nvblock.Length, out deflated);
+			byte[] deflated = (new DeflatingZlibContext()).Deflate(nvblock, 0, nvblock.Length);
+			int deflen = deflated.Length;
 			byte[] packet = new byte[] {
 				0x80, // 10000000 Control Frame bit +  empty version bits
 				0x02, // Version

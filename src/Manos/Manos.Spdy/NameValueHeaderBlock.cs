@@ -13,12 +13,11 @@ namespace Manos.Spdy
 		public static NameValueHeaderBlock Parse(byte[] data, int offset, int length, InflatingZlibContext inflate)
 		{
 			int bytelength = 2; //for version 2, changes to 4 in version 3
-			byte[] def = new byte[0];
 			NameValueHeaderBlock ret = new NameValueHeaderBlock();
-			int len = inflate.Inflate(data, offset, length, out def);
+			byte[] def = inflate.Inflate(data, offset, length);
 			int NumberPairs = Util.BuildInt(def, 0, bytelength);
 			int index = bytelength;
-			while (NumberPairs-- >= 0)
+			while (NumberPairs-- > 0)
 			{
 				int namelength = Util.BuildInt(def, index, bytelength);
 				index +=bytelength;
@@ -77,10 +76,7 @@ namespace Manos.Spdy
 		public byte[] Serialize(DeflatingZlibContext deflate)
 		{
 			byte[] inarr = this.UncompressedSerialize();
-			byte[] outarr = new byte[0];
-			var len = deflate.Deflate(inarr, 0, inarr.Length, out outarr);
-			Array.Resize(ref outarr, len);
-			return outarr;
+			return deflate.Deflate(inarr, 0, inarr.Length);;
 		}
 		public HttpHeaders ToHttpHeaders(string[] exclude)
 		{
