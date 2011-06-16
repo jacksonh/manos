@@ -150,7 +150,7 @@ namespace Manos.Tool
 				AppHost.InitializeTLS ("NORMAL");
 				if (Spdy) {
 					AppHost.SpdyListenAt (new System.Net.IPEndPoint (listenAddress, SecurePort.Value), CertificateFile, KeyFile);
-					Console.WriteLine ("Running {0} on SPDY secure port {1}.", app, SecurePort);
+					Console.WriteLine ("Running {0} with SPDY on secure port {1}.", app, SecurePort);
 				}
 				else {
 					AppHost.SecureListenAt (new System.Net.IPEndPoint (listenAddress, SecurePort.Value), CertificateFile, KeyFile);
