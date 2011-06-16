@@ -29,7 +29,7 @@ namespace Manos.Spdy
         static SpdyServer()
         {
             Version v = Assembly.GetExecutingAssembly().GetName().Version;
-            ServerVersion = "Manos/" + v.ToString();
+            ServerVersion = "Manos/SPDY/" + v.ToString();
         }
 
         public SpdyServer(Context context, SpdyConnectionCallback callback, Socket socket, bool closeOnEnd = false)
@@ -61,7 +61,7 @@ namespace Manos.Spdy
 
         private void ConnectionAccepted(Socket socket)
         {
-            var t = new SpdySession(socket, callback);
+            var t = new SpdySession(Context, socket, callback);
         }
     }
 }

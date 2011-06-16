@@ -14,34 +14,52 @@ using Manos.Http;
 namespace Manos.Spdy {
 
 	public class SpdyTransaction : IHttpTransaction {
-		
+		private static int bufferlength = 1000;
+		public Context Context { get; set; }
 		public SynStreamFrame SynStream { get; set; }
 		public SPDYParser Parser { get; set; }
+		public SpdyStream WriteStream { get; set; }
 		public SpdyConnectionCallback Callback { get; set; }
-		public byte[] DataArray { get; set; }
-		public Socket Socket { get; set; }
-		private SpdySession session { get; set; }
-		public SpdyTransaction (Socket socket, SynStreamFrame synstream, SPDYParser parser, SpdyConnectionCallback callback, SpdySession session, List<byte[]> data = null)
+		private byte[] data;
+		public byte[] DataArra
 		{
-			this.SynStream = synstream;
-			this.Parser = parser;
-			this.Callback = callback;
-			this.Socket = socket;
-			this.session = session;
-			if (data != null) {
-				var length = data.Select(x => x.Length).Sum();
-				int index = 0;
-				this.DataArray = new byte[length];
-				foreach (var arr in data) {
-					Array.Copy(arr, 0, this.DataArray, index, arr.Length);
-					index += arr.Length;
-				}
+			get
+			{
+				return data;
 			}
 		}
-		public void LoadRequest()
+		private int DataIndex { get; set; }
+		public SpdyTransaction (Context context, SynStreamFrame synstream, SPDYParser parser, SpdyStream writestream, SpdyConnectionCallback callback)
 		{
-				this.Request = new SpdyRequest(this, OnRequestReady);
-			OnRequestReady();
+			this.Context = context;
+			this.SynStream = synstream;
+			this.Parser = parser;
+			this.WriteStream = writestream;
+			this.Callback = callback;
+			if ((synstream.Flags & 0x01) == 1) {
+ 				this.data = new byte[0];
+				this.Request = new SpdyRequest(context, this.SynStream);
+				Context.CreateTimerWatcher(new TimeSpan(1), OnRequestReady).Start();
+			} else {
+				if (synstream.Headers["Content-Length"] != null) {
+					data = new byte[int.Parse(synstream.Headers["Content-Length"])];
+				} else {
+					data = new byte[bufferlength];
+				}
+				parser.OnData += delegate(DataFrame packet) {
+					if (packet.Data.Length > 0) {
+						if (packet.Data.Length + DataIndex > data.Length) {
+							Array.Resize(ref data, packet.Data.Length + DataIndex);
+						}
+						Array.Copy(packet.Data, 0, data, this.DataIndex, packet.Data.Length);
+						this.DataIndex += packet.Data.Length;
+					}
+					if ((packet.Flags & 0x01) == 1) {
+						this.Request = new SpdyRequest(context, this.SynStream, data);
+						OnRequestReady();
+					}
+				};
+			}
 		}
 
 		public HttpServer Server {
@@ -52,16 +70,6 @@ namespace Manos.Spdy {
 			set
 			{
 				throw new NotImplementedException("Server");
-			}
-		}
-		public Context Context {
-			get
-			{
-				throw new NotImplementedException("Context");
-			}
-			set
-			{
-				throw new NotImplementedException("Context");
 			}
 		}
 
@@ -75,12 +83,7 @@ namespace Manos.Spdy {
 			private set;
 		}
 
-		public bool Aborted {
-			get 
-			{
-				throw new NotImplementedException("Aborted");
-			}	
-		}
+		public bool Aborted { get; private set; }
 
 		public bool ResponseReady { get; set; }
 
@@ -99,7 +102,7 @@ namespace Manos.Spdy {
 		public void OnRequestReady ()
 		{
 			try {
-				Response = new SpdyResponse (Request as SpdyRequest, Socket, this.session.Deflate);
+				Response = new SpdyResponse (Request as SpdyRequest, WriteStream);
 				ResponseReady = true;
 				//if( closeOnEnd ) Response.OnEnd += () => Response.Complete( OnResponseFinished );
 				this.Callback(this);
@@ -111,31 +114,12 @@ namespace Manos.Spdy {
 
 		public void OnResponseFinished ()
 		{
-				Request.Read (Close);
+				//Request.Read (Close);
+			//Close();
 		}
 		public void Abort (int status, string message, params object [] p)
 		{
 			throw new NotImplementedException();
 		}
-		Dictionary<string, HttpMethod> lookup = new Dictionary<string, HttpMethod>() {
-			{ "OPTIONS", HttpMethod.HTTP_OPTIONS },
-			{ "GET", HttpMethod.HTTP_GET },
-			{ "HEAD", HttpMethod.HTTP_HEAD },
-			{ "POST", HttpMethod.HTTP_POST },
-			{ "PUT", HttpMethod.HTTP_PUT },
-			{ "DELETE", HttpMethod.HTTP_DELETE },
-			{ "TRACE", HttpMethod.HTTP_TRACE },
-			{ "CONNECT", HttpMethod.HTTP_CONNECT }
-		};
-		public HttpMethod MethodFromString(string str)
-		{
-			str = str.ToUpper();
-			if (lookup.ContainsKey(str)) {
-				return lookup[str];
-			} else {
-				return HttpMethod.ERROR;
-			}
-		}
-
 	}
 }

@@ -11,35 +11,81 @@ namespace Manos.Spdy
 	public class SpdyResponse : IHttpResponse
 	{
 		private int statuscode;
-		private SpdyRequest request;
-		private Socket socket;
-		private DeflatingZlibContext deflate;
-		public SpdyResponse (SpdyRequest req, Socket sock, DeflatingZlibContext deflate)
+		public SpdyRequest Request { get; set; }
+		private SpdyStream writestream;
+		private Dictionary<string, HttpCookie> cookies;
+		private Dictionary<string, object> properties;
+		
+		public SpdyResponse (SpdyRequest req, SpdyStream writestream)
 		{
-			this.request = req;
-			this.socket = sock;
+			this.Request = req;
 			this.Headers = new HttpHeaders();
-			this.deflate = deflate;
+			this.cookies = new Dictionary<string, HttpCookie>();
+			this.writestream = writestream;
 		}
 
 		#region IHttpResponse implementation
 		public event Action OnEnd;
 
 		public event Action OnCompleted;
+		private void EnsureReplyWritten(bool done)
+		{
+			if (writestream.ReplyWritten) return;
+			writestream.WriteReply(this, done);
+		}
+		private void EnsureReplyWritten()
+		{
+			EnsureReplyWritten(false);
+		}
+		public Dictionary<string,object> Properties {
+			get {
+				if (properties == null)
+					properties = new Dictionary<string,object> ();
+				return properties;
+			}
+		}
 
 		public void SetProperty (string name, object o)
 		{
-			throw new NotImplementedException ("SetProperty");
+			if (name == null)
+				throw new ArgumentNullException ("name");
+
+			if (o == null && properties == null)
+				return;
+
+			if (properties == null)
+				properties = new Dictionary<string,object> ();
+
+			if (o == null) {
+				properties.Remove (name);
+				if (properties.Count == 0)
+					properties = null;
+				return;
+			}
+
+			properties [name] = o;
 		}
 
 		public object GetProperty (string name)
 		{
-			throw new NotImplementedException ("GetProperty");
+			if (name == null)
+				throw new ArgumentNullException ("name");
+
+			if (properties == null)
+				return null;
+
+			object res = null;
+			if (!properties.TryGetValue (name, out res))
+				return null;
+			return res;
 		}
 
 		public T GetProperty<T> (string name)
 		{
-			throw new NotImplementedException ("GetProperty");
+			object res = GetProperty (name);
+			if (res == null)
+				return default (T);
+			return (T) res;
 		}
 		public void Write (string str)
 		{
@@ -75,14 +121,9 @@ namespace Manos.Spdy
 
 		public void End ()
 		{
-			Console.WriteLine("End");
-			DataFrame d = new DataFrame();
-			d.Flags = 0x01;
-			d.StreamID = this.request.StreamID;
-			d.Length = 0;
-			d.Data = new byte[0];
-			byte[] ret = d.Serialize();
-			this.socket.GetSocketStream().Write (new ByteBuffer(ret, 0, ret.Length));
+			if (OnEnd != null) {
+				OnEnd();
+			}
 		}
 
 		public void End (string str)
@@ -111,76 +152,106 @@ namespace Manos.Spdy
 		
 		private void WriteToBody (byte [] data, int offset, int length)
 		{
-			DataFrame d = new DataFrame();
-			d.Flags = 0x00;
-			d.StreamID = this.request.StreamID;
-			d.Length = length - offset;
-			d.Data = new byte[d.Length];
-			Array.Copy(data, offset, d.Data, 0, length);
-			var ret = d.Serialize();
-			this.socket.GetSocketStream().Write (new ByteBuffer(ret, 0, ret.Length));
+			EnsureReplyWritten();
+			writestream.Write(data, offset, length);
 		}
 
 		public void Complete (Action callback)
 		{
-			throw new NotImplementedException ("Complete");
+			EnsureReplyWritten();
+			writestream.End();
+			callback();
 		}
 
 		public void SendFile (string file)
 		{
-			throw new NotImplementedException ("SendFile");
+	        Headers.SetNormalizedHeader ("Content-Type", ManosMimeTypes.GetMimeType (file));
+			EnsureReplyWritten();
+			writestream.SendFile(file);
 		}
 
 		public void Redirect (string url)
 		{
-			StatusCode = 302;
 			Headers.SetNormalizedHeader("Location", url);
+			StatusCode = 302;
+			EnsureReplyWritten(true);
 			End();
 		}
 
 		public void SetHeader (string name, string value)
 		{
-			throw new NotImplementedException ("SetHeader");
+			this.Headers.SetHeader(name, value);
 		}
 
 		public void SetCookie (string name, HttpCookie cookie)
 		{
-			throw new NotImplementedException ("SetCookie");
+			cookies [name] = cookie;
 		}
 
 		public HttpCookie SetCookie (string name, string value)
 		{
-			throw new NotImplementedException ("SetCookie");
+			if (name == null)
+				throw new ArgumentNullException ("name");
+			if (value == null)
+				throw new ArgumentNullException ("value");
+
+			var cookie = new HttpCookie (name, value);
+
+			SetCookie (name, cookie);
+			return cookie;
 		}
 
 		public HttpCookie SetCookie (string name, string value, string domain)
 		{
-			throw new NotImplementedException ("SetCookie");
+			if (name == null)
+				throw new ArgumentNullException ("name");
+			if (value == null)
+				throw new ArgumentNullException ("value");
+
+			var cookie = new HttpCookie (name, value);
+			cookie.Domain = domain;
+
+			SetCookie (name, cookie);
+			return cookie;
 		}
 
 		public HttpCookie SetCookie (string name, string value, DateTime expires)
 		{
-			throw new NotImplementedException ("SetCookie");
+			return SetCookie (name, value, null, expires);
 		}
 
 		public HttpCookie SetCookie (string name, string value, string domain, DateTime expires)
 		{
-			throw new NotImplementedException ("SetCookie");
+			if (name == null)
+				throw new ArgumentNullException ("name");
+			if (value == null)
+				throw new ArgumentNullException ("value");
+
+			var cookie = new HttpCookie (name, value);
+
+			cookie.Domain = domain;
+			cookie.Expires = expires;
+
+			SetCookie (name, cookie);
+			return cookie;
 		}
 
 		public HttpCookie SetCookie (string name, string value, TimeSpan max_age)
 		{
-			throw new NotImplementedException ("SetCookie");
+			return SetCookie (name, value, DateTime.Now + max_age);
 		}
 
 		public HttpCookie SetCookie (string name, string value, string domain, TimeSpan max_age)
 		{
-			throw new NotImplementedException ("SetCookie");
+			return SetCookie (name, value, domain, DateTime.Now + max_age);
 		}
 
-		public void RemoveCookie (string name)
+		public void RemoveCookie(string name)
 		{
-			throw new NotImplementedException ("RemoveCookie");
+			var cookie = new HttpCookie (name, "");
+			cookie.Expires = DateTime.Now.AddYears(-1);
+
+			SetCookie (name, cookie);
 		}
 
 		public void Read ()
@@ -221,56 +292,17 @@ namespace Manos.Spdy
 				return statuscode;
 			}
 			set {
-				if (statuscode != 0) {
-					throw new Exception("Status Code already Set");
-				}
-				else {
-					this.statuscode = value;
-					SynReplyFrame rep = new SynReplyFrame();
-					rep.StreamID = this.request.StreamID;
-					rep.Version = 2;
-					rep.Flags = 0x00;
-					rep.Headers = new NameValueHeaderBlock();
-					rep.Headers["version"] = "HTTP/" + this.request.MajorVersion + "." + this.request.MinorVersion;
-					rep.Headers["status"] = value.ToString();
-					foreach (var header in this.Headers.Keys)
-					{
-						rep.Headers[header] = this.Headers[header];
-					}
-					this.socket.GetSocketStream().Write(rep.Serialize(this.deflate));
-				}
+				this.statuscode = value;
 			}
 		}
 
-		public bool WriteHeaders {
-			get {
-				throw new NotImplementedException ("WriteHeaders");
-			}
-			set {
-				throw new NotImplementedException ("WriteHeaders");
-			}
-		}
-
-		public Dictionary<string, object> Properties {
-			get {
-				throw new NotImplementedException ("Properties");
-			}
-		}
-
-		public string PostBody {
-			get {
-				throw new NotImplementedException ("PostBody");
-			}
-			set {
-				throw new NotImplementedException ("PostBody");
-			}
-		}
+		public bool WriteHeaders { get; set; }
+		public string PostBody { get; set; }
 		#endregion
 
 		#region IDisposable implementation
 		public void Dispose ()
 		{
-			throw new NotImplementedException ("Dispose");
 		}
 		#endregion
 	}
