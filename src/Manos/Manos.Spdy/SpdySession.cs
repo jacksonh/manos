@@ -26,7 +26,13 @@ namespace Manos.Spdy
 			this.parser = new SPDYParser(this.Inflate);
 			parser.OnSynStream += HandleSynStream;
 			parser.OnRstStream += HandleRstStream;
+			parser.OnPing += HandlePing;
 			this.socket.GetSocketStream().Read(onData, onError, onEndOfStream);
+		}
+
+		void HandlePing (PingFrame packet)
+		{
+			this.socket.GetSocketStream().Write(packet.Serialize());
 		}
 
 		void HandleRstStream (RstStreamFrame packet)
