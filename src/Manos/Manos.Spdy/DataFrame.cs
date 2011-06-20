@@ -28,6 +28,14 @@ namespace Manos.Spdy
 			Array.Copy(this.Data, 0, ret, 8, this.Data.Length);
 			return ret;
 		}
+		public byte[] SerializeHeader()
+		{
+			byte[] ret = new byte[8];
+			Util.IntToBytes(this.StreamID, ref ret, 0, 4);
+			ret[4] = this.Flags;
+			Util.IntToBytes(this.Length, ref ret, 5, 3);
+			return ret;
+		}
 	}
 }
 

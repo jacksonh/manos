@@ -17,25 +17,34 @@ namespace Manos.Spdy
 		}
 		public void SendFile(string filename)
 		{
-			var str = Socket.Context.OpenFile(filename, FileAccess.Read, 64 * 1024);
-			str.Read((buf) => { 
-				DataFrame d = new DataFrame();
-				d.Flags = 0x00;
-				d.StreamID = this.StreamID;
-				d.Length = buf.Length - buf.Position;
-				d.Data = new byte[d.Length];
-				Array.Copy(buf.Bytes, buf.Position, d.Data, 0, d.Length);
-				var ret = d.Serialize();
-				this.Socket.GetSocketStream().Write (new ByteBuffer(ret, 0, ret.Length));
-			},(e)=>{}, () => {
-				DataFrame d = new DataFrame();
-				d.Flags = 0x01;
-				d.StreamID = this.StreamID;
-				d.Length = 0;
-				d.Data = new byte[d.Length];
-				var ret = d.Serialize();
-				this.Socket.GetSocketStream().Write (new ByteBuffer(ret, 0, ret.Length));
-			});
+			var info = new FileInfo(filename);
+			if (this.Socket.GetSocketStream() is ISendfileCapable) {
+				DataFrame header = new DataFrame();
+				header.StreamID = this.StreamID;
+				header.Length = (int)info.Length;
+				this.Socket.GetSocketStream().Write(header.SerializeHeader());
+				((ISendfileCapable) this.Socket.GetSocketStream()).SendFile (filename);
+			} else {
+				var str = Socket.Context.OpenFile(filename, FileAccess.Read, 64 * 1024);
+				str.Read((buf) => { 
+					DataFrame d = new DataFrame();
+					d.Flags = 0x00;
+					d.StreamID = this.StreamID;
+					d.Length = buf.Length - buf.Position;
+					d.Data = new byte[d.Length];
+					Array.Copy(buf.Bytes, buf.Position, d.Data, 0, d.Length);
+					var ret = d.Serialize();
+					this.Socket.GetSocketStream().Write (new ByteBuffer(ret, 0, ret.Length));
+				},(e)=>{}, () => {
+					DataFrame d = new DataFrame();
+					d.Flags = 0x01;
+					d.StreamID = this.StreamID;
+					d.Length = 0;
+					d.Data = new byte[d.Length];
+					var ret = d.Serialize();
+					this.Socket.GetSocketStream().Write (new ByteBuffer(ret, 0, ret.Length));
+				});
+			}
 		}
 		public void WriteReply(SpdyResponse res, bool done = false)
 		{
