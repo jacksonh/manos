@@ -72,10 +72,12 @@ namespace Manos.Http {
 
 		private UploadedFile uploaded_file;
 		private List<byte> form_data = new List<byte> ();
+		
+		private char[] quotation_mark = {'\"'};
 
 		public HttpMultiPartFormDataHandler (string boundary, Encoding encoding, IUploadedFileCreator file_creator)
 		{
-			this.boundary = "--" + boundary.TrimStart("\"".ToCharArray()).TrimEnd("\"".ToCharArray());
+			this.boundary = "--" + boundary.TrimStart(quotation_mark).TrimEnd(quotation_mark);
 			this.encoding = encoding;
 			this.file_creator = file_creator;
 
