@@ -91,7 +91,9 @@ namespace Manos.Tool
 		
 		public void Run ()
 		{
-			if (RunXBuild ())
+			ManosConfig.Load();
+
+			if (RunXBuild())
 				return;
 			if (RunMake ())
 				return;
@@ -169,12 +171,41 @@ namespace Manos.Tool
 			
 			AddDefaultReferences (libs);
 
+			// Find any additional dlls in project file
 			foreach (string lib in Directory.GetFiles (Directory.GetCurrentDirectory ())) {
 				if (!lib.EndsWith (".dll", StringComparison.InvariantCultureIgnoreCase))
 					continue;
 				if (Path.GetFileName (lib) == OutputAssembly)
 					continue;
 				libs.Add (lib);
+			}
+
+			// Read additional referenced assemblies from manos.config in project folder:
+			// eg:
+			//
+			// [manos]
+			// ReferencedAssemblies=System.Core.dll Microsoft.CSharp.dll Manos.Mvc.dll
+			//
+			if (ManosConfig.Main != null)
+			{
+				var strReferencedAssemblies = ManosConfig.GetExpanded ("ReferencedAssemblies");
+				if (strReferencedAssemblies != null)
+				{
+					var referencedAssemblies = strReferencedAssemblies.Split (' ', ',');
+					foreach (var a in referencedAssemblies)
+					{
+						string ManosFile = System.IO.Path.Combine (Environment.ManosDirectory, a);
+						if (System.IO.File.Exists (ManosFile))
+						{
+							libs.Add (ManosFile);
+						}
+						else
+						{
+							libs.Add (a);
+						}
+
+					}
+				}
 			}
 			
 			return libs.ToArray ();

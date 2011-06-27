@@ -200,7 +200,7 @@ namespace Manos
 		{
 			Timeout t = new Timeout (begin, timespan, repeat, data, callback);
 			
-			ITimerWatcher timer;
+			ITimerWatcher timer = null;
 			timer = context.CreateTimerWatcher (begin, timespan, delegate {
 				t.Run (app);
 				if (!t.ShouldContinueToRepeat ()) {
