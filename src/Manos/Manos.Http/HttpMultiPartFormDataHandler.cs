@@ -72,10 +72,12 @@ namespace Manos.Http {
 
 		private UploadedFile uploaded_file;
 		private List<byte> form_data = new List<byte> ();
+		
+		private char[] quotation_mark = {'\"'};
 
 		public HttpMultiPartFormDataHandler (string boundary, Encoding encoding, IUploadedFileCreator file_creator)
 		{
-			this.boundary = "--" + boundary;
+			this.boundary = "--" + boundary.TrimStart(quotation_mark).TrimEnd(quotation_mark);
 			this.encoding = encoding;
 			this.file_creator = file_creator;
 
@@ -98,6 +100,12 @@ namespace Manos.Http {
 
 				switch (state) {
 				case State.InBoundary:
+					if (c == '\r')
+						break;
+
+					if (c == '\n')
+						break;
+
 					if (index == boundary.Length - 1) {
 
 						boundary_buffer.Clear ();
@@ -184,16 +192,11 @@ namespace Manos.Http {
 				case State.PostHeader1:
 					if (c != '\n')
 						throw new Exception (String.Format ("Invalid char '{0}' in post header 1.", c));
-					state = State.PostHeader2;
-					break;
-
-				case State.PostHeader2:
 					HandleHeader (entity);
 					header_key.Clear ();
 					header_value.Clear ();
 					state = State.InHeaderKey;
 					break;
-
 
 				case State.InFormData:
 					if (CheckStartingBoundary (str_data, pos))
@@ -241,9 +244,9 @@ namespace Manos.Http {
 			string key = encoding.GetString (header_key.ToArray ());
 			string value = encoding.GetString (header_value.ToArray ());
 
-			if (key == "Content-Disposition")
+			if (String.Compare(key,"Content-Disposition",true) == 0)
 				ParseContentDisposition (value);
-			else if (key == "Content-Type")
+			else if (String.Compare(key,"Content-Type",true) == 0)
 				ParseContentType (value);
 
 		}
