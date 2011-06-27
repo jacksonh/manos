@@ -47,9 +47,10 @@ namespace Manos
 		private static ManosApp app;
 		private static bool started;
 		private static List<IPEndPoint> listenEndPoints = new List<IPEndPoint> ();
+		private static List<IPEndPoint> spdylistenEndPoints = new List<IPEndPoint> ();
 		private static Dictionary<IPEndPoint, Tuple<string, string>> secureListenEndPoints =
 			new Dictionary<IPEndPoint, Tuple<string, string>> ();
-		private static Dictionary<IPEndPoint, Tuple<string, string>> spdyListenEndPoints =
+		private static Dictionary<IPEndPoint, Tuple<string, string>> spdysecureListenEndPoints =
 			new Dictionary<IPEndPoint, Tuple<string, string>> ();
 		private static List<HttpServer> servers = new List<HttpServer> ();
 		private static List<SpdyServer> spdyservers = new List<SpdyServer> ();
@@ -123,8 +124,18 @@ namespace Manos
 			secureListenEndPoints.Add (endPoint,
 				Tuple.Create (cert, key));
 		}
+		public static void SpdyListenAt (IPEndPoint endPoint)
+		{
+			if (endPoint == null)
+				throw new ArgumentNullException ("endPoint");
 
-		public static void SpdyListenAt (IPEndPoint endPoint, string cert, string key)
+			if (spdylistenEndPoints.Contains (endPoint) || spdysecureListenEndPoints.ContainsKey (endPoint))
+				throw new InvalidOperationException ("Endpoint already registered");
+
+			spdylistenEndPoints.Add (endPoint);
+		}
+
+		public static void SecureSpdyListenAt (IPEndPoint endPoint, string cert, string key)
 		{
 			if (endPoint == null)
 				throw new ArgumentNullException ("endPoint");
@@ -133,10 +144,10 @@ namespace Manos
 			if (key == null)
 				throw new ArgumentNullException ("key");
 
-			if (spdyListenEndPoints.ContainsKey (endPoint) || listenEndPoints.Contains (endPoint))
+			if (spdysecureListenEndPoints.ContainsKey (endPoint) || spdylistenEndPoints.Contains (endPoint))
 				throw new InvalidOperationException ("Endpoint already registered");
 
-			spdyListenEndPoints.Add (endPoint,
+			spdysecureListenEndPoints.Add (endPoint,
 				Tuple.Create (cert, key));
 		}
 
@@ -190,8 +201,15 @@ namespace Manos
 				
 				servers.Add (server);
 			}
-			foreach (var ep in spdyListenEndPoints.Keys) {
-				var keypair = spdyListenEndPoints [ep];
+			foreach (var ep in spdylistenEndPoints) {
+
+				var server = new SpdyServer (Context, HandleTransaction, Context.CreateSocket ());
+				server.Listen (ep.Address.ToString (), ep.Port);
+
+				spdyservers.Add (server);
+			}
+			foreach (var ep in spdysecureListenEndPoints.Keys) {
+				var keypair = spdysecureListenEndPoints [ep];
 				var socket = Context.CreateSecureSocket (keypair.Item1, keypair.Item2);
 				var server = new SpdyServer (context, HandleTransaction, socket);
 				server.Listen (ep.Address.ToString (), ep.Port);
