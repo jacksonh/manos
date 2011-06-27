@@ -432,7 +432,7 @@ namespace Manos.IO
 					return EnsureActiveBuffer ();
 				}
 			}
-			return false;
+			return currentBuffer != null;
 		}
 		
 		/// <summary>
