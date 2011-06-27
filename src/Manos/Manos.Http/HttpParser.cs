@@ -1257,7 +1257,7 @@ namespace Manos.Http {
 
 					if (to_read > 0) {
 						settings.RaiseOnBody(this, data, p, to_read);
-						data.Skip(to_read);
+						data.Skip(to_read - 1);
 						content_length -= to_read;
 						if (content_length == 0) {
 							settings.RaiseOnMessageComplete(this);
@@ -1272,7 +1272,7 @@ namespace Manos.Http {
 					to_read = pe;  // TODO change to use buffer ?
 					if (to_read > 0) {
 						settings.RaiseOnBody(this, data, p, to_read); 
-						data.Skip(to_read);
+						data.Skip(to_read - 1);
 					}
 					break;
 				/******************* Body *******************/
@@ -1359,7 +1359,7 @@ namespace Manos.Http {
 					to_read = min(pe, content_length);
 					if (to_read > 0) {
 						settings.RaiseOnBody(this, data, p, to_read);
-						data.Skip(to_read);
+						data.Skip(to_read - 1);
 					}
 
 					if (to_read == content_length) {
