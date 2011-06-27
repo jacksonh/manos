@@ -179,7 +179,11 @@ namespace Manos.Routing
 			}
 			
 			try {
-				data = Convert.ChangeType (str_value, type);
+				var underlying_type = Nullable.GetUnderlyingType(type);
+				if (underlying_type != null)
+					data = Convert.ChangeType (str_value, underlying_type);
+				else
+					data = Convert.ChangeType (str_value, type);
 			} catch {
 				Console.Error.WriteLine ("Error while converting '{0}' to '{1}'.", str_value, type);
 				
