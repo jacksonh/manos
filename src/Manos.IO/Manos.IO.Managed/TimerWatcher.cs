@@ -8,6 +8,7 @@ namespace Manos.IO.Managed
 		private Action cb;
 		private Timer timer;
 		private TimeSpan after;
+		private int invocationConcurrency;
 
 		public TimerWatcher (Context context, Action callback, TimeSpan after, TimeSpan repeat)
 			: base (context)
@@ -23,9 +24,15 @@ namespace Manos.IO.Managed
 
 		void Invoke (object state)
 		{
-			if (IsRunning) {
-				Context.Enqueue (cb);
-				after = TimeSpan.Zero;
+			try {
+				if (Interlocked.Increment (ref invocationConcurrency) == 1) {
+					if (IsRunning) {
+						Context.Enqueue (cb);
+						after = TimeSpan.Zero;
+					}
+				}
+			} finally {
+				Interlocked.Decrement (ref invocationConcurrency);
 			}
 		}
 
