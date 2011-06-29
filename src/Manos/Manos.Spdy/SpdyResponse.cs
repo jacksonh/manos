@@ -11,32 +11,37 @@ namespace Manos.Spdy
 	public class SpdyResponse : IHttpResponse
 	{
 		private int statuscode;
+
 		public SpdyRequest Request { get; set; }
+
 		private SpdyStream writestream;
 		private Dictionary<string, HttpCookie> cookies;
 		private Dictionary<string, object> properties;
-		
-		public SpdyResponse (SpdyRequest req, SpdyStream writestream)
+
+		public SpdyResponse (SpdyRequest req,SpdyStream writestream)
 		{
 			this.Request = req;
-			this.Headers = new HttpHeaders();
-			this.cookies = new Dictionary<string, HttpCookie>();
+			this.Headers = new HttpHeaders ();
+			this.cookies = new Dictionary<string, HttpCookie> ();
 			this.writestream = writestream;
 		}
 
 		#region IHttpResponse implementation
 		public event Action OnEnd;
-
 		public event Action OnCompleted;
-		private void EnsureReplyWritten(bool done)
+
+		private void EnsureReplyWritten (bool done)
 		{
-			if (writestream.ReplyWritten) return;
-			writestream.WriteReply(this, done);
+			if (writestream.ReplyWritten)
+				return;
+			writestream.WriteReply (this, done);
 		}
-		private void EnsureReplyWritten()
+
+		private void EnsureReplyWritten ()
 		{
-			EnsureReplyWritten(false);
+			EnsureReplyWritten (false);
 		}
+
 		public Dictionary<string,object> Properties {
 			get {
 				if (properties == null)
@@ -87,6 +92,7 @@ namespace Manos.Spdy
 				return default (T);
 			return (T) res;
 		}
+
 		public void Write (string str)
 		{
 			byte [] data = ContentEncoding.GetBytes (str);
@@ -122,7 +128,7 @@ namespace Manos.Spdy
 		public void End ()
 		{
 			if (OnEnd != null) {
-				OnEnd();
+				OnEnd ();
 			}
 		}
 
@@ -149,38 +155,38 @@ namespace Manos.Spdy
 			Write (str, prms);
 			End ();
 		}
-		
+
 		private void WriteToBody (byte [] data, int offset, int length)
 		{
-			EnsureReplyWritten();
-			writestream.Write(data, offset, length);
+			EnsureReplyWritten ();
+			writestream.Write (data, offset, length);
 		}
 
 		public void Complete (Action callback)
 		{
-			EnsureReplyWritten();
-			writestream.End();
-			callback();
+			EnsureReplyWritten ();
+			writestream.End ();
+			callback ();
 		}
 
 		public void SendFile (string file)
 		{
-	        Headers.SetNormalizedHeader ("Content-Type", ManosMimeTypes.GetMimeType (file));
-			EnsureReplyWritten();
-			writestream.SendFile(file);
+			Headers.SetNormalizedHeader ("Content-Type", ManosMimeTypes.GetMimeType (file));
+			EnsureReplyWritten ();
+			writestream.SendFile (file);
 		}
 
 		public void Redirect (string url)
 		{
-			Headers.SetNormalizedHeader("Location", url);
+			Headers.SetNormalizedHeader ("Location", url);
 			StatusCode = 302;
-			EnsureReplyWritten(true);
-			End();
+			EnsureReplyWritten (true);
+			End ();
 		}
 
 		public void SetHeader (string name, string value)
 		{
-			this.Headers.SetHeader(name, value);
+			this.Headers.SetHeader (name, value);
 		}
 
 		public void SetCookie (string name, HttpCookie cookie)
@@ -246,10 +252,10 @@ namespace Manos.Spdy
 			return SetCookie (name, value, domain, DateTime.Now + max_age);
 		}
 
-		public void RemoveCookie(string name)
+		public void RemoveCookie (string name)
 		{
 			var cookie = new HttpCookie (name, "");
-			cookie.Expires = DateTime.Now.AddYears(-1);
+			cookie.Expires = DateTime.Now.AddYears (-1);
 
 			SetCookie (name, cookie);
 		}
@@ -297,7 +303,9 @@ namespace Manos.Spdy
 		}
 
 		public bool WriteHeaders { get; set; }
+
 		public string PostBody { get; set; }
+
 		#endregion
 
 		#region IDisposable implementation

@@ -12,42 +12,41 @@ namespace Manos.Spdy
 	{
 		private static readonly long MAX_BUFFERED_CONTENT_LENGTH = 2621440; // 2.5MB (Eventually this will be an environment var)
 		private HttpHeaders headers;
+
 		public int StreamID { get; set; }
+
 		private IHttpBodyHandler body_handler;
 		private Dictionary<string, UploadedFile> uploaded_files;
 		private Dictionary<string, object> properties;
-		
 		private DataDictionary uri_data;
 		private	DataDictionary query_data;
 		private DataDictionary cookies;
 		private DataDictionary post_data;
 		private	DataDictionary data;
-		private byte[] rawdata;
-		
-		public SpdyRequest (Context context, SynStreamFrame frame, byte[] dat = null)
+		private byte [] rawdata;
+
+		public SpdyRequest (Context context,SynStreamFrame frame,byte [] dat = null)
 		{
-			var version = frame.Headers["version"];
-			var num = version.Split('/')[1];
-			var numsplit = num.Split('.');
-			this.MajorVersion = int.Parse(numsplit[0]);
-			this.MinorVersion = int.Parse(numsplit[1]);
-			this.headers = frame.Headers.ToHttpHeaders(new string[] { "version", "url" });
-			this.Path = frame.Headers["url"];
-			this.Method = MethodFromString(frame.Headers["method"]);
+			var version = frame.Headers ["version"];
+			var num = version.Split ('/') [1];
+			var numsplit = num.Split ('.');
+			this.MajorVersion = int.Parse (numsplit [0]);
+			this.MinorVersion = int.Parse (numsplit [1]);
+			this.headers = frame.Headers.ToHttpHeaders (new string[] { "version", "url" });
+			this.Path = frame.Headers ["url"];
+			this.Method = MethodFromString (frame.Headers ["method"]);
 			this.StreamID = frame.StreamID;
 			string ct;
-			if (dat != null  && dat.Length > 0)
-			{
-				Console.WriteLine(dat.ToString());
+			if (dat != null && dat.Length > 0) {
+				Console.WriteLine (dat.ToString ());
 				this.rawdata = dat;
 				if (!Headers.TryGetValue ("Content-Type", out ct)) {
 					body_handler = new HttpBufferedBodyHandler ();
-				}
-				else {
+				} else {
 					if (ct.StartsWith ("application/x-www-form-urlencoded", StringComparison.InvariantCultureIgnoreCase)) {
 						body_handler = new HttpFormDataHandler ();
 					}
-		
+
 					if (ct.StartsWith ("multipart/form-data", StringComparison.InvariantCultureIgnoreCase)) {
 						string boundary = HttpRequest.ParseBoundary (ct);
 						IUploadedFileCreator file_creator = GetFileCreator ();
@@ -56,12 +55,13 @@ namespace Manos.Spdy
 				}
 				if (body_handler == null)
 					body_handler = new HttpBufferedBodyHandler ();
-				context.CreateTimerWatcher(new TimeSpan(1), () => {
-					body_handler.HandleData(this, new ByteBuffer(rawdata, 0, rawdata.Length),0, rawdata.Length);
-					body_handler.Finish(this);
-				}).Start();
+				context.CreateTimerWatcher (new TimeSpan (1), () => {
+					body_handler.HandleData (this, new ByteBuffer (rawdata, 0, rawdata.Length), 0, rawdata.Length);
+					body_handler.Finish (this);
+				}).Start ();
 			}
 		}
+
 		private IUploadedFileCreator GetFileCreator ()
 		{
 			if (Headers.ContentLength == null || Headers.ContentLength >= MAX_BUFFERED_CONTENT_LENGTH)
@@ -70,7 +70,7 @@ namespace Manos.Spdy
 		}
 
 		#region IHttpRequest implementation
-		
+
 		public Dictionary<string,object> Properties {
 			get {
 				if (properties == null)
@@ -121,10 +121,10 @@ namespace Manos.Spdy
 				return default (T);
 			return (T) res;
 		}
-		
+
 		public void Read (Action onClose)
 		{
-			onClose();
+			onClose ();
 		}
 
 		public void SetWwwFormData (Manos.Collections.DataDictionary data)
@@ -162,6 +162,7 @@ namespace Manos.Spdy
 				post_data = value;
 			}
 		}
+
 		protected void SetDataDictionary (DataDictionary old, DataDictionary newd)
 		{
 			if (data != null && old != null)
@@ -205,6 +206,7 @@ namespace Manos.Spdy
 				return cookies;
 			}
 		}
+
 		private DataDictionary ParseCookies ()
 		{
 			string cookie_header;
@@ -226,9 +228,9 @@ namespace Manos.Spdy
 
 		public Dictionary<string,UploadedFile> Files {
 			get {
-			    if (uploaded_files == null)
-			       uploaded_files = new Dictionary<string,UploadedFile> ();
-			    return uploaded_files;
+				if (uploaded_files == null)
+					uploaded_files = new Dictionary<string,UploadedFile> ();
+				return uploaded_files;
 			}
 		}
 
@@ -247,14 +249,15 @@ namespace Manos.Spdy
 
 		public Socket Socket {
 			get {
-				throw new NotImplementedException("Socket");
+				throw new NotImplementedException ("Socket");
 			}
 		}
 
 		public string PostBody { get; set; }
+
 		#endregion
-		
-		Dictionary<string, HttpMethod> lookup = new Dictionary<string, HttpMethod>() {
+
+		Dictionary<string, HttpMethod> lookup = new Dictionary<string, HttpMethod> () {
 			{ "OPTIONS", HttpMethod.HTTP_OPTIONS },
 			{ "GET", HttpMethod.HTTP_GET },
 			{ "HEAD", HttpMethod.HTTP_HEAD },
@@ -264,16 +267,17 @@ namespace Manos.Spdy
 			{ "TRACE", HttpMethod.HTTP_TRACE },
 			{ "CONNECT", HttpMethod.HTTP_CONNECT }
 		};
-		HttpMethod MethodFromString(string str)
+
+		HttpMethod MethodFromString (string str)
 		{
-			str = str.ToUpper();
-			if (lookup.ContainsKey(str)) {
-				return lookup[str];
+			str = str.ToUpper ();
+			if (lookup.ContainsKey (str)) {
+				return lookup [str];
 			} else {
 				return HttpMethod.ERROR;
 			}
 		}
-		
+
 		#region IDisposable implementation
 		public void Dispose ()
 		{
