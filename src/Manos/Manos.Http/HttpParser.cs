@@ -198,9 +198,12 @@ namespace Manos.Http {
 				p = (int) data.Position;
 				int  pe = (int) data.Length;
       
-				byte ch      = data.ReadByte ();  // the current character to process.
+				byte ch      = 0;          // the current character to process.
 				int c       = -1;          // utility variably used for up- and downcasing etc.
 				int to_read =  0;          // used to keep track of how much of body, etc. is left to read
+
+				if(state != State.body_identity)
+					ch = data.ReadByte ();
 
 				if (parsing_header (state)) {
 					++nread;

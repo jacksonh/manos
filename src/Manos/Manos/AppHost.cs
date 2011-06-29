@@ -250,9 +250,12 @@ namespace Manos
 			timer = context.CreateTimerWatcher (begin, timespan, delegate {
 				t.Run (app);
 				if (!t.ShouldContinueToRepeat ()) {
+					t.Stop ();
 					timer.Dispose ();
 				}
 			});
+
+			timer.Start ();
 
 			return t;
 		}
