@@ -127,30 +127,43 @@ namespace Manos.Tool
 		
 		private static int Init (IList<string> args)
 		{
-			if (args.Count < 1) {
-				Console.WriteLine ("manos --init <AppName>");
-				Console.WriteLine ("This will initialize a new application with the supplied name.");
-			}
-				
+			string layout = null;
+			var p = new OptionSet() {
+				{ "-l|layout=", v => layout = v },
+			};
+			
+			
 			Driver d = new Driver ();
 			
 			try {
-				Console.WriteLine ("initing: {0}", args [0]);
-				d.Init (args [0]);
-			} catch (Exception e) {
+
+				List<string> extra = p.Parse(args);
+
+				if (extra.Count < 1)
+				{
+					Console.WriteLine("manos [--layout=<LayoutName>] --init <AppName>");
+					Console.WriteLine("This will initialize a new application with the supplied name.");
+				}
+
+				if (layout == null)
+					layout = "default";
+				string appname = extra[0];
+
+				Console.WriteLine("initing: {0} with layout {1}", appname, layout);
+
+				InitCommand initer = new InitCommand(Environment, appname);
+				initer.Layout = layout;
+
+				initer.Run();
+			}
+			catch (Exception e)
+			{
 				Console.WriteLine ("error while initializing application:");
 				Console.WriteLine (e);
 				return 1;
 			}
 			
 			return 0;
-		}
-		
-		public void Init (string name)
-		{
-			InitCommand initer = new InitCommand (Environment, name);
-			
-			initer.Run ();
 		}
 
 		private static int Server (IList<string> args)
@@ -178,6 +191,8 @@ namespace Manos.Tool
 			string user = null;
 			string assembly = null;
 			string ipaddress = null;
+			string browse = null;
+			string docroot = null;
 			
 			var p = new OptionSet () {
 				{ "p|port=", v => port = v },
@@ -186,7 +201,9 @@ namespace Manos.Tool
 				{ "k|keyfile=", v => keyFile = v },
 				{ "u|user=", v => user = v },
 				{ "a|assembly=", v=> assembly = v},
-				{ "l|listen=", v => ipaddress = v }
+				{ "l|listen=", v => ipaddress = v },
+				{ "b|browse=", v => browse = v },
+				{ "d|docroot=", v => docroot = v}
 			};
 			args = p.Parse(args);
 
@@ -226,6 +243,12 @@ namespace Manos.Tool
 
 			if (ipaddress != null)
 				cmd.IPAddress = ipaddress;
+
+			if (docroot != null)
+				cmd.DocumentRoot = docroot;
+
+			if (browse != null)
+				cmd.Browse = browse;
 
 			cmd.Run ();
 		}

@@ -77,8 +77,9 @@ namespace Manos.Tool
 			get {
 				if (layout == null)
 					return "default";
-				return Layout;
+				return layout;
 			}
+
 			set {
 				if (value == null) {
 					layout = null;
@@ -125,7 +126,7 @@ namespace Manos.Tool
 				string dest = Path.Combine (target.FullName, file.Name);
         		file.CopyTo (dest);
 				
-				if (file.Extension == ".cs")
+				if (file.Extension == ".cs" || file.Extension==".cshtml" || file.Extension == ".sln" || file.Extension ==".csproj" || file.Extension == ".user")
 					ConvertCSFile (dest);
 				
 				ConvertFileName (dest);
@@ -151,7 +152,9 @@ namespace Manos.Tool
 		
 		private string Convert (string src)
 		{
-			return src.Replace ("$APPNAME", ApplicationName);	
+			src = src.Replace ("$APPNAME", ApplicationName);
+			src = src.Replace ("$MANOSDIR", System.IO.Path.GetDirectoryName(GetType().Assembly.Location));
+			return src;
 		}
 		
 		public bool IsLegalApplicationName (string name)

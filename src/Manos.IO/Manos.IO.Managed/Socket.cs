@@ -284,7 +284,8 @@ namespace Manos.IO.Managed
 		
 		public override void Close ()
 		{
-			GetSocketStream ().Close ();
+			if (state == Socket.SocketState.Open)
+				GetSocketStream ().Close ();
 		}
 
 		public override void Connect (string host, int port, Action callback)
