@@ -295,7 +295,7 @@ namespace Manos.Http {
 
 		public void ParseContentType (string str)
 		{
-			content_type = str.Substring ("Content-Type:".Length).Trim ();
+			content_type = str.Trim ();
 		}
 
 		public static string GetContentDispositionAttribute (string l, string name)
