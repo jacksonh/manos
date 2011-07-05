@@ -175,6 +175,7 @@
     <Compile Include="Manos.Spdy\SpdyRequest.cs" />
     <Compile Include="Manos.Spdy\SpdyResponse.cs" />
     <Compile Include="Manos.Spdy\SpdyStream.cs" />
+    <Compile Include="Manos.Spdy\SpdyEntity.cs" />
     <Compile Include="Manos.Http\IHttpDataRecipient.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -8,7 +8,7 @@ using Manos.IO;
 
 namespace Manos.Spdy
 {
-	public class SpdyResponse : IHttpResponse
+	public class SpdyResponse : SpdyEntity, IHttpResponse
 	{
 		private int statuscode;
 
@@ -18,17 +18,28 @@ namespace Manos.Spdy
 		private Dictionary<string, HttpCookie> cookies;
 		private Dictionary<string, object> properties;
 
-		public SpdyResponse (SpdyRequest req,SpdyStream writestream)
+		public SpdyResponse (SpdyRequest req,SpdyStream writestream, Context context) : base(context)
 		{
 			this.Request = req;
 			this.Headers = new HttpHeaders ();
 			this.cookies = new Dictionary<string, HttpCookie> ();
 			this.writestream = writestream;
 		}
+		public HttpStream Stream {
+			get {
+				throw new NotImplementedException("Stream");
+			}
+		}
+
+		
+		public StreamWriter Writer {
+			get {
+				throw new NotImplementedException("Writer");
+			}
+		}
+		
 
 		#region IHttpResponse implementation
-		public event Action OnEnd;
-		public event Action OnCompleted;
 
 		private void EnsureReplyWritten (bool done)
 		{
@@ -42,121 +53,8 @@ namespace Manos.Spdy
 			EnsureReplyWritten (false);
 		}
 
-		public Dictionary<string,object> Properties {
-			get {
-				if (properties == null)
-					properties = new Dictionary<string,object> ();
-				return properties;
-			}
-		}
 
-		public void SetProperty (string name, object o)
-		{
-			if (name == null)
-				throw new ArgumentNullException ("name");
-
-			if (o == null && properties == null)
-				return;
-
-			if (properties == null)
-				properties = new Dictionary<string,object> ();
-
-			if (o == null) {
-				properties.Remove (name);
-				if (properties.Count == 0)
-					properties = null;
-				return;
-			}
-
-			properties [name] = o;
-		}
-
-		public object GetProperty (string name)
-		{
-			if (name == null)
-				throw new ArgumentNullException ("name");
-
-			if (properties == null)
-				return null;
-
-			object res = null;
-			if (!properties.TryGetValue (name, out res))
-				return null;
-			return res;
-		}
-
-		public T GetProperty<T> (string name)
-		{
-			object res = GetProperty (name);
-			if (res == null)
-				return default (T);
-			return (T) res;
-		}
-
-		public void Write (string str)
-		{
-			byte [] data = ContentEncoding.GetBytes (str);
-
-			WriteToBody (data, 0, data.Length);
-		}
-
-		public void Write (byte [] data)
-		{
-			WriteToBody (data, 0, data.Length);
-		}
-
-		public void Write (byte [] data, int offset, int length)
-		{
-			WriteToBody (data, offset, length);
-		}
-
-		public void Write (string str, params object [] prms)
-		{
-			Write (String.Format (str, prms));	
-		}
-
-		public void WriteLine (string str)
-		{
-			Write (str + Environment.NewLine);	
-		}
-
-		public void WriteLine (string str, params object [] prms)
-		{
-			WriteLine (String.Format (str, prms));	
-		}
-
-		public void End ()
-		{
-			if (OnEnd != null) {
-				OnEnd ();
-			}
-		}
-
-		public void End (string str)
-		{
-			Write (str);
-			End ();
-		}
-
-		public void End (byte [] data)
-		{
-			Write (data);
-			End ();
-		}
-
-		public void End (byte [] data, int offset, int length)
-		{
-			Write (data, offset, length);
-			End ();
-		}
-
-		public void End (string str, params object [] prms)
-		{
-			Write (str, prms);
-			End ();
-		}
-
-		private void WriteToBody (byte [] data, int offset, int length)
+		public override void WriteToBody (byte [] data, int offset, int length)
 		{
 			EnsureReplyWritten ();
 			writestream.Write (data, offset, length);
@@ -270,29 +168,6 @@ namespace Manos.Spdy
 			throw new NotImplementedException ("WriteMetadata");
 		}
 
-		public HttpHeaders Headers { get; set; }
-
-		public HttpStream Stream {
-			get {
-				throw new NotImplementedException ("Stream");
-			}
-		}
-
-		public StreamWriter Writer {
-			get {
-				throw new NotImplementedException ("Writer");
-			}
-		}
-
-		public Encoding ContentEncoding {
-			get {
-				return this.Headers.ContentEncoding;
-			}
-			set {
-				this.Headers.ContentEncoding = value;
-			}
-		}
-
 		public int StatusCode {
 			get {
 				return statuscode;
@@ -304,14 +179,6 @@ namespace Manos.Spdy
 
 		public bool WriteHeaders { get; set; }
 
-		public string PostBody { get; set; }
-
-		#endregion
-
-		#region IDisposable implementation
-		public void Dispose ()
-		{
-		}
 		#endregion
 	}
 }

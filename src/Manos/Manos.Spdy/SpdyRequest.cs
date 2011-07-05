@@ -8,7 +8,7 @@ using Manos.Collections;
 
 namespace Manos.Spdy
 {
-	public class SpdyRequest : IHttpRequest, IHttpDataRecipient
+	public class SpdyRequest : SpdyEntity, IHttpRequest, IHttpDataRecipient
 	{
 		private static readonly long MAX_BUFFERED_CONTENT_LENGTH = 2621440; // 2.5MB (Eventually this will be an environment var)
 		private HttpHeaders headers;
@@ -25,7 +25,7 @@ namespace Manos.Spdy
 		private	DataDictionary data;
 		private byte [] rawdata;
 
-		public SpdyRequest (Context context,SynStreamFrame frame,byte [] dat = null)
+		public SpdyRequest (Context context,SynStreamFrame frame,byte [] dat = null) : base(context)
 		{
 			var version = frame.Headers ["version"];
 			var num = version.Split ('/') [1];
@@ -38,7 +38,6 @@ namespace Manos.Spdy
 			this.StreamID = frame.StreamID;
 			string ct;
 			if (dat != null && dat.Length > 0) {
-				Console.WriteLine (dat.ToString ());
 				this.rawdata = dat;
 				if (!Headers.TryGetValue ("Content-Type", out ct)) {
 					body_handler = new HttpBufferedBodyHandler ();
@@ -62,65 +61,7 @@ namespace Manos.Spdy
 			}
 		}
 
-		private IUploadedFileCreator GetFileCreator ()
-		{
-			if (Headers.ContentLength == null || Headers.ContentLength >= MAX_BUFFERED_CONTENT_LENGTH)
-				return new TempFileUploadedFileCreator ();
-			return new InMemoryUploadedFileCreator ();
-		}
-
 		#region IHttpRequest implementation
-
-		public Dictionary<string,object> Properties {
-			get {
-				if (properties == null)
-					properties = new Dictionary<string,object> ();
-				return properties;
-			}
-		}
-
-		public void SetProperty (string name, object o)
-		{
-			if (name == null)
-				throw new ArgumentNullException ("name");
-
-			if (o == null && properties == null)
-				return;
-
-			if (properties == null)
-				properties = new Dictionary<string,object> ();
-
-			if (o == null) {
-				properties.Remove (name);
-				if (properties.Count == 0)
-					properties = null;
-				return;
-			}
-
-			properties [name] = o;
-		}
-
-		public object GetProperty (string name)
-		{
-			if (name == null)
-				throw new ArgumentNullException ("name");
-
-			if (properties == null)
-				return null;
-
-			object res = null;
-			if (!properties.TryGetValue (name, out res))
-				return null;
-			return res;
-		}
-
-		public T GetProperty<T> (string name)
-		{
-			object res = GetProperty (name);
-			if (res == null)
-				return default (T);
-			return (T) res;
-		}
 
 		public void Read (Action onClose)
 		{
@@ -135,40 +76,6 @@ namespace Manos.Spdy
 		public void WriteMetadata (System.Text.StringBuilder builder)
 		{
 			throw new NotImplementedException ("WriteMetadata");
-		}
-
-		public HttpMethod Method { get; set; }
-
-		public string Path { get; set; }
-
-		public DataDictionary Data {
-			get {
-				if (data == null)
-					data = new DataDictionary ();
-				return data;
-			}
-		}
-
-		public DataDictionary PostData {
-			get {
-				if (post_data == null) {
-					post_data = new DataDictionary ();
-					Data.Children.Add (post_data);
-				}
-				return post_data;
-			}
-			set {
-				SetDataDictionary (post_data, value);
-				post_data = value;
-			}
-		}
-
-		protected void SetDataDictionary (DataDictionary old, DataDictionary newd)
-		{
-			if (data != null && old != null)
-				data.Children.Remove (old);
-			if (newd != null)
-				Data.Children.Add (newd);
 		}
 
 		public DataDictionary QueryData {
@@ -216,44 +123,12 @@ namespace Manos.Spdy
 
 			return HttpCookie.FromHeader (cookie_header);
 		}
-
-		public HttpHeaders Headers {
-			get {
-				return headers;
-			}
-			set {
-				headers = value;
-			}
+		public override void WriteToBody (byte[] data, int position, int length)
+		{
+			throw new NotImplementedException ();
 		}
 
-		public Dictionary<string,UploadedFile> Files {
-			get {
-				if (uploaded_files == null)
-					uploaded_files = new Dictionary<string,UploadedFile> ();
-				return uploaded_files;
-			}
-		}
 
-		public int MajorVersion { get; set; }
-
-		public int MinorVersion { get; set; }
-
-		public Encoding ContentEncoding {
-			get {
-				return Headers.ContentEncoding;
-			}
-			set {
-				Headers.ContentEncoding = value;
-			}
-		}
-
-		public Socket Socket {
-			get {
-				throw new NotImplementedException ("Socket");
-			}
-		}
-
-		public string PostBody { get; set; }
 
 		#endregion
 
@@ -277,12 +152,6 @@ namespace Manos.Spdy
 				return HttpMethod.ERROR;
 			}
 		}
-
-		#region IDisposable implementation
-		public void Dispose ()
-		{
-		}
-		#endregion
 	}
 }
 

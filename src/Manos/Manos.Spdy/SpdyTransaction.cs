@@ -109,7 +109,7 @@ namespace Manos.Spdy
 		public void OnRequestReady ()
 		{
 			try {
-				Response = new SpdyResponse (Request as SpdyRequest, WriteStream);
+				Response = new SpdyResponse (Request as SpdyRequest, WriteStream, Context);
 				ResponseReady = true;
 				//if( closeOnEnd ) Response.OnEnd += () => Response.Complete( OnResponseFinished );
 				this.Callback (this);

@@ -107,7 +107,7 @@ namespace Manos.Tool
 		public int? SpdyPort {
 			get {
 
-				return (int) spdyport;
+				return spdyport;
 			}
 			set {
 				if (value <= 0)
