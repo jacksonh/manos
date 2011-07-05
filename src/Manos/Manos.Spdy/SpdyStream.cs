@@ -23,13 +23,13 @@ namespace Manos.Spdy
 		public void SendFile (string filename)
 		{
 			var info = new FileInfo (filename);
-			if (this.Socket.GetSocketStream () is ISendfileCapable) {
-				DataFrame header = new DataFrame ();
-				header.StreamID = this.StreamID;
-				header.Length = (int) info.Length;
-				this.Socket.GetSocketStream ().Write (header.SerializeHeader ());
-				((ISendfileCapable) this.Socket.GetSocketStream ()).SendFile (filename);
-			} else {
+			//if (this.Socket.GetSocketStream () is ISendfileCapable) {
+		//		DataFrame header = new DataFrame ();
+		//		header.StreamID = this.StreamID;
+		//		header.Length = (int) info.Length;
+		//		this.Socket.GetSocketStream ().Write (header.SerializeHeader ());
+		//		((ISendfileCapable) this.Socket.GetSocketStream ()).SendFile (filename);
+		//	} else {
 				var str = Socket.Context.OpenFile (filename, FileAccess.Read, 64 * 1024);
 				str.Read ((buf) => { 
 					DataFrame d = new DataFrame ();
@@ -49,7 +49,7 @@ namespace Manos.Spdy
 					var ret = d.Serialize ();
 					this.Socket.GetSocketStream ().Write (new ByteBuffer (ret, 0, ret.Length));
 				});
-			}
+		//	}
 		}
 
 		public void WriteReply (SpdyResponse res, bool done = false)
