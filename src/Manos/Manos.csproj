@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -129,7 +129,6 @@
     <Compile Include="Manos.Routing\HtmlFormDataTypeConverter.cs" />
     <Compile Include="Manos.Template\TemplateEnvironment.cs" />
     <Compile Include="Manos.Template\TemplateLibrary.cs" />
-    <Compile Include="Manos.Template\TemplateParser.cs" />
     <Compile Include="Manos.Template\TemplateTokenizer.cs" />
     <Compile Include="Manos.Template\TemplateEngine.cs" />
     <Compile Include="Manos.Template\ManosTemplate.cs" />
@@ -168,11 +167,7 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
-  <ItemGroup>
-    <Folder Include="Manos.Threading\" />
-    <Folder Include="Manos.IO\" />
-    <Folder Include="Manos.Collections\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Manos.IO\Manos.IO.csproj">
       <Project>{5E2AA984-1C9C-4890-BEF6-CC2981C49AFF}</Project>

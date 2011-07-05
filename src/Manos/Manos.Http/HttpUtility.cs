@@ -159,13 +159,13 @@ namespace Manos.Http {
 			for (int i = 0; i < bytes.Length; i++)
 			{
 				byte ch = bytes[i];
-				if (EncodeChar((char)ch))
-				{
-					non_safe++;
-				}
-				else if (ch == ' ')
+				if (ch == ' ')
 				{
 					spaces++;
+				}
+				else if (EncodeChar((char)ch))
+				{
+					non_safe++;
 				}
 			}
 
@@ -181,15 +181,15 @@ namespace Manos.Http {
 			for (int i = 0; i < bytes.Length; i++)
 			{
 				byte ch = bytes[i];
-				if (EncodeChar((char)ch))
+				if (ch == ' ')
+				{
+					buffer[outpos++] = (byte)'+';
+				}
+				else if (EncodeChar((char)ch))
 				{
 					buffer[outpos++] = (byte)'%';
 					buffer[outpos++] = (byte)ToHex((ch >> 4) & 0xF);
 					buffer[outpos++] = (byte)ToHex(ch & 15);
-				}
-				else if (ch == ' ')
-				{
-					buffer[outpos++] = (byte)'+';
 				}
 				else
 				{
