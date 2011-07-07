@@ -197,6 +197,11 @@ namespace Manos.IO.Managed
 			var fs = System.IO.File.Create (fileName);
 			return new FileStream (this, fs, blockSize);
 		}
+		
+		public override Manos.IO.UdpSocket CreateUdpSocket ()
+		{
+			return new UdpSocket (this);
+		}
 	}
 }
 

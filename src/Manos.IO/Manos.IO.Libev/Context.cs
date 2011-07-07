@@ -128,6 +128,11 @@ namespace Manos.IO.Libev
 		{
 			return FileStream.Create (this, fileName, blockSize);
 		}
+		
+		public override Manos.IO.UdpSocket CreateUdpSocket ()
+		{
+			return new UdpSocket (this);
+		}
 	}
 }
 

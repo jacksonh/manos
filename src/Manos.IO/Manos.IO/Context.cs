@@ -255,6 +255,8 @@ namespace Manos.IO
 		/// performance, though too large block sizes only use more memory.
 		/// </param>
 		public abstract Stream CreateFile (string fileName, int blockSize);
+		
+		public abstract UdpSocket CreateUdpSocket ();
 	}
 }
 
