@@ -51,6 +51,12 @@ namespace Manos.IO.Managed
 
 		protected override void Dispose (bool disposing)
 		{
+			if (timer != null)
+			{
+				timer.Change(Timeout.Infinite, Timeout.Infinite);
+				timer.Dispose();
+				timer = null;
+			}
 			Context.Remove (this);
 		}
 
