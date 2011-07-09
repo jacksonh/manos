@@ -52,9 +52,8 @@ namespace Manos.IO.Managed
 				
 			Enqueue (delegate {
 				readCallback(info);
+				socket.BeginReceiveFrom (buffer, 0, buffer.Length, SocketFlags.None, ref dummy, ReceiveFrom, null);
 			});
-			
-			socket.BeginReceiveFrom (buffer, 0, buffer.Length, SocketFlags.None, ref dummy, ReceiveFrom, null);
 		}
 		
 		void DnsResolve (string host, Action<IPAddress> callback)
