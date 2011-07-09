@@ -123,6 +123,40 @@ manos_dgram_socket_listen (const char *host, int port, int *err)
 	return fd;
 }
 
+static int address(struct sockaddr_in *in, char *host, int port)
+{
+	if (host) {
+		if (inet_pton (AF_INET, host, &(in->sin_addr)) == 0) {
+			return -1;
+		}
+	}
+
+	memset (in, 0, sizeof (in));
+	in->sin_family = AF_INET;
+	in->sin_port = htons (port);
+	if (!host) {
+		in->sin_addr.s_addr = INADDR_ANY;
+	}
+	return 0;
+}
+
+int
+manos_dgram_socket_sendto (int fd, const char *host, int port, const char *buffer, int offset, int length, int *err)
+{
+	int rc;
+
+	struct sockaddr_in target;  
+	address(&target, host, port);
+
+	rc = sendto(fd, buffer + offset, length, 0, &target, sizeof(target));
+		if (rc < 0 && (errno == EAGAIN || errno == EINTR)) {
+			*err = 0;
+	} else {
+		*err = errno;
+	}
+	return rc;
+}
+
 int
 manos_socket_listen (const char *host, int port, int backlog, int *err)
 {

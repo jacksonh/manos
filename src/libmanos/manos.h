@@ -66,6 +66,8 @@ int manos_socket_listen (const char *host, int port, int backlog, int *err);
 
 int manos_dgram_socket_listen (const char *host, int port, int *err);
 
+int manos_dgram_socket_sendto (int fd, const char *host, int port, const char *buffer, int offset, int length, int *err);
+
 int manos_socket_accept (int fd, manos_socket_info_t *info, int *err);
 int manos_socket_accept_many (int fd, manos_socket_info_t *infos, int len, int *err);
 
