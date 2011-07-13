@@ -171,7 +171,7 @@ namespace Manos.Http
 		
 		IEnumerable<ByteBuffer> ResponseFinishedCallback ()
 		{
-			IBaseWatcher handler;
+			IBaseWatcher handler = null;
 			handler = Server.Context.CreateIdleWatcher (delegate {
 				handler.Dispose ();
 				responseFinished = true;
