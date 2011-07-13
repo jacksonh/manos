@@ -516,7 +516,7 @@ namespace Manos.Http {
 
 		public void Complete (Action callback)
 		{
-			IAsyncWatcher completeWatcher;
+			IAsyncWatcher completeWatcher = null;
 			completeWatcher = Context.CreateAsyncWatcher (delegate {
 				completeWatcher.Dispose ();
 				callback ();
