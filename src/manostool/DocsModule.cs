@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using Manos;
 using Manos.Http;
 using MarkdownSharp;
+using Manos.Routing;
 
 
 namespace Manos.Tool {
@@ -40,7 +41,7 @@ namespace Manos.Tool {
 		private string docs_dir;
 
 		private Dictionary<string,string> manuals;
-		private List<string> tutorial_pages;
+		private Dictionary<string,string> tutorial_pages;
 
 		public DocsModule (string docs_dir)
 		{
@@ -54,19 +55,18 @@ namespace Manos.Tool {
 			manuals.Add ("Pipes", "pipes.md");
 			manuals.Add ("Timeouts", "timeouts.md");
 
-			tutorial_pages = new List<string> () {
-				"Getting Started With Manos",
-				"Building the Shorty Application"
-			};
+			tutorial_pages = new Dictionary<string, string> ();
+			tutorial_pages.Add("Getting Started With Manos", "tutorial/page-1.md");
+			tutorial_pages.Add("Building the Shorty Application", "tutorial/page-2.md");
 		}
 
-		[Route ("/$", "/Index")]
+		[Route ("/", "/Index")]
 		public void Index (IManosContext ctx)
 		{
 			WriteMarkdownDocsPage (ctx.Response, "intro.md");
 		}
 
-		[Route ("/Manuals/{manual}")]
+		[Route ("/Manuals/{manual}", MatchType = MatchType.Simple)]
 		public void Manual (IManosContext ctx, string manual)
 		{
 			string md_page;
@@ -80,10 +80,17 @@ namespace Manos.Tool {
 			WriteMarkdownDocsPage (ctx.Response, md_page);
 		}
 
-		[Route ("/Tutorial/{page}")]
+		[Route ("/Tutorial/{page}", MatchType = MatchType.Simple)]
 		public void Tutorial (IManosContext ctx, string page)
 		{
-			WriteMarkdownDocsPage (ctx.Response, page);
+			string md_page;
+			if (!tutorial_pages.TryGetValue(page, out md_page)) {
+				ctx.Response.StatusCode = 404;
+				ctx.Response.End();
+				return;
+			}
+
+			WriteMarkdownDocsPage (ctx.Response, md_page);
 		}		
 
 		private void WriteMarkdownDocsPage (IHttpResponse response, string page)
@@ -173,8 +180,8 @@ namespace Manos.Tool {
 		{
 			response.WriteLine ("<h2>Tutorial</h2>");
 			response.WriteLine ("<ul>");
-			for (int i = 0; i < tutorial_pages.Count; i++) {
-				response.WriteLine ("<li><a href='/Tutorial/page-{0}.md'>{1}</a></li>", i + 1, tutorial_pages [i]);
+			foreach (string tutorial in tutorial_pages.Keys) {
+				response.WriteLine ("<li><a href='/Tutorial/{0}'>{0}</a></li>", tutorial);
 			}
 			response.WriteLine ("</ul>");
 			
