@@ -15,24 +15,30 @@ namespace Manos.IO.Managed
 		EndPoint dummy = new IPEndPoint (IPAddress.Any, 0);
 		bool writeAllowed = false;
 		
-		public UdpSocket (Manos.IO.Context context)
+		public UdpSocket (Manos.IO.Context context, AddressFamily addressFamily)
 		{
 			Context = (Context) context;
-			socket = new System.Net.Sockets.Socket (AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+			AddressFamily = addressFamily;
+			socket = new System.Net.Sockets.Socket (GetFamily(addressFamily), SocketType.Dgram, ProtocolType.Udp);
 		}
 		
-		public override void Listen (string host, int port, Action<UdpPacket> readCallback)
+		System.Net.Sockets.AddressFamily GetFamily (AddressFamily family)
 		{
+			switch (family) {
+			case AddressFamily.InternNetwork:
+				return System.Net.Sockets.AddressFamily.InterNetwork;
+			case AddressFamily.InternNetwork6:
+				return System.Net.Sockets.AddressFamily.InterNetworkV6;
+			default:
+				throw new Exception("Address family not supported");
+			}
+		}
+		
+		public override void Receive (Action<UdpPacket> readCallback)
+		{
+			
 			this.readCallback = readCallback;
-			DnsResolve (host, delegate (IPAddress addr) {
-				StartListeningSocket (addr, port);
-			});
-		}
-		
-		void StartListeningSocket (IPAddress addr, int port)
-		{
 			try {
-				socket.Bind (new IPEndPoint (addr, port));
 				socket.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref dummy, ReceiveFrom, null);
 			} catch {
 			}
@@ -52,7 +58,7 @@ namespace Manos.IO.Managed
 				Buffer = new ByteBuffer (buffer, 0, length)
 			};
 				
-			Enqueue (delegate {
+			Context.Enqueue (delegate {
 				readCallback(info);
 				socket.BeginReceiveFrom (buffer, 0, buffer.Length, SocketFlags.None, ref dummy, ReceiveFrom, null);
 			});
@@ -63,7 +69,7 @@ namespace Manos.IO.Managed
 			IPAddress addr;
 			if (!IPAddress.TryParse (host, out addr)) {
 				Dns.BeginGetHostEntry (host, (a) => {
-					Enqueue (delegate {
+					Context.Enqueue (delegate {
 						try {
 							IPHostEntry ep = Dns.EndGetHostEntry (a);
 							callback (ep.AddressList[0]);
@@ -76,14 +82,7 @@ namespace Manos.IO.Managed
 			}
 		}
 		
-		protected void Enqueue (Action action)
-		{
-			lock (this) {
-				Context.Enqueue (action);
-			}
-		}
-
-		public override void Bind (int port)
+		public override void Bind (string host, int port)
 		{
 			socket.Bind(new IPEndPoint (IPAddress.Any, port));
 		}
@@ -92,6 +91,12 @@ namespace Manos.IO.Managed
 		{
 			base.Send (packet);
 			ResumeWriting ();
+		}
+		
+		public override void Send (UdpPacket packet)
+		{
+			CheckAddress (packet.Address);
+			base.Send (packet);
 		}
 		
 		void SendAsync(IAsyncResult ar)
@@ -137,7 +142,7 @@ namespace Manos.IO.Managed
 		
 		void WriteCallback (IAsyncResult ar)
 		{
-			Enqueue (delegate {
+			Context.Enqueue (delegate {
 				if (socket == null)
 					return;
 				

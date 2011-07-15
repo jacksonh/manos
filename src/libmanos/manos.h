@@ -58,15 +58,17 @@ typedef struct {
 	} address;
 } manos_socket_info_t;
 
+int manos_dgram_socket_create (int manosFamilyType, int *err);
 
+int manos_dgram_socket_listen (int fd,/* const char *host, int port, int manosFamilyType,*/ int backlog, int *err);
+
+int manos_dgram_socket_sendto (int fd, const char *host, int port, int manosFamilyType, const char *buffer, int offset, int length, int *err);
+
+int manos_dgram_socket_bind (int fd, const char *host, int port, int manosFamilyType);
 
 int manos_socket_connect (const char *host, int port, int *err);
 
 int manos_socket_listen (const char *host, int port, int backlog, int *err);
-
-int manos_dgram_socket_listen (const char *host, int port, int *err);
-
-int manos_dgram_socket_sendto (int fd, const char *host, int port, const char *buffer, int offset, int length, int *err);
 
 int manos_socket_accept (int fd, manos_socket_info_t *info, int *err);
 int manos_socket_accept_many (int fd, manos_socket_info_t *infos, int len, int *err);

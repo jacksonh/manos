@@ -31,6 +31,26 @@ namespace Manos.IO
 		IEnumerator<UdpPacket> currentWriter;
 		Queue<IEnumerable<UdpPacket>> writeQueue;
 		
+		public AddressFamily AddressFamily { get; protected set; }
+		
+		protected bool ValidAddress(string host)
+		{
+			var family = System.Net.IPAddress.Parse (host).AddressFamily;
+			switch (AddressFamily) {
+			case AddressFamily.InternNetwork:
+				return family == System.Net.Sockets.AddressFamily.InterNetwork;
+			default:
+				return family == System.Net.Sockets.AddressFamily.InterNetworkV6;
+			}
+		}
+		
+		protected void CheckAddress(string host)
+		{
+			if (!ValidAddress(host)) {
+				throw new Exception (string.Format ("Address is not of a valid family type"));
+			}
+		}
+		
 		/// <summary>
 		/// Bind the socket to listen on a host and port
 		/// </summary>
@@ -43,9 +63,9 @@ namespace Manos.IO
 		/// <param name="readCallback">
 		/// A callback which receives an instande of the UdpPacket class <see cref="Action<UdpPacket>"/>
 		/// </param>
-		public abstract void Listen (string host, int port, Action<UdpPacket> readCallback);
+		public abstract void Receive (Action<UdpPacket> readCallback);
 		
-		public abstract void Bind (int port);
+		public abstract void Bind (string host, int port);
 		
 		public virtual void Send (IEnumerable<UdpPacket> packet)
 		{

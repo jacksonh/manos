@@ -256,7 +256,7 @@ namespace Manos.IO
 		/// </param>
 		public abstract Stream CreateFile (string fileName, int blockSize);
 		
-		public abstract UdpSocket CreateUdpSocket ();
+		public abstract UdpSocket CreateUdpSocket (AddressFamily family);
 	}
 }
 

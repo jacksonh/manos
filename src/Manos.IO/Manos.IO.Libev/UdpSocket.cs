@@ -13,41 +13,24 @@ namespace Manos.IO.Libev
 		IOWatcher readWatcher, writeWatcher;
 		IntPtr handle;
 		Action<UdpPacket> readCallback;
-		string host;
 		
-		internal UdpSocket (Manos.IO.Context context)
+		internal UdpSocket (Manos.IO.Context context, AddressFamily addressFamily)
 		{
-			Context = (Context) context;
-		}
-		
-		private void CreateSocket(string host, int port)
-		{
-			int error;
+			int err;
 			
-			handle = new IntPtr (manos_dgram_socket_listen (host, port, out error));
+			Context = (Context) context;
+			AddressFamily = addressFamily;
+			handle = new IntPtr (manos_dgram_socket_create (addressFamily, out err));
 			if (handle.ToInt32() < 0) {
-				throw new Exception (string.Format ("An error ocurred while trying to create socket: {0}", StringError(error)));
+				throw new Exception (string.Format ("An error occured while trying to create socket: {0} {1}", err, StringError(err)));	
 			}
+			
 			readWatcher = new IOWatcher (handle, EventTypes.Read, Context.Loop, HandleReadReady);
 			writeWatcher = new IOWatcher (handle, EventTypes.Write, Context.Loop, HandleWriteReady);
 		}
 		
-		public override void Listen (string host, int port, Action<UdpPacket> readCallback)
+		public override void Receive (Action<UdpPacket> readCallback)
 		{
-			int error;
-			
-			if (this.host != null) {
-				throw new Exception("This socket has already been bound to an address");
-			}
-			
-			this.host = host;
-			
-			if (handle != IntPtr.Zero) {
-				manos_socket_close(handle.ToInt32(), out error);
-			}
-			
-			CreateSocket (host, port);
-			
 			readWatcher.Start();
 			
 			this.readCallback = readCallback;
@@ -78,16 +61,16 @@ namespace Manos.IO.Libev
 			readCallback (info);
 		}
 		
-		public override void Bind (int port)
+		public override void Bind (string host, int port)
 		{
-			CreateSocket("0.0.0.0", port);
+			int ret = manos_dgram_socket_bind(handle.ToInt32(), host, port, AddressFamily);
+			if (ret != 0) {
+				throw new Exception (string.Format ("{0}:{1}", ret, StringError(ret)));
+			}
 		}
 		
 		public override void Send (IEnumerable<UdpPacket> packet)
 		{
-			if (handle == IntPtr.Zero) {
-				CreateSocket("0.0.0.0", 0);
-			}
 			base.Send (packet);
 			ResumeWriting();
 		}
@@ -127,7 +110,10 @@ namespace Manos.IO.Libev
 		protected override int WriteSinglePacket (UdpPacket packet)
 		{
 			int len, error;
-			len = manos_dgram_socket_sendto (handle.ToInt32(), packet.Address, packet.Port, packet.Buffer.Bytes, packet.Buffer.Position, packet.Buffer.Length, out error);
+			len = manos_dgram_socket_sendto (handle.ToInt32(), packet.Address, packet.Port, AddressFamily, packet.Buffer.Bytes, packet.Buffer.Position, packet.Buffer.Length, out error);
+			if (len < 0) {
+				throw new Exception (string.Format ("{0}:{1}", error, StringError(error)));
+			}
 			return len;
 		}
 		
@@ -141,7 +127,13 @@ namespace Manos.IO.Libev
 		private static extern IntPtr strerror (int errno);
 		
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
-		private static extern int manos_dgram_socket_listen (string host, int port, out int err);
+		private static extern int manos_dgram_socket_create (AddressFamily addressFamily, out int err);
+		
+		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
+		private static extern int manos_dgram_socket_bind (int fd, string host, int port, AddressFamily addressFamily);
+		
+		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
+		private static extern int manos_dgram_socket_listen (int fd, /*string host, int port, AddressFamily family,*/ int backlog, out int err);
 		
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
 		private static extern int manos_socket_close (int fd, out int err);
@@ -150,7 +142,7 @@ namespace Manos.IO.Libev
 		private static extern int manos_socket_receive_from (int fd, byte [] buffer, int max, int flags, out SocketInfo info, out int err);	
 		
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
-		private static extern int manos_dgram_socket_sendto (int fd, string host, int port, byte [] buffer, int offset, int length, out int err);
+		private static extern int manos_dgram_socket_sendto (int fd, string host, int port, AddressFamily family, byte [] buffer, int offset, int length, out int err);
 		
 		
 	}

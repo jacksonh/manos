@@ -198,9 +198,9 @@ namespace Manos.IO.Managed
 			return new FileStream (this, fs, blockSize);
 		}
 		
-		public override Manos.IO.UdpSocket CreateUdpSocket ()
+		public override Manos.IO.UdpSocket CreateUdpSocket (AddressFamily family)
 		{
-			return new UdpSocket (this);
+			return new UdpSocket (this, family);
 		}
 	}
 }
