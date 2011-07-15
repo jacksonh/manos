@@ -68,8 +68,8 @@ namespace Manos.Caching
 
 		public void Set (string key, object value, TimeSpan expires)
 		{
-			SetInternal (key, value);
-			AppHost.AddTimeout (expires, RepeatBehavior.Single, item, HandleExpires);
+			Set (key, value, expires, delegate {
+			});
 		}
 
 		public void Set (string key, object value, CacheItemCallback callback)
