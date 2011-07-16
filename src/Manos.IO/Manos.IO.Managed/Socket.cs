@@ -234,7 +234,10 @@ namespace Manos.IO.Managed
 					} else if (len == 0) {
 						RaiseEndOfStream ();
 					} else {
-						RaiseData (new ByteBuffer (receiveBuffer, 0, len));
+						byte [] newBuffer = new byte [len];
+						Buffer.BlockCopy (receiveBuffer, 0, newBuffer, 0, len);
+						
+						RaiseData (new ByteBuffer (newBuffer));
 						HandleRead ();
 					}
 				});

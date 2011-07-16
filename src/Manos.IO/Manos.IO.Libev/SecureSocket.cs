@@ -22,7 +22,7 @@ namespace Manos.IO.Libev
 			{
 				this.parent = parent;
 				this.tlsContext = tlsContext;
-            }
+			}
 
 
 			public override long Position {
@@ -106,7 +106,10 @@ namespace Manos.IO.Libev
 					}
 					Close ();
 				} else if (received > 0) {
-					RaiseData (new ByteBuffer (receiveBuffer, 0, received));
+					byte [] newBuffer = new byte [received];
+					Buffer.BlockCopy (receiveBuffer, 0, newBuffer, 0, received);
+					
+					RaiseData (new ByteBuffer (newBuffer));
 				}
 			}
 

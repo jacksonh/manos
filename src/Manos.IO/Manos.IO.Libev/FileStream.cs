@@ -148,7 +148,9 @@ namespace Manos.IO.Libev
 				RaiseError (new Exception (string.Format ("Error '{0}' reading from file '{1}'", error, Handle.ToInt32 ())));
 			} else if (result > 0) {
 				position += result;
-				RaiseData (new ByteBuffer (buffer, 0, result));
+				byte [] newBuffer = new byte [result];
+				Buffer.BlockCopy (readBuffer, 0, newBuffer, 0, result);
+				RaiseData (new ByteBuffer (newBuffer));
 				ReadNextBuffer ();
 			} else {
 				PauseReading ();

@@ -133,7 +133,10 @@ namespace Manos.IO.Managed
 					int result = stream.EndRead (ar);
 			
 					if (result > 0) {
-						RaiseData (new ByteBuffer (readBuffer, 0, result));
+						byte [] newBuffer = new byte [result];
+						Buffer.BlockCopy (readBuffer, 0, newBuffer, 0, result);
+						
+						RaiseData (new ByteBuffer (newBuffer));
 						ReadNextBuffer ();
 					} else {
 						PauseReading ();
