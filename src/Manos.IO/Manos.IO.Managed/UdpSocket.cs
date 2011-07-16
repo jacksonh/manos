@@ -67,24 +67,6 @@ namespace Manos.IO.Managed
 			});
 		}
 		
-		void DnsResolve (string host, Action<IPAddress> callback)
-		{
-			IPAddress addr;
-			if (!IPAddress.TryParse (host, out addr)) {
-				Dns.BeginGetHostEntry (host, (a) => {
-					Context.Enqueue (delegate {
-						try {
-							IPHostEntry ep = Dns.EndGetHostEntry (a);
-							callback (ep.AddressList[0]);
-						} catch {
-						}
-					});
-				}, null);
-			} else {
-				callback (addr);
-			}
-		}
-		
 		public override void Bind (string host, int port)
 		{
 			socket.Bind(new IPEndPoint (IPAddress.Any, port));

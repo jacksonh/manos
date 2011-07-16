@@ -301,15 +301,7 @@ namespace Manos.IO.Managed
 			
 			IPAddress addr;
 			if (!IPAddress.TryParse (host, out addr)) {
-				Dns.BeginGetHostEntry (host, (a) => {
-					Enqueue (delegate {
-						try {
-							IPHostEntry ep = Dns.EndGetHostEntry (a);
-							StartConnectingSocket (ep.AddressList [0], port);
-						} catch {
-						}
-					});
-				}, null);
+				throw new ArgumentException ();
 			} else {
 				StartConnectingSocket (addr, port);
 			}
@@ -343,15 +335,7 @@ namespace Manos.IO.Managed
 			
 			IPAddress addr;
 			if (!IPAddress.TryParse (host, out addr)) {
-				Dns.BeginGetHostEntry (host, (a) => {
-					Enqueue (delegate {
-						try {
-							IPHostEntry ep = Dns.EndGetHostEntry (a);
-							StartListeningSocket (ep.AddressList [0], port);
-						} catch {
-						}
-					});
-				}, null);
+				throw new ArgumentException ();
 			} else {
 				StartListeningSocket (addr, port);
 			}
