@@ -55,13 +55,11 @@ namespace Manos.IO.Libev
 			var info = new UdpPacket();
 			
 			byte [] newBuffer = new byte [size];
-			for (int i = 0; i < size; i++) {
-				newBuffer[i] = buffer[i];
-			}
+			Buffer.BlockCopy(buffer, 0, newBuffer, 0, size);
 			
 			info.Address = socketInfo.Address.ToString();
 			info.Port = socketInfo.port;
-			info.Buffer = new ByteBuffer(newBuffer, 0, size);
+			info.Buffer = new ByteBuffer (newBuffer, 0, size);
 			
 			readCallback (info);
 		}
