@@ -92,6 +92,10 @@
     <Compile Include="Manos.IO.Managed\Socket.cs" />
     <Compile Include="Manos.IO.Managed\TimerWatcher.cs" />
     <Compile Include="Manos.IO.Managed\ManagedStream.cs" />
+    <Compile Include="Manos.IO.Libev\UdpSocket.cs" />
+    <Compile Include="Manos.IO\UdpSocket.cs" />
+    <Compile Include="Manos.IO.Managed\UdpSocket.cs" />
+    <Compile Include="Manos.IO\AddressFamily.cs" />
   </ItemGroup>
   <Target Name="ListSources">
     <Message Text="@(Compile)" Importance="High" />

@@ -108,19 +108,108 @@ bind_async (int fd, struct sockaddr *addr, int addrlen)
 	return bind (fd, addr, addrlen);
 }
 
-int
-manos_dgram_socket_listen (const char *host, int port, int *err)
+static int
+get_native_socket_family (int manosFamilyType)
+{
+	switch (manosFamilyType) {
+	case 0:
+		return PF_INET;
+	default:
+		return PF_INET6;
+	}
+}
+
+int static
+manos_socket_create (int manosFamilyType, int type, int *err)
 {
 	int fd;
 
-	fd = create_any_socket (host, port, SOCK_DGRAM, &bind_async);
+	fd = socket (get_native_socket_family(manosFamilyType), type, 0);
 
 	if (fd < 0) {
 		*err = errno;
 		return -1;
 	}
 
+	setup_socket (fd);
+
 	return fd;
+}
+
+int manos_dgram_socket_create(int manosFamilyType, int *err)
+{
+	return manos_socket_create(manosFamilyType, SOCK_DGRAM, err);
+}
+
+static void
+address (struct sockaddr_storage *in, const char *host, int port, int manosFamilyType)
+{
+	struct sockaddr_in *in4;
+	struct sockaddr_in6 *in6;
+	
+	memset (&in, 0, sizeof (struct sockaddr_storage));
+	in4 = (struct sockaddr_in *)in;
+	in6 = (struct sockaddr_in6 *)in;
+
+	if (!manosFamilyType) {
+		if (host) {
+			inet_pton (AF_INET, host, &(in4->sin_addr));
+		} else {
+			in4->sin_addr.s_addr = INADDR_ANY;
+		}
+		in4->sin_family = AF_INET;
+		in4->sin_port = htons (port);
+	} else {
+		if (host) {
+			inet_pton (AF_INET6, host, &(in6->sin6_addr));
+		} else {
+			memset(&((in6->sin6_addr).s6_addr), 0, sizeof((in6->sin6_addr).s6_addr));
+		}
+		in6->sin6_family = AF_INET6;
+		in6->sin6_port = htons (port);
+	}
+}
+
+int
+manos_dgram_socket_listen (int fd, int backlog, int *err)
+{
+	int r;
+	struct sockaddr_storage addr;
+
+	r = listen (fd, backlog);
+
+	if (r < 0) {
+		*err = errno;
+		return -1;
+	}
+
+	return 0;
+}
+
+int
+manos_dgram_socket_bind (int fd, const char *host, int port, int manosFamilyType)
+{
+	struct sockaddr_storage addr;
+	address(&addr, host, port, manosFamilyType);
+	return bind(fd, (struct sockaddr *)&addr, sizeof(addr));
+}
+
+int
+manos_dgram_socket_sendto (int fd, const char *host, int port, int manosFamilyType, const char *buffer, int offset, int length, int *err)
+{
+	int rc;
+
+	struct sockaddr_storage target;
+
+	address (&target, host, port, manosFamilyType);
+
+	rc = sendto(fd, buffer + offset, length, 0, (struct sockaddr *)&target, sizeof(target));
+	if (rc < 0 && (errno == EAGAIN || errno == EINTR)) {
+			*err = 0;
+	} else {
+		*err = errno;
+	}
+	return rc;
 }
 
 int
