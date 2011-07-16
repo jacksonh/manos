@@ -13,7 +13,7 @@ namespace Manos.IO.Managed
 		System.Net.Sockets.Socket socket;
 		Action connectedCallback;
 		Action<Socket> acceptedCallback;
-		Stream stream;
+		ByteStream stream;
 
 		public Socket (Context loop)
 			: base (loop)
@@ -173,11 +173,11 @@ namespace Manos.IO.Managed
 					base.HandleWrite ();
 				}
 			}
-
-			protected override int WriteSingleBuffer (ByteBuffer buffer)
+			
+			protected override WriteResult WriteSingleFragment(ByteBuffer fragment)
 			{
-				socket.BeginSend (buffer.Bytes, buffer.Position, buffer.Length, SocketFlags.None, WriteCallback, null);
-				return buffer.Length;
+				socket.BeginSend (fragment.Bytes, fragment.Position, fragment.Length, SocketFlags.None, WriteCallback, null);
+				return WriteResult.Consume;
 			}
 			
 			void WriteCallback (IAsyncResult ar)
@@ -267,7 +267,7 @@ namespace Manos.IO.Managed
 			}
 		}
 		
-		public override Manos.IO.Stream GetSocketStream ()
+		public override Manos.IO.ByteStream GetSocketStream ()
 		{
 			if (state != Socket.SocketState.Open)
 				throw new InvalidOperationException ();

@@ -106,7 +106,7 @@ namespace Manos.IO
 		/// <returns>
 		/// The socket stream.
 		/// </returns>
-		public abstract Stream GetSocketStream ();
+		public abstract ByteStream GetSocketStream ();
 		
 		/// <summary>
 		/// Connect to the specified host at the specified port.

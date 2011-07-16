@@ -4,8 +4,8 @@ namespace Manos.IO
 {
 	public enum AddressFamily
 	{
-		InternNetwork,
-		InternNetwork6
+		InterNetwork,
+		InterNetwork6
 	}
 }
 

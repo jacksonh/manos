@@ -2,7 +2,7 @@ using System;
 
 namespace Manos.IO.Managed
 {
-	abstract class ManagedStream : Manos.IO.Stream
+	abstract class ManagedStream : Manos.IO.ByteStream
 	{
 		internal ManagedStream (Context ctx)
 			: base (ctx)

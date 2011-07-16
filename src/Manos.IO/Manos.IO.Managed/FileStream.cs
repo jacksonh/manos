@@ -161,11 +161,11 @@ namespace Manos.IO.Managed
 				base.HandleWrite ();
 			}
 		}
-
-		protected override int WriteSingleBuffer (ByteBuffer buffer)
+		
+		protected override WriteResult WriteSingleFragment(ByteBuffer fragment)
 		{
-			stream.BeginWrite (buffer.Bytes, buffer.Position, buffer.Length, OnWriteDone, null);
-			return buffer.Length;
+			stream.BeginWrite (fragment.Bytes, fragment.Position, fragment.Length, OnWriteDone, null);
+			return WriteResult.Consume;
 		}
 
 		void OnWriteDone (IAsyncResult ar)

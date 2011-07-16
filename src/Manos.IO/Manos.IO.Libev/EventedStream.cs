@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Manos.IO.Libev
 {
-	abstract class EventedStream : Stream
+	abstract class EventedStream : ByteStream
 	{
 		// readiness watchers
 		IOWatcher readWatcher, writeWatcher;

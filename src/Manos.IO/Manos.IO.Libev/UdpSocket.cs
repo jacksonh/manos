@@ -52,14 +52,13 @@ namespace Manos.IO.Libev
 				Close ();
 			}
 			
-			var info = new UdpPacket();
-			
 			byte [] newBuffer = new byte [size];
 			Buffer.BlockCopy (buffer, 0, newBuffer, 0, size);
 			
-			info.Address = socketInfo.Address.ToString();
-			info.Port = socketInfo.port;
-			info.Buffer = new ByteBuffer(newBuffer, 0, size);
+			var info = new UdpPacket(
+				socketInfo.Address.ToString(),
+				socketInfo.port,
+				new ByteBuffer(newBuffer, 0, size));
 			
 			readCallback (info);
 		}

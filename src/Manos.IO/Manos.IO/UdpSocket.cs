@@ -67,7 +67,7 @@ namespace Manos.IO
 		{
 			var family = System.Net.IPAddress.Parse (host).AddressFamily;
 			switch (AddressFamily) {
-			case AddressFamily.InternNetwork:
+			case AddressFamily.InterNetwork:
 				return family == System.Net.Sockets.AddressFamily.InterNetwork;
 			default:
 				return family == System.Net.Sockets.AddressFamily.InterNetworkV6;
@@ -84,14 +84,8 @@ namespace Manos.IO
 		/// <summary>
 		/// Bind the socket to listen on a host and port
 		/// </summary>
-		/// <param name="host">
-		/// The ip address on which to bind <see cref="System.String"/>
-		/// </param>
-		/// <param name="port">
-		/// The port on which to bind <see cref="System.Int32"/>
-		/// </param>
 		/// <param name="readCallback">
-		/// A callback which receives an instande of the UdpPacket class <see cref="Action<UdpPacket>"/>
+		/// A callback which receives an instande of the UdpPacket class <see cref="Action&lt;UdpPacket&gt;"/>
 		/// </param>
 		public abstract void Receive (Action<UdpPacket> readCallback);
 		

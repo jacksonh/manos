@@ -239,7 +239,7 @@ namespace Manos.IO
 		/// Block size to use for operations on the file. Larger block sizes generally improve
 		/// performance, though too large block sizes only use more memory.
 		/// </param>
-		public abstract Stream OpenFile (string fileName, FileAccess openMode, int blockSize);
+		public abstract ByteStream OpenFile (string fileName, FileAccess openMode, int blockSize);
 
 		/// <summary>
 		/// Opens a file for asynchronous operations, creating it if it does not exist yet.
@@ -254,7 +254,7 @@ namespace Manos.IO
 		/// Block size to use for operations on the file. Larger block sizes generally improve
 		/// performance, though too large block sizes only use more memory.
 		/// </param>
-		public abstract Stream CreateFile (string fileName, int blockSize);
+		public abstract ByteStream CreateFile (string fileName, int blockSize);
 		
 		public abstract UdpSocket CreateUdpSocket (AddressFamily family);
 	}

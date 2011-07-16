@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Manos.IO.Libev
 {
-	class FileStream : Stream
+	class FileStream : ByteStream
 	{
 		byte [] readBuffer;
 		bool readEnabled, writeEnabled;
@@ -174,7 +174,7 @@ namespace Manos.IO.Libev
 			}
 		}
 
-		protected override int WriteSingleBuffer (ByteBuffer buffer)
+		protected override WriteResult WriteSingleFragment (ByteBuffer buffer)
 		{
 			var bytes = buffer.Bytes;
 			if (buffer.Position > 0) {
@@ -182,7 +182,7 @@ namespace Manos.IO.Libev
 				Array.Copy (buffer.Bytes, buffer.Position, bytes, 0, buffer.Length);
 			}
 			Context.Eio.Write (Handle.ToInt32 (), bytes, position, buffer.Length, OnWriteDone);
-			return buffer.Length;
+			return WriteResult.Consume;
 		}
 
 		void OnWriteDone (int result, int error)

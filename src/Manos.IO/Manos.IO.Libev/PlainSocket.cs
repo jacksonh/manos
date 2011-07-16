@@ -120,12 +120,17 @@ namespace Manos.IO.Libev
 				}
 			}
 
-			protected override int WriteSingleBuffer (ByteBuffer buffer)
+			protected override WriteResult WriteSingleFragment (ByteBuffer buffer)
 			{
 				int err;
 				int sent = manos_socket_send (Handle.ToInt32 (), buffer.Bytes, buffer.Position, buffer.Length, out err);
 				position += sent;
-				return sent;
+				if (sent < 0) {
+					return WriteResult.Error;
+				} else {
+					buffer.Skip (sent);
+					return buffer.Length == 0 ? WriteResult.Consume : WriteResult.Continue;
+				}
 			}
 
 			[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
@@ -153,7 +158,7 @@ namespace Manos.IO.Libev
 			this.state = Socket.SocketState.Open;
 		}
 
-		public override Stream GetSocketStream ()
+		public override ByteStream GetSocketStream ()
 		{
 			if (state != Socket.SocketState.Open)
 				throw new InvalidOperationException ();

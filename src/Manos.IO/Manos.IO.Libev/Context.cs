@@ -102,7 +102,7 @@ namespace Manos.IO.Libev
 			return new SecureSocket (this, certFile, keyFile);
 		}
 
-		public override Stream OpenFile (string fileName, FileAccess openMode, int blockSize)
+		public override ByteStream OpenFile (string fileName, FileAccess openMode, int blockSize)
 		{
 			OpenFlags openFlags = 0;
 			switch (openMode) {
@@ -124,7 +124,7 @@ namespace Manos.IO.Libev
 			return FileStream.Open (this, fileName, blockSize, openFlags);
 		}
 
-		public override Stream CreateFile (string fileName, int blockSize)
+		public override ByteStream CreateFile (string fileName, int blockSize)
 		{
 			return FileStream.Create (this, fileName, blockSize);
 		}

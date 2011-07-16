@@ -25,9 +25,9 @@ namespace Manos.IO.Managed
 		System.Net.Sockets.AddressFamily GetFamily (AddressFamily family)
 		{
 			switch (family) {
-			case AddressFamily.InternNetwork:
+			case AddressFamily.InterNetwork:
 				return System.Net.Sockets.AddressFamily.InterNetwork;
-			case AddressFamily.InternNetwork6:
+			case AddressFamily.InterNetwork6:
 				return System.Net.Sockets.AddressFamily.InterNetworkV6;
 			default:
 				throw new Exception("Address family not supported");
@@ -55,11 +55,10 @@ namespace Manos.IO.Managed
 			byte [] newBuffer = new byte [length];
 			Buffer.BlockCopy (buffer, 0, newBuffer, 0, length);
 			
-			var info = new UdpPacket() {
-				Address = ipremote.Address.ToString(),
-				Port = ipremote.Port,
-				Buffer = new ByteBuffer (newBuffer)
-			};
+			var info = new UdpPacket(
+				ipremote.Address.ToString(),
+				ipremote.Port,
+				new ByteBuffer (newBuffer));
 				
 			Context.Enqueue (delegate {
 				readCallback(info);

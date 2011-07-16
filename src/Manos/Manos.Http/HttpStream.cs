@@ -42,7 +42,7 @@ namespace Manos.Http
 		private bool final_chunk_sent;
 		private Queue<object> write_ops;
 
-		public HttpStream (HttpEntity entity, Manos.IO.Stream stream)
+		public HttpStream (HttpEntity entity, Manos.IO.ByteStream stream)
 		{
 			HttpEntity = entity;
 			SocketStream = stream;
@@ -54,7 +54,7 @@ namespace Manos.Http
 			private set;
 		}
 
-		public Manos.IO.Stream SocketStream {
+		public Manos.IO.ByteStream SocketStream {
 			get;
 			private set;
 		}

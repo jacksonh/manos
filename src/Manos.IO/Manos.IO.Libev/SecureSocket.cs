@@ -118,11 +118,17 @@ namespace Manos.IO.Libev
 				position += data.Length;
 				base.RaiseData (data);
 			}
-
-			protected override int WriteSingleBuffer (ByteBuffer buffer)
+			
+			protected override WriteResult WriteSingleFragment(ByteBuffer fragment)
 			{
 				int err;
-				return manos_tls_send (tlsContext, buffer.Bytes, buffer.Position, buffer.Length, out err);
+				var sent = manos_tls_send (tlsContext, fragment.Bytes, fragment.Position, fragment.Length, out err);
+				if (sent < 0) {
+					return WriteResult.Error;
+				} else {
+					fragment.Skip (sent);
+					return fragment.Length == 0 ? WriteResult.Consume : WriteResult.Continue;
+				}
 			}
 
 			[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
@@ -157,7 +163,7 @@ namespace Manos.IO.Libev
 			this.state = Socket.SocketState.Open;
 		}
 
-		public override Stream GetSocketStream ()
+		public override ByteStream GetSocketStream ()
 		{
 			if (state != Socket.SocketState.Open)
 				throw new InvalidOperationException ();
