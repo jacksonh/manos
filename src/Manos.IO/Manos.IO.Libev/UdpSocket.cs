@@ -136,7 +136,7 @@ namespace Manos.IO.Libev
 		private static extern int manos_dgram_socket_bind (int fd, string host, int port, AddressFamily addressFamily);
 		
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
-		private static extern int manos_dgram_socket_listen (int fd, /*string host, int port, AddressFamily family,*/ int backlog, out int err);
+		private static extern int manos_dgram_socket_listen (int fd, int backlog, out int err);
 		
 		[DllImport ("libmanos", CallingConvention = CallingConvention.Cdecl)]
 		private static extern int manos_socket_close (int fd, out int err);
