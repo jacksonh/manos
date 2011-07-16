@@ -23,13 +23,6 @@ namespace Manos.IO.Managed
 		public new Context Context {
 			get { return (Context) base.Context; }
 		}
-		
-		void Enqueue (Action action)
-		{
-			lock (this) {
-				Context.Enqueue (action);
-			}
-		}
 
 		Socket (Context loop, System.Net.Sockets.Socket socket) : this (loop)
 		{
@@ -312,7 +305,7 @@ namespace Manos.IO.Managed
 			socket = new System.Net.Sockets.Socket (addr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 			try {
 				socket.BeginConnect (addr, port, (ar) => {
-					Enqueue (delegate {
+					Context.Enqueue (delegate {
 						try {
 							socket.EndConnect (ar);
 							connectedCallback ();
@@ -357,7 +350,7 @@ namespace Manos.IO.Managed
 			try {
 				var sock = socket.EndAccept (ar);
 
-				Enqueue (delegate {
+				Context.Enqueue (delegate {
 					acceptedCallback (new Socket (Context, sock));
 				});
 			} catch {

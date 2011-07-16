@@ -17,6 +17,7 @@ namespace Manos.IO.Managed
 		private List<AsyncWatcher> asyncs;
 		private List<TimerWatcher> timers;
 		private volatile bool running;
+		private object syncRoot = new object();
 
 		public Context ()
 		{
@@ -33,7 +34,7 @@ namespace Manos.IO.Managed
 		{
 			if (cb == null)
 				throw new ArgumentNullException ("cb");
-			lock (this) {
+			lock (syncRoot) {
 				outstanding.Enqueue (cb);
 			}
 			pulse.Set ();
