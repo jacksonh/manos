@@ -97,6 +97,7 @@
     <Compile Include="Manos.IO\AddressFamily.cs" />
     <Compile Include="Manos.IO\FragmentStream.cs" />
     <Compile Include="Manos.IO\ByteStream.cs" />
+    <Compile Include="Manos.IO\UdpPacket.cs" />
   </ItemGroup>
   <Target Name="ListSources">
     <Message Text="@(Compile)" Importance="High" />
