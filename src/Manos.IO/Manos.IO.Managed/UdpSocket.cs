@@ -52,10 +52,13 @@ namespace Manos.IO.Managed
 			
 			IPEndPoint ipremote = (IPEndPoint) remote;
 			
+			byte [] newBuffer = new byte [length];
+			Buffer.BlockCopy (buffer, 0, newBuffer, 0, length);
+			
 			var info = new UdpPacket() {
 				Address = ipremote.Address.ToString(),
 				Port = ipremote.Port,
-				Buffer = new ByteBuffer (buffer, 0, length)
+				Buffer = new ByteBuffer (newBuffer)
 			};
 				
 			Context.Enqueue (delegate {
