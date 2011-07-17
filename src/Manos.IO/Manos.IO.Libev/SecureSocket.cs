@@ -10,7 +10,7 @@ namespace Manos.IO.Libev
 		IntPtr tlsContext;
 		SecureSocketStream stream;
 		
-		class SecureSocketStream : EventedStream
+		class SecureSocketStream : EventedByteStream
 		{
 			SecureSocket parent;
 			IntPtr tlsContext;
@@ -163,7 +163,7 @@ namespace Manos.IO.Libev
 			this.state = Socket.SocketState.Open;
 		}
 
-		public override ByteStream GetSocketStream ()
+		public override IByteStream GetSocketStream ()
 		{
 			if (state != Socket.SocketState.Open)
 				throw new InvalidOperationException ();

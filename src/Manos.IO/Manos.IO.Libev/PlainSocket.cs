@@ -10,7 +10,7 @@ namespace Manos.IO.Libev
 		Action<Socket> acceptCallback;
 		PlainSocketStream stream;
 		
-		partial class PlainSocketStream : EventedStream, ISendfileCapable
+		partial class PlainSocketStream : EventedByteStream, ISendfileCapable
 		{
 			PlainSocket parent;
 			byte [] receiveBuffer = new byte[4096];
@@ -158,7 +158,7 @@ namespace Manos.IO.Libev
 			this.state = Socket.SocketState.Open;
 		}
 
-		public override ByteStream GetSocketStream ()
+		public override IByteStream GetSocketStream ()
 		{
 			if (state != Socket.SocketState.Open)
 				throw new InvalidOperationException ();

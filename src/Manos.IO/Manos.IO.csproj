@@ -96,8 +96,10 @@
     <Compile Include="Manos.IO.Managed\UdpSocket.cs" />
     <Compile Include="Manos.IO\AddressFamily.cs" />
     <Compile Include="Manos.IO\FragmentStream.cs" />
-    <Compile Include="Manos.IO\ByteStream.cs" />
     <Compile Include="Manos.IO\UdpPacket.cs" />
+    <Compile Include="Manos.IO\IStream.cs" />
+    <Compile Include="Manos.IO\IByteStream.cs" />
+    <Compile Include="Manos.IO.Libev\EventedByteStream.cs" />
   </ItemGroup>
   <Target Name="ListSources">
     <Message Text="@(Compile)" Importance="High" />

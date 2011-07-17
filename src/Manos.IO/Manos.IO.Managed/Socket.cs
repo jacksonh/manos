@@ -13,7 +13,7 @@ namespace Manos.IO.Managed
 		System.Net.Sockets.Socket socket;
 		Action connectedCallback;
 		Action<Socket> acceptedCallback;
-		ByteStream stream;
+		IByteStream stream;
 
 		public Socket (Context loop)
 			: base (loop)
@@ -182,7 +182,7 @@ namespace Manos.IO.Managed
 			
 			void WriteCallback (IAsyncResult ar)
 			{
-				Enqueue (delegate {
+				Context.Enqueue (delegate {
 					if (socket == null)
 						return;
 					
@@ -210,7 +210,7 @@ namespace Manos.IO.Managed
 
 			void ReadCallback (IAsyncResult ar)
 			{
-				Enqueue (delegate {
+				Context.Enqueue (delegate {
 					if (socket == null)
 						return;
 				
@@ -243,7 +243,7 @@ namespace Manos.IO.Managed
 				}
 				
 				socket.BeginDisconnect (false, ar => {
-					Enqueue (delegate {
+					Context.Enqueue (delegate {
 						try {
 							((System.Net.Sockets.Socket) ar.AsyncState).EndDisconnect (ar);
 							((System.Net.Sockets.Socket) ar.AsyncState).Dispose ();
@@ -267,7 +267,7 @@ namespace Manos.IO.Managed
 			}
 		}
 		
-		public override Manos.IO.ByteStream GetSocketStream ()
+		public override Manos.IO.IByteStream GetSocketStream ()
 		{
 			if (state != Socket.SocketState.Open)
 				throw new InvalidOperationException ();

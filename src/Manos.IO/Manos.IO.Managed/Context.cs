@@ -187,13 +187,13 @@ namespace Manos.IO.Managed
 			throw new NotSupportedException ();
 		}
 
-		public override ByteStream OpenFile (string fileName, FileAccess openMode, int blockSize)
+		public override IByteStream OpenFile (string fileName, FileAccess openMode, int blockSize)
 		{
 			var fs = new System.IO.FileStream (fileName, FileMode.Open, openMode, FileShare.ReadWrite, blockSize, true);
 			return new FileStream (this, fs, blockSize);
 		}
 
-		public override ByteStream CreateFile (string fileName, int blockSize)
+		public override IByteStream CreateFile (string fileName, int blockSize)
 		{
 			var fs = System.IO.File.Create (fileName);
 			return new FileStream (this, fs, blockSize);

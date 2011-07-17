@@ -5,11 +5,11 @@ namespace Manos.IO
 {
 	class StreamCopySequencer : IEnumerable<ByteBuffer>
 	{
-		ByteStream source, target;
+		IByteStream source, target;
 		ByteBuffer currentBuffer;
 		bool active, ownsSource;
 
-		public StreamCopySequencer (ByteStream source, ByteStream target, bool ownsSource)
+		public StreamCopySequencer (IByteStream source, IByteStream target, bool ownsSource)
 		{
 			this.source = source;
 			this.target = target;

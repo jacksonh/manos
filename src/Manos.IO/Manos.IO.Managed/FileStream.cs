@@ -23,7 +23,7 @@ namespace Manos.IO.Managed
 			
 			this.stream = stream;
 			this.readBuffer = new byte [blockSize];
-        }
+		}
 
 
 		public override long Position {
@@ -128,7 +128,7 @@ namespace Manos.IO.Managed
 
 		void OnReadDone (IAsyncResult ar)
 		{
-			Enqueue (delegate {
+			Context.Enqueue (delegate {
 				if (stream != null) {
 					int result = stream.EndRead (ar);
 			
@@ -170,7 +170,7 @@ namespace Manos.IO.Managed
 
 		void OnWriteDone (IAsyncResult ar)
 		{
-			Enqueue (delegate {
+			Context.Enqueue (delegate {
 				if (stream != null) {
 					stream.EndWrite (ar);
 					HandleWrite ();

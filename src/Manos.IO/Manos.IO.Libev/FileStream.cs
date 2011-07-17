@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Manos.IO.Libev
 {
-	class FileStream : ByteStream
+	class FileStream : FragmentStream<ByteBuffer>, IByteStream
 	{
 		byte [] readBuffer;
 		bool readEnabled, writeEnabled;
@@ -81,6 +81,11 @@ namespace Manos.IO.Libev
 		{
 			base.Write (data);
 			ResumeWriting ();
+		}
+		
+		public void Write(byte[] data)
+		{
+			Write (new ByteBuffer (data));
 		}
 
 		public override IDisposable Read (Action<ByteBuffer> onData, Action<Exception> onError, Action onClose)
@@ -191,6 +196,11 @@ namespace Manos.IO.Libev
 				throw new Exception (string.Format ("Error '{0}' writing to file '{1}'", error, Handle.ToInt32 ()));
 			}
 			HandleWrite ();
+		}
+		
+		protected override long FragmentSize(ByteBuffer fragment)
+		{
+			return fragment.Length;
 		}
 
 		public static FileStream Open (Context context, string fileName, int blockSize,

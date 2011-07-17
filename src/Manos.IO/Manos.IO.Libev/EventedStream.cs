@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 namespace Manos.IO.Libev
 {
-	abstract class EventedStream : ByteStream
+	abstract class EventedStream<TFragment> : FragmentStream<TFragment>
+		where TFragment : class
 	{
 		// readiness watchers
 		IOWatcher readWatcher, writeWatcher;
@@ -143,14 +144,14 @@ namespace Manos.IO.Libev
 			base.CancelReader ();
 		}
 
-		public override IDisposable Read (Action<ByteBuffer> onData, Action<Exception> onError, Action onClose)
+		public override IDisposable Read (Action<TFragment> onData, Action<Exception> onError, Action onClose)
 		{
 			ResumeReading ();
 			
 			return base.Read (onData, onError, onClose);
 		}
 
-		public override void Write (IEnumerable<ByteBuffer> data)
+		public override void Write (IEnumerable<TFragment> data)
 		{
 			base.Write (data);
 			ResumeWriting ();
@@ -180,9 +181,9 @@ namespace Manos.IO.Libev
 			}
 		}
 
-		protected override void RaiseData (ByteBuffer data)
+		protected override void RaiseData (TFragment data)
 		{
-			readLimit -= data.Length;
+			readLimit -= FragmentSize (data);
 			if (readLimit <= 0) {
 				PauseReading ();
 			}

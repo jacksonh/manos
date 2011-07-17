@@ -2,7 +2,7 @@ using System;
 
 namespace Manos.IO.Managed
 {
-	abstract class ManagedStream : Manos.IO.ByteStream
+	abstract class ManagedStream : FragmentStream<ByteBuffer>, IByteStream
 	{
 		internal ManagedStream (Context ctx)
 			: base (ctx)
@@ -13,11 +13,14 @@ namespace Manos.IO.Managed
 			get { return (Context) base.Context; }
 		}
 		
-		protected void Enqueue (Action action)
+		public void Write(byte[] data)
 		{
-			lock (this) {
-				Context.Enqueue (action);
-			}
+			Write (new ByteBuffer (data));
+		}
+		
+		protected override long FragmentSize(ByteBuffer fragment)
+		{
+			return fragment.Length;
 		}
 	}
 }
