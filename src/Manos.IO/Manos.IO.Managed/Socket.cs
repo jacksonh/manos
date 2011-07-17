@@ -32,7 +32,7 @@ namespace Manos.IO.Managed
 			this.state = Socket.SocketState.Open;
 		}
 		
-		class SocketStream : ManagedStream
+		class SocketStream : ManagedByteStream
 		{
 			System.Net.Sockets.Socket socket;
 			bool readAllowed, writeAllowed;

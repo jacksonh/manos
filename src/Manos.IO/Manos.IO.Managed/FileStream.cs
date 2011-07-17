@@ -6,7 +6,7 @@ using Mono.Unix.Native;
 
 namespace Manos.IO.Managed
 {
-	class FileStream : ManagedStream
+	class FileStream : ManagedByteStream
 	{
 		System.IO.FileStream stream;
 		byte [] readBuffer;

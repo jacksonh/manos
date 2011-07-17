@@ -171,22 +171,6 @@ address (struct sockaddr_storage *in, const char *host, int port, int manosFamil
 }
 
 int
-manos_dgram_socket_listen (int fd, int backlog, int *err)
-{
-	int r;
-	struct sockaddr_storage addr;
-
-	r = listen (fd, backlog);
-
-	if (r < 0) {
-		*err = errno;
-		return -1;
-	}
-
-	return 0;
-}
-
-int
 manos_dgram_socket_bind (int fd, const char *host, int port, int manosFamilyType)
 {
 	struct sockaddr_storage addr;

@@ -60,8 +60,6 @@ typedef struct {
 
 int manos_dgram_socket_create (int manosFamilyType, int *err);
 
-int manos_dgram_socket_listen (int fd,/* const char *host, int port, int manosFamilyType,*/ int backlog, int *err);
-
 int manos_dgram_socket_sendto (int fd, const char *host, int port, int manosFamilyType, const char *buffer, int offset, int length, int *err);
 
 int manos_dgram_socket_bind (int fd, const char *host, int port, int manosFamilyType);

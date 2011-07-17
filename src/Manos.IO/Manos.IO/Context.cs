@@ -256,6 +256,15 @@ namespace Manos.IO
 		/// </param>
 		public abstract IByteStream CreateFile (string fileName, int blockSize);
 		
+		/// <summary>
+		/// Creates a new UDP socket.
+		/// </summary>
+		/// <returns>
+		/// The UDP socket.
+		/// </returns>
+		/// <param name='family'>
+		/// Address family the socket belongs to.
+		/// </param>
 		public abstract UdpSocket CreateUdpSocket (AddressFamily family);
 	}
 }
