@@ -77,7 +77,6 @@
     <Compile Include="Manos.IO.Libev\EventedSocket.cs" />
     <Compile Include="Manos.IO.Libev\SocketInfo.cs" />
     <Compile Include="Manos.IO.Libev\EventedStream.cs" />
-    <Compile Include="Manos.IO.Libev\PlainSocket.cs" />
     <Compile Include="Manos.IO.Libev\SendFileOperation.cs" />
     <Compile Include="Manos.IO.Libev\SecureSocket.cs" />
     <Compile Include="Manos.IO.Libev\FileStream.cs" />
@@ -102,6 +101,7 @@
     <Compile Include="Manos.IO.Libev\Errors.cs" />
     <Compile Include="Manos.IO.Managed\ManagedByteStream.cs" />
     <Compile Include="Manos.IO.Managed\ManagedStream.cs" />
+    <Compile Include="Manos.IO.Libev\PlainSocket.cs" />
   </ItemGroup>
   <Target Name="ListSources">
     <Message Text="@(Compile)" Importance="High" />
