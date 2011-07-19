@@ -100,12 +100,6 @@ namespace Manos.Http {
 
 				switch (state) {
 				case State.InBoundary:
-					if (c == '\r')
-						break;
-
-					if (c == '\n')
-						break;
-
 					if (index == boundary.Length - 1) {
 
 						boundary_buffer.Clear ();
@@ -192,6 +186,10 @@ namespace Manos.Http {
 				case State.PostHeader1:
 					if (c != '\n')
 						throw new Exception (String.Format ("Invalid char '{0}' in post header 1.", c));
+					state = State.PostHeader2;
+					break;
+
+				case State.PostHeader2:
 					HandleHeader (entity);
 					header_key.Clear ();
 					header_value.Clear ();
