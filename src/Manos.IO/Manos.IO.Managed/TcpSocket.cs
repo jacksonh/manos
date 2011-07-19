@@ -16,15 +16,9 @@ namespace Manos.IO.Managed
 		class TcpStream : ManagedByteStream, ISendfileCapable
 		{
 			TcpSocket parent;
-			byte [] buffer = new byte[64 * 1024];
-			long? readLimit;
-			bool readAllowed, writeAllowed;
-			Timer readTimer, writeTimer;
-			int readTimeoutInterval = -1;
-			int writeTimeoutInterval = -1;
 			
 			internal TcpStream (TcpSocket parent)
-				: base (parent.Context)
+				: base (parent.Context, 4 * 1024)
 			{
 				this.parent = parent;
 			}
@@ -42,77 +36,6 @@ namespace Manos.IO.Managed
 				get { return true; }
 			}
 			
-			public override bool CanTimeout {
-				get { return true; }
-			}
-			
-			public override TimeSpan ReadTimeout {
-				get { return readTimer == null ? TimeSpan.Zero : TimeSpan.FromMilliseconds (readTimeoutInterval); }
-				set {
-					if (value < TimeSpan.Zero)
-						throw new ArgumentException ("value");
-					
-					readTimeoutInterval = value == TimeSpan.Zero ? -1 : (int) value.TotalMilliseconds;
-					
-					if (readTimer == null) {
-						readTimer = new Timer (HandleReadTimerElapsed);
-					}
-					readTimer.Change (readTimeoutInterval, readTimeoutInterval);
-				}
-			}
-
-			public override TimeSpan WriteTimeout {
-				get { return writeTimer == null ? TimeSpan.Zero : TimeSpan.FromMilliseconds (writeTimeoutInterval); }
-				set {
-					if (value < TimeSpan.Zero)
-						throw new ArgumentException ("value");
-					
-					writeTimeoutInterval = value == TimeSpan.Zero ? -1 : (int) value.TotalMilliseconds;
-					
-					if (writeTimer == null) {
-						writeTimer = new Timer (HandleWriteTimerElapsed);
-					}
-					writeTimer.Change (writeTimeoutInterval, writeTimeoutInterval);
-				}
-			}
-
-			void HandleReadTimerElapsed (object state)
-			{
-				if (readAllowed) {
-					RaiseError (new TimeoutException ());
-					PauseReading ();
-				}
-			}
-
-			void HandleWriteTimerElapsed (object state)
-			{
-				if (writeAllowed) {
-					RaiseError (new TimeoutException ());
-					PauseWriting ();
-				}
-			}
-			
-			public override void ResumeReading ()
-			{
-				readLimit = null;
-				if (!readAllowed) {
-					readAllowed = true;
-					Receive ();
-				}
-			}
-			
-			public override void ResumeReading (long forFragments)
-			{
-				if (forFragments < 0)
-					throw new ArgumentException ("forFragments");
-
-				readLimit = forFragments;
-				if (!readAllowed) {
-					readAllowed = true;
-					Receive ();
-				}
-			}
-			
 			public override void Close ()
 			{
 				parent.socket.BeginDisconnect (false, ar => {
@@ -124,43 +47,13 @@ namespace Manos.IO.Managed
 						}
 				
 						RaiseEndOfStream ();
-						if (readTimer != null) {
-							readTimer.Dispose ();
-						}
-						if (writeTimer != null) {
-							writeTimer.Dispose ();
-						}
-						readTimer = null;
-						writeTimer = null;
 				
 						base.Close ();
 					});
 				}, parent.socket);
 			}
 			
-			public override void ResumeWriting ()
-			{
-				if (!writeAllowed) {
-					writeAllowed = true;
-					HandleWrite ();
-				}
-			}
-
-			public override void PauseReading ()
-			{
-				readAllowed = false;
-			}
-
-			public override void PauseWriting ()
-			{
-				writeAllowed = false;
-			}
-
-			public override void Flush ()
-			{
-			}
-			
-			void Receive ()
+			protected override void DoRead ()
 			{
 				SocketError se;
 				int length = (int) Math.Min (readLimit ?? long.MaxValue, buffer.Length);
@@ -170,9 +63,7 @@ namespace Manos.IO.Managed
 			void ReadCallback (IAsyncResult ar)
 			{
 				Context.Enqueue (delegate {
-					if (readTimer != null) {
-						readTimer.Change (readTimeoutInterval, readTimeoutInterval);
-					}
+					ResetReadTimeout ();
 				
 					SocketError error;
 					int len = parent.socket.EndReceive (ar, out error);
@@ -186,16 +77,9 @@ namespace Manos.IO.Managed
 						Buffer.BlockCopy (buffer, 0, newBuffer, 0, len);
 						
 						RaiseData (new ByteBuffer (newBuffer));
-						Receive ();
+						DispatchRead ();
 					}
 				});
-			}
-			
-			protected override void HandleWrite ()
-			{
-				if (writeAllowed) {
-					base.HandleWrite ();
-				}
 			}
 			
 			protected override WriteResult WriteSingleFragment (ByteBuffer fragment)
@@ -207,9 +91,8 @@ namespace Manos.IO.Managed
 			void WriteCallback (IAsyncResult ar)
 			{
 				Context.Enqueue (delegate {
-					if (writeTimer != null) {
-						writeTimer.Change (writeTimeoutInterval, writeTimeoutInterval);
-					}
+					ResetWriteTimeout ();
+					
 					SocketError err;
 					parent.socket.EndSend (ar, out err);
 					if (err != SocketError.Success) {
@@ -220,7 +103,7 @@ namespace Manos.IO.Managed
 				});
 			}
 			
-			public void SendFile(string file)
+			public void SendFile (string file)
 			{
 				parent.socket.BeginSendFile (file, ar => {
 					parent.socket.EndSendFile (ar);

@@ -83,7 +83,7 @@ namespace Manos.IO.Libev
 			ResumeWriting ();
 		}
 		
-		public void Write(byte[] data)
+		public void Write (byte[] data)
 		{
 			Write (new ByteBuffer (data));
 		}
@@ -198,7 +198,7 @@ namespace Manos.IO.Libev
 			HandleWrite ();
 		}
 		
-		protected override long FragmentSize(ByteBuffer fragment)
+		protected override long FragmentSize (ByteBuffer fragment)
 		{
 			return fragment.Length;
 		}

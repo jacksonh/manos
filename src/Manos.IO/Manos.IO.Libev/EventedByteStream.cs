@@ -9,12 +9,12 @@ namespace Manos.IO.Libev
 		{
 		}
 		
-		public void Write(byte[] data)
+		public void Write (byte[] data)
 		{
 			Write (new ByteBuffer (data));
 		}
 		
-		protected override long FragmentSize(ByteBuffer data)
+		protected override long FragmentSize (ByteBuffer data)
 		{
 			return data.Length;
 		}

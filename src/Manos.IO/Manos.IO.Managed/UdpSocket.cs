@@ -13,12 +13,9 @@ namespace Manos.IO.Managed
 		{
 			UdpSocket parent;
 			EndPoint remote = new IPEndPoint (0, 0);
-			byte [] buffer = new byte[64 * 1024];
-			long? readLimit;
-			bool readAllowed, writeAllowed;
 			
 			internal UdpStream (UdpSocket parent)
-				: base (parent.Context)
+				: base (parent.Context, 64 * 1024)
 			{
 				this.parent = parent;
 			}
@@ -36,55 +33,12 @@ namespace Manos.IO.Managed
 				get { return true; }
 			}
 			
-			public override void ResumeReading ()
-			{
-				readLimit = null;
-				if (!readAllowed) {
-					readAllowed = true;
-					Receive ();
-				}
-			}
-			
-			public override void ResumeReading (long forFragments)
-			{
-				if (forFragments < 0)
-					throw new ArgumentException ("forFragments");
-
-				readLimit = forFragments;
-				if (!readAllowed) {
-					readAllowed = true;
-					Receive ();
-				}
-			}
-			
-			public override void ResumeWriting ()
-			{
-				if (!writeAllowed) {
-					writeAllowed = true;
-					HandleWrite ();
-				}
-			}
-			
-			public override void PauseReading ()
-			{
-				readAllowed = false;
-			}
-			
-			public override void PauseWriting ()
-			{
-				writeAllowed = false;
-			}
-
-			public override void Flush ()
-			{
-			}
-			
 			protected override long FragmentSize (UdpPacket fragment)
 			{
 				return 1;
 			}
-
-			void Receive ()
+			
+			protected override void DoRead ()
 			{
 				try {
 					parent.socket.BeginReceiveFrom (buffer, 0, buffer.Length, SocketFlags.None,
@@ -96,6 +50,7 @@ namespace Manos.IO.Managed
 			
 			void ReceiveFrom (IAsyncResult ar)
 			{
+				ResetReadTimeout ();
 				int length = parent.socket.EndReceiveFrom (ar, ref remote);
 				
 				IPEndPoint ipremote = (IPEndPoint) remote;
@@ -110,15 +65,8 @@ namespace Manos.IO.Managed
 					
 				Context.Enqueue (delegate {
 					RaiseData (info);
-					Receive ();
+					DispatchRead ();
 				});
-			}
-			
-			protected override void HandleWrite ()
-			{
-				if (writeAllowed) {
-					base.HandleWrite ();
-				}
 			}
 			
 			protected override WriteResult WriteSingleFragment (UdpPacket packet)
@@ -135,6 +83,8 @@ namespace Manos.IO.Managed
 				Context.Enqueue (delegate {
 					if (parent == null)
 						return;
+					
+					ResetWriteTimeout ();
 					
 					SocketError err;
 					parent.socket.EndSend (ar, out err);

@@ -9,12 +9,9 @@ namespace Manos.IO.Managed
 	class FileStream : ManagedByteStream
 	{
 		System.IO.FileStream stream;
-		byte [] readBuffer;
-		bool readEnabled, writeEnabled;
-		long readLimit;
 
 		public FileStream (Context loop, System.IO.FileStream stream, int blockSize)
-			: base (loop)
+			: base (loop, blockSize)
 		{
 			if (loop == null)
 				throw new ArgumentNullException ("loop");
@@ -22,9 +19,7 @@ namespace Manos.IO.Managed
 				throw new ArgumentNullException ("stream");
 			
 			this.stream = stream;
-			this.readBuffer = new byte [blockSize];
 		}
-
 
 		public override long Position {
 			get { return stream.Position; }
@@ -58,13 +53,8 @@ namespace Manos.IO.Managed
 			if (stream != null) {
 				stream.Dispose ();
 				stream = null;
-				readBuffer = null;
 			}
 			base.Close ();
-		}
-
-		public override void Flush ()
-		{
 		}
 
 		public override void Write (IEnumerable<ByteBuffer> data)
@@ -72,72 +62,26 @@ namespace Manos.IO.Managed
 			base.Write (data);
 			ResumeWriting ();
 		}
-
-		public override IDisposable Read (Action<ByteBuffer> onData, Action<Exception> onError, Action onClose)
+		
+		protected override void DoRead ()
 		{
-			var result = base.Read (onData, onError, onClose);
-			ResumeReading ();
-			return result;
-		}
-
-		public override void ResumeReading ()
-		{
-			ResumeReading (long.MaxValue);
-		}
-
-		public override void ResumeReading (long forBytes)
-		{
-			if (forBytes < 0) {
-				throw new ArgumentException ("forBytes");
-			}
-			
-			readLimit = forBytes;
-			if (!readEnabled) {
-				readEnabled = true;
-				ReadNextBuffer ();
-			}
-		}
-
-		public override void ResumeWriting ()
-		{
-			if (!writeEnabled) {
-				writeEnabled = true;
-				HandleWrite ();
-			}
-		}
-
-		public override void PauseReading ()
-		{
-			readEnabled = false;
-		}
-
-		public override void PauseWriting ()
-		{
-			writeEnabled = false;
-		}
-
-		void ReadNextBuffer ()
-		{
-			if (!readEnabled) {
-				return;
-			}
-			
-			var length = (int) Math.Min (readBuffer.Length, readLimit);
-			stream.BeginRead (readBuffer, 0, length, OnReadDone, null);
+			var length = (int) Math.Min (buffer.Length, readLimit ?? long.MaxValue);
+			stream.BeginRead (buffer, 0, length, OnReadDone, null);
 		}
 
 		void OnReadDone (IAsyncResult ar)
 		{
 			Context.Enqueue (delegate {
 				if (stream != null) {
+					ResetReadTimeout ();
 					int result = stream.EndRead (ar);
 			
 					if (result > 0) {
 						byte [] newBuffer = new byte [result];
-						Buffer.BlockCopy (readBuffer, 0, newBuffer, 0, result);
+						Buffer.BlockCopy (buffer, 0, newBuffer, 0, result);
 						
 						RaiseData (new ByteBuffer (newBuffer));
-						ReadNextBuffer ();
+						DispatchRead ();
 					} else {
 						PauseReading ();
 						RaiseEndOfStream ();
@@ -145,24 +89,8 @@ namespace Manos.IO.Managed
 				}
 			});
 		}
-
-		protected override void RaiseData (ByteBuffer data)
-		{
-			readLimit -= data.Length;
-			if (readLimit <= 0) {
-				PauseReading ();
-			}
-			base.RaiseData (data);
-		}
-
-		protected override void HandleWrite ()
-		{
-			if (writeEnabled) {
-				base.HandleWrite ();
-			}
-		}
 		
-		protected override WriteResult WriteSingleFragment(ByteBuffer fragment)
+		protected override WriteResult WriteSingleFragment (ByteBuffer fragment)
 		{
 			stream.BeginWrite (fragment.Bytes, fragment.Position, fragment.Length, OnWriteDone, null);
 			return WriteResult.Consume;
@@ -172,6 +100,7 @@ namespace Manos.IO.Managed
 		{
 			Context.Enqueue (delegate {
 				if (stream != null) {
+					ResetWriteTimeout ();
 					stream.EndWrite (ar);
 					HandleWrite ();
 				}

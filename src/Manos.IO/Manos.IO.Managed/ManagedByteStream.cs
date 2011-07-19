@@ -4,8 +4,8 @@ namespace Manos.IO.Managed
 {
 	abstract class ManagedByteStream : ManagedStream<ByteBuffer>, IByteStream
 	{
-		internal ManagedByteStream (Context ctx)
-			: base (ctx)
+		protected ManagedByteStream (Context ctx, int bufferSize)
+			: base (ctx, bufferSize)
 		{
 		}
 		
