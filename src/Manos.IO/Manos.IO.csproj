@@ -78,7 +78,6 @@
     <Compile Include="Manos.IO.Libev\SocketInfo.cs" />
     <Compile Include="Manos.IO.Libev\EventedStream.cs" />
     <Compile Include="Manos.IO.Libev\SendFileOperation.cs" />
-    <Compile Include="Manos.IO.Libev\SecureSocket.cs" />
     <Compile Include="Manos.IO.Libev\FileStream.cs" />
     <Compile Include="Manos.IO.Managed\Context.cs" />
     <Compile Include="Manos.IO.Managed\Watcher.cs" />

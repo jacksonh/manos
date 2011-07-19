@@ -80,7 +80,7 @@ int manos_socket_close (int fd, int *err);
 
 
 
-#ifdef HAVE_LIBGNUTLS
+#ifdef false && HAVE_LIBGNUTLS
 
 struct manos_tls_socket {
 	gnutls_certificate_credentials_t		credentials;

@@ -99,7 +99,7 @@ namespace Manos.IO.Libev
 
 		public override Socket CreateSecureSocket (string certFile, string keyFile)
 		{
-			return new SecureSocket (this, certFile, keyFile);
+			throw new NotSupportedException ();
 		}
 
 		public override IByteStream OpenFile (string fileName, FileAccess openMode, int blockSize)
