@@ -17,7 +17,7 @@ namespace Manos.IO.Managed
 		private List<AsyncWatcher> asyncs;
 		private List<TimerWatcher> timers;
 		private volatile bool running;
-		private object syncRoot = new object();
+		private object syncRoot = new object ();
 
 		public Context ()
 		{
@@ -177,12 +177,18 @@ namespace Manos.IO.Managed
 			return result;
 		}
 
-		public override Manos.IO.Socket CreateSocket ()
+		public override Manos.IO.ITcpSocket CreateTcpSocket (AddressFamily addressFamily)
 		{
-			return new Socket (this);
+			throw new NotSupportedException ();
+//			return new Socket (this);
+		}
+		
+		public override ITcpServerSocket CreateTcpServerSocket(AddressFamily addressFamily)
+		{
+			throw new NotSupportedException ();
 		}
 
-		public override Manos.IO.Socket CreateSecureSocket (string certFile, string keyFile)
+		public override Manos.IO.ITcpSocket CreateSecureSocket (string certFile, string keyFile)
 		{
 			throw new NotSupportedException ();
 		}
@@ -199,9 +205,9 @@ namespace Manos.IO.Managed
 			return new FileStream (this, fs, blockSize);
 		}
 		
-		public override Manos.IO.UdpSocket CreateUdpSocket (AddressFamily family)
+		public override Manos.IO.IUdpSocket CreateUdpSocket (AddressFamily family)
 		{
-			return new UdpSocket (this, family);
+			throw new NotImplementedException ();
 		}
 	}
 }

@@ -8,7 +8,7 @@ namespace Manos.IO
 	/// <exception cref='InvalidOperationException'>
 	/// Is thrown when an operation cannot be performed.
 	/// </exception>
-	public abstract class Socket : IDisposable
+	public abstract class TcpSocket : IDisposable
 	{
 		/// <summary>
 		/// States a socket must support. More states may be supported
@@ -48,12 +48,12 @@ namespace Manos.IO
 		Context context;
 		
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Manos.IO.Socket"/> class.
+		/// Initializes a new instance of the <see cref="Manos.IO.TcpSocket"/> class.
 		/// </summary>
 		/// <param name='context'>
 		/// The context this socket will be bound to.
 		/// </param>
-		protected Socket (Context context)
+		protected TcpSocket (Context context)
 		{
 			if (context == null)
 				throw new ArgumentNullException ("context");
@@ -70,7 +70,7 @@ namespace Manos.IO
 		/// </exception>
 		public string Address {
 			get {
-				if (state == Socket.SocketState.Invalid)
+				if (state == TcpSocket.SocketState.Invalid)
 					throw new InvalidOperationException ();
 				return address;
 			}
@@ -85,7 +85,7 @@ namespace Manos.IO
 		/// </exception>
 		public int Port {
 			get {
-				if (state == Socket.SocketState.Invalid)
+				if (state == TcpSocket.SocketState.Invalid)
 					throw new InvalidOperationException ();
 				return port;
 			}
@@ -144,13 +144,13 @@ namespace Manos.IO
 		/// <paramref name="host"/> is <c>null</c> or empty,
 		/// <paramref name="port"/> is not larger than <c>0</c>,
 		/// or <paramref name="callback"/> is null.</exception>
-		public abstract void Listen (string host, int port, Action<Socket> callback);
+		public abstract void Listen (string host, int port, Action<TcpSocket> callback);
 		
 		/// <summary>
-		/// Releases unmanaged resources and performs other cleanup operations before the <see cref="Manos.IO.Socket"/> is
+		/// Releases unmanaged resources and performs other cleanup operations before the <see cref="Manos.IO.TcpSocket"/> is
 		/// reclaimed by garbage collection.
 		/// </summary>
-		~Socket ()
+		~TcpSocket ()
 		{
 			Dispose (false);
 		}
@@ -163,13 +163,13 @@ namespace Manos.IO
 		}
 		
 		/// <summary>
-		/// Releases all resource used by the <see cref="Manos.IO.Socket"/> object.
+		/// Releases all resource used by the <see cref="Manos.IO.TcpSocket"/> object.
 		/// </summary>
 		/// <remarks>
 		/// Call <see cref="Dispose()"/> when you are finished using the <see cref="Manos.IO.Socket"/>. The
 		/// <see cref="Dispose()"/> method leaves the <see cref="Manos.IO.Socket"/> in an unusable state. After calling
 		/// <see cref="Dispose()"/>, you must release all references to the <see cref="Manos.IO.Socket"/> so the garbage
-		/// collector can reclaim the memory that the <see cref="Manos.IO.Socket"/> was occupying.
+		/// collector can reclaim the memory that the <see cref="Manos.IO.TcpSocket"/> was occupying.
 		/// </remarks>
 		public void Dispose ()
 		{

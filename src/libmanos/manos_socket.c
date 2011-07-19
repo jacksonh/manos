@@ -35,219 +35,155 @@ setup_socket (int fd)
 	return (fcntl (fd, F_SETFL, O_NONBLOCK) != -1);
 }
 
-static int
-create_any_socket (const char *host, int port, int type,
-		int (socket_alive_cb)(int fd, struct sockaddr *addr, int addrlen))
-{
-	struct sockaddr_in in;
-	struct sockaddr_in6 in6;
-	int fd, ipv4;
-	
-	memset (&in, 0, sizeof (in));
-	memset (&in6, 0, sizeof (in6));
-	
-	in.sin_port = in6.sin6_port = htons (port);
-	in.sin_family = AF_INET;
-	in6.sin6_family = AF_INET6;
-
-	if (inet_pton (AF_INET, host, &(in.sin_addr)) > 0) {
-		ipv4 = 1;
-		fd = socket (PF_INET, type, 0);
-	} else if (inet_pton(AF_INET6, host, &(in6.sin6_addr)) > 0) {
-		ipv4 = 0;
-		fd = socket (PF_INET6, type, 0);
-	} else {
-		return -1;
-	}
-
-	if (!setup_socket (fd)) {
-		close (fd);
-		return -1;
-	}
-
-	if (socket_alive_cb) {
-		int r = socket_alive_cb (fd,
-				ipv4 ? (struct sockaddr*) &in : (struct sockaddr*) &in6,
-				ipv4 ? sizeof (in) : sizeof (in6));
-		if (r != 0) {
-			close (fd);
-			return -1;
-		}
-	}
-
-	return fd;
-}
-
-static int
-connect_async (int fd, struct sockaddr *addr, int addrlen)
-{
-	int r = connect (fd, addr, addrlen);
-	
-	if (r < 0 && errno != EINPROGRESS) {
-		return -1;
-	}
-	return 0;
-}
-
-int
-manos_socket_connect (const char *host, int port, int *err)
-{
-	int fd = create_any_socket (host, port, SOCK_STREAM, &connect_async);
-
-	if (fd < 0) {
-		*err = errno;
-		return -1;
-	}
-
-	return fd;
-}	
-
-static int
-bind_async (int fd, struct sockaddr *addr, int addrlen)
-{
-	return bind (fd, addr, addrlen);
-}
-
-static int
-get_native_socket_family (int manosFamilyType)
-{
-	switch (manosFamilyType) {
-	case 0:
-		return PF_INET;
-	default:
-		return PF_INET6;
-	}
-}
-
-int static
-manos_socket_create (int manosFamilyType, int type, int *err)
-{
-	int fd;
-
-	fd = socket (get_native_socket_family(manosFamilyType), type, 0);
-
-	if (fd < 0) {
-		*err = errno;
-		return -1;
-	}
-
-	setup_socket (fd);
-
-	return fd;
-}
-
-int manos_dgram_socket_create(int manosFamilyType, int *err)
-{
-	return manos_socket_create(manosFamilyType, SOCK_DGRAM, err);
-}
-
 static void
-address (struct sockaddr_storage *in, const char *host, int port, int manosFamilyType)
-{
-	struct sockaddr_in *in4;
-	struct sockaddr_in6 *in6;
-	
-	memset (&in, 0, sizeof (struct sockaddr_storage));
-	in4 = (struct sockaddr_in *)in;
-	in6 = (struct sockaddr_in6 *)in;
-
-	if (!manosFamilyType) {
-		if (host) {
-			inet_pton (AF_INET, host, &(in4->sin_addr));
-		} else {
-			in4->sin_addr.s_addr = INADDR_ANY;
-		}
-		in4->sin_family = AF_INET;
-		in4->sin_port = htons (port);
-	} else {
-		if (host) {
-			inet_pton (AF_INET6, host, &(in6->sin6_addr));
-		} else {
-			memset(&((in6->sin6_addr).s6_addr), 0, sizeof((in6->sin6_addr).s6_addr));
-		}
-		in6->sin6_family = AF_INET6;
-		in6->sin6_port = htons (port);
-	}
-}
-
-int
-manos_dgram_socket_bind (int fd, const char *host, int port, int manosFamilyType)
-{
-	struct sockaddr_storage addr;
-	address(&addr, host, port, manosFamilyType);
-	return bind(fd, (struct sockaddr *)&addr, sizeof(addr));
-}
-
-int
-manos_dgram_socket_sendto (int fd, const char *host, int port, int manosFamilyType, const char *buffer, int offset, int length, int *err)
-{
-	int rc;
-
-	struct sockaddr_storage target;
-
-	address (&target, host, port, manosFamilyType);
-
-	rc = sendto(fd, buffer + offset, length, 0, (struct sockaddr *)&target, sizeof(target));
-	if (rc < 0 && (errno == EAGAIN || errno == EINTR)) {
-			*err = 0;
-	} else {
-		*err = errno;
-	}
-	return rc;
-}
-
-int
-manos_socket_listen (const char *host, int port, int backlog, int *err)
-{
-	int fd, r;
-
-	fd = create_any_socket (host, port, SOCK_STREAM, &bind_async);
-
-	if (fd < 0) {
-		*err = errno;
-		return -1;
-	}
-
-	r = listen (fd, backlog);
-	if (r < 0) {
-		*err = errno;
-		return -1;
-	}
-
-	return fd;
-}
-
-static void
-parse_sockaddr (struct sockaddr_storage *addr, manos_socket_info_t *info)
+parse_sockaddr (struct sockaddr_storage *addr, manos_ip_endpoint_t *ep)
 {
 	struct sockaddr_in *in4;
 	struct sockaddr_in6 *in6;
 
 	switch (addr->ss_family) {
-	case AF_INET:
-		in4 = (struct sockaddr_in *) addr;
-		info->port = ntohs (in4->sin_port);
-		info->address.ipv4addr = in4->sin_addr.s_addr;
-		info->is_ipv4 = 1;
-		break;
-	case AF_INET6:
-		in6 = (struct sockaddr_in6 *) addr;
-		info->port = ntohs (in6->sin6_port);
-		memcpy (info->address.address_bytes, in6->sin6_addr.s6_addr, 16);
-		info->is_ipv4 = 0;
-		break;
+		case AF_INET:
+			in4 = (struct sockaddr_in*) addr;
+			ep->port = ntohs (in4->sin_port);
+			ep->address.ipv4addr = in4->sin_addr.s_addr;
+			ep->is_ipv4 = 1;
+			break;
+
+		case AF_INET6:
+			in6 = (struct sockaddr_in6*) addr;
+			ep->port = ntohs (in6->sin6_port);
+			memcpy (ep->address.ipv6addr, in6->sin6_addr.s6_addr, 16);
+			ep->is_ipv4 = 0;
+			break;
 	}
 }
 
+static socklen_t
+parse_endpoint (manos_ip_endpoint_t *ep, struct sockaddr_storage *addr)
+{
+	struct sockaddr_in *in4;
+	struct sockaddr_in6 *in6;
+
+	if (ep->is_ipv4) {
+		in4 = (struct sockaddr_in*) addr;
+		in4->sin_family = AF_INET;
+		in4->sin_port = htons (ep->port);
+		in4->sin_addr.s_addr = ep->address.ipv4addr;
+		return sizeof (*in4);
+	} else {
+		in6 = (struct sockaddr_in6*) addr;
+		in6->sin6_family = AF_INET6;
+		in6->sin6_port = htons (ep->port);
+		memcpy (in6->sin6_addr.s6_addr, ep->address.ipv6addr, 16);
+		return sizeof (*in6);
+	}
+}
+
+
+
+
 int
-manos_socket_accept (int fd, manos_socket_info_t *info, int *err)
+manos_socket_localname_ip (int fd, manos_ip_endpoint_t *ep, int *err)
+{
+	struct sockaddr_storage addr;
+	socklen_t len;
+	int result;
+
+	len = sizeof (addr);
+
+	result = getsockname (fd, (struct sockaddr*) &addr, &len);
+
+	parse_sockaddr (&addr, ep);
+
+	*err = errno;
+	return result;
+}
+
+int
+manos_socket_peername_ip (int fd, manos_ip_endpoint_t *ep, int *err)
+{
+	struct sockaddr_storage addr;
+	socklen_t len;
+	int result;
+
+	len = sizeof (addr);
+
+	result = getpeername (fd, (struct sockaddr*) &addr, &len);
+
+	parse_sockaddr (&addr, ep);
+
+	*err = errno;
+	return result;
+}
+
+int
+manos_socket_create (int addressFamily, int protocolFamily, int *err)
+{
+	static int domains[] = { AF_INET, AF_INET6 };
+	static int types[] = { SOCK_STREAM, SOCK_DGRAM };
+	static int protocols[] = { IPPROTO_TCP, IPPROTO_UDP };
+
+	int result = socket (domains[addressFamily], types[protocolFamily], protocols[protocolFamily]);
+
+	if (result > 0 && setup_socket (result) < 0) {
+		*err = errno;
+		close (result);
+		return -1;
+	}
+
+	*err = errno;
+	return result;
+}
+
+int
+manos_socket_bind_ip (int fd, manos_ip_endpoint_t *ep, int *err)
+{
+	struct sockaddr_storage addr;
+	socklen_t len;
+	int result;
+
+	len = parse_endpoint (ep, &addr);
+
+	result = bind (fd, (struct sockaddr*) &addr, len);
+
+	*err = errno;
+	return result;
+}
+
+int
+manos_socket_connect_ip (int fd, manos_ip_endpoint_t *ep, int *err)
+{
+	struct sockaddr_storage addr;
+	socklen_t len;
+	int result;
+
+	len = parse_endpoint (ep, &addr);
+
+	result = connect (fd, (struct sockaddr*) &addr, len);
+
+	*err = errno;
+	return result;
+}
+
+int
+manos_socket_listen (int fd, int backlog, int *err)
+{
+	int result;
+
+	result = listen (fd, backlog);
+	*err = errno;
+	return result;
+}
+
+int
+manos_socket_accept (int fd, manos_ip_endpoint_t *remote, int *err)
 {
 	struct sockaddr_storage addr;
 	socklen_t len = sizeof (struct sockaddr_storage);
-	int res;
+	int result;
 
-	res = accept (fd, (struct sockaddr *) &addr, &len);
-	if (res < 0) {
+	result = accept (fd, (struct sockaddr*) &addr, &len);
+	if (result < 0) {
 		if (errno == EAGAIN || errno == ECONNABORTED) {
 			*err = 0;
 			return -1;
@@ -256,69 +192,16 @@ manos_socket_accept (int fd, manos_socket_info_t *info, int *err)
 		return -1;
 	}
 
-	if (!setup_socket (res)) {
+	if (!setup_socket (result)) {
 		*err = errno;
-		close (res);
+		close (result);
 		return -1;
 	}
 
-	memset (info, 0, sizeof (*info));
-	info->fd = res;
-
-	parse_sockaddr (&addr, info);
+	parse_sockaddr (&addr, remote);
 	
-	return res;
+	return result;
 }
-
-int
-manos_socket_accept_many (int fd, manos_socket_info_t *infos, int len, int *err)
-{
-	int i = 0;
-	
-	for (i = 0; i < len; i++) {
-		int a = manos_socket_accept (fd, &(infos [i]), err);
-
-		if (a < 0 && *err == 0)
-			return i; // Just a wouldblock error
-		if (a < 0)
-			return -1; // err will be set by manos_socket_accept
-	}
-
-	return i;
-}
-
-int
-manos_socket_receive_from (int fd, char* buffer, int len, int flags, manos_socket_info_t *info, int *err)
-{
-    ssize_t rc;
-       
-    struct sockaddr_storage addr;
-    socklen_t addrlen = sizeof (struct sockaddr_storage);
-
-    rc = recvfrom( fd, buffer, len, flags, (struct sockaddr*)&addr, &addrlen );
-    if (rc < 0 ) {
-        if (errno == EAGAIN || errno == EINTR) {
-        *err = 0;
-        return -1;
-        }
-        *err = errno;
-        return -1;
-    }
-
-	if (info) {
-		parse_sockaddr (&addr, info);
-	}
-
-    return rc;
-}
-
-
-int
-manos_socket_receive (int fd, char* buffer, int len, int *err)
-{
-	return manos_socket_receive_from (fd, buffer, len, 0, NULL, err);
-}
-
 
 int
 manos_socket_send (int fd, const char *buffer, int offset, int len, int* err)
@@ -327,7 +210,7 @@ manos_socket_send (int fd, const char *buffer, int offset, int len, int* err)
 
 	rc = send (fd, buffer + offset, len, 0);
 
-	if (rc < 0 && (errno == EAGAIN || errno == EINTR)) {
+	if (rc < 0 && (errno == EAGAIN)) {
 		*err = 0;
 	} else {
 		*err = errno;
@@ -335,13 +218,70 @@ manos_socket_send (int fd, const char *buffer, int offset, int len, int* err)
 	return rc;
 }
 
+int
+manos_socket_receive (int fd, char* buffer, int len, int *err)
+{
+	int result;
+
+	result = recv (fd, buffer, len, 0);
+
+	if (result < 0 && (errno == EAGAIN)) {
+		*err = 0;
+	} else {
+		*err = errno;
+	}
+	return result;
+}
+
+int
+manos_socket_sendto_ip (int fd, const char *buffer, int offset, int len, manos_ip_endpoint_t *to, int *err)
+{
+	int result;
+	struct sockaddr_storage target;
+	socklen_t slen;
+
+	slen = parse_endpoint (to, &target);
+
+	result = sendto (fd, buffer + offset, len, 0, (struct sockaddr*) &target, slen);
+
+	if (result < 0 && (errno == EAGAIN)) {
+		*err = 0;
+	} else {
+		*err = errno;
+	}
+	return result;
+}
+
+int
+manos_socket_receivefrom_ip (int fd, char* data, int len, manos_ip_endpoint_t *from, int *err)
+{
+	int result;
+	struct sockaddr_storage source;
+	socklen_t slen = sizeof (source);
+
+	result = recvfrom (fd, data, len, 0, (struct sockaddr*) &source, &slen);
+
+	if (result < 0 && (errno == EAGAIN)) {
+		*err = 0;
+		return -1;
+	} else {
+		*err = errno;
+		if (from) {
+			parse_sockaddr (&source, from);
+		}
+		return result;
+	}
+}
 
 int
 manos_socket_close (int fd, int *err)
 {
-	int rc = close (fd);
-	if (rc < 0)
-		*err = errno;
-	return rc;
+	int result = close (fd);
+	*err = errno;
+	return result;
 }
+
+
+
+
 

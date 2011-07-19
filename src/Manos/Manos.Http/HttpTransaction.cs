@@ -37,7 +37,7 @@ namespace Manos.Http
 	public class HttpTransaction : IHttpTransaction, IDisposable
 	{
 
-		public static HttpTransaction BeginTransaction (HttpServer server, Socket socket, HttpConnectionCallback cb, bool closeOnEnd = false)
+		public static HttpTransaction BeginTransaction (HttpServer server, ITcpSocket socket, HttpConnectionCallback cb, bool closeOnEnd = false)
 		{
 			HttpTransaction transaction = new HttpTransaction (server, socket, cb, closeOnEnd);
 
@@ -49,7 +49,7 @@ namespace Manos.Http
 		private bool wantClose, responseFinished;
 		private GCHandle gc_handle;
 		
-		public HttpTransaction (HttpServer server, Socket socket, HttpConnectionCallback callback, bool closeOnEnd = false)
+		public HttpTransaction (HttpServer server, ITcpSocket socket, HttpConnectionCallback callback, bool closeOnEnd = false)
 		{
 			Server = server;
 			Socket = socket;
@@ -85,7 +85,7 @@ namespace Manos.Http
 			private set;
 		}
 
-		public Socket Socket {
+		public ITcpSocket Socket {
 			get;
 			private set;
 		}

@@ -205,7 +205,18 @@ namespace Manos.IO
 		/// <returns>
 		/// The socket.
 		/// </returns>
-		public abstract Socket CreateSocket ();
+		public abstract ITcpSocket CreateTcpSocket (AddressFamily addressFamily);
+		
+		/// <summary>
+		/// Creates a new tcp server socket.
+		/// </summary>
+		/// <returns>
+		/// The tcp server socket.
+		/// </returns>
+		/// <param name='addressFamily'>
+		/// Address family.
+		/// </param>
+		public abstract ITcpServerSocket CreateTcpServerSocket (AddressFamily addressFamily);
 		
 		/// <summary>
 		/// Creates a new secure socket. The socket is initially invalid.
@@ -221,7 +232,7 @@ namespace Manos.IO
 		/// <param name='keyFile'>
 		/// Key file in PEM format, must contain a private key for the certificate.
 		/// </param>
-		public abstract Socket CreateSecureSocket (string certFile, string keyFile);
+		public abstract ITcpSocket CreateSecureSocket (string certFile, string keyFile);
 		
 		/// <summary>
 		/// Opens a file for asynchronous operations.
@@ -265,7 +276,7 @@ namespace Manos.IO
 		/// <param name='family'>
 		/// Address family the socket belongs to.
 		/// </param>
-		public abstract UdpSocket CreateUdpSocket (AddressFamily family);
+		public abstract IUdpSocket CreateUdpSocket (AddressFamily family);
 	}
 }
 

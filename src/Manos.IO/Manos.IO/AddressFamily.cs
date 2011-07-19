@@ -5,6 +5,7 @@ namespace Manos.IO
 	/// <summary>
 	/// Address families for use with sockets.
 	/// </summary>
+	// Do not change these values
 	public enum AddressFamily
 	{
 		/// <summary>

@@ -92,12 +92,17 @@ namespace Manos.IO.Libev
 			});
 		}
 
-		public override Socket CreateSocket ()
+		public override ITcpSocket CreateTcpSocket (AddressFamily addressFamily)
 		{
-			return new PlainSocket (this);
+			return new TcpSocket (this, addressFamily);
+		}
+		
+		public override ITcpServerSocket CreateTcpServerSocket (AddressFamily addressFamily)
+		{
+			return new TcpSocket (this, addressFamily);
 		}
 
-		public override Socket CreateSecureSocket (string certFile, string keyFile)
+		public override ITcpSocket CreateSecureSocket (string certFile, string keyFile)
 		{
 			throw new NotSupportedException ();
 		}
@@ -129,7 +134,7 @@ namespace Manos.IO.Libev
 			return FileStream.Create (this, fileName, blockSize);
 		}
 		
-		public override Manos.IO.UdpSocket CreateUdpSocket (AddressFamily family)
+		public override Manos.IO.IUdpSocket CreateUdpSocket (AddressFamily family)
 		{
 			return new UdpSocket (this, family);
 		}

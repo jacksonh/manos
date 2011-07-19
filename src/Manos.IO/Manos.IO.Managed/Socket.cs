@@ -8,7 +8,7 @@ using Manos.IO;
 
 namespace Manos.IO.Managed
 {
-	class Socket : Manos.IO.Socket
+	class Socket : Manos.IO.TcpSocket
 	{
 		System.Net.Sockets.Socket socket;
 		Action connectedCallback;
@@ -317,7 +317,7 @@ namespace Manos.IO.Managed
 			}
 		}
 
-		public override void Listen (string host, int port, Action<Manos.IO.Socket> callback)
+		public override void Listen (string host, int port, Action<Manos.IO.TcpSocket> callback)
 		{
 			if (state != Socket.SocketState.Invalid)
 				throw new InvalidOperationException ();

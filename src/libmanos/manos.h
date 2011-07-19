@@ -48,33 +48,34 @@ typedef struct {
 	char* bytes;	
 } bytebuffer_t;
 
+
 typedef struct {
-	int32_t fd;
 	int32_t port;
 	int32_t is_ipv4;
 	union {
 		uint32_t ipv4addr;
-		uint8_t  address_bytes[16];
+		uint8_t  ipv6addr[16];
 	} address;
-} manos_socket_info_t;
+} manos_ip_endpoint_t;
 
-int manos_dgram_socket_create (int manosFamilyType, int *err);
+int manos_socket_localname_ip (int fd, manos_ip_endpoint_t *ep, int *err);
 
-int manos_dgram_socket_sendto (int fd, const char *host, int port, int manosFamilyType, const char *buffer, int offset, int length, int *err);
+int manos_socket_peername_ip (int fd, manos_ip_endpoint_t *ep, int *err);
 
-int manos_dgram_socket_bind (int fd, const char *host, int port, int manosFamilyType);
+int manos_socket_create (int addressFamily, int protocolFamily, int *err);
 
-int manos_socket_connect (const char *host, int port, int *err);
+int manos_socket_bind_ip (int fd, manos_ip_endpoint_t *ep, int *err);
 
-int manos_socket_listen (const char *host, int port, int backlog, int *err);
+int manos_socket_connect_ip (int fd, manos_ip_endpoint_t *ep, int *err);
 
-int manos_socket_accept (int fd, manos_socket_info_t *info, int *err);
-int manos_socket_accept_many (int fd, manos_socket_info_t *infos, int len, int *err);
-
-int manos_socket_receive (int fd, char* data, int len, int *err);
-int manos_socket_receive_from (int fd, char* buffer, int len, int flags, manos_socket_info_t *info, int *err );
+int manos_socket_listen (int fd, int backlog, int *err);
+int manos_socket_accept (int fd, manos_ip_endpoint_t *remote, int *err);
 
 int manos_socket_send (int fd, const char *buffers, int offset, int len, int *err);
+int manos_socket_receive (int fd, char* data, int len, int *err);
+
+int manos_socket_sendto_ip (int fd, const char *buffers, int offset, int len, manos_ip_endpoint_t *to, int *err);
+int manos_socket_receivefrom_ip (int fd, char* data, int len, manos_ip_endpoint_t *from, int *err);
 
 int manos_socket_close (int fd, int *err);
 
