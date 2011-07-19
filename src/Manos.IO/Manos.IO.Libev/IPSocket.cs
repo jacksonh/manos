@@ -20,6 +20,12 @@ namespace Manos.IO.Libev
 			}
 		}
 		
+		protected IPSocket (Context context, AddressFamily addressFamily, int fd)
+			: base (context, addressFamily)
+		{
+			this.fd = fd;
+		}
+		
 		public override IPEndPoint LocalEndpoint {
 			get {
 				if (localname == null) {

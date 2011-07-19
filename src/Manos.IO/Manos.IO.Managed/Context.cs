@@ -179,13 +179,12 @@ namespace Manos.IO.Managed
 
 		public override Manos.IO.ITcpSocket CreateTcpSocket (AddressFamily addressFamily)
 		{
-			throw new NotSupportedException ();
-//			return new Socket (this);
+			return new TcpSocket (this, addressFamily);
 		}
 		
 		public override ITcpServerSocket CreateTcpServerSocket(AddressFamily addressFamily)
 		{
-			throw new NotSupportedException ();
+			return new TcpSocket (this, addressFamily);
 		}
 
 		public override Manos.IO.ITcpSocket CreateSecureSocket (string certFile, string keyFile)
@@ -207,7 +206,7 @@ namespace Manos.IO.Managed
 		
 		public override Manos.IO.IUdpSocket CreateUdpSocket (AddressFamily family)
 		{
-			throw new NotImplementedException ();
+			return new UdpSocket (this, family);
 		}
 	}
 }

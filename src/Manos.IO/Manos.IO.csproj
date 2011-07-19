@@ -84,7 +84,6 @@
     <Compile Include="Manos.IO.Managed\CheckWatcher.cs" />
     <Compile Include="Manos.IO.Managed\IdleWatcher.cs" />
     <Compile Include="Manos.IO.Managed\FileStream.cs" />
-    <Compile Include="Manos.IO.Managed\Socket.cs" />
     <Compile Include="Manos.IO.Managed\TimerWatcher.cs" />
     <Compile Include="Manos.IO.Managed\UdpSocket.cs" />
     <Compile Include="Manos.IO\AddressFamily.cs" />
@@ -97,7 +96,6 @@
     <Compile Include="Manos.IO.Managed\ManagedByteStream.cs" />
     <Compile Include="Manos.IO.Managed\ManagedStream.cs" />
     <Compile Include="Manos.IO\ISocket.cs" />
-    <Compile Include="Manos.IO\TcpSocket.cs" />
     <Compile Include="Manos.IO\ITcpSocket.cs" />
     <Compile Include="Manos.IO\IUdpSocket.cs" />
     <Compile Include="Manos.IO\Socket.cs" />
@@ -109,6 +107,8 @@
     <Compile Include="Manos.IO.Libev\TcpSocket.cs" />
     <Compile Include="Manos.IO\IStreamSocket.cs" />
     <Compile Include="Manos.IO\ITcpServerSocket.cs" />
+    <Compile Include="Manos.IO.Managed\TcpSocket.cs" />
+    <Compile Include="Manos.IO.Managed\IPSocket.cs" />
   </ItemGroup>
   <Target Name="ListSources">
     <Message Text="@(Compile)" Importance="High" />

@@ -94,7 +94,7 @@ namespace Manos.IO.Libev
 		}
 
 		TcpSocket (Context context, AddressFamily addressFamily, int fd, IPEndPoint local, IPEndPoint remote)
-			: base (context, addressFamily, ProtocolFamily.Tcp)
+			: base (context, addressFamily, fd)
 		{
 			this.stream = new TcpSocketStream (this, new IntPtr (fd));
 			this.localname = local;
