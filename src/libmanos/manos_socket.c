@@ -160,9 +160,14 @@ manos_socket_connect_ip (int fd, manos_ip_endpoint_t *ep, int *err)
 	len = parse_endpoint (ep, &addr);
 
 	result = connect (fd, (struct sockaddr*) &addr, len);
-
-	*err = errno;
-	return result;
+	
+	if (result < 0 && errno == EINPROGRESS) {
+		*err = 0;
+		return 0;
+	} else {
+		*err = errno;
+		return result;
+	}
 }
 
 int
