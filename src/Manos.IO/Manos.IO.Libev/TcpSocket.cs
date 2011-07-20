@@ -157,7 +157,7 @@ namespace Manos.IO.Libev
 				var connectWatcher = new IOWatcher (new IntPtr (fd), EventTypes.Write, Context.Loop, (watcher, revents) => {
 					watcher.Stop ();
 					watcher.Dispose ();
-					localname = endpoint;
+					peername = endpoint;
 				
 					IsConnected = true;
 					
