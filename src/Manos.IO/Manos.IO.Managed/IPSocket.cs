@@ -8,6 +8,7 @@ namespace Manos.IO.Managed
 		where TStream : IStream<TFragment>
 	{
 		protected System.Net.Sockets.Socket socket;
+		protected bool disposed;
 		
 		protected IPSocket (Context context, AddressFamily addressFamily, ProtocolFamily protocolFamily)
 			: base (context, addressFamily)
@@ -62,10 +63,17 @@ namespace Manos.IO.Managed
 			socket.Bind (endpoint);
 		}
 		
-		public override void Close ()
+		protected virtual void CheckDisposed ()
 		{
-			socket.Close ();
-			base.Close ();
+			if (disposed)
+				throw new ObjectDisposedException (GetType ().Name);
+		}
+		
+		protected override void Dispose (bool disposing)
+		{
+			socket.Dispose ();
+			disposed = true;
+			base.Dispose (disposing);
 		}
 	}
 }

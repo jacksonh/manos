@@ -12,6 +12,7 @@ namespace Manos.IO.Managed
 	class TcpSocket : IPSocket<ByteBuffer, IByteStream>, ITcpSocket, ITcpServerSocket
 	{
 		TcpStream stream;
+		bool wasDisposing;
 		
 		class TcpStream : ManagedByteStream, ISendfileCapable
 		{
@@ -36,21 +37,25 @@ namespace Manos.IO.Managed
 				get { return true; }
 			}
 			
-			public override void Close ()
+			protected override void Dispose (bool disposing)
 			{
-				parent.socket.BeginDisconnect (false, ar => {
-					Context.Enqueue (delegate {
-						try {
-							((System.Net.Sockets.Socket) ar.AsyncState).EndDisconnect (ar);
-							((System.Net.Sockets.Socket) ar.AsyncState).Dispose ();
-						} catch {
-						}
+				if (!parent.disposed) {
+					parent.socket.BeginDisconnect (false, ar => {
+						Context.Enqueue (delegate {
+							try {
+								((System.Net.Sockets.Socket) ar.AsyncState).EndDisconnect (ar);
+								((System.Net.Sockets.Socket) ar.AsyncState).Dispose ();
+							} catch {
+							}
 				
-						RaiseEndOfStream ();
+							RaiseEndOfStream ();
+							
+							parent.EndDispose ();
 				
-						base.Close ();
-					});
-				}, parent.socket);
+							base.Dispose (disposing);
+						});
+					}, parent.socket);
+				}
 			}
 			
 			protected override void DoRead ()
@@ -63,21 +68,24 @@ namespace Manos.IO.Managed
 			void ReadCallback (IAsyncResult ar)
 			{
 				Context.Enqueue (delegate {
-					ResetReadTimeout ();
+					if (!parent.disposed) {
+						ResetReadTimeout ();
 				
-					SocketError error;
-					int len = parent.socket.EndReceive (ar, out error);
+						SocketError error;
+						int len = parent.socket.EndReceive (ar, out error);
 				
-					if (error != SocketError.Success) {
-						RaiseError (new SocketException (error));
-					} else if (len == 0) {
-						RaiseEndOfStream ();
-					} else {
-						byte [] newBuffer = new byte [len];
-						Buffer.BlockCopy (buffer, 0, newBuffer, 0, len);
+						if (error != SocketError.Success) {
+							RaiseError (new Manos.IO.SocketException ("Read failure", error));
+						} else if (len == 0) {
+							RaiseEndOfStream ();
+							Close ();
+						} else {
+							byte [] newBuffer = new byte [len];
+							Buffer.BlockCopy (buffer, 0, newBuffer, 0, len);
 						
-						RaiseData (new ByteBuffer (newBuffer));
-						DispatchRead ();
+							RaiseData (new ByteBuffer (newBuffer));
+							DispatchRead ();
+						}
 					}
 				});
 			}
@@ -91,14 +99,16 @@ namespace Manos.IO.Managed
 			void WriteCallback (IAsyncResult ar)
 			{
 				Context.Enqueue (delegate {
-					ResetWriteTimeout ();
+					if (!parent.disposed) {
+						ResetWriteTimeout ();
 					
-					SocketError err;
-					parent.socket.EndSend (ar, out err);
-					if (err != SocketError.Success) {
-						RaiseError (new SocketException (err));
-					} else {
-						HandleWrite ();
+						SocketError err;
+						parent.socket.EndSend (ar, out err);
+						if (err != SocketError.Success) {
+							RaiseError (new Manos.IO.SocketException ("Write failure", err));
+						} else {
+							HandleWrite ();
+						}
 					}
 				});
 			}
@@ -123,28 +133,41 @@ namespace Manos.IO.Managed
 		
 		public override void Connect (IPEndPoint endpoint, Action callback, Action<Exception> error)
 		{
-			try {
-				socket.BeginConnect (endpoint, (ar) => {
-					Context.Enqueue (delegate {
+			if (callback == null)
+				throw new ArgumentNullException ("callback");
+			if (error == null)
+				throw new ArgumentNullException ("error");
+			
+			socket.BeginConnect (endpoint, (ar) => {
+				Context.Enqueue (delegate {
+					if (!disposed) {
 						try {
 							socket.EndConnect (ar);
 							callback ();
-						} catch {
+						} catch (System.Net.Sockets.SocketException e) {
+							error (new Manos.IO.SocketException ("Connect failure", e.SocketErrorCode));
 						}
-					});
-				}, null);
-			} catch {
-			}
+					}
+				});
+			}, null);
 		}
-
-		public override void Close ()
+		
+		protected override void Dispose (bool disposing)
 		{
-			GetSocketStream ().Close ();
-			base.Close ();
+			GetSocketStream ().Dispose ();
+			wasDisposing = disposing;
+		}
+		
+		void EndDispose ()
+		{
+			disposed = true;
+			base.Dispose (wasDisposing);
 		}
 		
 		public override IByteStream GetSocketStream ()
 		{
+			CheckDisposed ();
+			
 			if (stream == null) {
 				stream = new TcpStream (this);
 			}
@@ -156,26 +179,23 @@ namespace Manos.IO.Managed
 			try {
 				socket.Listen (backlog);
 				AcceptOne (callback);
-			} catch {
+			} catch (System.Net.Sockets.SocketException e) {
+				throw new Manos.IO.SocketException ("Listen failure", e.SocketErrorCode);
 			}
 		}
 		
 		void AcceptOne (Action<ITcpSocket> callback)
 		{
-			try {
-				socket.BeginAccept (ar => {
-					try {
-						var sock = socket.EndAccept (ar);
+			socket.BeginAccept (ar => {
+				if (!disposed) {
+					var sock = socket.EndAccept (ar);
 					
-						Context.Enqueue (delegate {
-							callback (new TcpSocket (Context, AddressFamily, sock));
-						});
-					} catch {
-					}
-					AcceptOne (callback);
-				}, null);
-			} catch {
-			}
+					Context.Enqueue (delegate {
+						callback (new TcpSocket (Context, AddressFamily, sock));
+						AcceptOne (callback);
+					});
+				}
+			}, null);
 		}
 	}
 }

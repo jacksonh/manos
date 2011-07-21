@@ -40,21 +40,25 @@ namespace Manos.IO.Managed
 
 		public override void SeekBy (long delta)
 		{
+			CheckDisposed ();
+			
 			stream.Seek (delta, SeekOrigin.Current);
 		}
 
 		public override void SeekTo (long position)
 		{
+			CheckDisposed ();
+			
 			stream.Seek (position, SeekOrigin.Begin);
 		}
-
-		public override void Close ()
+		
+		protected override void Dispose (bool disposing)
 		{
 			if (stream != null) {
 				stream.Dispose ();
 				stream = null;
 			}
-			base.Close ();
+			base.Dispose (disposing);
 		}
 
 		public override void Write (IEnumerable<ByteBuffer> data)

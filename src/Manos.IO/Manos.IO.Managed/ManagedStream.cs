@@ -96,6 +96,8 @@ namespace Manos.IO.Managed
 		
 		public override void ResumeReading ()
 		{
+			CheckDisposed ();
+			
 			readLimit = null;
 			if (!readAllowed) {
 				readAllowed = true;
@@ -105,6 +107,8 @@ namespace Manos.IO.Managed
 			
 		public override void ResumeReading (long forFragments)
 		{
+			CheckDisposed ();
+			
 			if (forFragments < 0)
 				throw new ArgumentException ("forFragments");
 
@@ -117,6 +121,8 @@ namespace Manos.IO.Managed
 		
 		public override void ResumeWriting ()
 		{
+			CheckDisposed ();
+			
 			if (!writeAllowed) {
 				writeAllowed = true;
 				HandleWrite ();
@@ -125,11 +131,15 @@ namespace Manos.IO.Managed
 
 		public override void PauseReading ()
 		{
+			CheckDisposed ();
+			
 			readAllowed = false;
 		}
 
 		public override void PauseWriting ()
 		{
+			CheckDisposed ();
+			
 			writeAllowed = false;
 		}
 
@@ -165,11 +175,6 @@ namespace Manos.IO.Managed
 		protected override void Dispose (bool disposing)
 		{
 			buffer = null;
-			base.Dispose (disposing);
-		}
-		
-		public override void Close ()
-		{
 			if (readTimer != null) {
 				readTimer.Dispose ();
 			}
@@ -178,7 +183,7 @@ namespace Manos.IO.Managed
 			}
 			readTimer = null;
 			writeTimer = null;
-			base.Close ();
+			base.Dispose (disposing);
 		}
 	}
 }

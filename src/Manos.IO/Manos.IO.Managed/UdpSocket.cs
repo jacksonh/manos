@@ -43,30 +43,32 @@ namespace Manos.IO.Managed
 				try {
 					parent.socket.BeginReceiveFrom (buffer, 0, buffer.Length, SocketFlags.None,
 						ref remote, ReceiveFrom, null);
-				} catch (Exception e) {
-					RaiseError (e);
+				} catch (System.Net.Sockets.SocketException e) {
+					RaiseError (new Manos.IO.SocketException ("Read failure", e.SocketErrorCode));
 				}
 			}
 			
 			void ReceiveFrom (IAsyncResult ar)
 			{
-				ResetReadTimeout ();
-				int length = parent.socket.EndReceiveFrom (ar, ref remote);
+				if (parent != null) {
+					ResetReadTimeout ();
+					int length = parent.socket.EndReceiveFrom (ar, ref remote);
 				
-				IPEndPoint ipremote = (IPEndPoint) remote;
+					IPEndPoint ipremote = (IPEndPoint) remote;
 				
-				byte [] newBuffer = new byte [length];
-				Buffer.BlockCopy (buffer, 0, newBuffer, 0, length);
+					byte [] newBuffer = new byte [length];
+					Buffer.BlockCopy (buffer, 0, newBuffer, 0, length);
 				
-				var info = new UdpPacket (
-					ipremote.Address.ToString (),
-					ipremote.Port,
-					new ByteBuffer (newBuffer));
+					var info = new UdpPacket (
+						ipremote.Address.ToString (),
+						ipremote.Port,
+						new ByteBuffer (newBuffer));
 					
-				Context.Enqueue (delegate {
-					RaiseData (info);
-					DispatchRead ();
-				});
+					Context.Enqueue (delegate {
+						RaiseData (info);
+						DispatchRead ();
+					});
+				}
 			}
 			
 			protected override WriteResult WriteSingleFragment (UdpPacket packet)
@@ -81,15 +83,16 @@ namespace Manos.IO.Managed
 			void WriteCallback (IAsyncResult ar)
 			{
 				Context.Enqueue (delegate {
-					if (parent == null)
-						return;
+					if (parent != null) {
+						ResetWriteTimeout ();
 					
-					ResetWriteTimeout ();
-					
-					SocketError err;
-					parent.socket.EndSend (ar, out err);
-					if (err == SocketError.Success) {
-						HandleWrite ();
+						SocketError err;
+						parent.socket.EndSend (ar, out err);
+						if (err == SocketError.Success) {
+							HandleWrite ();
+						} else {
+							RaiseError (new Manos.IO.SocketException ("Write failure", err));
+						}
 					}
 				});
 			}
@@ -102,12 +105,21 @@ namespace Manos.IO.Managed
 		
 		public override void Connect (IPEndPoint endpoint, Action callback, Action<Exception> error)
 		{
+			if (endpoint == null)
+				throw new ArgumentNullException ("endpoint");
+			if (callback == null)
+				throw new ArgumentNullException ("callback");
+			if (error == null)
+				throw new ArgumentNullException ("error");
+			
 			socket.Connect (endpoint);
 			callback ();
 		}
 		
 		public override IStream<UdpPacket> GetSocketStream ()
 		{
+			CheckDisposed ();
+			
 			if (stream == null) {
 				stream = new UdpStream (this);
 			}
