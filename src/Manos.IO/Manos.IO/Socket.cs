@@ -29,6 +29,11 @@ namespace Manos.IO
 			protected set;
 		}
 		
+		public bool IsBound {
+			get;
+			protected set;
+		}
+		
 		public abstract TEndPoint LocalEndpoint {
 			get;
 		}
@@ -36,15 +41,16 @@ namespace Manos.IO
 		public abstract TEndPoint RemoteEndpoint {
 			get;
 		}
-			
+		
 		public abstract void Bind (TEndPoint endpoint);
-			
-		public abstract void Connect (TEndPoint endpoint, Action callback);
-			
+		
+		public abstract void Connect (TEndPoint endpoint, Action callback, Action<Exception> error);
+		
 		public abstract TStream GetSocketStream ();
-			
+		
 		public virtual void Close ()
 		{
+			Dispose ();
 		}
 		
 		~Socket ()
@@ -55,11 +61,11 @@ namespace Manos.IO
 		public virtual void Dispose ()
 		{
 			Dispose (true);
+			GC.SuppressFinalize (this);
 		}
 		
 		protected virtual void Dispose (bool disposing)
 		{
-			Close ();
 		}
 	}
 }

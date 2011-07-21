@@ -35,18 +35,15 @@ namespace Manos.IO.Libev
 			{
 			}
 			
-			public override void Close ()
+			protected override void Dispose (bool disposing)
 			{
-				if (parent == null) {
-					return;
+				if (parent != null) {
+					RaiseEndOfStream ();
+				
+					parent = null;
+					buffer = null;
 				}
-				
-				RaiseEndOfStream ();
-				
-				parent = null;
-				buffer = null;
-				
-				base.Close ();
+				base.Dispose (disposing);
 			}
 			
 			protected override void HandleRead ()
@@ -65,7 +62,7 @@ namespace Manos.IO.Libev
 				}
 				
 				if (size < 0 && error != 0) {
-					RaiseError (new Exception ());
+					RaiseError (Errors.SocketStreamFailure ("Read failure", error));
 					Close ();
 				} else {
 					RaiseData (buffer, size, source);
@@ -96,7 +93,7 @@ namespace Manos.IO.Libev
 				}
 				
 				if (len < 0) {
-					RaiseError (new Exception (string.Format ("{0}:{1}", error, Errors.ErrorToString (error))));
+					RaiseError (Errors.SocketStreamFailure ("Write failure", error));
 					return WriteResult.Error;
 				}
 				return WriteResult.Consume;
@@ -113,13 +110,22 @@ namespace Manos.IO.Libev
 		{
 		}
 		
-		public override void Connect (IPEndPoint endpoint, Action callback)
+		public override void Connect (IPEndPoint endpoint, Action callback, Action<Exception> error)
 		{
+			CheckDisposed ();
+			
+			if (endpoint == null)
+				throw new ArgumentNullException ("endpoint");
+			if (callback == null)
+				throw new ArgumentNullException ("callback");
+			if (error == null)
+				throw new ArgumentNullException ("error");
+			
 			int err;
 			ManosIPEndpoint ep = endpoint;
 			err = SocketFunctions.manos_socket_connect_ip (fd, ref ep, out err);
 			if (err != 0) {
-				throw new Exception ();
+				throw Errors.SocketFailure ("Connect failure", err);
 			} else {
 				localname = endpoint;
 			}
@@ -127,17 +133,19 @@ namespace Manos.IO.Libev
 			callback ();
 		}
 		
-		public override void Close ()
+		protected override void Dispose (bool disposing)
 		{
 			if (stream != null) {
 				stream.Close ();
 				stream = null;
 			}
-			base.Close ();
+			base.Dispose (disposing);
 		}
 		
 		public override IStream<UdpPacket> GetSocketStream ()
 		{
+			CheckDisposed ();
+			
 			if (stream == null) {
 				stream = new UdpStream (this, new IntPtr (fd));
 			}

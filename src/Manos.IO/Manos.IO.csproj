@@ -108,6 +108,7 @@
     <Compile Include="Manos.IO\ITcpServerSocket.cs" />
     <Compile Include="Manos.IO.Managed\TcpSocket.cs" />
     <Compile Include="Manos.IO.Managed\IPSocket.cs" />
+    <Compile Include="Manos.IO\SocketException.cs" />
   </ItemGroup>
   <Target Name="ListSources">
     <Message Text="@(Compile)" Importance="High" />

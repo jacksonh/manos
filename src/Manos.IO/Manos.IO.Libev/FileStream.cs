@@ -47,14 +47,14 @@ namespace Manos.IO.Libev
 		public override bool CanSeek {
 			get { return true; }
 		}
-
-		public override void Close ()
+		
+		protected override void Dispose (bool disposing)
 		{
 			if (Handle != IntPtr.Zero) {
 				Syscall.close (Handle.ToInt32 ());
 				Handle = IntPtr.Zero;
 			}
-			base.Close ();
+			base.Dispose (disposing);
 		}
 
 		public override void SeekBy (long delta)
@@ -85,6 +85,8 @@ namespace Manos.IO.Libev
 		
 		public void Write (byte[] data)
 		{
+			CheckDisposed ();
+			
 			Write (new ByteBuffer (data));
 		}
 
@@ -102,6 +104,8 @@ namespace Manos.IO.Libev
 
 		public override void ResumeReading (long forBytes)
 		{
+			CheckDisposed ();
+			
 			if (!canRead)
 				throw new InvalidOperationException ();
 			if (forBytes < 0) {
@@ -117,6 +121,8 @@ namespace Manos.IO.Libev
 
 		public override void ResumeWriting ()
 		{
+			CheckDisposed ();
+			
 			if (!canWrite)
 				throw new InvalidOperationException ();
 			
@@ -128,11 +134,15 @@ namespace Manos.IO.Libev
 
 		public override void PauseReading ()
 		{
+			CheckDisposed ();
+			
 			readEnabled = false;
 		}
 
 		public override void PauseWriting ()
 		{
+			CheckDisposed ();
+			
 			writeEnabled = false;
 		}
 
@@ -150,7 +160,7 @@ namespace Manos.IO.Libev
 		{
 			if (result < 0) {
 				PauseReading ();
-				RaiseError (new Exception (string.Format ("Error '{0}' reading from file '{1}'", error, Handle.ToInt32 ())));
+				RaiseError (new IOException (string.Format ("Error reading from file: {0}", Errors.ErrorToString (error))));
 			} else if (result > 0) {
 				position += result;
 				byte [] newBuffer = new byte [result];
@@ -193,7 +203,7 @@ namespace Manos.IO.Libev
 		void OnWriteDone (int result, int error)
 		{
 			if (result < 0) {
-				throw new Exception (string.Format ("Error '{0}' writing to file '{1}'", error, Handle.ToInt32 ()));
+				RaiseError (new IOException (string.Format ("Error writing to file: {0}", Errors.ErrorToString (error))));
 			}
 			HandleWrite ();
 		}

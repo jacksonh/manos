@@ -156,10 +156,9 @@ namespace Manos.IO.Libev
 			base.Write (data);
 			ResumeWriting ();
 		}
-
-		public override void Close ()
+		
+		protected override void Dispose(bool disposing)
 		{
-			base.Close ();
 			if (Handle != IntPtr.Zero) {
 				PauseReading ();
 				PauseWriting ();
@@ -179,6 +178,7 @@ namespace Manos.IO.Libev
 			
 				Handle = IntPtr.Zero;
 			}
+			base.Dispose (disposing);
 		}
 
 		protected override void RaiseData (TFragment data)

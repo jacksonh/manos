@@ -44,6 +44,7 @@ namespace Manos.IO
 		Action onEndOfStream;
 		IDisposable currentReader;
 		Context context;
+		bool disposed;
 		// write queue handling
 		TFragment currentFragment;
 		IEnumerator<TFragment> currentWriter;
@@ -75,6 +76,8 @@ namespace Manos.IO
 		/// </summary>
 		protected virtual void CancelReader ()
 		{
+			CheckDisposed ();
+			
 			onData = null;
 			onError = null;
 			onEndOfStream = null;
@@ -119,6 +122,8 @@ namespace Manos.IO
 		/// </exception>
 		public virtual IDisposable Read (Action<TFragment> onData, Action<Exception> onError, Action onEndOfStream)
 		{
+			CheckDisposed ();
+			
 			if (onData == null)
 				throw new ArgumentNullException ("onData");
 			if (onError == null)
@@ -149,6 +154,8 @@ namespace Manos.IO
 		/// </exception>
 		public virtual void Write (IEnumerable<TFragment> data)
 		{
+			CheckDisposed ();
+			
 			if (data == null)
 				throw new ArgumentNullException ("data");
 			
@@ -169,6 +176,8 @@ namespace Manos.IO
 		/// </summary>
 		public virtual void Write (TFragment data)
 		{
+			CheckDisposed ();
+			
 			Write (SingleFragment (data));
 		}
 		
@@ -305,19 +314,7 @@ namespace Manos.IO
 		/// </summary>
 		public virtual void Close ()
 		{
-			if (currentReader != null) {
-				currentReader.Dispose ();
-				currentReader = null;
-			}
-			if (writeQueue != null) {
-				if (currentWriter != null) {
-					currentWriter.Dispose ();
-					currentWriter = null;
-				}
-				currentFragment = null;
-				writeQueue.Clear ();
-				writeQueue = null;
-			}
+			Dispose ();
 		}
 
 		/// <summary>
@@ -334,6 +331,18 @@ namespace Manos.IO
 			Dispose (true);
 			GC.SuppressFinalize (this);
 		}
+		
+		/// <summary>
+		/// Checks whether the object has been disposed.
+		/// </summary>
+		/// <exception cref='ObjectDisposedException'>
+		/// Is thrown when an operation is performed on a disposed object.
+		/// </exception>
+		protected virtual void CheckDisposed ()
+		{
+			if (disposed)
+				throw new ObjectDisposedException (GetType ().Name);
+		}
 
 		/// <summary>
 		/// Dispose the current instance.
@@ -344,7 +353,20 @@ namespace Manos.IO
 		/// </param>
 		protected virtual void Dispose (bool disposing)
 		{
-			Close ();
+			if (currentReader != null) {
+				currentReader.Dispose ();
+				currentReader = null;
+			}
+			if (writeQueue != null) {
+				if (currentWriter != null) {
+					currentWriter.Dispose ();
+					currentWriter = null;
+				}
+				currentFragment = null;
+				writeQueue.Clear ();
+				writeQueue = null;
+			}
+			disposed = true;
 		}
 		
 		/// <summary>

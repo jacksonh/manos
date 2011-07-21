@@ -16,7 +16,7 @@ namespace Manos.IO.Libev
 			int err;
 			fd = SocketFunctions.manos_socket_create ((int) addressFamily, (int) protocolFamily, out err);
 			if (fd < 0) {
-				throw new Exception ();
+				throw Errors.SocketFailure ("Could not create socket", err);
 			}
 		}
 		
@@ -28,12 +28,14 @@ namespace Manos.IO.Libev
 		
 		public override IPEndPoint LocalEndpoint {
 			get {
+				CheckDisposed ();
+				
 				if (localname == null) {
 					int err;
 					ManosIPEndpoint ep;
-					err = SocketFunctions.manos_socket_localname_ip (fd, out ep, out err);
+					var result = SocketFunctions.manos_socket_localname_ip (fd, out ep, out err);
 					if (err != 0) {
-						throw new Exception ();
+						throw Errors.SocketFailure ("Could not get local address", err);
 					}
 					localname = ep;
 				}
@@ -43,12 +45,14 @@ namespace Manos.IO.Libev
 			
 		public override IPEndPoint RemoteEndpoint {
 			get {
+				CheckDisposed ();
+				
 				if (peername == null) {
 					int err;
 					ManosIPEndpoint ep;
-					err = SocketFunctions.manos_socket_peername_ip (fd, out ep, out err);
+					var result = SocketFunctions.manos_socket_peername_ip (fd, out ep, out err);
 					if (err != 0) {
-						throw new Exception ();
+						throw Errors.SocketFailure ("Could not get remote address", err);
 					}
 					peername = ep;
 				}
@@ -62,21 +66,36 @@ namespace Manos.IO.Libev
 		
 		public override void Bind (IPEndPoint endpoint)
 		{
+			CheckDisposed ();
+			
+			if (endpoint == null)
+				throw new ArgumentNullException ("endpoint");
+			
 			int err;
 			ManosIPEndpoint ep = endpoint;
-			err = SocketFunctions.manos_socket_bind_ip (fd, ref ep, out err);
+			var result = SocketFunctions.manos_socket_bind_ip (fd, ref ep, out err);
 			if (err != 0) {
-				throw new Exception ();
+				throw Errors.SocketFailure ("Could not bind to address", err);
 			} else {
 				localname = endpoint;
 			}
+			IsBound = true;
+		}
+			
+		protected void CheckDisposed ()
+		{
+			if (fd == 0)
+				throw new ObjectDisposedException (GetType ().ToString ());
 		}
 		
-		public override void Close ()
+		protected override void Dispose (bool disposing)
 		{
-			int err;
-			SocketFunctions.manos_socket_close (fd, out err);
-			base.Close ();
+			if (fd != 0) {
+				int err;
+				SocketFunctions.manos_socket_close (fd, out err);
+				fd = 0;
+			}
+			base.Dispose (disposing);
 		}
 	}
 }

@@ -69,7 +69,7 @@ namespace Manos.IO.Managed
 					int len = parent.socket.EndReceive (ar, out error);
 				
 					if (error != SocketError.Success) {
-						RaiseError (new SocketException ());
+						RaiseError (new SocketException (error));
 					} else if (len == 0) {
 						RaiseEndOfStream ();
 					} else {
@@ -96,7 +96,7 @@ namespace Manos.IO.Managed
 					SocketError err;
 					parent.socket.EndSend (ar, out err);
 					if (err != SocketError.Success) {
-						RaiseError (new SocketException ());
+						RaiseError (new SocketException (err));
 					} else {
 						HandleWrite ();
 					}
@@ -121,7 +121,7 @@ namespace Manos.IO.Managed
 		{
 		}
 		
-		public override void Connect (IPEndPoint endpoint, Action callback)
+		public override void Connect (IPEndPoint endpoint, Action callback, Action<Exception> error)
 		{
 			try {
 				socket.BeginConnect (endpoint, (ar) => {

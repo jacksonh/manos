@@ -32,6 +32,16 @@ namespace Manos.IO
 		}
 		
 		/// <summary>
+		/// Gets whether this socket is bound to a local address.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if this socket is bound; otherwise, <c>false</c>.
+		/// </value>
+		bool IsBound {
+			get;
+		}
+		
+		/// <summary>
 		/// Gets the local endpoint of the socket.
 		/// </summary>
 		/// <value>
@@ -77,7 +87,7 @@ namespace Manos.IO
 		/// <param name='endpoint'>
 		/// Endpoint to connect to.
 		/// </param>
-		void Connect (TEndPoint endpoint, Action callback);
+		void Connect (TEndPoint endpoint, Action callback, Action<Exception> error);
 		
 		/// <summary>
 		/// Close this socket and release all resources associated with it.

@@ -100,7 +100,7 @@ namespace Manos.IO.Managed
 		{
 		}
 		
-		public override void Connect (IPEndPoint endpoint, Action callback)
+		public override void Connect (IPEndPoint endpoint, Action callback, Action<Exception> error)
 		{
 			socket.Connect (endpoint);
 			callback ();

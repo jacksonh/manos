@@ -222,6 +222,8 @@ namespace Manos.Http {
 						if (OnResponse != null) OnResponse (response);
 					});
 				});
+			}, ex => {
+				// TODO: figure out what to do here
 			});
 		}
 
