@@ -152,7 +152,7 @@ namespace Manos.IO.Libev
 			listener.Start ();
 		}
 		
-		public override void Close ()
+		protected override void Dispose(bool disposing)
 		{
 			if (listener != null) {
 				listener.Stop ();
@@ -163,7 +163,7 @@ namespace Manos.IO.Libev
 				stream.Close ();
 				stream = null;
 			}
-			base.Close ();
+			base.Dispose(disposing);
 		}
 		
 		public override void Connect (IPEndPoint endpoint, Action callback, Action<Exception> error)

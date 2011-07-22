@@ -52,10 +52,7 @@ typedef struct {
 typedef struct {
 	int32_t port;
 	int32_t is_ipv4;
-	union {
-		uint32_t ipv4addr;
-		uint8_t  ipv6addr[16];
-	} address;
+	uint8_t address_bytes[16];
 } manos_ip_endpoint_t;
 
 int manos_socket_localname_ip (int fd, manos_ip_endpoint_t *ep, int *err);

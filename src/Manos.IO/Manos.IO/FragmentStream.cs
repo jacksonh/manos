@@ -354,7 +354,9 @@ namespace Manos.IO
 		protected virtual void Dispose (bool disposing)
 		{
 			if (currentReader != null) {
-				currentReader.Dispose ();
+				onData = null;
+				onEndOfStream = null;
+				onError = null;
 				currentReader = null;
 			}
 			if (writeQueue != null) {

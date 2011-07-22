@@ -74,7 +74,7 @@ namespace Manos.IO.Libev
 			int err;
 			ManosIPEndpoint ep = endpoint;
 			var result = SocketFunctions.manos_socket_bind_ip (fd, ref ep, out err);
-			if (err != 0) {
+			if (result < 0) {
 				throw Errors.SocketFailure ("Could not bind to address", err);
 			} else {
 				localname = endpoint;
