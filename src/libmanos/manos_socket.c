@@ -45,14 +45,14 @@ parse_sockaddr (struct sockaddr_storage *addr, manos_ip_endpoint_t *ep)
 		case AF_INET:
 			in4 = (struct sockaddr_in*) addr;
 			ep->port = ntohs (in4->sin_port);
-			memcpy (ep->address_bytes, &in4->sin_addr.s_addr, 16);
+			memcpy (ep->address_bytes, &in4->sin_addr.s_addr, sizeof (struct in_addr));
 			ep->is_ipv4 = 1;
 			break;
 
 		case AF_INET6:
 			in6 = (struct sockaddr_in6*) addr;
 			ep->port = ntohs (in6->sin6_port);
-			memcpy (ep->address_bytes, in6->sin6_addr.s6_addr, 16);
+			memcpy (ep->address_bytes, in6->sin6_addr.s6_addr, sizeof (struct in6_addr));
 			ep->is_ipv4 = 0;
 			break;
 	}
@@ -68,13 +68,13 @@ parse_endpoint (manos_ip_endpoint_t *ep, struct sockaddr_storage *addr)
 		in4 = (struct sockaddr_in*) addr;
 		in4->sin_family = AF_INET;
 		in4->sin_port = htons (ep->port);
-		memcpy (&in4->sin_addr.s_addr, ep->address_bytes, 4);
+		memcpy (&in4->sin_addr.s_addr, ep->address_bytes, sizeof (struct in_addr));
 		return sizeof (*in4);
 	} else {
 		in6 = (struct sockaddr_in6*) addr;
 		in6->sin6_family = AF_INET6;
 		in6->sin6_port = htons (ep->port);
-		memcpy (in6->sin6_addr.s6_addr, ep->address_bytes, 16);
+		memcpy (in6->sin6_addr.s6_addr, ep->address_bytes, sizeof (struct in6_addr));
 		return sizeof (*in6);
 	}
 }
