@@ -138,7 +138,7 @@ namespace Manos.IO.Managed
 			if (error == null)
 				throw new ArgumentNullException ("error");
 			
-			socket.BeginConnect (endpoint, (ar) => {
+			socket.BeginConnect (endpoint.Address.address, endpoint.Port, (ar) => {
 				Context.Enqueue (delegate {
 					if (!disposed) {
 						try {

@@ -135,15 +135,15 @@ namespace Manos.Tool
 			if (User != null)
 				SetServerUser (User);
 			
-			var listenAddress = System.Net.IPAddress.Any;
+			var listenAddress = Manos.IO.IPAddress.Any;
 			
 			if (IPAddress != null)
-				listenAddress = System.Net.IPAddress.Parse (IPAddress);
+				listenAddress = Manos.IO.IPAddress.Parse (IPAddress);
 
-			AppHost.ListenAt (new System.Net.IPEndPoint (listenAddress, Port));
+			AppHost.ListenAt (new Manos.IO.IPEndPoint (listenAddress, Port));
 			if (SecurePort != null) {
 				AppHost.InitializeTLS ("NORMAL");
-				AppHost.SecureListenAt (new System.Net.IPEndPoint (listenAddress, SecurePort.Value), CertificateFile, KeyFile);
+				AppHost.SecureListenAt (new Manos.IO.IPEndPoint (listenAddress, SecurePort.Value), CertificateFile, KeyFile);
 				Console.WriteLine ("Running {0} on secure port {1}.", app, SecurePort);
 			}
 			AppHost.Start (app);

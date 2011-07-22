@@ -42,12 +42,28 @@ namespace Manos.IO.Managed
 			}
 		}
 		
+		IPEndPoint localname;
+
 		public override IPEndPoint LocalEndpoint {
-			get { return (IPEndPoint) socket.LocalEndPoint; }
+			get {
+				if (localname == null) {
+					var ep = (System.Net.IPEndPoint) socket.LocalEndPoint;
+					localname = new IPEndPoint (new IPAddress (ep.Address), ep.Port);
+				}
+				return localname;
+			}
 		}
 		
+		IPEndPoint peername;
+
 		public override IPEndPoint RemoteEndpoint {
-			get { return (IPEndPoint) socket.RemoteEndPoint; }
+			get {
+				if (peername == null) {
+					var ep = (System.Net.IPEndPoint) socket.RemoteEndPoint;
+					peername = new IPEndPoint (new IPAddress (ep.Address), ep.Port);
+				}
+				return peername;
+			}
 		}
 		
 		public bool IsConnected {
@@ -60,7 +76,7 @@ namespace Manos.IO.Managed
 		
 		public override void Bind (IPEndPoint endpoint)
 		{
-			socket.Bind (endpoint);
+			socket.Bind (new System.Net.IPEndPoint (endpoint.Address.address, endpoint.Port));
 		}
 		
 		protected virtual void CheckDisposed ()

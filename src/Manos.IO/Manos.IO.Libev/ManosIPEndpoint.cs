@@ -12,7 +12,7 @@ namespace Manos.IO.Libev
 		public ManosIPEndpoint (IPEndPoint ep)
 		{
 			this.port = ep.Port;
-			this.is_ipv4 = ep.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork ? 1 : 0;
+			this.is_ipv4 = ep.AddressFamily == AddressFamily.InterNetwork ? 1 : 0;
 			
 			var b = ep.Address.GetAddressBytes ();
 			

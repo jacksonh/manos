@@ -12,7 +12,7 @@ namespace Manos.IO.Managed
 		class UdpStream : ManagedStream<UdpPacket>
 		{
 			UdpSocket parent;
-			EndPoint remote = new IPEndPoint (0, 0);
+			System.Net.EndPoint remote = new System.Net.IPEndPoint (0, 0);
 			
 			internal UdpStream (UdpSocket parent)
 				: base (parent.Context, 64 * 1024)
@@ -54,7 +54,7 @@ namespace Manos.IO.Managed
 					ResetReadTimeout ();
 					int length = parent.socket.EndReceiveFrom (ar, ref remote);
 				
-					IPEndPoint ipremote = (IPEndPoint) remote;
+					var ipremote = (System.Net.IPEndPoint) remote;
 				
 					byte [] newBuffer = new byte [length];
 					Buffer.BlockCopy (buffer, 0, newBuffer, 0, length);
@@ -73,7 +73,7 @@ namespace Manos.IO.Managed
 			
 			protected override WriteResult WriteSingleFragment (UdpPacket packet)
 			{
-				IPEndPoint ep = new IPEndPoint (IPAddress.Parse (packet.Address), packet.Port);
+				var ep = new System.Net.IPEndPoint (System.Net.IPAddress.Parse (packet.Address), packet.Port);
 				parent.socket.BeginSendTo (packet.Buffer.Bytes, packet.Buffer.Position, packet.Buffer.Length,
 					SocketFlags.None, ep, WriteCallback, null);
 				
@@ -112,7 +112,7 @@ namespace Manos.IO.Managed
 			if (error == null)
 				throw new ArgumentNullException ("error");
 			
-			socket.Connect (endpoint);
+			socket.Connect (endpoint.Address.address, endpoint.Port);
 			callback ();
 		}
 		

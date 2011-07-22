@@ -36,7 +36,6 @@ using System.Collections.Specialized;
 using Libev;
 using Manos.IO;
 using Manos.Collections;
-using System.Net;
 
 namespace Manos.Http {
 
@@ -194,10 +193,7 @@ namespace Manos.Http {
 		public void Execute ()
 		{
 			var remote = new IPEndPoint(IPAddress.Parse (RemoteAddress), RemotePort);
-			var family = remote.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork
-				? AddressFamily.InterNetwork
-				: AddressFamily.InterNetworkV6;
-			Socket = AppHost.Context.CreateTcpSocket (family);
+			Socket = AppHost.Context.CreateTcpSocket (remote.AddressFamily);
 			Socket.Connect (remote, delegate {
 				Stream = new HttpStream (this, Socket.GetSocketStream ());
 				Stream.Chunked = false;
