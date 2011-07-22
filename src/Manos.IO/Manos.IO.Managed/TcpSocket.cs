@@ -60,7 +60,7 @@ namespace Manos.IO.Managed
 			
 			protected override void DoRead ()
 			{
-				SocketError se;
+				System.Net.Sockets.SocketError se;
 				int length = (int) Math.Min (readLimit ?? long.MaxValue, buffer.Length);
 				parent.socket.BeginReceive (buffer, 0, length, SocketFlags.None, out se, ReadCallback, null);
 			}
@@ -71,11 +71,11 @@ namespace Manos.IO.Managed
 					if (!parent.disposed) {
 						ResetReadTimeout ();
 				
-						SocketError error;
+						System.Net.Sockets.SocketError error;
 						int len = parent.socket.EndReceive (ar, out error);
 				
-						if (error != SocketError.Success) {
-							RaiseError (new Manos.IO.SocketException ("Read failure", error));
+						if (error != System.Net.Sockets.SocketError.Success) {
+							RaiseError (new Manos.IO.SocketException ("Read failure", Errors.ErrorToSocketError (error)));
 						} else if (len == 0) {
 							RaiseEndOfStream ();
 							Close ();
@@ -102,10 +102,10 @@ namespace Manos.IO.Managed
 					if (!parent.disposed) {
 						ResetWriteTimeout ();
 					
-						SocketError err;
+						System.Net.Sockets.SocketError err;
 						parent.socket.EndSend (ar, out err);
-						if (err != SocketError.Success) {
-							RaiseError (new Manos.IO.SocketException ("Write failure", err));
+						if (err != System.Net.Sockets.SocketError.Success) {
+							RaiseError (new Manos.IO.SocketException ("Write failure", Errors.ErrorToSocketError (err)));
 						} else {
 							HandleWrite ();
 						}
@@ -145,7 +145,7 @@ namespace Manos.IO.Managed
 							socket.EndConnect (ar);
 							callback ();
 						} catch (System.Net.Sockets.SocketException e) {
-							error (new Manos.IO.SocketException ("Connect failure", e.SocketErrorCode));
+							error (new Manos.IO.SocketException ("Connect failure", Errors.ErrorToSocketError (e.SocketErrorCode)));
 						}
 					}
 				});
@@ -180,7 +180,7 @@ namespace Manos.IO.Managed
 				socket.Listen (backlog);
 				AcceptOne (callback);
 			} catch (System.Net.Sockets.SocketException e) {
-				throw new Manos.IO.SocketException ("Listen failure", e.SocketErrorCode);
+				throw new Manos.IO.SocketException ("Listen failure", Errors.ErrorToSocketError (e.SocketErrorCode));
 			}
 		}
 		

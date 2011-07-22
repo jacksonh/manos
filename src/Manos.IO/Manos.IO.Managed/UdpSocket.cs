@@ -44,7 +44,7 @@ namespace Manos.IO.Managed
 					parent.socket.BeginReceiveFrom (buffer, 0, buffer.Length, SocketFlags.None,
 						ref remote, ReceiveFrom, null);
 				} catch (System.Net.Sockets.SocketException e) {
-					RaiseError (new Manos.IO.SocketException ("Read failure", e.SocketErrorCode));
+					RaiseError (new Manos.IO.SocketException ("Read failure", Errors.ErrorToSocketError (e.SocketErrorCode)));
 				}
 			}
 			
@@ -86,12 +86,12 @@ namespace Manos.IO.Managed
 					if (parent != null) {
 						ResetWriteTimeout ();
 					
-						SocketError err;
+						System.Net.Sockets.SocketError err;
 						parent.socket.EndSend (ar, out err);
-						if (err == SocketError.Success) {
+						if (err == System.Net.Sockets.SocketError.Success) {
 							HandleWrite ();
 						} else {
-							RaiseError (new Manos.IO.SocketException ("Write failure", err));
+							RaiseError (new Manos.IO.SocketException ("Write failure", Errors.ErrorToSocketError (err)));
 						}
 					}
 				});

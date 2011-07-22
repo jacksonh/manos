@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Mono.Unix.Native;
-using System.IO;
 
 namespace Manos.IO.Libev
 {

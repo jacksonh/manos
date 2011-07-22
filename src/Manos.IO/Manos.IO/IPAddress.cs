@@ -59,7 +59,7 @@ namespace Manos.IO
 		public long ScopeId {
 			get {
 				if (AddressFamily != AddressFamily.InterNetworkV6)
-					throw new SocketException (System.Net.Sockets.SocketError.OperationNotSupported);
+					throw new SocketException (SocketError.OperationNotSupported);
 				return address.ScopeId;
 			}
 		}

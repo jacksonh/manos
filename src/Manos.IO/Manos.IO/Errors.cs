@@ -1,9 +1,7 @@
 using System;
 using Mono.Unix.Native;
-using System.Net.Sockets;
-using System.IO;
 
-namespace Manos.IO.Libev
+namespace Manos.IO
 {
 	static class Errors
 	{
@@ -70,6 +68,62 @@ namespace Manos.IO.Libev
 			}
 		}
 		
+		public static SocketError ErrorToSocketError (System.Net.Sockets.SocketError err)
+		{
+			switch (err) {
+				case System.Net.Sockets.SocketError.AddressFamilyNotSupported:
+					return SocketError.AddressFamilyNotSupported;
+					
+				case System.Net.Sockets.SocketError.TooManyOpenSockets:
+					return SocketError.TooManyOpenSockets;
+					
+				case System.Net.Sockets.SocketError.ProtocolNotSupported:
+					return SocketError.ProtocolNotSupported;
+					
+				case System.Net.Sockets.SocketError.ProtocolType:
+					return SocketError.ProtocolType;
+					
+				case System.Net.Sockets.SocketError.OperationNotSupported:
+					return SocketError.OperationNotSupported;
+					
+				case System.Net.Sockets.SocketError.NotConnected:
+					return SocketError.NotConnected;
+					
+				case System.Net.Sockets.SocketError.AddressAlreadyInUse:
+					return SocketError.AddressAlreadyInUse;
+					
+				case System.Net.Sockets.SocketError.AddressNotAvailable:
+					return SocketError.AddressNotAvailable;
+					
+				case System.Net.Sockets.SocketError.IsConnected:
+					return SocketError.IsConnected;
+					
+				case System.Net.Sockets.SocketError.ConnectionReset:
+					return SocketError.ConnectionReset;
+					
+				case System.Net.Sockets.SocketError.NetworkDown:
+					return SocketError.NetworkDown;
+					
+				case System.Net.Sockets.SocketError.HostUnreachable:
+					return SocketError.HostUnreachable;
+					
+				case System.Net.Sockets.SocketError.NetworkUnreachable:
+					return SocketError.NetworkUnreachable;
+					
+				case System.Net.Sockets.SocketError.AlreadyInProgress:
+					return SocketError.AlreadyInProgress;
+					
+				case System.Net.Sockets.SocketError.ConnectionRefused:
+					return SocketError.ConnectionRefused;
+					
+				case System.Net.Sockets.SocketError.TimedOut:
+					return SocketError.TimedOut;
+				
+				default:
+					return SocketError.Failure;
+			}
+		}
+		
 		public static IOException SocketStreamFailure (string text, int errno)
 		{
 			var err = ErrorToSocketError (errno);
@@ -83,7 +137,7 @@ namespace Manos.IO.Libev
 		public static Manos.IO.SocketException SocketFailure (string text, int errno)
 		{
 			var err = ErrorToSocketError (errno);
-			return new Manos.IO.SocketException (text, err ?? SocketError.Fault);
+			return new Manos.IO.SocketException (text, err ?? SocketError.Failure);
 		}
 	}
 }
