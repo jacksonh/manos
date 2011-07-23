@@ -1,6 +1,5 @@
 using System;
 using Mono.Unix.Native;
-using System.IO;
 
 namespace Manos.IO
 {
@@ -250,7 +249,7 @@ namespace Manos.IO
 		/// Block size to use for operations on the file. Larger block sizes generally improve
 		/// performance, though too large block sizes only use more memory.
 		/// </param>
-		public abstract IByteStream OpenFile (string fileName, FileAccess openMode, int blockSize);
+		public abstract IByteStream OpenFile (string fileName, OpenMode openMode, int blockSize);
 
 		/// <summary>
 		/// Opens a file for asynchronous operations, creating it if it does not exist yet.

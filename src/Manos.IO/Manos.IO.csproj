@@ -114,6 +114,7 @@
     <Compile Include="Manos.IO\SocketError.cs" />
     <Compile Include="Manos.IO\Errors.cs" />
     <Compile Include="Manos.IO\IOException.cs" />
+    <Compile Include="Manos.IO\OpenMode.cs" />
   </ItemGroup>
   <Target Name="ListSources">
     <Message Text="@(Compile)" Importance="High" />

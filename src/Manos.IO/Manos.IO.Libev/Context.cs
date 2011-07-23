@@ -107,19 +107,19 @@ namespace Manos.IO.Libev
 			throw new NotSupportedException ();
 		}
 
-		public override IByteStream OpenFile (string fileName, FileAccess openMode, int blockSize)
+		public override IByteStream OpenFile (string fileName, OpenMode openMode, int blockSize)
 		{
 			OpenFlags openFlags = 0;
 			switch (openMode) {
-				case FileAccess.Read:
+				case OpenMode.Read:
 					openFlags = OpenFlags.O_RDONLY;
 					break;
 						
-				case FileAccess.ReadWrite:
+				case OpenMode.ReadWrite:
 					openFlags = OpenFlags.O_RDWR;
 					break;
 						
-				case FileAccess.Write:
+				case OpenMode.Write:
 					openFlags = OpenFlags.O_WRONLY;
 					break;
 						

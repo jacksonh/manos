@@ -192,9 +192,26 @@ namespace Manos.IO.Managed
 			throw new NotSupportedException ();
 		}
 
-		public override IByteStream OpenFile (string fileName, FileAccess openMode, int blockSize)
+		public override IByteStream OpenFile (string fileName, OpenMode openMode, int blockSize)
 		{
-			var fs = new System.IO.FileStream (fileName, FileMode.Open, openMode, FileShare.ReadWrite, blockSize, true);
+			FileAccess access;
+			switch (openMode) {
+				case OpenMode.Read:
+					access = FileAccess.Read;
+					break;
+					
+				case OpenMode.ReadWrite:
+					access = FileAccess.ReadWrite;
+					break;
+					
+				case OpenMode.Write:
+					access = FileAccess.Write;
+					break;
+					
+				default:
+					throw new ArgumentException ("openMode");
+			}
+			var fs = new System.IO.FileStream (fileName, FileMode.Open, access, FileShare.ReadWrite, blockSize, true);
 			return new FileStream (this, fs, blockSize);
 		}
 

@@ -140,7 +140,7 @@ namespace Manos.Http
 				((ISendfileCapable) SocketStream).SendFile (fileName);
 			} else {
 				SocketStream.PauseWriting ();
-				var fs = HttpEntity.Context.OpenFile (fileName, FileAccess.Read, 64 * 1024);
+				var fs = HttpEntity.Context.OpenFile (fileName, OpenMode.Read, 64 * 1024);
 				SocketStream.Write (new StreamCopySequencer (fs, SocketStream, true));
 			}
 			SocketStream.Write (SendCallback (SendBufferedOps));
