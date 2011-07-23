@@ -143,6 +143,7 @@ namespace Manos.IO.Managed
 					if (!disposed) {
 						try {
 							socket.EndConnect (ar);
+							IsConnected = true;
 							callback ();
 						} catch (System.Net.Sockets.SocketException e) {
 							error (new Manos.IO.SocketException ("Connect failure", Errors.ErrorToSocketError (e.SocketErrorCode)));

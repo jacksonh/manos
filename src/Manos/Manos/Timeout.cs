@@ -33,7 +33,7 @@ namespace Manos
 	/// 
 	/// Timeouts will never run before the specified TimeSpan has elapsed.
 	/// 
-	/// Use the method <see cref="Manos.IO.IOLoop"/> "AddTimeout" method to register each Timeout.
+	/// Use the method <see cref="M:Manos.AppHost.AddTimeout"/> method to register each Timeout.
 	/// </summary>
 	public class Timeout
 	{

@@ -43,10 +43,10 @@ namespace Manos {
 		}
 		
 		/// <summary>
-		/// 
+		/// Specifies that the decorated method should be invoked whenever a PUT request matches any of the patterns declared)
 		/// </summary>
 		/// <param name="patterns">
-		/// A <see cref="System.String[]"/>
+		/// A <see cref="T:System.String[]"/> of patterns to match
 		/// </param>
 		public PutAttribute (params string [] patterns) : base (patterns)
 		{

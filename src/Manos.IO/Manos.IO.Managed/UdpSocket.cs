@@ -113,6 +113,7 @@ namespace Manos.IO.Managed
 				throw new ArgumentNullException ("error");
 			
 			socket.Connect (endpoint.Address.address, endpoint.Port);
+			IsConnected = true;
 			callback ();
 		}
 		

@@ -193,7 +193,7 @@ namespace Manos.IO.Libev
 					watcher.Dispose ();
 					
 					var result = SocketFunctions.manos_socket_peername_ip (fd, out ep, out err);
-					if (err != 0) {
+					if (result < 0) {
 						error (Errors.SocketFailure ("Connect failure", err));
 					} else {
 						peername = endpoint;

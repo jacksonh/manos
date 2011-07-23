@@ -37,7 +37,7 @@ namespace Manos
 	/// This is similar in concept to the HttpModule in the ASP.Net stack.</remarks>
 	public interface IManosPipe
 	{
-		/// <summarY>
+		/// <summary>
 		///  Called as a request is coming in, before any actions at all have been taken on the
 		///  request.  There is not a valid Response object on the transaction yet and the
 		///  routing information has not been looked up.

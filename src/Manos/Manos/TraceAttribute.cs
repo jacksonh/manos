@@ -47,7 +47,7 @@ namespace Manos {
 		/// Specifies that the decorated method should be invoked whenever a TRACE request matches any of the patterns declared)
 		/// </summary>
 		/// <param name="patterns">
-		/// A <see cref="System.String[]"/>
+		/// A <see cref="T:System.String[]"/> of patterns to match
 		/// </param>
 		public TraceAttribute (params string [] patterns) : base (patterns)
 		{

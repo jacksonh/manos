@@ -182,7 +182,8 @@ namespace Manos.IO
 		}
 		
 		/// <summary>
-		/// Releases unmanaged resources and performs other cleanup operations before the <see cref="Manos.IO.ByteStream"/> is
+		/// Releases unmanaged resources and performs other cleanup operations before the
+		/// <see cref="Manos.IO.FragmentStream{TFragment}"/> is
 		/// reclaimed by garbage collection.
 		/// </summary>
 		~FragmentStream ()
@@ -318,13 +319,13 @@ namespace Manos.IO
 		}
 
 		/// <summary>
-		/// Releases all resource used by the <see cref="Manos.IO.ByteStream"/> object.
+		/// Releases all resource used by the <see cref="Manos.IO.FragmentStream{TFragment}"/> object.
 		/// </summary>
 		/// <remarks>
-		/// Call <see cref="Dispose()"/> when you are finished using the <see cref="Manos.IO.Stream"/>. The
-		/// <see cref="Dispose()"/> method leaves the <see cref="Manos.IO.Stream"/> in an unusable state. After calling
-		/// <see cref="Dispose()"/>, you must release all references to the <see cref="Manos.IO.Stream"/> so the garbage
-		/// collector can reclaim the memory that the <see cref="Manos.IO.ByteStream"/> was occupying.
+		/// Call <see cref="Dispose()"/> when you are finished using the <see cref="Manos.IO.FragmentStream{TFragment}"/>. The
+		/// <see cref="Dispose()"/> method leaves the <see cref="Manos.IO.FragmentStream{TFragment}"/> in an unusable state. After calling
+		/// <see cref="Dispose()"/>, you must release all references to the <see cref="Manos.IO.FragmentStream{TFragment}"/> so the garbage
+		/// collector can reclaim the memory that the <see cref="Manos.IO.FragmentStream{TFragment}"/> was occupying.
 		/// </remarks>
 		public void Dispose ()
 		{

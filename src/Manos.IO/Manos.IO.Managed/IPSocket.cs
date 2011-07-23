@@ -34,14 +34,6 @@ namespace Manos.IO.Managed
 			this.socket = socket;
 		}
 		
-		public AddressFamily AddressFamily {
-			get {
-				return socket.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork
-					? AddressFamily.InterNetwork
-					: AddressFamily.InterNetworkV6;
-			}
-		}
-		
 		IPEndPoint localname;
 
 		public override IPEndPoint LocalEndpoint {
@@ -64,10 +56,6 @@ namespace Manos.IO.Managed
 				}
 				return peername;
 			}
-		}
-		
-		public bool IsConnected {
-			get { return socket.Connected; }
 		}
 		
 		public new Context Context {

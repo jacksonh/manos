@@ -22,6 +22,7 @@ namespace Manos.IO
 		/// Initializes a new instance of the <see cref="T:SocketException"/> class
 		/// </summary>
 		/// <param name="message">A <see cref="T:System.String"/> that describes the exception. </param>
+		/// <param name="code">Error code of the operation that failed.</param>
 		public SocketException (string message, SocketError code)
 			: base (message)
 		{
@@ -32,6 +33,7 @@ namespace Manos.IO
 		/// Initializes a new instance of the <see cref="T:SocketException"/> class
 		/// </summary>
 		/// <param name="message">A <see cref="T:System.String"/> that describes the exception. </param>
+		/// <param name="code">Error code of the operation that failed.</param>
 		/// <param name="inner">The exception that is the cause of the current exception. </param>
 		public SocketException (string message, SocketError code, Exception inner)
 			: base (message, inner)

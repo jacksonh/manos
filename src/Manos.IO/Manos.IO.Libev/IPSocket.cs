@@ -34,7 +34,7 @@ namespace Manos.IO.Libev
 					int err;
 					ManosIPEndpoint ep;
 					var result = SocketFunctions.manos_socket_localname_ip (fd, out ep, out err);
-					if (err != 0) {
+					if (result < 0) {
 						throw Errors.SocketFailure ("Could not get local address", err);
 					}
 					localname = ep;
@@ -51,7 +51,7 @@ namespace Manos.IO.Libev
 					int err;
 					ManosIPEndpoint ep;
 					var result = SocketFunctions.manos_socket_peername_ip (fd, out ep, out err);
-					if (err != 0) {
+					if (result < 0) {
 						throw Errors.SocketFailure ("Could not get remote address", err);
 					}
 					peername = ep;
