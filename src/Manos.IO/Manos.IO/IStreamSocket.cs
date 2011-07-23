@@ -21,6 +21,21 @@ namespace Manos.IO
 		/// The socket stream.
 		/// </returns>
 		TStream GetSocketStream ();
+		
+		/// <summary>
+		/// Connect the socket to the specified remote endpoint and invoke callback on
+		/// success.
+		/// </summary>
+		/// <param name="endpoint">
+		/// Endpoint to connect to.
+		/// </param>
+		/// <param name="callback">
+		/// Callback to invoke on success.
+		/// </param>
+		/// <param name="error">
+		/// Callback to invoke on error.
+		/// </param>
+		void Connect (TEndPoint endpoint, Action callback, Action<Exception> error);
 	}
 }
 
