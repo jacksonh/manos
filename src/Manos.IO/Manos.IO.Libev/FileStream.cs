@@ -203,8 +203,10 @@ namespace Manos.IO.Libev
 		{
 			if (result < 0) {
 				RaiseError (new IOException (string.Format ("Error writing to file: {0}", Errors.ErrorToString (error))));
+			} else {
+				position += result;
+				HandleWrite ();
 			}
-			HandleWrite ();
 		}
 		
 		protected override long FragmentSize (ByteBuffer fragment)
