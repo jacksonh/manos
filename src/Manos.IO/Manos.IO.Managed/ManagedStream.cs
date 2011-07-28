@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace Manos.IO.Managed
 {
@@ -7,7 +8,6 @@ namespace Manos.IO.Managed
 		where TFragment : class
 	{
 		protected byte [] buffer;
-		protected long? readLimit;
 		protected bool readAllowed, writeAllowed;
 		Timer readTimer, writeTimer;
 		int readTimeoutInterval = -1;
@@ -94,25 +94,16 @@ namespace Manos.IO.Managed
 			return result;
 		}
 		
+		public override void Write(IEnumerable<TFragment> data)
+		{
+			base.Write(data);
+			ResumeWriting ();
+		}
+		
 		public override void ResumeReading ()
 		{
 			CheckDisposed ();
 			
-			readLimit = null;
-			if (!readAllowed) {
-				readAllowed = true;
-				DispatchRead ();
-			}
-		}
-			
-		public override void ResumeReading (long forFragments)
-		{
-			CheckDisposed ();
-			
-			if (forFragments < 0)
-				throw new ArgumentException ("forFragments");
-
-			readLimit = forFragments;
 			if (!readAllowed) {
 				readAllowed = true;
 				DispatchRead ();
@@ -159,15 +150,6 @@ namespace Manos.IO.Managed
 			if (writeAllowed) {
 				base.HandleWrite ();
 			}
-		}
-		
-		protected override void RaiseData (TFragment data)
-		{
-			readLimit -= FragmentSize (data);
-			if (readLimit < 0) {
-				PauseReading ();
-			}
-			base.RaiseData (data);
 		}
 		
 		protected abstract void DoRead ();

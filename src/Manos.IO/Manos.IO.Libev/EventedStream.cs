@@ -12,8 +12,6 @@ namespace Manos.IO.Libev
 		TimerWatcher readTimeoutWatcher, writeTimeoutWatcher;
 		TimeSpan readTimeout, writeTimeout;
 		DateTime? readTimeoutContinuation, writeTimeoutContinuation;
-		// read limits
-		protected long? readLimit;
 
 		protected EventedStream (Context context, IntPtr handle)
 			: base (context)
@@ -110,17 +108,7 @@ namespace Manos.IO.Libev
 
 		public override void ResumeReading ()
 		{
-			readLimit = null;
 			readWatcher.Start ();
-		}
-
-		public override void ResumeReading (long forBytes)
-		{
-			if (forBytes < 0) {
-				throw new ArgumentException ("forBytes");
-			}
-			ResumeReading ();
-			readLimit = forBytes;
 		}
 
 		public override void ResumeWriting ()
@@ -179,15 +167,6 @@ namespace Manos.IO.Libev
 				Handle = IntPtr.Zero;
 			}
 			base.Dispose (disposing);
-		}
-
-		protected override void RaiseData (TFragment data)
-		{
-			readLimit -= FragmentSize (data);
-			if (readLimit <= 0) {
-				PauseReading ();
-			}
-			base.RaiseData (data);
 		}
 
 		protected abstract void HandleRead ();

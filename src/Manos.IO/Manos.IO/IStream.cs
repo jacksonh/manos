@@ -121,13 +121,6 @@ namespace Manos.IO
 		/// Instructs the stream to resume reading when it is not reading yet.
 		/// </summary>
 		void ResumeReading ();
-
-		/// <summary>
-		/// Instructs the stream to resume reading when it is not reading yet.
-		/// After <paramref name="forFragments"/> fragment units have been read, the stream
-		/// automatically pauses itself again.
-		/// </summary>
-		void ResumeReading (long forFragments);
 		
 		/// <summary>
 		/// Resumes writing.

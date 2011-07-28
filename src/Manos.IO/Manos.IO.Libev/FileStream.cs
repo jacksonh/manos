@@ -9,7 +9,6 @@ namespace Manos.IO.Libev
 		byte [] readBuffer;
 		bool readEnabled, writeEnabled;
 		bool canRead, canWrite;
-		long readLimit;
 		long position;
 
 		FileStream (Context context, IntPtr handle, int blockSize, bool canRead, bool canWrite)
@@ -98,20 +97,11 @@ namespace Manos.IO.Libev
 
 		public override void ResumeReading ()
 		{
-			ResumeReading (long.MaxValue);
-		}
-
-		public override void ResumeReading (long forBytes)
-		{
 			CheckDisposed ();
 			
 			if (!canRead)
 				throw new InvalidOperationException ();
-			if (forBytes < 0) {
-				throw new ArgumentException ("forBytes");
-			}
 			
-			readLimit = forBytes;
 			if (!readEnabled) {
 				readEnabled = true;
 				ReadNextBuffer ();
@@ -151,8 +141,7 @@ namespace Manos.IO.Libev
 				return;
 			}
 			
-			var length = (int) Math.Min (readBuffer.Length, readLimit);
-			Context.Eio.Read (Handle.ToInt32 (), readBuffer, position, length, OnReadDone);
+			Context.Eio.Read (Handle.ToInt32 (), readBuffer, position, readBuffer.Length, OnReadDone);
 		}
 
 		void OnReadDone (int result, byte[] buffer, int error)
@@ -170,15 +159,6 @@ namespace Manos.IO.Libev
 				PauseReading ();
 				RaiseEndOfStream ();
 			}
-		}
-
-		protected override void RaiseData (ByteBuffer data)
-		{
-			readLimit -= data.Length;
-			if (readLimit <= 0) {
-				PauseReading ();
-			}
-			base.RaiseData (data);
 		}
 
 		protected override void HandleWrite ()

@@ -61,8 +61,7 @@ namespace Manos.IO.Managed
 			protected override void DoRead ()
 			{
 				System.Net.Sockets.SocketError se;
-				int length = (int) Math.Min (readLimit ?? long.MaxValue, buffer.Length);
-				parent.socket.BeginReceive (buffer, 0, length, SocketFlags.None, out se, ReadCallback, null);
+				parent.socket.BeginReceive (buffer, 0, buffer.Length, SocketFlags.None, out se, ReadCallback, null);
 			}
 
 			void ReadCallback (IAsyncResult ar)

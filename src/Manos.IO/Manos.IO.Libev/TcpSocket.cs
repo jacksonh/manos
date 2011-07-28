@@ -62,8 +62,8 @@ namespace Manos.IO.Libev
 			protected override void HandleRead ()
 			{
 				int err;
-				int limit = (int) Math.Min (receiveBuffer.Length, readLimit ?? long.MaxValue);
-				var received = SocketFunctions.manos_socket_receive (Handle.ToInt32 (), receiveBuffer, limit, out err);
+				var received = SocketFunctions.manos_socket_receive (Handle.ToInt32 (), receiveBuffer,
+					receiveBuffer.Length, out err);
 				if (received < 0 && err != 0 || received == 0) {
 					if (received < 0) {
 						RaiseError (Errors.SocketStreamFailure ("Read failure", err));

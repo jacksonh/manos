@@ -69,8 +69,7 @@ namespace Manos.IO.Managed
 		
 		protected override void DoRead ()
 		{
-			var length = (int) Math.Min (buffer.Length, readLimit ?? long.MaxValue);
-			stream.BeginRead (buffer, 0, length, OnReadDone, null);
+			stream.BeginRead (buffer, 0, buffer.Length, OnReadDone, null);
 		}
 
 		void OnReadDone (IAsyncResult ar)
