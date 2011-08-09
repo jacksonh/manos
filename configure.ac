@@ -129,7 +129,7 @@ case "$host" in
 		dnl we need to set some flags to build our 32-bit binaries on 10.6 properly
 		case "$host" in
 			dnl Snow Leopard config.guess reports as this
-			i*86-*-darwin10*)
+			i*86-*-darwin1*)
 				BROKEN_DARWIN_FLAGS="-arch i386 -D_XOPEN_SOURCE -mmacosx-version-min=10.5"
 				CPPFLAGS="$CPPFLAGS $BROKEN_DARWIN_FLAGS"
 				CFLAGS="$CFLAGS $BROKEN_DARWIN_FLAGS"
