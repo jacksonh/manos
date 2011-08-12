@@ -92,7 +92,7 @@ namespace Manos.Http {
 			get;
 		}
 
-		Socket Socket {
+		ITcpSocket Socket {
 			get;
 		}
 

@@ -92,29 +92,34 @@ namespace Manos.IO.Libev
 			});
 		}
 
-		public override Socket CreateSocket ()
+		public override ITcpSocket CreateTcpSocket (AddressFamily addressFamily)
 		{
-			return new PlainSocket (this);
+			return new TcpSocket (this, addressFamily);
+		}
+		
+		public override ITcpServerSocket CreateTcpServerSocket (AddressFamily addressFamily)
+		{
+			return new TcpSocket (this, addressFamily);
 		}
 
-		public override Socket CreateSecureSocket (string certFile, string keyFile)
+		public override ITcpSocket CreateSecureSocket (string certFile, string keyFile)
 		{
-			return new SecureSocket (this, certFile, keyFile);
+			throw new NotSupportedException ();
 		}
 
-		public override Stream OpenFile (string fileName, FileAccess openMode, int blockSize)
+		public override IByteStream OpenFile (string fileName, OpenMode openMode, int blockSize)
 		{
 			OpenFlags openFlags = 0;
 			switch (openMode) {
-				case FileAccess.Read:
+				case OpenMode.Read:
 					openFlags = OpenFlags.O_RDONLY;
 					break;
 						
-				case FileAccess.ReadWrite:
+				case OpenMode.ReadWrite:
 					openFlags = OpenFlags.O_RDWR;
 					break;
 						
-				case FileAccess.Write:
+				case OpenMode.Write:
 					openFlags = OpenFlags.O_WRONLY;
 					break;
 						
@@ -124,9 +129,14 @@ namespace Manos.IO.Libev
 			return FileStream.Open (this, fileName, blockSize, openFlags);
 		}
 
-		public override Stream CreateFile (string fileName, int blockSize)
+		public override IByteStream CreateFile (string fileName, int blockSize)
 		{
 			return FileStream.Create (this, fileName, blockSize);
+		}
+		
+		public override Manos.IO.IUdpSocket CreateUdpSocket (AddressFamily family)
+		{
+			return new UdpSocket (this, family);
 		}
 	}
 }

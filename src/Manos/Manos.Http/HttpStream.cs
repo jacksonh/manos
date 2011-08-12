@@ -42,7 +42,7 @@ namespace Manos.Http
 		private bool final_chunk_sent;
 		private Queue<object> write_ops;
 
-		public HttpStream (HttpEntity entity, Manos.IO.Stream stream)
+		public HttpStream (HttpEntity entity, Manos.IO.IByteStream stream)
 		{
 			HttpEntity = entity;
 			SocketStream = stream;
@@ -54,7 +54,7 @@ namespace Manos.Http
 			private set;
 		}
 
-		public Manos.IO.Stream SocketStream {
+		public Manos.IO.IByteStream SocketStream {
 			get;
 			private set;
 		}
@@ -140,7 +140,7 @@ namespace Manos.Http
 				((ISendfileCapable) SocketStream).SendFile (fileName);
 			} else {
 				SocketStream.PauseWriting ();
-				var fs = HttpEntity.Context.OpenFile (fileName, FileAccess.Read, 64 * 1024);
+				var fs = HttpEntity.Context.OpenFile (fileName, OpenMode.Read, 64 * 1024);
 				SocketStream.Write (new StreamCopySequencer (fs, SocketStream, true));
 			}
 			SocketStream.Write (SendCallback (SendBufferedOps));

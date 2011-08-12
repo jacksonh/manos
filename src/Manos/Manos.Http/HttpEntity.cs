@@ -99,7 +99,7 @@ namespace Manos.Http {
 			}
 		}
 
-		public Socket Socket {
+		public ITcpSocket Socket {
 			get;
 			protected set;
 		}

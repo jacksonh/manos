@@ -4,15 +4,14 @@ using System.Collections.Generic;
 
 namespace Manos.IO.Libev
 {
-	abstract class EventedStream : Stream
+	abstract class EventedStream<TFragment> : FragmentStream<TFragment>
+		where TFragment : class
 	{
 		// readiness watchers
 		IOWatcher readWatcher, writeWatcher;
 		TimerWatcher readTimeoutWatcher, writeTimeoutWatcher;
 		TimeSpan readTimeout, writeTimeout;
 		DateTime? readTimeoutContinuation, writeTimeoutContinuation;
-		// read limits
-		protected long? readLimit;
 
 		protected EventedStream (Context context, IntPtr handle)
 			: base (context)
@@ -109,17 +108,7 @@ namespace Manos.IO.Libev
 
 		public override void ResumeReading ()
 		{
-			readLimit = null;
 			readWatcher.Start ();
-		}
-
-		public override void ResumeReading (long forBytes)
-		{
-			if (forBytes < 0) {
-				throw new ArgumentException ("forBytes");
-			}
-			ResumeReading ();
-			readLimit = forBytes;
 		}
 
 		public override void ResumeWriting ()
@@ -143,22 +132,21 @@ namespace Manos.IO.Libev
 			base.CancelReader ();
 		}
 
-		public override IDisposable Read (Action<ByteBuffer> onData, Action<Exception> onError, Action onClose)
+		public override IDisposable Read (Action<TFragment> onData, Action<Exception> onError, Action onClose)
 		{
 			ResumeReading ();
 			
 			return base.Read (onData, onError, onClose);
 		}
 
-		public override void Write (IEnumerable<ByteBuffer> data)
+		public override void Write (IEnumerable<TFragment> data)
 		{
 			base.Write (data);
 			ResumeWriting ();
 		}
-
-		public override void Close ()
+		
+		protected override void Dispose(bool disposing)
 		{
-			base.Close ();
 			if (Handle != IntPtr.Zero) {
 				PauseReading ();
 				PauseWriting ();
@@ -178,15 +166,7 @@ namespace Manos.IO.Libev
 			
 				Handle = IntPtr.Zero;
 			}
-		}
-
-		protected override void RaiseData (ByteBuffer data)
-		{
-			readLimit -= data.Length;
-			if (readLimit <= 0) {
-				PauseReading ();
-			}
-			base.RaiseData (data);
+			base.Dispose (disposing);
 		}
 
 		protected abstract void HandleRead ();

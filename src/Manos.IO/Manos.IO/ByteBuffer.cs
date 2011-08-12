@@ -37,6 +37,15 @@ namespace Manos.IO
 		byte [] bytes;
 		
 		/// <summary>
+		/// Initializes a new instance of the <see cref="Manos.IO.ByteBuffer"/> class with the exact
+		/// size of the byte buffer.
+		/// </summary>
+		public ByteBuffer (byte [] bytes)
+			: this (bytes, 0, bytes.Length)
+		{
+		}
+		
+		/// <summary>
 		/// Initializes a new instance of the <see cref="Manos.IO.ByteBuffer"/> class.
 		/// </summary>
 		public ByteBuffer (byte [] bytes, int position, int length)

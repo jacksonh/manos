@@ -17,6 +17,7 @@ namespace Manos.IO.Managed
 		private List<AsyncWatcher> asyncs;
 		private List<TimerWatcher> timers;
 		private volatile bool running;
+		private object syncRoot = new object ();
 
 		public Context ()
 		{
@@ -33,7 +34,7 @@ namespace Manos.IO.Managed
 		{
 			if (cb == null)
 				throw new ArgumentNullException ("cb");
-			lock (this) {
+			lock (syncRoot) {
 				outstanding.Enqueue (cb);
 			}
 			pulse.Set ();
@@ -176,26 +177,53 @@ namespace Manos.IO.Managed
 			return result;
 		}
 
-		public override Manos.IO.Socket CreateSocket ()
+		public override Manos.IO.ITcpSocket CreateTcpSocket (AddressFamily addressFamily)
 		{
-			return new Socket (this);
+			return new TcpSocket (this, addressFamily);
+		}
+		
+		public override ITcpServerSocket CreateTcpServerSocket(AddressFamily addressFamily)
+		{
+			return new TcpSocket (this, addressFamily);
 		}
 
-		public override Manos.IO.Socket CreateSecureSocket (string certFile, string keyFile)
+		public override Manos.IO.ITcpSocket CreateSecureSocket (string certFile, string keyFile)
 		{
 			throw new NotSupportedException ();
 		}
 
-		public override Stream OpenFile (string fileName, FileAccess openMode, int blockSize)
+		public override IByteStream OpenFile (string fileName, OpenMode openMode, int blockSize)
 		{
-			var fs = new System.IO.FileStream (fileName, FileMode.Open, openMode, FileShare.ReadWrite, blockSize, true);
+			FileAccess access;
+			switch (openMode) {
+				case OpenMode.Read:
+					access = FileAccess.Read;
+					break;
+					
+				case OpenMode.ReadWrite:
+					access = FileAccess.ReadWrite;
+					break;
+					
+				case OpenMode.Write:
+					access = FileAccess.Write;
+					break;
+					
+				default:
+					throw new ArgumentException ("openMode");
+			}
+			var fs = new System.IO.FileStream (fileName, FileMode.Open, access, FileShare.ReadWrite, blockSize, true);
 			return new FileStream (this, fs, blockSize);
 		}
 
-		public override Stream CreateFile (string fileName, int blockSize)
+		public override IByteStream CreateFile (string fileName, int blockSize)
 		{
 			var fs = System.IO.File.Create (fileName);
 			return new FileStream (this, fs, blockSize);
+		}
+		
+		public override Manos.IO.IUdpSocket CreateUdpSocket (AddressFamily family)
+		{
+			return new UdpSocket (this, family);
 		}
 	}
 }

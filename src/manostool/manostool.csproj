@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -56,6 +56,10 @@
     <ProjectReference Include="..\Manos\Manos.csproj">
       <Project>{2548B25A-2E1F-4E21-BC43-7E39B1F6F23F}</Project>
       <Name>Manos</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Manos.IO\Manos.IO.csproj">
+      <Project>{5E2AA984-1C9C-4890-BEF6-CC2981C49AFF}</Project>
+      <Name>Manos.IO</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
