@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Manos.IO
 {
@@ -16,25 +15,48 @@ namespace Manos.IO
 	/// individually. Pausing and resuming is a set-reset process, so multiple
 	/// calls to Pause methods can be undone by a single call to a Resume method.</para>
 	/// </summary>
-	public abstract class Stream : IDisposable
+	public abstract class FragmentStream<TFragment> : IStream<TFragment>
+		where TFragment : class
 	{
-		Action<ByteBuffer> onData;
+		/// <summary>
+		/// Enumeration of results a write operation can produce.
+		/// </summary>
+		protected enum WriteResult
+		{
+			/// <summary>
+			/// The write failed in some way. Pause the writing process.
+			/// </summary>
+			Error,
+			/// <summary>
+			/// The write succeeded and has written the entire fragment.
+			/// Consume the fragment.
+			/// </summary>
+			Consume,
+			/// <summary>
+			/// The write succeeded and has not written the entire fragment.
+			/// Continue writing the fragment as soon as possible.
+			/// </summary>
+			Continue
+		}
+		
+		Action<TFragment> onData;
 		Action<Exception> onError;
 		Action onEndOfStream;
 		IDisposable currentReader;
 		Context context;
+		bool disposed;
 		// write queue handling
-		ByteBuffer currentBuffer;
-		IEnumerator<ByteBuffer> currentWriter;
-		Queue<IEnumerable<ByteBuffer>> writeQueue;
+		TFragment currentFragment;
+		IEnumerator<TFragment> currentWriter;
+		Queue<IEnumerable<TFragment>> writeQueue;
 		
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Manos.IO.Stream"/> class.
+		/// Initializes a new instance of the <see cref="Manos.IO.FragmentStream{TFragment}"/> class.
 		/// </summary>
 		/// <param name='context'>
 		/// The context this instance will be bound to.
 		/// </param>
-		protected Stream (Context context)
+		protected FragmentStream (Context context)
 		{
 			if (context == null)
 				throw new ArgumentNullException ("context");
@@ -54,6 +76,8 @@ namespace Manos.IO
 		/// </summary>
 		protected virtual void CancelReader ()
 		{
+			CheckDisposed ();
+			
 			onData = null;
 			onError = null;
 			onEndOfStream = null;
@@ -68,12 +92,12 @@ namespace Manos.IO
 		/// </summary>
 		protected class ReaderHandle : IDisposable
 		{
-			Stream parent;
+			FragmentStream<TFragment> parent;
 			
 			/// <summary>
-			/// Initializes a new instance of the <see cref="Manos.IO.Stream.ReaderHandle"/> class.
+			/// Initializes a new instance of the <see cref="Manos.IO.FragmentStream{TFragment}.ReaderHandle"/> class.
 			/// </summary>
-			public ReaderHandle (Stream parent)
+			public ReaderHandle (FragmentStream<TFragment> parent)
 			{
 				this.parent = parent;
 			}
@@ -96,8 +120,10 @@ namespace Manos.IO
 		/// <exception cref='ArgumentNullException'>
 		/// Is thrown when any argument passed to the method is <see langword="null" /> .
 		/// </exception>
-		public virtual IDisposable Read (Action<ByteBuffer> onData, Action<Exception> onError, Action onEndOfStream)
+		public virtual IDisposable Read (Action<TFragment> onData, Action<Exception> onError, Action onEndOfStream)
 		{
+			CheckDisposed ();
+			
 			if (onData == null)
 				throw new ArgumentNullException ("onData");
 			if (onError == null)
@@ -115,64 +141,58 @@ namespace Manos.IO
 		}
 
 		/// <summary>
-		/// Places a sequence of buffers into the write queue.
+		/// Places a sequence of fragments into the write queue.
 		/// The sequence is not touched, only when the first piece of data in the
 		/// sequence may be written to the stream, the enumeration is started.
 		/// This allows for data generators that produce large amounts of data, but
 		/// have a very small memory footprint.
-		/// <para>The sequence may return an arbitrary number of byte buffers.</para>
-		/// <para>Byte buffers of length 0 are interpreted literally, as writes
-		/// of length 0. Writing continues after the buffer has been written, unless the
-		/// stream has become congested.</para>
-		/// <para><c>null</c> byte buffers pause writing.</para>
+		/// <para>The sequence may return an arbitrary number of fragments.</para>
+		/// <para><c>null</c> fragments pause writing.</para>
 		/// </summary>
 		/// <exception cref='ArgumentNullException'>
 		/// Is thrown when an argument passed to a method is invalid because it is <see langword="null" /> .
 		/// </exception>
-		public virtual void Write (IEnumerable<ByteBuffer> data)
+		public virtual void Write (IEnumerable<TFragment> data)
 		{
+			CheckDisposed ();
+			
 			if (data == null)
 				throw new ArgumentNullException ("data");
 			
 			if (writeQueue == null) {
-				writeQueue = new Queue<IEnumerable<ByteBuffer>> ();
+				writeQueue = new Queue<IEnumerable<TFragment>> ();
 			}
 			
 			writeQueue.Enqueue (data);
 		}
 		
-		static IEnumerable<ByteBuffer> SingleBuffer (ByteBuffer buffer)
+		static IEnumerable<TFragment> SingleFragment (TFragment fragment)
 		{
-			yield return buffer;
+			yield return fragment;
 		}
 		
 		/// <summary>
 		/// Places a single buffer into the write queue.
 		/// </summary>
-		public virtual void Write (ByteBuffer data)
+		public virtual void Write (TFragment data)
 		{
-			Write (SingleBuffer (data));
+			CheckDisposed ();
+			
+			Write (SingleFragment (data));
 		}
 		
 		/// <summary>
-		/// Places a single byte array into the write queue.
-		/// </summary>
-		public virtual void Write (byte[] data)
-		{
-			Write (new ByteBuffer (data, 0, data.Length));
-		}
-		
-		/// <summary>
-		/// Releases unmanaged resources and performs other cleanup operations before the <see cref="Manos.IO.Stream"/> is
+		/// Releases unmanaged resources and performs other cleanup operations before the
+		/// <see cref="Manos.IO.FragmentStream{TFragment}"/> is
 		/// reclaimed by garbage collection.
 		/// </summary>
-		~Stream ()
+		~FragmentStream ()
 		{
 			Dispose (false);
 		}
 
 		/// <summary>
-		/// Gets or sets the position.
+		/// Gets or sets the position of the stream.
 		/// </summary>
 		public abstract long Position {
 			get;
@@ -239,13 +259,6 @@ namespace Manos.IO
 		/// Instructs the stream to resume reading when it is not reading yet.
 		/// </summary>
 		public abstract void ResumeReading ();
-
-		/// <summary>
-		/// Instructs the stream to resume reading when it is not reading yet.
-		/// After <paramref name="forBytes"/> bytes have been read, the stream
-		/// automatically pauses itself again.
-		/// </summary>
-		public abstract void ResumeReading (long forBytes);
 		
 		/// <summary>
 		/// Resumes writing.
@@ -263,7 +276,7 @@ namespace Manos.IO
 		public abstract void PauseWriting ();
 		
 		/// <summary>
-		/// Seeks by <paramref name="delta"/> bytes. A positive <paramref name="delta"/>
+		/// Seeks by <paramref name="delta"/> fragments. A positive <paramref name="delta"/>
 		/// will seek forward, a negative <paramref name="delta"/> will seek backwards.
 		/// </summary>
 		public virtual void SeekBy (long delta)
@@ -295,34 +308,34 @@ namespace Manos.IO
 		/// </summary>
 		public virtual void Close ()
 		{
-			if (currentReader != null) {
-				currentReader.Dispose ();
-				currentReader = null;
-			}
-			if (writeQueue != null) {
-				if (currentWriter != null) {
-					currentWriter.Dispose ();
-					currentWriter = null;
-				}
-				currentBuffer = null;
-				writeQueue.Clear ();
-				writeQueue = null;
-			}
+			Dispose ();
 		}
 
 		/// <summary>
-		/// Releases all resource used by the <see cref="Manos.IO.Stream"/> object.
+		/// Releases all resource used by the <see cref="Manos.IO.FragmentStream{TFragment}"/> object.
 		/// </summary>
 		/// <remarks>
-		/// Call <see cref="Dispose()"/> when you are finished using the <see cref="Manos.IO.Stream"/>. The
-		/// <see cref="Dispose()"/> method leaves the <see cref="Manos.IO.Stream"/> in an unusable state. After calling
-		/// <see cref="Dispose()"/>, you must release all references to the <see cref="Manos.IO.Stream"/> so the garbage
-		/// collector can reclaim the memory that the <see cref="Manos.IO.Stream"/> was occupying.
+		/// Call <see cref="Dispose()"/> when you are finished using the <see cref="Manos.IO.FragmentStream{TFragment}"/>. The
+		/// <see cref="Dispose()"/> method leaves the <see cref="Manos.IO.FragmentStream{TFragment}"/> in an unusable state. After calling
+		/// <see cref="Dispose()"/>, you must release all references to the <see cref="Manos.IO.FragmentStream{TFragment}"/> so the garbage
+		/// collector can reclaim the memory that the <see cref="Manos.IO.FragmentStream{TFragment}"/> was occupying.
 		/// </remarks>
 		public void Dispose ()
 		{
 			Dispose (true);
 			GC.SuppressFinalize (this);
+		}
+		
+		/// <summary>
+		/// Checks whether the object has been disposed.
+		/// </summary>
+		/// <exception cref='ObjectDisposedException'>
+		/// Is thrown when an operation is performed on a disposed object.
+		/// </exception>
+		protected virtual void CheckDisposed ()
+		{
+			if (disposed)
+				throw new ObjectDisposedException (GetType ().Name);
 		}
 
 		/// <summary>
@@ -334,13 +347,28 @@ namespace Manos.IO
 		/// </param>
 		protected virtual void Dispose (bool disposing)
 		{
-			Close ();
+			if (currentReader != null) {
+				onData = null;
+				onEndOfStream = null;
+				onError = null;
+				currentReader = null;
+			}
+			if (writeQueue != null) {
+				if (currentWriter != null) {
+					currentWriter.Dispose ();
+					currentWriter = null;
+				}
+				currentFragment = null;
+				writeQueue.Clear ();
+				writeQueue = null;
+			}
+			disposed = true;
 		}
 		
 		/// <summary>
 		/// Raises the data callback, if set.
 		/// </summary>
-		protected virtual void RaiseData (ByteBuffer data)
+		protected virtual void RaiseData (TFragment data)
 		{
 			if (onData != null) {
 				onData (data);
@@ -368,18 +396,18 @@ namespace Manos.IO
 		}
 		
 		/// <summary>
-		/// Writes a single buffer to the stream. Must return a positive value or <c>0</c>
-		/// for successful writes, and a negative value for unsuccessful writes.
-		/// Unsuccessful write pause the writing process, successful writes consume the
-		/// returned number of bytes from the write queue.
+		/// Writes a single fragment.
 		/// </summary>
 		/// <returns>
-		/// The number of bytes written, or a negative value on unsuccessful write.
+		/// See <seealso cref="WriteResult"/> for result values.
 		/// </returns>
-		protected abstract int WriteSingleBuffer (ByteBuffer buffer);
+		/// <param name='fragment'>
+		/// The fragment to write.
+		/// </param>
+		protected abstract WriteResult WriteSingleFragment (TFragment fragment);
 		
 		/// <summary>
-		/// Handles one write operation. If the write queue is empty, or the buffer
+		/// Handles one write operation. If the write queue is empty, or the fragment
 		/// produced by the currently writing sequence is <c>null</c>, the writing
 		/// process is paused.
 		/// </summary>
@@ -388,51 +416,53 @@ namespace Manos.IO
 			if (writeQueue == null) {
 				throw new InvalidOperationException ();
 			}
-			if (!EnsureActiveBuffer () || currentBuffer == null) {
+			if (!EnsureActiveFragment () || currentFragment == null) {
 				PauseWriting ();
 			} else {
-				WriteCurrentBuffer ();
+				WriteCurrentFragment ();
 			}
 		}
 		
 		/// <summary>
-		/// Writes the current buffer to the stream via <see cref="WriteSingleBuffer"/>.
-		/// A non-negative value returned by <see cref="WriteSingleBuffer"/> consumes that
-		/// number of bytes from the write queue, a negative value pauses the writing
-		/// process.
+		/// Writes the current fragment to the stream via <see cref="WriteSingleFragment"/>.
 		/// </summary>
-		protected virtual void WriteCurrentBuffer ()
+		protected virtual void WriteCurrentFragment ()
 		{
-			var sent = WriteSingleBuffer (currentBuffer);
-			if (sent >= 0) {
-				currentBuffer.Skip (sent);
-			} else {
-				PauseWriting ();
-			}
-			if (currentBuffer.Length == 0) {
-				currentBuffer = null;
+			var sent = WriteSingleFragment (currentFragment);
+			switch (sent) {
+				case WriteResult.Consume:
+					currentFragment = null;
+					break;
+					
+				case WriteResult.Error:
+					PauseWriting ();
+					break;
+					
+				case WriteResult.Continue:
+					// no error, continue
+					break;
 			}
 		}
 		
 		/// <summary>
-		/// Ensures that a buffer to be written to the stream exists.
+		/// Ensures that a fragment to be written exists.
 		/// </summary>
 		/// <returns>
-		/// <c>true</c>, iff there is a buffer that can be written to the stream.
+		/// <c>true</c>, iff there is a fragment that can be written.
 		/// </returns>
-		protected virtual bool EnsureActiveBuffer ()
+		protected virtual bool EnsureActiveFragment ()
 		{
-			if (currentBuffer == null && EnsureActiveWriter ()) {
+			if (currentFragment == null && EnsureActiveWriter ()) {
 				if (currentWriter.MoveNext ()) {
-					currentBuffer = currentWriter.Current;
+					currentFragment = currentWriter.Current;
 					return true;
 				} else {
 					currentWriter.Dispose ();
 					currentWriter = null;
-					return EnsureActiveBuffer ();
+					return EnsureActiveFragment ();
 				}
 			}
-			return currentBuffer != null;
+			return currentFragment != null;
 		}
 		
 		/// <summary>
@@ -448,6 +478,17 @@ namespace Manos.IO
 			}
 			return currentWriter != null;
 		}
+		
+		/// <summary>
+		/// Size of the fragment in fragment units.
+		/// </summary>
+		/// <returns>
+		/// The size.
+		/// </returns>
+		/// <param name='fragment'>
+		/// Fragment.
+		/// </param>
+		protected abstract long FragmentSize (TFragment fragment);
 	}
 }
 

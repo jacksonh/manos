@@ -1,6 +1,6 @@
 #include "config.h"
 
-#ifdef HAVE_LIBGNUTLS
+#ifdef false && HAVE_LIBGNUTLS
 
 
 #include <stdlib.h>

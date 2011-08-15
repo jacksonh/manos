@@ -21,6 +21,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <GenerateDocumentation>true</GenerateDocumentation>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -49,9 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assembly\AssemblyInfo.cs" />
-    <Compile Include="Manos.IO\Stream.cs" />
     <Compile Include="Manos.IO\ByteBuffer.cs" />
-    <Compile Include="Manos.IO\Socket.cs" />
     <Compile Include="Manos.IO\ISendfileCapable.cs" />
     <Compile Include="Manos.IO\IBaseWatcher.cs" />
     <Compile Include="Manos.IO\IPrepareWatcher.cs" />
@@ -75,12 +74,8 @@
     <Compile Include="Manos.IO.Libev\Context.cs" />
     <Compile Include="Manos.IO.Libev\Libeio.cs" />
     <Compile Include="Manos.IO.Libev\EioContext.cs" />
-    <Compile Include="Manos.IO.Libev\EventedSocket.cs" />
-    <Compile Include="Manos.IO.Libev\SocketInfo.cs" />
     <Compile Include="Manos.IO.Libev\EventedStream.cs" />
-    <Compile Include="Manos.IO.Libev\PlainSocket.cs" />
     <Compile Include="Manos.IO.Libev\SendFileOperation.cs" />
-    <Compile Include="Manos.IO.Libev\SecureSocket.cs" />
     <Compile Include="Manos.IO.Libev\FileStream.cs" />
     <Compile Include="Manos.IO.Managed\Context.cs" />
     <Compile Include="Manos.IO.Managed\Watcher.cs" />
@@ -89,9 +84,38 @@
     <Compile Include="Manos.IO.Managed\CheckWatcher.cs" />
     <Compile Include="Manos.IO.Managed\IdleWatcher.cs" />
     <Compile Include="Manos.IO.Managed\FileStream.cs" />
-    <Compile Include="Manos.IO.Managed\Socket.cs" />
     <Compile Include="Manos.IO.Managed\TimerWatcher.cs" />
+    <Compile Include="Manos.IO.Managed\UdpSocket.cs" />
+    <Compile Include="Manos.IO\AddressFamily.cs" />
+    <Compile Include="Manos.IO\FragmentStream.cs" />
+    <Compile Include="Manos.IO\UdpPacket.cs" />
+    <Compile Include="Manos.IO\IStream.cs" />
+    <Compile Include="Manos.IO\IByteStream.cs" />
+    <Compile Include="Manos.IO.Libev\EventedByteStream.cs" />
+    <Compile Include="Manos.IO.Managed\ManagedByteStream.cs" />
     <Compile Include="Manos.IO.Managed\ManagedStream.cs" />
+    <Compile Include="Manos.IO\ISocket.cs" />
+    <Compile Include="Manos.IO\ITcpSocket.cs" />
+    <Compile Include="Manos.IO\IUdpSocket.cs" />
+    <Compile Include="Manos.IO\Socket.cs" />
+    <Compile Include="Manos.IO.Libev\IPSocket.cs" />
+    <Compile Include="Manos.IO.Libev\SocketFunctions.cs" />
+    <Compile Include="Manos.IO.Libev\ManosIPEndpoint.cs" />
+    <Compile Include="Manos.IO\ProtocolFamily.cs" />
+    <Compile Include="Manos.IO.Libev\UdpSocket.cs" />
+    <Compile Include="Manos.IO.Libev\TcpSocket.cs" />
+    <Compile Include="Manos.IO\IStreamSocket.cs" />
+    <Compile Include="Manos.IO\ITcpServerSocket.cs" />
+    <Compile Include="Manos.IO.Managed\TcpSocket.cs" />
+    <Compile Include="Manos.IO.Managed\IPSocket.cs" />
+    <Compile Include="Manos.IO\SocketException.cs" />
+    <Compile Include="Manos.IO\EndPoint.cs" />
+    <Compile Include="Manos.IO\IPEndPoint.cs" />
+    <Compile Include="Manos.IO\IPAddress.cs" />
+    <Compile Include="Manos.IO\SocketError.cs" />
+    <Compile Include="Manos.IO\Errors.cs" />
+    <Compile Include="Manos.IO\IOException.cs" />
+    <Compile Include="Manos.IO\OpenMode.cs" />
   </ItemGroup>
   <Target Name="ListSources">
     <Message Text="@(Compile)" Importance="High" />

@@ -1,16 +1,14 @@
 using System;
 using System.Collections.Generic;
 using Mono.Unix.Native;
-using System.IO;
 
 namespace Manos.IO.Libev
 {
-	class FileStream : Stream
+	class FileStream : FragmentStream<ByteBuffer>, IByteStream
 	{
 		byte [] readBuffer;
 		bool readEnabled, writeEnabled;
 		bool canRead, canWrite;
-		long readLimit;
 		long position;
 
 		FileStream (Context context, IntPtr handle, int blockSize, bool canRead, bool canWrite)
@@ -47,14 +45,14 @@ namespace Manos.IO.Libev
 		public override bool CanSeek {
 			get { return true; }
 		}
-
-		public override void Close ()
+		
+		protected override void Dispose (bool disposing)
 		{
 			if (Handle != IntPtr.Zero) {
 				Syscall.close (Handle.ToInt32 ());
 				Handle = IntPtr.Zero;
 			}
-			base.Close ();
+			base.Dispose (disposing);
 		}
 
 		public override void SeekBy (long delta)
@@ -82,6 +80,13 @@ namespace Manos.IO.Libev
 			base.Write (data);
 			ResumeWriting ();
 		}
+		
+		public void Write (byte[] data)
+		{
+			CheckDisposed ();
+			
+			Write (new ByteBuffer (data));
+		}
 
 		public override IDisposable Read (Action<ByteBuffer> onData, Action<Exception> onError, Action onClose)
 		{
@@ -92,18 +97,11 @@ namespace Manos.IO.Libev
 
 		public override void ResumeReading ()
 		{
-			ResumeReading (long.MaxValue);
-		}
-
-		public override void ResumeReading (long forBytes)
-		{
+			CheckDisposed ();
+			
 			if (!canRead)
 				throw new InvalidOperationException ();
-			if (forBytes < 0) {
-				throw new ArgumentException ("forBytes");
-			}
 			
-			readLimit = forBytes;
 			if (!readEnabled) {
 				readEnabled = true;
 				ReadNextBuffer ();
@@ -112,6 +110,8 @@ namespace Manos.IO.Libev
 
 		public override void ResumeWriting ()
 		{
+			CheckDisposed ();
+			
 			if (!canWrite)
 				throw new InvalidOperationException ();
 			
@@ -123,11 +123,15 @@ namespace Manos.IO.Libev
 
 		public override void PauseReading ()
 		{
+			CheckDisposed ();
+			
 			readEnabled = false;
 		}
 
 		public override void PauseWriting ()
 		{
+			CheckDisposed ();
+			
 			writeEnabled = false;
 		}
 
@@ -137,32 +141,24 @@ namespace Manos.IO.Libev
 				return;
 			}
 			
-			var length = (int) Math.Min (readBuffer.Length, readLimit);
-			Context.Eio.Read (Handle.ToInt32 (), readBuffer, position, length, OnReadDone);
+			Context.Eio.Read (Handle.ToInt32 (), readBuffer, position, readBuffer.Length, OnReadDone);
 		}
 
 		void OnReadDone (int result, byte[] buffer, int error)
 		{
 			if (result < 0) {
 				PauseReading ();
-				RaiseError (new Exception (string.Format ("Error '{0}' reading from file '{1}'", error, Handle.ToInt32 ())));
+				RaiseError (new IOException (string.Format ("Error reading from file: {0}", Errors.ErrorToString (error))));
 			} else if (result > 0) {
 				position += result;
-				RaiseData (new ByteBuffer (buffer, 0, result));
+				byte [] newBuffer = new byte [result];
+				Buffer.BlockCopy (readBuffer, 0, newBuffer, 0, result);
+				RaiseData (new ByteBuffer (newBuffer));
 				ReadNextBuffer ();
 			} else {
 				PauseReading ();
 				RaiseEndOfStream ();
 			}
-		}
-
-		protected override void RaiseData (ByteBuffer data)
-		{
-			readLimit -= data.Length;
-			if (readLimit <= 0) {
-				PauseReading ();
-			}
-			base.RaiseData (data);
 		}
 
 		protected override void HandleWrite ()
@@ -172,7 +168,7 @@ namespace Manos.IO.Libev
 			}
 		}
 
-		protected override int WriteSingleBuffer (ByteBuffer buffer)
+		protected override WriteResult WriteSingleFragment (ByteBuffer buffer)
 		{
 			var bytes = buffer.Bytes;
 			if (buffer.Position > 0) {
@@ -180,15 +176,22 @@ namespace Manos.IO.Libev
 				Array.Copy (buffer.Bytes, buffer.Position, bytes, 0, buffer.Length);
 			}
 			Context.Eio.Write (Handle.ToInt32 (), bytes, position, buffer.Length, OnWriteDone);
-			return buffer.Length;
+			return WriteResult.Consume;
 		}
 
 		void OnWriteDone (int result, int error)
 		{
 			if (result < 0) {
-				throw new Exception (string.Format ("Error '{0}' writing to file '{1}'", error, Handle.ToInt32 ()));
+				RaiseError (new IOException (string.Format ("Error writing to file: {0}", Errors.ErrorToString (error))));
+			} else {
+				position += result;
+				HandleWrite ();
 			}
-			HandleWrite ();
+		}
+		
+		protected override long FragmentSize (ByteBuffer fragment)
+		{
+			return fragment.Length;
 		}
 
 		public static FileStream Open (Context context, string fileName, int blockSize,

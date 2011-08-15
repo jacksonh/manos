@@ -71,13 +71,13 @@ namespace Manos.Http {
 			RemotePort = port;
 		}
 
-		public HttpRequest (IHttpTransaction transaction, Socket stream)
+		public HttpRequest (IHttpTransaction transaction, ITcpSocket stream)
 			: base (transaction.Context)
 		{
 			Transaction = transaction;
 			Socket = stream;
-			RemoteAddress = stream.Address;
-			RemotePort = stream.Port;
+			RemoteAddress = stream.RemoteEndpoint.Address.ToString();
+			RemotePort = stream.RemoteEndpoint.Port;
 		}
 
 		public IHttpTransaction Transaction {
@@ -192,8 +192,9 @@ namespace Manos.Http {
 
 		public void Execute ()
 		{
-            Socket = AppHost.Context.CreateSocket ();
-			Socket.Connect (RemoteAddress, RemotePort, delegate {
+			var remote = new IPEndPoint(IPAddress.Parse (RemoteAddress), RemotePort);
+			Socket = AppHost.Context.CreateTcpSocket (remote.AddressFamily);
+			Socket.Connect (remote, delegate {
 				Stream = new HttpStream (this, Socket.GetSocketStream ());
 				Stream.Chunked = false;
 				Stream.AddHeaders = false;
@@ -217,6 +218,8 @@ namespace Manos.Http {
 						if (OnResponse != null) OnResponse (response);
 					});
 				});
+			}, ex => {
+				// TODO: figure out what to do here
 			});
 		}
 

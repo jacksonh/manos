@@ -7,13 +7,13 @@ namespace Manos.IO.Libev
 	class SendFileOperation : IDisposable, IEnumerable<ByteBuffer>
 	{
 		int sourceFd;
-		EventedStream target;
+		EventedByteStream target;
 		string file;
 		long position, length;
 		bool completed;
 		Context context;
 
-		public SendFileOperation (Context context, EventedStream target, string file)
+		public SendFileOperation (Context context, EventedByteStream target, string file)
 		{
 			this.context = context;
 			this.target = target;

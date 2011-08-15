@@ -22,7 +22,6 @@
 //
 //
 using System;
-using System.Net;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -156,19 +155,18 @@ namespace Manos
 			started = true;
 			
 			foreach (var ep in listenEndPoints) {
-
-				var server = new HttpServer (Context, HandleTransaction, Context.CreateSocket ());
+				var server = new HttpServer (Context, HandleTransaction, Context.CreateTcpServerSocket (ep.AddressFamily));
 				server.Listen (ep.Address.ToString (), ep.Port);
 				
 				servers.Add (server);
 			}
 			foreach (var ep in secureListenEndPoints.Keys) {
-				var keypair = secureListenEndPoints [ep];
-				var socket = Context.CreateSecureSocket (keypair.Item1, keypair.Item2);
-				var server = new HttpServer (context, HandleTransaction, socket);
-				server.Listen (ep.Address.ToString (), ep.Port);
-				
-				servers.Add (server);
+//				var keypair = secureListenEndPoints [ep];
+//				var socket = Context.CreateSecureSocket (keypair.Item1, keypair.Item2);
+//				var server = new HttpServer (context, HandleTransaction, socket);
+//				server.Listen (ep.Address.ToString (), ep.Port);
+//				
+//				servers.Add (server);
 			}
 
 			context.Start ();

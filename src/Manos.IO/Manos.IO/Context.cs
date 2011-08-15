@@ -1,6 +1,5 @@
 using System;
 using Mono.Unix.Native;
-using System.IO;
 
 namespace Manos.IO
 {
@@ -205,7 +204,18 @@ namespace Manos.IO
 		/// <returns>
 		/// The socket.
 		/// </returns>
-		public abstract Socket CreateSocket ();
+		public abstract ITcpSocket CreateTcpSocket (AddressFamily addressFamily);
+		
+		/// <summary>
+		/// Creates a new tcp server socket.
+		/// </summary>
+		/// <returns>
+		/// The tcp server socket.
+		/// </returns>
+		/// <param name='addressFamily'>
+		/// Address family.
+		/// </param>
+		public abstract ITcpServerSocket CreateTcpServerSocket (AddressFamily addressFamily);
 		
 		/// <summary>
 		/// Creates a new secure socket. The socket is initially invalid.
@@ -221,7 +231,7 @@ namespace Manos.IO
 		/// <param name='keyFile'>
 		/// Key file in PEM format, must contain a private key for the certificate.
 		/// </param>
-		public abstract Socket CreateSecureSocket (string certFile, string keyFile);
+		public abstract ITcpSocket CreateSecureSocket (string certFile, string keyFile);
 		
 		/// <summary>
 		/// Opens a file for asynchronous operations.
@@ -239,7 +249,7 @@ namespace Manos.IO
 		/// Block size to use for operations on the file. Larger block sizes generally improve
 		/// performance, though too large block sizes only use more memory.
 		/// </param>
-		public abstract Stream OpenFile (string fileName, FileAccess openMode, int blockSize);
+		public abstract IByteStream OpenFile (string fileName, OpenMode openMode, int blockSize);
 
 		/// <summary>
 		/// Opens a file for asynchronous operations, creating it if it does not exist yet.
@@ -254,7 +264,18 @@ namespace Manos.IO
 		/// Block size to use for operations on the file. Larger block sizes generally improve
 		/// performance, though too large block sizes only use more memory.
 		/// </param>
-		public abstract Stream CreateFile (string fileName, int blockSize);
+		public abstract IByteStream CreateFile (string fileName, int blockSize);
+		
+		/// <summary>
+		/// Creates a new UDP socket.
+		/// </summary>
+		/// <returns>
+		/// The UDP socket.
+		/// </returns>
+		/// <param name='family'>
+		/// Address family the socket belongs to.
+		/// </param>
+		public abstract IUdpSocket CreateUdpSocket (AddressFamily family);
 	}
 }
 
