@@ -193,7 +193,7 @@ namespace Manos.Http {
 		public void Execute ()
 		{
 			var remote = new IPEndPoint(IPAddress.Parse (RemoteAddress), RemotePort);
-			Socket = AppHost.Context.CreateTcpSocket (remote.AddressFamily);
+			Socket = this.Context.CreateTcpSocket (remote.AddressFamily);
 			Socket.Connect (remote, delegate {
 				Stream = new HttpStream (this, Socket.GetSocketStream ());
 				Stream.Chunked = false;
