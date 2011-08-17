@@ -33,7 +33,6 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 using Libev;
-using Libeio;
 using System.IO;
 
 
