@@ -74,8 +74,7 @@ namespace Manos.IO.Libev
 				var copy = new byte[dataLength];
 				Buffer.BlockCopy (data, 0, copy, 0, copy.Length);
 				RaiseData (new UdpPacket (
-					source.Address.ToString (),
-					source.Port,
+					source,
 					new ByteBuffer (copy)));
 			}
 			
@@ -87,7 +86,7 @@ namespace Manos.IO.Libev
 					len = SocketFunctions.manos_socket_send (Handle.ToInt32 (), packet.Buffer.Bytes,
 						packet.Buffer.Position, packet.Buffer.Length, out error);
 				} else {
-					ManosIPEndpoint ep = new IPEndPoint (IPAddress.Parse (packet.Address), packet.Port);
+					ManosIPEndpoint ep = packet.IPEndPoint;
 					len = SocketFunctions.manos_socket_sendto_ip (Handle.ToInt32 (), packet.Buffer.Bytes,
 						packet.Buffer.Position, packet.Buffer.Length, ref ep, out error);
 				}

@@ -19,25 +19,16 @@ namespace Manos.IO
 		/// <param name='buffer'>
 		/// Buffer received/to be sent.
 		/// </param>
-		public UdpPacket (string address, int port, ByteBuffer buffer)
+		public UdpPacket (IPEndPoint endPoint, ByteBuffer buffer)
 		{
-			this.Address = address;
-			this.Port = port;
+			this.IPEndPoint = endPoint;
 			this.Buffer = buffer;
 		}
 		
 		/// <summary>
-		/// The IP address in string format of the sender/receiver depending on UdpSocket function
+		/// The IP endpoint of the sender/receiver depending on UdpSocket function
 		/// </summary>
-		public string Address {
-			get;
-			private set;
-		}
-		
-		/// <summary>
-		/// The port of the sender/receiver depending on UdpSocket functino
-		/// </summary>
-		public int Port {
+		public IPEndPoint IPEndPoint {
 			get;
 			private set;
 		}
