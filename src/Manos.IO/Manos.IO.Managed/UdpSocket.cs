@@ -60,8 +60,9 @@ namespace Manos.IO.Managed
 					Buffer.BlockCopy (buffer, 0, newBuffer, 0, length);
 				
 					var info = new UdpPacket (
-						ipremote.Address.ToString (),
-						ipremote.Port,
+						new Manos.IO.IPEndPoint (
+							new Manos.IO.IPAddress(ipremote.Address.GetAddressBytes()),
+							ipremote.Port),
 						new ByteBuffer (newBuffer));
 					
 					Context.Enqueue (delegate {
@@ -73,7 +74,7 @@ namespace Manos.IO.Managed
 			
 			protected override WriteResult WriteSingleFragment (UdpPacket packet)
 			{
-				var ep = new System.Net.IPEndPoint (System.Net.IPAddress.Parse (packet.Address), packet.Port);
+				var ep = new System.Net.IPEndPoint (new System.Net.IPAddress (packet.IPEndPoint.Address.GetAddressBytes()), packet.IPEndPoint.Port);
 				parent.socket.BeginSendTo (packet.Buffer.Bytes, packet.Buffer.Position, packet.Buffer.Length,
 					SocketFlags.None, ep, WriteCallback, null);
 				
