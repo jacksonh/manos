@@ -276,6 +276,14 @@ namespace Manos.IO
 		/// Address family the socket belongs to.
 		/// </param>
 		public abstract IUdpSocket CreateUdpSocket (AddressFamily family);
+
+		/// <summary>
+		/// Creates a new notifier.
+		/// </summary>
+		/// <returns>
+		/// The notifier.
+		/// </returns>
+		public abstract INotifier CreateNotifier (Action callback);
 	}
 }
 
