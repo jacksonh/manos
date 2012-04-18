@@ -44,6 +44,8 @@ namespace Manos.Tool
 		
 		private int? port;
 		private int? securePort;
+		private int? spdyport;
+		private int? securespdyport;
 		private string application_assembly;
 		
 		public ServerCommand (Environment env) : this (env, new List<string> ())
@@ -102,6 +104,30 @@ namespace Manos.Tool
 				securePort = value;
 			}
 		}
+		public int? SpdyPort {
+			get {
+
+				return spdyport;
+			}
+			set {
+				if (value <= 0)
+					throw new ArgumentException ("spdyport", "port must be greater than zero.");
+				if (value == port)
+					throw new ArgumentException("spdyport", "Spdy port cannot be the same as http port");
+				spdyport = value;
+			}
+		}
+
+		public int? SecureSpdyPort {
+			get {
+				return securespdyport;
+			}
+			set {
+				if (value <= 0)
+					throw new ArgumentException ("port", "port must be greater than zero.");
+				securespdyport = value;
+			}
+		}
 
 		public string User {
 			get;
@@ -123,6 +149,7 @@ namespace Manos.Tool
 			set;
 		}
 		
+
 		public void Run ()
 		{
 			// Load the config.
@@ -145,6 +172,16 @@ namespace Manos.Tool
 				AppHost.InitializeTLS ("NORMAL");
 				AppHost.SecureListenAt (new Manos.IO.IPEndPoint (listenAddress, SecurePort.Value), CertificateFile, KeyFile);
 				Console.WriteLine ("Running {0} on secure port {1}.", app, SecurePort);
+			}
+			if (SpdyPort != null) {
+				AppHost.SpdyListenAt (new System.Net.IPEndPoint (listenAddress, SpdyPort.Value));
+				Console.WriteLine ("Running {0} with SPDY on port {1}.", app, SpdyPort);
+			}
+			if (SecureSpdyPort != null) {
+				if (SecurePort == null)
+					AppHost.InitializeTLS ("NORMAL");
+				AppHost.SecureSpdyListenAt (new System.Net.IPEndPoint (listenAddress, SecureSpdyPort.Value), CertificateFile, KeyFile);
+				Console.WriteLine ("Running {0} with SPDY on secure port {1}.", app, SecureSpdyPort);
 			}
 			AppHost.Start (app);
 		}

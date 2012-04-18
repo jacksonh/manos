@@ -178,6 +178,8 @@ namespace Manos.Tool
 			string user = null;
 			string assembly = null;
 			string ipaddress = null;
+			string spdyport = null;
+			string securespdyport = null;
 			
 			var p = new OptionSet () {
 				{ "p|port=", v => port = v },
@@ -186,7 +188,9 @@ namespace Manos.Tool
 				{ "k|keyfile=", v => keyFile = v },
 				{ "u|user=", v => user = v },
 				{ "a|assembly=", v=> assembly = v},
-				{ "l|listen=", v => ipaddress = v }
+				{ "l|listen=", v => ipaddress = v },
+				{ "n|spdyport=", v => spdyport = v },
+				{ "N|securespdyport=", v => securespdyport = v }
 			};
 			args = p.Parse(args);
 
@@ -217,6 +221,29 @@ namespace Manos.Tool
 				if (pt <= 0)
 					throw new ArgumentOutOfRangeException ("secureport", "Secure port must be a positive integer.");
 				cmd.SecurePort = pt;
+				cmd.CertificateFile = certFile;
+				cmd.KeyFile = keyFile;
+			}
+			if (spdyport != null) {
+				int pt;
+				if (!Int32.TryParse (spdyport, out pt))
+					throw new ArgumentException ("SPDY Port value is not an integer.");
+				if (pt <= 0)
+					throw new ArgumentOutOfRangeException ("spdyport", "SPDY Port must be a positive integer.");
+				cmd.SpdyPort = pt;
+			}
+
+			if (securespdyport != null) {
+				if (certFile == null)
+					throw new ArgumentException ("Certificate file required for SPDY TLS.");
+				if (keyFile == null)
+					throw new ArgumentException ("Certificate private key required for SPDY TLS.");
+				int pt;
+				if (!Int32.TryParse (securespdyport, out pt))
+					throw new ArgumentException ("Secure SPDY port value is not an integer.");
+				if (pt <= 0)
+					throw new ArgumentOutOfRangeException ("spdysecureport", "Secure SPDY port must be a positive integer.");
+				cmd.SecureSpdyPort = pt;
 				cmd.CertificateFile = certFile;
 				cmd.KeyFile = keyFile;
 			}

@@ -38,23 +38,19 @@ using System.Collections.Specialized;
 using Libev;
 using Manos.IO;
 using Manos.Collections;
+using Manos.Http;
 
-namespace Manos.Http {
+namespace Manos.Spdy {
 
 	/// <summary>
-	///  A base class for HttpRequest and HttpResponse.  Generally user code should not care at all about
+	///  A base class for SpdyRequest and SpdyResponse.  Generally user code should not care at all about
 	///  this class, it just exists to eliminate some code duplication between the two derived types.
 	/// </summary>
-	public abstract class HttpEntity : IDisposable, IHttpDataRecipient {
+	public abstract class SpdyEntity : IDisposable, IHttpDataRecipient {
 
 		private static readonly long MAX_BUFFERED_CONTENT_LENGTH = 2621440; // 2.5MB (Eventually this will be an environment var)
 
 		private HttpHeaders headers;
-
-		private HttpParser parser;
-		private ParserSettings parser_settings;
-		private StringBuilder current_header_field = new StringBuilder ();
-		private StringBuilder current_header_value = new StringBuilder ();
 
 		private DataDictionary data;
 		private DataDictionary post_data;
@@ -65,13 +61,10 @@ namespace Manos.Http {
 		private IHttpBodyHandler body_handler;
 		private bool finished_reading;
 
-		private IAsyncWatcher end_watcher;
 
-		public HttpEntity (Context context)
+		public SpdyEntity (Context context)
 		{
 			this.Context = context;
-			end_watcher = context.CreateAsyncWatcher (HandleEnd);
-			end_watcher.Start ();
 		}
 		
 		public Context Context {
@@ -79,7 +72,7 @@ namespace Manos.Http {
 			private set;
 		}
 
-		~HttpEntity ()
+		~SpdyEntity ()
 		{
 			Dispose ();
 		}
@@ -87,24 +80,9 @@ namespace Manos.Http {
 		public void Dispose ()
 		{
 			Socket = null;
-
-			if (Stream != null) {
-				Stream.Dispose ();
-				Stream = null;
-			}
-
-			if (end_watcher != null) {
-				end_watcher.Dispose ();
-				end_watcher = null;
-			}
 		}
 
-		public ITcpSocket Socket {
-			get;
-			protected set;
-		}
-
-		public HttpStream Stream {
+		public Socket Socket {
 			get;
 			protected set;
 		}
@@ -249,94 +227,6 @@ namespace Manos.Http {
 			if (newd != null)
 				Data.Children.Add (newd);
 		}
-
-		protected void CreateParserSettingsInternal ()
-		{
-			this.parser_settings = CreateParserSettings ();
-
-			parser_settings.OnError = OnParserError;
-
-			parser_settings.OnBody = OnBody;
-			parser_settings.OnMessageBegin = OnMessageBegin;
-			parser_settings.OnMessageComplete = OnMessageComplete;
-
-			parser_settings.OnHeaderField = OnHeaderField;
-			parser_settings.OnHeaderValue = OnHeaderValue;
-			parser_settings.OnHeadersComplete = OnHeadersComplete;
-		}
-
-		private int OnMessageBegin (HttpParser parser)
-		{
-			return 0;
-		}
-
-		private int OnMessageComplete (HttpParser parser)
-		{
-			// Upgrade connections will raise this event at the end of OnBytesRead
-			if (!parser.Upgrade) 
-				OnFinishedReading (parser);
-			finished_reading = true;
-			return 0;
-		}
-
-		public int OnHeaderField (HttpParser parser, ByteBuffer data, int pos, int len)
-		{
-			string str = Encoding.ASCII.GetString (data.Bytes, pos, len);
-
-			if (current_header_value.Length != 0)
-				FinishCurrentHeader ();
-
-			current_header_field.Append (str);
-			return 0;
-		}
-
-		public int OnHeaderValue (HttpParser parser, ByteBuffer data, int pos, int len)
-		{
-			string str = Encoding.ASCII.GetString (data.Bytes, pos, len);
-
-			if (current_header_field.Length == 0)
-				throw new HttpException ("Header Value raised with no header field set.");
-
-			current_header_value.Append (str);
-			return 0;
-		}
-
-		private void FinishCurrentHeader ()
-		{
-			try {
-				if (headers == null)
-					headers = new HttpHeaders ();
-				headers.SetHeader (current_header_field.ToString (), current_header_value.ToString ());
-				current_header_field.Length = 0;
-				current_header_value.Length = 0;
-			} catch (Exception e) {
-				Console.WriteLine (e);
-			}
-		}
-
-		protected virtual int OnHeadersComplete (HttpParser parser)
-		{
-			if (current_header_field.Length != 0)
-				FinishCurrentHeader ();
-
-			MajorVersion = parser.Major;
-			MinorVersion = parser.Minor;
-			Method = parser.HttpMethod;
-
-			return 0;
-		}
-
-		public int OnBody (HttpParser parser, ByteBuffer data, int pos, int len)
-		{
-			if (body_handler == null)
-				CreateBodyHandler ();
-
-			if (body_handler != null)
-				body_handler.HandleData (this, data, pos, len);
-
-			return 0;
-		}
-
 		
 		private void CreateBodyHandler ()
 		{
@@ -363,85 +253,11 @@ namespace Manos.Http {
 			body_handler = new HttpBufferedBodyHandler ();
 		}
 
-		private IUploadedFileCreator GetFileCreator ()
+		internal IUploadedFileCreator GetFileCreator ()
 		{
 			if (Headers.ContentLength == null || Headers.ContentLength >= MAX_BUFFERED_CONTENT_LENGTH)
 				return new TempFileUploadedFileCreator ();
 			return new InMemoryUploadedFileCreator ();
-		}
-
-		private void OnParserError (HttpParser parser, string message, ByteBuffer buffer, int initial_position)
-		{
-			// Transaction.Abort (-1, "HttpParser error: {0}", message);
-			Socket.Close ();
-		}
-
-		public virtual void Reset ()
-		{
-			Path = null;
-			ContentEncoding = null;
-
-			headers = null;
-			data = null;
-			post_data = null;
-			uploaded_files = null;
-			finished_reading = false;
-
-			if (parser_settings == null)
-				CreateParserSettingsInternal ();
-
-			parser = new HttpParser ();
-		}
-		
-		public void Read ()
-		{
-			Read (() => {});
-		}
-
-		public void Read (Action onClose)
-		{
-			Reset ();
-			Socket.GetSocketStream ().Read (OnBytesRead, (obj) => {}, onClose);
-		}
-
-		private void OnBytesRead (ByteBuffer bytes)
-		{
-			try {
-				parser.Execute (parser_settings, bytes);
-			} catch (Exception e) {
-				Console.WriteLine ("Exception while parsing");
-				Console.WriteLine (e);
-			}
-
-			if (finished_reading && parser.Upgrade) {
-
-				//
-				// Well, this is a bit of a hack.  Ideally, maybe there should be a putback list
-				// on the socket so we can put these bytes back into the stream and the upgrade
-				// protocol handler can read them out as if they were just reading normally.
-				//
-
-				if (bytes.Position < bytes.Length) {
-					byte [] upgrade_head = new byte [bytes.Length - bytes.Position];
-					Array.Copy (bytes.Bytes, bytes.Position, upgrade_head, 0, upgrade_head.Length);
-
-					SetProperty ("UPGRADE_HEAD", upgrade_head);
-				}
-
-				// This is delayed until here with upgrade connnections.
-				OnFinishedReading (parser);
-			}
-		}
-
-		protected virtual void OnFinishedReading (HttpParser parser)
-		{
-			if (body_handler != null) {
-				body_handler.Finish (this);
-				body_handler = null;
-			}
-
-			if (OnCompleted != null)
-				OnCompleted ();
 		}
 
 		public static string ParseBoundary (string ct)
@@ -505,7 +321,7 @@ namespace Manos.Http {
 
 		public void End ()
 		{
-			end_watcher.Send ();
+			HandleEnd();
 		}
 
 		internal virtual void HandleEnd ()
@@ -516,13 +332,12 @@ namespace Manos.Http {
 
 		public void Complete (Action callback)
 		{
-			IAsyncWatcher completeWatcher = null;
+			IAsyncWatcher completeWatcher;
 			completeWatcher = Context.CreateAsyncWatcher (delegate {
 				completeWatcher.Dispose ();
 				callback ();
 			});
 			completeWatcher.Start ();
-			Stream.End (completeWatcher.Send);
 		}
 
 		public void WriteLine (string str)
@@ -534,56 +349,12 @@ namespace Manos.Http {
 		{
 			WriteLine (String.Format (str, prms));	
 		}
-		
-		public void SendFile (string file)
-		{
-			Stream.SendFile (file);
-		}
-
-		private void WriteToBody (byte [] data, int offset, int length)
-		{
-			Stream.Write (data, offset, length);
-		}
-
-		public byte [] GetBody ()
-		{
-			StringBuilder data = null;
-
-			if (PostBody != null) {
-				data = new StringBuilder ();
-				data.Append (PostBody);
-			}
-
-			if (post_data != null) {
-				data = new StringBuilder ();
-				bool first = true;
-				foreach (string key in post_data.Keys) {
-					if (!first)
-						data.Append ('&');
-					first = false;
-
-					UnsafeString s = post_data.Get (key);
-					if (s != null) {
-						data.AppendFormat ("{0}={1}", key, s.UnsafeValue);
-						continue;
-					}
-				}
-			}
-
-			if (data == null)
-				return null;
-
-			return ContentEncoding.GetBytes (data.ToString ());
-			
-		}
-
-		public abstract void WriteMetadata (StringBuilder builder);
-		public abstract ParserSettings CreateParserSettings ();
 
 		public event Action<string> Error; // TODO: Proper error object of some sort
 
 		public event Action OnEnd;
 		public event Action OnCompleted;
+		public abstract void WriteToBody(byte[] data, int position, int length);
 	}
 
 }

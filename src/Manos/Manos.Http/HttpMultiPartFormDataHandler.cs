@@ -84,7 +84,7 @@ namespace Manos.Http {
 			state = State.InBoundary;
 		}
 		
-		public void HandleData (HttpEntity entity, ByteBuffer data, int pos, int len)
+		public void HandleData (IHttpDataRecipient entity, ByteBuffer data, int pos, int len)
 		{
 			// string str_data = encoding.GetString (data.Bytes, pos, len);
 			byte [] str_data = data.Bytes;
@@ -237,7 +237,7 @@ namespace Manos.Http {
 			return res;
 		}
 
-		private void HandleHeader (HttpEntity entity)
+		private void HandleHeader (IHttpDataRecipient entity)
 		{
 			string key = encoding.GetString (header_key.ToArray ());
 			string value = encoding.GetString (header_value.ToArray ());
@@ -249,13 +249,13 @@ namespace Manos.Http {
 
 		}
 
-		public void Finish (HttpEntity entity)
+		public void Finish (IHttpDataRecipient entity)
 		{
 			FinishFormData (entity);
 			FinishFileData (entity);
 		}
 
-		private void FinishFormData (HttpEntity entity)
+		private void FinishFormData (IHttpDataRecipient entity)
 		{
 			if (form_data.Count <= 2)
 				return;
@@ -267,7 +267,7 @@ namespace Manos.Http {
 			form_data.Clear ();
 		}
 
-		private void FinishFileData (HttpEntity entity)
+		private void FinishFileData (IHttpDataRecipient entity)
 		{
 			if (uploaded_file == null)
 				return;

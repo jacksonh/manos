@@ -29,6 +29,7 @@ using System.Runtime.InteropServices;
 
 using Manos.IO;
 using Manos.Http;
+using Manos.Spdy;
 using Manos.Caching;
 using Manos.Logging;
 
@@ -45,9 +46,13 @@ namespace Manos
 		private static ManosApp app;
 		private static bool started;
 		private static List<IPEndPoint> listenEndPoints = new List<IPEndPoint> ();
+		private static List<IPEndPoint> spdylistenEndPoints = new List<IPEndPoint> ();
 		private static Dictionary<IPEndPoint, Tuple<string, string>> secureListenEndPoints =
 			new Dictionary<IPEndPoint, Tuple<string, string>> ();
+		private static Dictionary<IPEndPoint, Tuple<string, string>> spdysecureListenEndPoints =
+			new Dictionary<IPEndPoint, Tuple<string, string>> ();
 		private static List<HttpServer> servers = new List<HttpServer> ();
+		private static List<SpdyServer> spdyservers = new List<SpdyServer> ();
 		private static IManosCache cache;
 		private static IManosLogger log;
 		private static List<IManosPipe> pipes;
@@ -118,6 +123,32 @@ namespace Manos
 			secureListenEndPoints.Add (endPoint,
 				Tuple.Create (cert, key));
 		}
+		public static void SpdyListenAt (IPEndPoint endPoint)
+		{
+			if (endPoint == null)
+				throw new ArgumentNullException ("endPoint");
+
+			if (spdylistenEndPoints.Contains (endPoint) || spdysecureListenEndPoints.ContainsKey (endPoint))
+				throw new InvalidOperationException ("Endpoint already registered");
+
+			spdylistenEndPoints.Add (endPoint);
+		}
+
+		public static void SecureSpdyListenAt (IPEndPoint endPoint, string cert, string key)
+		{
+			if (endPoint == null)
+				throw new ArgumentNullException ("endPoint");
+			if (cert == null)
+				throw new ArgumentNullException ("cert");
+			if (key == null)
+				throw new ArgumentNullException ("key");
+
+			if (spdysecureListenEndPoints.ContainsKey (endPoint) || spdylistenEndPoints.Contains (endPoint))
+				throw new InvalidOperationException ("Endpoint already registered");
+
+			spdysecureListenEndPoints.Add (endPoint,
+				Tuple.Create (cert, key));
+		}
 
 		public static void InitializeTLS (string priorities)
 		{
@@ -167,6 +198,21 @@ namespace Manos
 //				server.Listen (ep.Address.ToString (), ep.Port);
 //				
 //				servers.Add (server);
+			}
+			foreach (var ep in spdylistenEndPoints) {
+
+				var server = new SpdyServer (Context, HandleTransaction, Context.CreateSocket ());
+				server.Listen (ep.Address.ToString (), ep.Port);
+
+				spdyservers.Add (server);
+			}
+			foreach (var ep in spdysecureListenEndPoints.Keys) {
+				var keypair = spdysecureListenEndPoints [ep];
+				var socket = Context.CreateSecureSocket (keypair.Item1, keypair.Item2);
+				var server = new SpdyServer (context, HandleTransaction, socket);
+				server.Listen (ep.Address.ToString (), ep.Port);
+
+				spdyservers.Add (server);
 			}
 
 			context.Start ();

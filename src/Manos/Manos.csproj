@@ -45,6 +45,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\libs\Nini.dll</HintPath>
     </Reference>
+    <Reference Include="Ionic.Zlib, Version=1.9.1.5, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\Ionic.Zlib.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Manos\DeleteAttribute.cs" />
@@ -103,7 +107,6 @@
     <Compile Include="Manos.Routing\NopMatchOperation.cs" />
     <Compile Include="Manos.Routing\MatchType.cs" />
     <Compile Include="Manos\HttpMethods.cs" />
-    <Compile Include="Assembly\AssemblyInfo.cs" />
     <Compile Include="Manos\AppHost.cs" />
     <Compile Include="Manos.Caching\CacheItemCallback.cs" />
     <Compile Include="Manos.Caching\CacheOpCallback.cs" />
@@ -151,6 +154,29 @@
     <Compile Include="Manos\RepeatBehavior.cs" />
     <Compile Include="Manos\Timeout.cs" />
     <Compile Include="Manos\TimeoutCallback.cs" />
+    <Compile Include="Manos.Spdy\ControlFrame.cs" />
+    <Compile Include="Manos.Spdy\GoawayFrame.cs" />
+    <Compile Include="Manos.Spdy\NameValueHeaderBlock.cs" />
+    <Compile Include="Manos.Spdy\PingFrame.cs" />
+    <Compile Include="Manos.Spdy\RstStreamFrame.cs" />
+    <Compile Include="Manos.Spdy\SettingsFrame.cs" />
+    <Compile Include="Manos.Spdy\SPDYParser.cs" />
+    <Compile Include="Manos.Spdy\SynReplyFrame.cs" />
+    <Compile Include="Manos.Spdy\SynStreamFrame.cs" />
+    <Compile Include="Manos.Spdy\Compression.cs" />
+    <Compile Include="Manos.Spdy\HeadersFrame.cs" />
+    <Compile Include="Manos.Spdy\WindowUpdateFrame.cs" />
+    <Compile Include="Manos.Spdy\VersionFrame.cs" />
+    <Compile Include="Manos.Spdy\DataFrame.cs" />
+    <Compile Include="Manos.Spdy\Util.cs" />
+    <Compile Include="Manos.Spdy\SpdyServer.cs" />
+    <Compile Include="Manos.Spdy\SpdyTransaction.cs" />
+    <Compile Include="Manos.Spdy\SpdySession.cs" />
+    <Compile Include="Manos.Spdy\SpdyRequest.cs" />
+    <Compile Include="Manos.Spdy\SpdyResponse.cs" />
+    <Compile Include="Manos.Spdy\SpdyStream.cs" />
+    <Compile Include="Manos.Spdy\SpdyEntity.cs" />
+    <Compile Include="Manos.Http\IHttpDataRecipient.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -172,6 +198,9 @@
     <Folder Include="Manos.Threading\" />
     <Folder Include="Manos.IO\" />
     <Folder Include="Manos.Collections\" />
+    <Folder Include="Manos.Spdy\" />
+    <Folder Include="Manos.Routing.Testing\" />
+    <Folder Include="Manos.Template\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Manos.IO\Manos.IO.csproj">

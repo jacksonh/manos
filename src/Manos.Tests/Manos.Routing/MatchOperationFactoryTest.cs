@@ -40,7 +40,7 @@ namespace Manos.Routing.Tests
 		[Test ()]
 		public void TestCreateNull ()
 		{
-			Should.Throw<ArgumentNullException> (() => MatchOperationFactory.Create (null));
+			Should.Throw<ArgumentNullException> (() => MatchOperationFactory.Create (null, MatchType.String));
 		}
 		
 		[Test ()]
@@ -48,7 +48,7 @@ namespace Manos.Routing.Tests
 		{
 			IMatchOperation op;
 			
-			op = MatchOperationFactory.Create (String.Empty);
+			op = MatchOperationFactory.Create (String.Empty, MatchType.String);
 			Should.BeInstanceOf<NopMatchOperation> (op, "a1");
 		}
 		
@@ -57,44 +57,44 @@ namespace Manos.Routing.Tests
 		{
 			IMatchOperation op;
 			
-			op = MatchOperationFactory.Create ("dog.");
+			op = MatchOperationFactory.Create ("dog.", MatchType.Regex);
 			Should.BeInstanceOf<RegexMatchOperation> (op, "a1");
 			
-			op = MatchOperationFactory.Create (".dog");
+			op = MatchOperationFactory.Create (".dog", MatchType.Regex);
 			Should.BeInstanceOf<RegexMatchOperation> (op, "a2");
 			
-			op = MatchOperationFactory.Create ("d.og");
+			op = MatchOperationFactory.Create ("d.og", MatchType.Regex);
 			Should.BeInstanceOf<RegexMatchOperation> (op, "a3");
 			
-			op = MatchOperationFactory.Create (".");
+			op = MatchOperationFactory.Create (".", MatchType.Regex);
 			Should.BeInstanceOf<RegexMatchOperation> (op, "a4");
 			
-			op = MatchOperationFactory.Create ("[dog]");
+			op = MatchOperationFactory.Create ("[dog]", MatchType.Regex);
 			Should.BeInstanceOf<RegexMatchOperation> (op, "a6");
 			
-			op = MatchOperationFactory.Create ("(dog)");
+			op = MatchOperationFactory.Create ("(dog)", MatchType.Regex);
 			Should.BeInstanceOf<RegexMatchOperation> (op, "a7");
 			
-			op = MatchOperationFactory.Create ("^dog");
+			op = MatchOperationFactory.Create ("^dog", MatchType.Regex);
 			Should.BeInstanceOf<RegexMatchOperation> (op, "a8");
 			
-			op = MatchOperationFactory.Create ("dog*");
+			op = MatchOperationFactory.Create ("dog*", MatchType.Regex);
 			Should.BeInstanceOf<RegexMatchOperation> (op, "a9");
 			
-			op = MatchOperationFactory.Create (".*dog");
+			op = MatchOperationFactory.Create (".*dog", MatchType.Regex);
 			Should.BeInstanceOf<RegexMatchOperation> (op, "a10");
 			
-			op = MatchOperationFactory.Create ("$dog");
+			op = MatchOperationFactory.Create ("$dog", MatchType.Regex);
 			Should.BeInstanceOf<RegexMatchOperation> (op, "a11");
 			
-			op = MatchOperationFactory.Create ("dog$");
+			op = MatchOperationFactory.Create ("dog$", MatchType.Regex);
 			Should.BeInstanceOf<RegexMatchOperation> (op, "a12");
 		}
 		
 		[Test]
 		public void Create_SimpleMatchInMiddle_CreatesSimpleMatch ()
 		{
-			IMatchOperation op = MatchOperationFactory.Create ("/Foo/{bar}/");
+			IMatchOperation op = MatchOperationFactory.Create ("/Foo/{bar}/", MatchType.Simple);
 			
 			Should.BeInstanceOf<SimpleMatchOperation> (op);
 		}
@@ -102,7 +102,7 @@ namespace Manos.Routing.Tests
 		[Test]
 		public void Create_SimpleMatchAtBeginning_CreatesSimpleMatch ()
 		{
-			IMatchOperation op = MatchOperationFactory.Create ("{bar}/Foo");
+			IMatchOperation op = MatchOperationFactory.Create ("{bar}/Foo", MatchType.Simple);
 			
 			Should.BeInstanceOf<SimpleMatchOperation> (op);
 		}
@@ -110,7 +110,7 @@ namespace Manos.Routing.Tests
 		[Test]
 		public void Create_SimpleMatchAtEnd_CreatesSimpleMatch ()
 		{
-			IMatchOperation op = MatchOperationFactory.Create ("/Foo/{bar}");
+			IMatchOperation op = MatchOperationFactory.Create ("/Foo/{bar}", MatchType.Simple);
 			
 			Should.BeInstanceOf<SimpleMatchOperation> (op);
 		}
@@ -118,7 +118,7 @@ namespace Manos.Routing.Tests
 		[Test]
 		public void Create_SimpleMatchIsWholePattern_CreatesSimpleMatch ()
 		{
-			IMatchOperation op = MatchOperationFactory.Create ("{bar}");
+			IMatchOperation op = MatchOperationFactory.Create ("{bar}", MatchType.Simple);
 			
 			Should.BeInstanceOf<SimpleMatchOperation> (op);
 		}
@@ -126,7 +126,7 @@ namespace Manos.Routing.Tests
 		[Test]
 		public void Create_EscapedOpenSimpleMatch_CreatesStringMatch ()
 		{
-			IMatchOperation op = MatchOperationFactory.Create ("{{bar}");
+			IMatchOperation op = MatchOperationFactory.Create ("{{bar}", MatchType.String);
 			
 			Should.BeInstanceOf<StringMatchOperation> (op);
 		}
@@ -134,7 +134,7 @@ namespace Manos.Routing.Tests
 		[Test]
 		public void Create_EscapedCloseSimpleMatch_CreatesStringMatch ()
 		{
-			IMatchOperation op = MatchOperationFactory.Create ("{bar}}");
+			IMatchOperation op = MatchOperationFactory.Create ("{bar}}", MatchType.String);
 			
 			Should.BeInstanceOf<StringMatchOperation> (op);
 		}
@@ -144,13 +144,13 @@ namespace Manos.Routing.Tests
 		{
 			IMatchOperation op;
 			
-			op = MatchOperationFactory.Create ("foobar");
+			op = MatchOperationFactory.Create ("foobar", MatchType.String);
 			Should.BeInstanceOf<StringMatchOperation> (op, "a1");
 			
-			op = MatchOperationFactory.Create ("1");
+			op = MatchOperationFactory.Create ("1", MatchType.String);
 			Should.BeInstanceOf<StringMatchOperation> (op, "a2");
 			
-			op = MatchOperationFactory.Create ("i am the walrus");
+			op = MatchOperationFactory.Create ("i am the walrus", MatchType.String);
 			Should.BeInstanceOf<StringMatchOperation> (op, "a3");
 		}
 	}
