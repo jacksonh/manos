@@ -46,12 +46,11 @@ namespace $APPNAME {
 		}
 
 		
-		private bool ValidFile (string path)
+		private static bool ValidFile (string path)
 		{
 			try {
 				string full = Path.GetFullPath (path);
-				if (full.StartsWith (basedir))
-					return File.Exists (full);
+				return File.Exists (full);
 			} catch {
 				return false;
 			}
