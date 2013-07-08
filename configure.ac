@@ -57,7 +57,7 @@ AC_ARG_ENABLE([native-io],
 	[IO_COMPILE_FLAGS=])
 
 AC_SUBST(IO_COMPILE_FLAGS)
-
+AC_DEFINE([PTHREAD_POINTER_ID], [], [Description])
 
 
 	dnl ******************************************************************
@@ -124,19 +124,11 @@ case "$host" in
 		if test "x$cross_compiling" = "xyes"; then
 			has_broken_apple_cpp=yes
 		fi
-		dnl Snow Leopard is horribly broken -- it reports itself as i386-apple-darwin10.0.0, but
-		dnl its gcc defaults to 64-bit mode.  They have also deprecated the usage of ucontext
-		dnl we need to set some flags to build our 32-bit binaries on 10.6 properly
-		case "$host" in
-			dnl Snow Leopard config.guess reports as this
-			i*86-*-darwin1*)
-				BROKEN_DARWIN_FLAGS="-arch i386 -D_XOPEN_SOURCE -mmacosx-version-min=10.5"
-				CPPFLAGS="$CPPFLAGS $BROKEN_DARWIN_FLAGS"
-				CFLAGS="$CFLAGS $BROKEN_DARWIN_FLAGS"
-				CXXFLAGS="$CXXFLAGS $BROKEN_DARWIN_FLAGS"
-				CCASFLAGS="$CCASFLAGS $BROKEN_DARWIN_FLAGS"
-				;;
-		esac
+		BROKEN_DARWIN_FLAGS="-arch i386 -D_XOPEN_SOURCE -mmacosx-version-min=10.5"
+		CPPFLAGS="$CPPFLAGS $BROKEN_DARWIN_FLAGS"
+		CFLAGS="$CFLAGS $BROKEN_DARWIN_FLAGS"
+		CXXFLAGS="$CXXFLAGS $BROKEN_DARWIN_FLAGS"
+		CCASFLAGS="$CCASFLAGS $BROKEN_DARWIN_FLAGS"
 		;;
 
 esac
