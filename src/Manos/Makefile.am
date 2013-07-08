@@ -1,7 +1,8 @@
 
 manosdir=$(bindir)
 
-pkgdata_DATA = $(top_srcdir)/build/Manos.dll $(top_srcdir)/build/Nini.dll
+fuckoff_pkglibdir = $(pkglibdir)
+fuckoff_pkglib_DATA = $(top_srcdir)/build/Manos.dll $(top_srcdir)/build/Nini.dll
 
 manos_proj_file = Manos.csproj
 manos_sources_in = Assembly/AssemblyInfo.cs.in
