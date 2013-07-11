@@ -1,4 +1,4 @@
-**NOTE**: this project is not under active development anymore. I encourage you to play with it, learn from it, use it as a platform for innovation. I wont discourage you from using it in production, some people are, but I will encourage you to evaluate more supported technologies like SignalR (or perhaps non .NET technologies like node.js)
+**NOTE: this project is not under active development anymore. I encourage you to play with it, learn from it, use it as a platform for innovation. I wont discourage you from using it in production, some people are, but I will encourage you to evaluate more supported technologies like SignalR (or perhaps non .NET technologies like node.js)**
 
 Manos is an easy to use, easy to test, high performance web application framework that stays out of your way and makes your life ridiculously simple.
 
