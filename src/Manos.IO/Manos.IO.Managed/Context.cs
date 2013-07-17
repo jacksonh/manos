@@ -225,6 +225,11 @@ namespace Manos.IO.Managed
 		{
 			return new UdpSocket (this, family);
 		}
+
+		public override INotifier CreateNotifier (Action callback)
+		{
+			return new Notifier (this, callback);
+		}
 	}
 }
 

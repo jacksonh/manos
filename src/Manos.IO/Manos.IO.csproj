@@ -116,6 +116,10 @@
     <Compile Include="Manos.IO\Errors.cs" />
     <Compile Include="Manos.IO\IOException.cs" />
     <Compile Include="Manos.IO\OpenMode.cs" />
+    <Compile Include="Manos.IO\INotifier.cs" />
+    <Compile Include="Libev\Pipe.cs" />
+    <Compile Include="Manos.IO.Libev\Notifier.cs" />
+    <Compile Include="Manos.IO.Managed\Notifier.cs" />
   </ItemGroup>
   <Target Name="ListSources">
     <Message Text="@(Compile)" Importance="High" />
