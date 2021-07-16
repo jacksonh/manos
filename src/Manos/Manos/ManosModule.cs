@@ -267,7 +267,7 @@ namespace Manos {
 		{
 			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
 
-			return AddRouteHandler (action, ops, HttpMethods.GetMethods);
+			return AddRouteHandler (action, ops, HttpMethods.PutMethods);
 		}
 
 		public RouteHandler Put (IManosModule module, params string [] patterns)
@@ -289,7 +289,7 @@ namespace Manos {
 		{
 			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
 
-			return AddRouteHandler (action, ops, HttpMethods.GetMethods);
+			return AddRouteHandler (action, ops, HttpMethods.PostMethods);
 		}
 
 		public RouteHandler Post (ManosAction action, params string [] patterns)
@@ -318,7 +318,7 @@ namespace Manos {
 		{
 			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
 
-			return AddRouteHandler (action, ops, HttpMethods.GetMethods);
+			return AddRouteHandler (action, ops, HttpMethods.DeleteMethods);
 		}
 
 		public RouteHandler Delete (ManosAction action, params string [] patterns)
@@ -347,7 +347,7 @@ namespace Manos {
 		{
 			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
 
-			return AddRouteHandler (action, ops, HttpMethods.GetMethods);
+			return AddRouteHandler (action, ops, HttpMethods.HeadMethods);
 		}
 
 		public RouteHandler Head (ManosAction action, params string [] patterns)
@@ -376,7 +376,7 @@ namespace Manos {
 		{
 			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
 
-			return AddRouteHandler (action, ops, HttpMethods.GetMethods);
+			return AddRouteHandler (action, ops, HttpMethods.OptionsMethods);
 		}
 
 		public RouteHandler Options (ManosAction action, params string [] patterns)
@@ -405,7 +405,7 @@ namespace Manos {
 		{
 			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
 
-			return AddRouteHandler (action, ops, HttpMethods.GetMethods);
+			return AddRouteHandler (action, ops, HttpMethods.TraceMethods);
 		}
 
 		public RouteHandler Trace (ManosAction action, params string [] patterns)
