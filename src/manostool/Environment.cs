@@ -39,6 +39,7 @@ namespace Manos.Tool
 			LibDirectory = "lib";
 			TemplatesDirectory = "Templates";
 			WorkingDirectory = Directory.GetCurrentDirectory ();
+			IsWindows = false;
 			
 			string exe_path = new Uri (typeof (Driver).Assembly.GetName ().CodeBase).LocalPath;
 
@@ -46,6 +47,7 @@ namespace Manos.Tool
 				|| System.Environment.OSVersion.Platform == PlatformID.Win32S
 				|| System.Environment.OSVersion.Platform == PlatformID.Win32Windows
 				|| System.Environment.OSVersion.Platform == PlatformID.WinCE) {
+				IsWindows = true;
 				ManosDirectory = Path.GetDirectoryName(exe_path);
 				DataDirectory = ManosDirectory;
 				DocsDirectory = Path.Combine(ManosDirectory, "docs");
@@ -87,6 +89,11 @@ namespace Manos.Tool
 		public string DocsDirectory {
 			get;
 			set;
+		}
+
+		public bool IsWindows {
+			get;
+			private set;
 		}
 	}
 }
